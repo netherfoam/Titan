@@ -1,0 +1,19 @@
+Actions Information:
+	Definitions:
+		Action: Something a player may do. This is a runnable class.
+				- Examples include Eating, Walking, Following, Combat, Herb Cleaning, Spell Casting, etc.
+		ActionQueue: The list of Actions a player wants to perform at this point in time. Items in this list
+					 may be cancelled or reorganised as the player interacts with the server.
+					 
+How it works:
+	* A player requests to do something, eg "Follow Frizire"
+	* A new "FollowAction" is constructed, and given to the players ActionQueue
+		- Eg FollowAction f = new FollowAction(follower, target, 1, 8, new AStar();
+			 getPlayer().getActions().queue(f);
+	* The ActionQueue the subscribes the Mob (Player) to tick notifications
+	* The server then calls tick() on the Mob (Player)
+	* The tick() method from Mob (Player) then invokes the tick() method on the ActionQueue
+	* The ActionQueue's tick() method runs, performing whatever actions necessary and returns
+	* The return value from ActionQueue.tick() indicates whether the ActionQueue requires to be ticked again.
+	* A value of 1 indicates 'tick again', but -1 indicates 'queue is empty'.
+	* Mob (Player) class handles the result, if there are no other reasons to tick() then mob unsubscribes to server ticks

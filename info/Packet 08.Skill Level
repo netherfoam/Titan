@@ -1,0 +1,17 @@
+Outgoing Packet 8: Skill Level
+
+Length: 4
+		- Int1
+		- ByteS
+		- ByteS
+		
+Int1:
+	This is the amount of experience the player currently as, as an integer. Note it is written as
+	an int1 which is a bizare concept.
+	
+ByteS:
+	Skill ID, from 0-24. Starting at attack, going to dungeoneering.
+	
+ByteS:
+	Modified Skill Level. Say attack is 60, user drinks an Attack potion, attack is now 66/60.
+	This is the 66 portion of that level. So the ByteS value would be 66.

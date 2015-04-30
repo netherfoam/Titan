@@ -1,0 +1,12 @@
+.classpath
+.project
+.metadata/
+.recommenders/
+*.log
+
+data/cache.yml
+modules/*
+cache/*
+bin/*
+config/
+players/

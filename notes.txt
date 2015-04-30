@@ -1,0 +1,82 @@
+Release:
+	Update Mask: 
+		- Disable mask updating if no Client Player's are online
+		- Improve logon server packets.
+	
+LogonServer:
+	- Stop using magic numbers for packet opcodes
+	- RemoteProtocol.java class to forward protocol requests to another server.
+	- Accept a CommandManager and ConsoleSender in Constructor for LogonServer
+	
+Code Quality:
+	- Some item prices are displayed differently in general stores based on stock quantity. Why?
+	- Hide Definition classes, only expose them to the instances of those definitons, and make those instances
+	  provide methods for accessing fields of the definitions.
+	- Move common protocol methods to ProtocolHandler.java
+	- Being attacked cancels a walking action 
+	- Factions
+		- Set wilderness faction on entering wilderness
+	- Sounds
+		- Weapon Sounds
+		- Defensive sounds
+	- toString() for all classes
+	- YML configuration properly
+		- Constructors?
+	- Dialogue interfaces
+	- exit to lobby is broken again (must wait to write buffered all data to socket before closing socket)
+	
+Bots:
+	- checkAttacks() on each loop
+		- checkAttacks() should ensure player has bow ammo if ranging
+		- check for runes if autocasting
+	- On equip,
+		- If using a bow, ensure has ammo if ranging
+	- If bots cannot find bank, use teleport.
+	- Won't equip whip if not wielding a weapon?
+		
+Alva:
+	- Duel Arena Module
+	- Lobby button handling
+	
+Modules:
+	- Dependency System
+		- Hard dependencies (Required ones)
+		- Soft dependencies (Non-required but should be loaded before)
+
+Interfaces:
+	- Interfaces should be aware of their childPos for both fixed and resizeable screen sizes
+		- Currently it is done in the constructor (p.getScreen().getMode() < 2 ? 216 : 95)
+		- Required to swap between fixed and resizeable screens
+
+Bug Fixes:
+	- Client graphics files seem incorrect/have low FPS/native library functions don't map properly/dependency required for native libs
+		- World models/terrain not displaying properly/totally/partially.
+		- Due to JDK which doesn't include jawt.dll in jdk/bin/ directory.
+		- JRE7 does not have the same issue.
+		- Eclipse somehow auto-includes jawt.dll or something with the required functionality
+		- Solutions?
+			- Run client with JRE instead, warning if JDK
+			- Distribute jawt.dll/jawt.so(?) with client
+	- Range weapons such as Darts/Javelins/Thrown axes should not include stat bonuses from Arrows/Bolts, but they do.
+	- Crystal bow shoots bow as ammo
+	
+Features:
+	- Value interface
+	- Areas
+	- Special Attacks
+	- Spells
+		- Special effects for ancients
+		- Superheat, telekinetic grab, magic dart, iban blast, bones to ___, charge, teleother)
+		- Lunar
+	- Prayer
+		- Curses
+		- Special effects (Regen/stat restore/protect item/protect from ____/smite/retribution/redemption)
+	- Writing/Saving for cache API
+	- Areas
+	- Finish lobby
+		- Friends
+		- Ignores
+		
+Cool gameframe:
+	getProtocol().sendWindowPane(548, 2); //Not 746 though
+

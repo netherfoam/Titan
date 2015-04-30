@@ -1,0 +1,24 @@
+Outgoing Packet 73: Music.
+
+Length: 4
+		- ByteC
+		- ByteC
+		- LEShort
+		
+ByteC:
+	This is the volume of the packet on a scale of 0-255, 0 being quietest.
+	
+ByteC:
+	This appears to be a fade in time, the amount of time (in unknown units)
+	that it takes for the song that is previously playing to be faded out. 
+	A value of 50 seems fair.
+	
+LEShort:
+	This is the ID of the song to play. This number is actually read by
+	the client as an unsigned short, though the data is indexed using
+	LEShorts on the client, meaning we should write LEShorts to them.
+
+
+When the player logs in, or the current song finishes playing, the player
+sends a packet to the server (Opcode 42), containing the trackId(int) that
+was last played by the client. Opcode 42 is 1 int in size.

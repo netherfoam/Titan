@@ -1,0 +1,8 @@
+Yarnova 
+http://www.rune-server.org/runescape-development/rs2-client/tutorials/225863-implementing-rsa-real-way.html
+
+Major
+http://www.rune-server.org/runescape-development/rs2-server/tutorials/421353-apollo-enabling-rsa.html
+
+Nikki
+http://www.rune-server.org/runescape-development/rs2-server/tutorials/305532-any-revision-enabling-rsa-6.html

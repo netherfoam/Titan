@@ -1,0 +1,370 @@
+//GameObjectDefinition
+	boolean aBoolean2925;
+	int[] anIntArray2926;
+	boolean aBoolean2927;
+	int[] objectIds;
+	private int anInt2929;
+	private byte aByte2930;
+	private int anInt2931 = 0;
+	private byte aByte2932;
+	int anInt2933;
+	int[] anIntArray2934;
+	boolean aBoolean2935;
+	int id;
+	private int[] anIntArray2937;
+	private int anInt2938;
+	String[] options;
+	private int anInt2940;
+	int anInt2941;
+	private byte aByte2942;
+	//private Class377 aClass377_2944;
+	int anInt2945 = 0;
+	private int anInt2946;
+	boolean aBoolean2947;
+	int anInt2948;
+	int anInt2949;
+	int anInt2950;
+	int[][] anIntArrayArray2951;
+	String name;
+	int anInt2953;
+	private int anInt2954;
+	private byte[] aByteArray2955;
+	int anInt2956;
+	boolean aBoolean2957;
+	int anInt2958;
+	boolean clippingFlag;
+	boolean walkable;
+	boolean aBoolean2961;
+	int anInt2962;
+	//ObjectDefinitionManager creator;
+	private int anInt2964;
+	short[] aShortArray2965;
+	int anInt2966;
+	private byte aByte2967;
+	private int anInt2968;
+	boolean aBoolean2969;
+	int anInt2970;
+	private byte aByte2971;
+	int anInt2972;
+	private int anInt2973;
+	short[] aShortArray2974;
+	int anInt2975;
+	boolean aBoolean2976;
+	int anInt2977;
+	int sizeX;
+	int[] anIntArray2979;
+	private int anInt2980;
+	int anInt2981;
+	boolean aBoolean2982;
+	private int anInt2983;
+	boolean aBoolean2984;
+	private int anInt2985;
+	int anInt2986;
+	int anInt2987;
+	private int anInt2988;
+	private int anInt2989;
+	int anInt2990;
+	int sizeY;
+	boolean aBoolean2992;
+	//static IncomingOpcode aClass58_2993 = new IncomingOpcode(41, 4);
+	byte[] aByteArray2994;
+	private short[] aShortArray2995;
+	int anInt2996;
+	private int anInt2997;
+	int hasOptions;
+	int actionCount;
+	//static Class332[] aClass332Array3000;
+	static int[] anIntArray3001;
+	int anInt3002;
+	private short[] aShortArray3003;
+	boolean aBoolean3004;
+	boolean aBoolean3005;
+	int anInt3006;
+	boolean aBoolean3007;
+	int anInt3008;
+	
+
+
+	private final void readObject(ByteBuffer buffer, int opcode, int i_57_) {
+		/*
+		do {
+			try {
+				if (opcode == 1 || opcode == 5) {
+					int length = buffer.get() & 0xFF;
+					this.aByteArray2994 = new byte[length];
+					this.anIntArrayArray2951 = new int[length][];
+					for (int j = 0; j < length; j++) {
+						this.aByteArray2994[j] = buffer.get();
+						int b = buffer.get() & 0xFF;
+						this.anIntArrayArray2951[j] = new int[b];
+						for (int k = 0; k < b; k++)
+							this.anIntArrayArray2951[j][k] = buffer.getShort();
+					}
+				}
+				if (opcode == 2){
+					this.name = Util.readJagString(buffer, 0);
+				}
+				if (opcode == 14) this.sizeY = buffer.get() & 0xFF;
+				if (opcode == 22) this.aBoolean3007 = true;
+				if (opcode == 23) this.anInt2956 = 1;
+				if (opcode == 27) this.actionCount = 1;
+				if (opcode == 29) anInt2931 = buffer.get() & 0xFF;
+				
+				if (opcode == 40) {
+					int length = buffer.get() & 0xFF;
+					aShortArray3003 = new short[length];
+					this.aShortArray2965 = new short[length];
+					for (int j = 0; j < length; j++) {
+						aShortArray3003[j] = (short) (buffer.getShort());
+						this.aShortArray2965[j] = (short) (buffer.getShort());
+					}
+				}
+				if (opcode == 65) anInt2938 = (buffer.getShort());
+				if (opcode == 67) anInt2929 = (buffer.getShort());
+				if (opcode == 62) this.aBoolean2961 = true;
+				if (opcode == 70) anInt2973 = (buffer.getShort() & 0xFFFF) << 2;
+				if (opcode == 19) this.hasOptions = buffer.get() & 0xFF;
+				if (opcode == 71) anInt2997 = (buffer.getShort() & 0xFFFF) << 2;
+				
+				if (opcode == 78) {
+					this.anInt2996 = buffer.getShort();
+					this.anInt2981 = buffer.get() & 0xFF;
+				}
+				if (opcode == 82) this.aBoolean2982 = true;
+				if (opcode == 88) this.aBoolean2935 = false;
+				if (opcode == 89) this.aBoolean2925 = false;
+				if (opcode == 91) this.aBoolean2927 = true;
+				if (opcode == 94) aByte2971 = (byte) 4;
+				
+				if (opcode == 95) {
+					aByte2971 = (byte) 5;
+					anInt2985 = buffer.getShort() & 0xFFFF;
+				}
+				
+				if (opcode == 97) this.aBoolean3004 = true;
+				if (opcode == 98) this.aBoolean3005 = true;
+				if (opcode == 100) {
+					this.anInt2933 = buffer.get() & 0xFF;
+					this.anInt2977 = buffer.getShort();
+				}
+				
+				if (opcode == 101) this.anInt2962 = buffer.get() & 0xFF;
+				if (opcode == 102) this.anInt2990 = buffer.getShort();
+				
+				if (opcode == 104) this.anInt2987 = buffer.get() & 0xFF;
+				
+				if (opcode == 106) {
+					int length = buffer.get() & 0xFF;
+					anIntArray2937 = new int[length];
+					this.anIntArray2979 = new int[length];
+					for(int i = 0; i < length; i++){
+						this.anIntArray2979[i] = buffer.getShort();
+						int value = buffer.get() & 0xFF;
+						anIntArray2937[i] = value;
+						anInt2964 += value;
+					}
+				}
+				
+				if (opcode == 160) {
+					int length = buffer.get() & 0xFF;
+					this.anIntArray2934 = new int[length];
+					for(int i = 0; i < length; i++){
+						this.anIntArray2934[i] = buffer.getShort();
+				}
+					
+				if (opcode == 162) {
+					aByte2971 = (byte) 3;
+					anInt2985 = buffer.getInt();
+				}
+				
+				if (opcode == 163) {
+					aByte2930 = buffer.get();
+					aByte2942 = buffer.get();
+					aByte2967 = buffer.get();
+					aByte2932 = buffer.get();
+				}
+				
+				if (opcode == 164) anInt2940 = buffer.getShort() & 0xFFFF;
+				if (opcode == 173) {
+					this.anInt3006 = buffer.getShort();
+					this.anInt2950 = buffer.getShort();
+				}
+				
+				if (opcode == 168) this.aBoolean2992 = true;
+				
+				if (opcode == 177) this.aBoolean2984 = true;
+				if (opcode == 178) this.anInt2970 = buffer.get() & 0xFF;
+				
+				if (opcode == 249) {
+					int count = buffer.get() & 0xFF;
+					for (int i = 0; i < count; i++) {
+						boolean bool = (buffer.get() & 0xFF) == 1;
+						int tribyte = Util.readTriByte(buffer);
+						
+						if(!bool) buffer.getInt(); //Class constructor
+						else Util.readJagString(buffer, 0); //Stream constructor
+					}
+				}
+				
+				if (opcode != 15) {
+					if ((opcode ^ 0xffffffff) != -18) {
+						if (opcode != 18) {
+							if (opcode != 21) {
+								if ((opcode ^ 0xffffffff) != -25) {
+									if (opcode != 28) {
+										if ((opcode ^ 0xffffffff) != -40) {
+											if ((opcode ^ 0xffffffff) > -31 || opcode >= 35) {
+												if ((opcode ^ 0xffffffff) != -42) {
+													if ((opcode ^ 0xffffffff) != -43) {
+														if (opcode != 64) {
+															if ((opcode ^ 0xffffffff) != -67) {
+																if ((opcode ^ 0xffffffff) != -70) {
+																	if ((opcode ^ 0xffffffff) != -73) {
+																		if (opcode != 73) {
+																			if (opcode != 74) {
+																				if (opcode != 75) {
+																					if ((opcode ^ 0xffffffff) != -78 && (opcode ^ 0xffffffff) != -93) {
+																						if (opcode != 79) {
+																							if ((opcode ^ 0xffffffff) != -82) {
+																								if (opcode != 93) {
+																									if ((opcode ^ 0xffffffff) != -100) {
+																										if ((opcode ^ 0xffffffff) != -104) {
+																											if ((opcode ^ 0xffffffff) != -106) {
+																												if ((opcode ^ 0xffffffff) != -108) {
+																													if (opcode < 150 || (opcode ^ 0xffffffff) <= -156) {
+																														
+																														if ((opcode ^ 0xffffffff) != -166) {
+																															if ((opcode ^ 0xffffffff) != -167) {
+																																if ((opcode ^ 0xffffffff) != -168) {
+																																	if (opcode == 169) this.aBoolean2957 = true;
+																																	if ((opcode ^ 0xffffffff) != -171) {
+																																		if ((opcode ^ 0xffffffff) != -172) {
+																																			
+																																		}
+																																		else this.anInt2953 = buffer.readSmart(1689622712);
+																																	}
+																																	else this.anInt2986 = buffer.readSmart(1689622712);
+																																}
+																																else this.anInt2945 = buffer.readShort((byte) 127);
+																															}
+																															else anInt2989 = buffer.readUShort(false);
+																														}
+																														else anInt2988 = buffer.readUShort(false);
+																													}
+																													else {
+																														this.options[opcode + -150] = buffer.readString((byte) 84);
+																														if (!this.creator.aBoolean2516) this.options[-150 + opcode] = null;
+																													}
+																												}
+																												else this.anInt2958 = buffer.readShort((byte) 127);
+																											}
+																											else this.aBoolean2976 = true;
+																										}
+																										else this.anInt2956 = 0;
+																									}
+																									else {
+																										this.anInt3002 = buffer.readUnsignedByte((byte) -112);
+																										this.anInt3008 = buffer.readShort((byte) 127);
+																									}
+																								}
+																								else {
+																									aByte2971 = (byte) 3;
+																									anInt2985 = buffer.readShort((byte) 127);
+																								}
+																							}
+																							else {
+																								aByte2971 = (byte) 2;
+																								anInt2985 = 256 * buffer.readUnsignedByte((byte) 76);
+																							}
+																						}
+																						else {
+																							this.anInt2949 = buffer.readShort((byte) 127);
+																							this.anInt2972 = buffer.readShort((byte) 127);
+																							this.anInt2981 = buffer.readUnsignedByte((byte) -121);
+																							int i_73_ = buffer.readUnsignedByte((byte) 121);
+																							this.anIntArray2926 = new int[i_73_];
+																							for (int i_74_ = 0; (i_73_ ^ 0xffffffff) < (i_74_ ^ 0xffffffff); i_74_++)
+																								this.anIntArray2926[i_74_] = buffer.readShort((byte) 127);
+																						}
+																					}
+																					else {
+																						anInt2983 = buffer.readShort((byte) 127);
+																						if ((anInt2983 ^ 0xffffffff) == -65536) anInt2983 = -1;
+																						anInt2968 = buffer.readShort((byte) 127);
+																						if (anInt2968 == 65535) anInt2968 = -1;
+																						int i_75_ = -1;
+																						if (opcode == 92) {
+																							i_75_ = buffer.readShort((byte) 127);
+																							if (i_75_ == 65535) i_75_ = -1;
+																						}
+																						int i_76_ = buffer.readUnsignedByte((byte) -106);
+																						this.objectIds = new int[i_76_ + 2];
+																						for (int i_77_ = 0; i_76_ >= i_77_; i_77_++) {
+																							this.objectIds[i_77_] = buffer.readShort((byte) 127);
+																							if (this.objectIds[i_77_] == 65535) this.objectIds[i_77_] = -1;
+																						}
+																						this.objectIds[1 + i_76_] = i_75_;
+																					}
+																				}
+																				else this.anInt2975 = buffer.readUnsignedByte((byte) 74);
+																			}
+																			else this.clippingFlag = true;
+																		}
+																		else this.aBoolean2969 = true;
+																	}
+																	else anInt2946 = buffer.readUShort(false) << -784917758;
+																}
+																else this.anInt2948 = (buffer.readUnsignedByte((byte) 78));
+															}
+															else anInt2954 = (buffer.readShort((byte) 127));
+														}
+														else this.aBoolean2947 = false;
+													}
+													else {
+														int i_78_ = (buffer.readUnsignedByte((byte) 106));
+														aByteArray2955 = new byte[i_78_];
+														for (int i_79_ = 0; ((i_78_ ^ 0xffffffff) < (i_79_ ^ 0xffffffff)); i_79_++)
+															aByteArray2955[i_79_] = (buffer.readSignedByte((byte) -19));
+													}
+												}
+												else {
+													int i_80_ = (buffer.readUnsignedByte((byte) 2));
+													this.aShortArray2974 = new short[i_80_];
+													aShortArray2995 = new short[i_80_];
+													for (int i_81_ = 0; i_80_ > i_81_; i_81_++) {
+														aShortArray2995[i_81_] = (short) (buffer.readShort((byte) 127));
+														this.aShortArray2974[i_81_] = (short) (buffer.readShort((byte) 127));
+													}
+												}
+											}
+											else this.options[opcode + -30] = (buffer.readString((byte) 84));
+											}
+											else anInt2980 = (buffer.readSignedByte((byte) -19) * 5);
+										}
+										else this.anInt2966 = (buffer.readUnsignedByte((byte) 110) << -69774750);
+									}
+									else {
+										this.anInt2941 = buffer.readShort((byte) 127);
+										if ((this.anInt2941 ^ 0xffffffff) == -65536) this.anInt2941 = -1;
+									}
+								}
+								else aByte2971 = (byte) 1;
+							}
+							else this.walkable = false;
+						}
+						else {
+							this.walkable = false;
+							this.actionCount = 0;
+						}
+					}
+					else this.sizeX = buffer.readUnsignedByte((byte) 35);
+					if (i_57_ == 7) break;
+					method3857(33);
+				}
+				catch (RuntimeException runtimeexception) {
+					throw ExceptionHandler.getException(runtimeexception, ("vha.I(" + (buffer != null ? "{...}" : "null") + ',' + opcode + ',' + i_57_ + ')'));
+				}
+				break;
+			} while (false);
+		}
+	}*/

@@ -1,0 +1,111 @@
+Try appending _staticelements to element names
+area
+_staticelements
+huffman
+details
+
+hitmarks
+hitbar_default
+timerbar_default
+headicons_pk
+hint_headicons
+headicons_prayer
+hint_mapmarkers
+mapflag
+cross
+mapdots
+scrollbar
+name_icons
+floorshadows
+compass
+otherlevel
+hint_mapedge
+_staticelements
+p11_full
+p12_full
+scape main
+
+gl
+	transparent_water
+	uw_ground_unlit
+	uw_ground_lit
+	uw_model_unlit
+	uw_model_lit
+	environment_mapped_water_v
+	environment_mapped_water_f
+
+dx
+	uw_ground_unlit
+	uw_ground_lit
+	uw_model_unlit
+	uw_model_lit
+	transparent_water
+	environment_mapped_water_v
+	environment_mapped_water_f
+	
+1057075019 = b12_full
+-1106172890 = letter
+-1023370892 = objbox
+-1544597765 = sl_stars
+-795140435 = wander
+-1299337733 = emotes
+950484242 = compass
+96463963 = egypt
+417793574 = scrollbar
+93330745 = aztec
+112903447 = water
+-1237461365 = grotto
+-1237289460 = grumpy
+109757538 = start
+109757537 = stars
+-705938181 = zealot
+3327403 = logo
+95848451 = dream
+105001967 = nomad
+-1242708793 = glyphs
+-880905839 = target
+3314400 = lava
+-985763247 = planks
+-1097329270 = logout
+1170407052 = headicons_prayer
+-1367483767 = cavern
+3314014 = lair
+108392383 = regal
+94839810 = coins
+-1073910849 = mirror
+-908183966 = scarab
+-934797897 = reggae
+3288564 = keys
+-747101753 = floorshadows
+-1040122273 = noexit
+106079 = key
+-1106570438 = legion
+385880929 = hint_mapedge
+-1396384012 = bamboo
+-810515425 = voyage
+-881018278 = tanner
+-1282090556 = faerie
+108698078 = roof2
+-1339126929 = damage
+92909147 = alone
+117588 = web
+197029040 = mapscene
+-1154441378 = jollyr
+-980211737 = prayer
+-313384067 = p12_full
+-895763669 = spooky
+-342013218 = p11_full
+-1081494434 = malady
+3347949 = mesh
+-925031874 = royale
+94935104 = cross
+-1220755677 = hermit
+111485446 = upass
+94627585 = chest
+-1556842207 = sl_flags
+3089326 = door
+1258058669 = huffman
+-1268786147 = forest
+3641802 = wall
+-1865172830 = hitbar_default
+3506388 = roof

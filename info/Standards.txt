@@ -1,0 +1,39 @@
+ -- Project Standards --
+ 
+ Coding:
+ 	- If statements are to be verbose:
+ 	  if(coding) {
+ 	  	sleep();
+ 	  }
+ 	  else {
+ 	  	yield();
+ 	  }
+ 	  
+ 	- A space is required between ) and a {
+ 	- Group abstract methods
+ 	- Group Constructors
+ 	- Group getters/setters
+ 	- Variables to be declared at top of classes, above constructor
+ 	- Static variables to be declared above dynamic variables
+ 	- Output to be printed with Log.log() not System.out
+ 	- Magic numbers may be used internally, but are NEVER to be part of an exposed method or value
+ 
+ Structure:
+ 	- Structures should be well thought out
+ 		- Revision of poor structures is encouraged
+ 	- Encapsulation is encouraged, it is neater and easily understood
+ 	- Readability of code must be high
+ 	- Structures must update other data when publically accessible. For example,
+ 	  no refresh() method should be required. An example of this is the player's
+ 	  inventory, where Inventory.set() updates the client. This is functional.
+ 	  A bad example is where Inventory.set() might not update the client until
+ 	  a refresh() call is made.
+ 	
+ Documenting:
+ 	- Javadocs for all non-trivial methods
+ 	- Javadocs for all protected or public variables
+ 	- Javadocs must specify all Exceptions raised from methods specifically, even if Runtime
+ 	- Comment on non-trivial methods
+ 	- Use // for single or double line comments. Triple may use /* */ 
+ 	- Non-trivial concepts must be documented in the 'info' folder specifying
+ 	  what they are, how they're to be used, and any nuances.

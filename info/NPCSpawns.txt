@@ -1,0 +1,13 @@
+Taken from http://www.rune-server.org/runescape-development/rs-503-client-server/448436-possible-way-acquire-maps-without-xtea-keys.html
+- 'Mystic Flow
+Also as some people know, you can load npcs via cache if you do "n"+regionX+"_"+regionY and read that name hash from index 5 you will get a list of npc spawns.
+
+Taken from http://www.rune-server.org/runescape-development/rs-503-client-server/informative-threads/227122-landscape-files-2.html
+- Maxi
+If you look trough the deob you will find class files which are loaded from the .idx# files. These .idx files represent the cache which the client reads its data from. The landscape files are in .idx5. idx5 also contains several other map related files, each given a name hash starting with either m, l, n, um, ul, followed by regionxcoord_regionycoord (example m50_50, holding tile information for the region from (3200, 3200) to (3263, 3263)). Those name hashes are stored in the crc32 reference table related to .idx5, and used to retrieve the access pointer for the file.
+
+"m: map files, contain tile info etc
+l: landscape files, contain info about what object at what location etc
+um: believed to be underwater map files, no real use for us
+ul: believed to be underwater landscape file, no real use for us
+n: npc spawn locations"

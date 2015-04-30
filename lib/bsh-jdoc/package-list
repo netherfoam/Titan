@@ -1,0 +1,6 @@
+bsh
+bsh.classpath
+bsh.commands
+bsh.org.objectweb.asm
+bsh.servlet
+bsh.util

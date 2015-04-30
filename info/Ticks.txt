@@ -1,0 +1,18 @@
+Ticks:
+	Runescape operates on a 600ms tick cycle. Every 600ms, all players are sent an update.
+	
+	Notable facts about our tick cycle:
+		- Tickable classes may subscribe to server ticks via Core.getServer().getTicker().subscribe(this, [delay > 0])
+		
+		- A class that is subscribed will have the tick() method invoked, compared to one that is not.
+		
+		- The ticks are not first come, first serve when calling submit():
+			- Every second tick, all tickables to be run() on that tick, will have their run() method called in the opposite
+			  order, as compared to every even tick. This is to prevent players from being 'one tick ahead' of another.
+		
+		- The return value of the tick() method indicates whether the Tickable object should be rescheduled. If the value is
+		  greater than 0, then the Tickable object is scheduled to be run after [value] ticks. Else, the Tickable object is
+		  removed from the schedule entirely, until resubscribed by some other section of code.
+		  
+		- The ActionQueue will require a Mob be tick()'ed on each tick if the queue has actions in it. Thus a mob should
+		  be the one managing its own action queue, and no external classes other than actions should modify it.

@@ -1,0 +1,12 @@
+skills:
+  CONSTITUTION:
+    modifier: 0.0
+    exp: 273742.0
+health: 100
+location:
+  x: 3235
+  y: 3220
+  z: 0
+rights: 0
+retaliate: false
+spellbook: 192

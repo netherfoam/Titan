@@ -1,0 +1,21 @@
+#What port is the logon server running on
+port: 9692
+#How many bytes should our incoming buffer be? (Recommended size)
+bufferSize: 4096
+#The IP of the server which is running the logon server
+host: localhost
+#The password to join the logon server
+pass: passwd5
+
+#The profiles database
+database:
+    #The name of the database host (Default "localhost")
+    host: localhost
+    #The user for the database (default "root")
+    user: titan
+    #The password for the database (default "passwd")
+    pass: pass
+    #The name of the database (default "profiles")
+    database: titan
+    #The port for the database (default 3306)
+    port: 3306

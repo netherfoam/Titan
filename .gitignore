@@ -2,11 +2,13 @@
 .project
 .metadata/
 .recommenders/
+.settings
 *.log
 
 data/cache.yml
 modules/*
 cache/*
 bin/*
-config/
+config/*.yml
+crash/
 players/

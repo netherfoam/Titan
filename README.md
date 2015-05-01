@@ -6,7 +6,9 @@ Emulates a RuneScape 637 Server using a slightly modified protocol
 Download or clone the project
 Install MySQL5 - http://dev.mysql.com/downloads/mysql/
 Download a R637 cache - Search Rune-Server.org
+</pre>
 
+<pre>
 -- Cache --
 Place the cache in Project_Root/cache/* such that you have:
 Project_Root/
@@ -19,7 +21,9 @@ Project_Root/
 
 The XTEA keys for maps are stored in Project_Root/cache/xteas.xstore2. See the XTEAStore class in the project
 for their format.
+</pre>
 
+<pre>
 -- MySQL --
 Install MySQL5 (Other versions may work fine)
 
@@ -44,7 +48,9 @@ Via Navicat:
 - Right click database -> execute batch file -> select file from Project_Root\sql\dumps\mysql_world.sql -> Start -> Wait
 - Repeat above step for file Project_Root\dumps\mysql_logon.sql
 - When viewing the database there should be several tables in there, including 'profiles'.
+</pre>
 
+<pre>
 -- Configuring --
 The project is configured using YML files. YML files do not accept tabs, instead use spaces. If a tab is found when running
 the server, the config file reader will throw an exception.  
@@ -80,7 +86,9 @@ Now edit world.yml and change:
 - database.database to your database name (eg 'titan')
 - database.port to your mysql port (3306 by default)
 Save, close.
+</pre>
 
+<pre>
 -- Compiling --
 The project is compiled in accordance with Java/JDK 7.  
 To compile it, either run the supplied files (.bat for windows, .sh for linux/mac)
@@ -88,7 +96,9 @@ Otherwise, you could import the project into Eclipse or some other IDE.
 If you wish to import it into Eclipse, you will need to add all .jar files from lib/ to your classpath, if
 you don't know how to do this I suggest googling your IDE name with 'classpath setup' to add the .jar files from
 Project_Root/lib/.
+</pre>
 
+<pre>
 -- Running --
 Two options: 
   - Standalone (Built in logon server)
@@ -108,8 +118,11 @@ Two options:
       
       You should now see the logon server successfully connect to the game server and visa versa (You should have two
       command windows open)
-      
+</pre>
+
+<pre>
 -- Connection --
 Download a client and connect to localhost. The servers port is available in the config file in world.yml under
 world.port: xxxx where the default is 43594. The cache will download automatically. The server does not handle clients
 with RSA enabled, currently (though it is planned to handle both enabled and disabled RSA clients seamlessly later)
+</pre>

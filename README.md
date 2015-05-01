@@ -73,7 +73,7 @@ world.sample.yml -> world.sample
 default_player.sample.yml -> default_player.yml
 
 Now you should edit logon.yml change:
-- pass to a new password
+- pass to a new password, this is your logon password not your database password. If this is found out by someone, they can modify anyones profile in any manner they like. (Add items, corrupt it, reset it, change rights to admin, set skills to any level, set health, location, equipment) - Basically, make it a strong password!
 - database.user to your mysql user (probably root)
 - database.pass to your mysql password
 - database.database to your database name (eg 'titan')

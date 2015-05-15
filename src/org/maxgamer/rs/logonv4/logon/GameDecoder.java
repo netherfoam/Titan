@@ -48,10 +48,8 @@ public class GameDecoder extends OpcodeDecoder<LSIncomingPacket> implements Hand
 			}
 			
 			try {
-				Log.debug("Fetching profile");
 				profile = LogonServer.getLogon().getProfiles().get(name);
 				if(profile == null){
-					Log.debug("Creating profile");
 					profile = LogonServer.getLogon().getProfiles().create(name, pass, ip);
 				}
 				else if (profile.isPass(pass) == false) {
@@ -69,7 +67,7 @@ public class GameDecoder extends OpcodeDecoder<LSIncomingPacket> implements Hand
 			try {
 				File file;
 				FileInputStream fin;
-				if ((file = new File("players", name.toLowerCase() + ".dat")).exists()) {
+				if ((file = new File("players", name.toLowerCase() + ".bin")).exists()) {
 					fin = new FileInputStream(file);
 				}
 				else if ((file = new File("config", "default_player.yml")).exists()) {
@@ -97,7 +95,6 @@ public class GameDecoder extends OpcodeDecoder<LSIncomingPacket> implements Hand
 		
 		out.writeByte(result.getCode());
 		if (result != AuthResult.SUCCESS) {
-			Log.debug("Auth declined: " + result);
 			host.write(out);
 			return;
 		}
@@ -110,7 +107,6 @@ public class GameDecoder extends OpcodeDecoder<LSIncomingPacket> implements Hand
 		profile.setLastIP(ip);
 		profile.setLastSeen(System.currentTimeMillis());
 		
-		Log.debug("Updating profile");
 		try {
 			profile.update();
 		}
@@ -159,7 +155,6 @@ public class GameDecoder extends OpcodeDecoder<LSIncomingPacket> implements Hand
 			String name = in.readPJStr1();
 			byte[] data = new byte[in.readInt()];
 			in.read(data);
-			
 			try {
 				FileOutputStream out = new FileOutputStream(new File("players", name.toLowerCase() + ".bin"));
 				out.write(data);

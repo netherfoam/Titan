@@ -12,6 +12,7 @@ LogonServer:
 - Add sqlite database, use as default
 - Automatically load all .jars from lib/ folder
 - Force check that logon and world SQLite .db files are not the same file!
+- Players not saving
 	
 Code Quality:
 	- Some item prices are displayed differently in general stores based on stock quantity. Why?

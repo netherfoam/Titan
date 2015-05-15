@@ -145,19 +145,14 @@ public class LogonAPI {
 			out.writePJStr1(c.getName());
 			String s = c.serialize().toString();
 			out.writeInt(s.length());
-			ByteArrayOutputStream tmp = new ByteArrayOutputStream(s.length());
-			for (int i = 0; i < s.length(); i++)
+			for (int i = 0; i < s.length(); i++){
 				out.write(s.charAt(i));
-			out.write(tmp.toByteArray());
-			try {
-				tmp.close();
 			}
-			catch (IOException e) {
-			} //never
 		}
 		
 		try {
 			game.write(out);
+			Log.debug("Saved " + clients);
 			return true;
 		}
 		catch (IOException e) {

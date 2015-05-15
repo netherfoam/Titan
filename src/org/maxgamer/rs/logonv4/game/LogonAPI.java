@@ -1,6 +1,5 @@
 package org.maxgamer.rs.logonv4.game;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
@@ -152,7 +151,6 @@ public class LogonAPI {
 		
 		try {
 			game.write(out);
-			Log.debug("Saved " + clients);
 			return true;
 		}
 		catch (IOException e) {

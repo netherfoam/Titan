@@ -40,7 +40,6 @@ public class LoginRequestHandler extends RawHandler {
 		
 		try {
 			int opcode = b.readByte() & 0xFF;
-			Log.debug("Opcode: " + opcode);
 			
 			//Length of data available. (~280 ish) - Packet size.
 			int len = b.readShort(); //Number of bytes remaining

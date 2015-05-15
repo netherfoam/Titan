@@ -11,6 +11,7 @@ import org.maxgamer.rs.module.ScriptUtil;
 import org.maxgamer.rs.network.Client;
 import org.maxgamer.rs.structure.timings.StopWatch;
 
+import co.paralleluniverse.fibers.SuspendExecution;
 import bsh.EvalError;
 import bsh.Interpreter;
 import bsh.NameSpace;
@@ -22,7 +23,6 @@ import bsh.Primitive;
 public class GameObjectAction extends Action {
 	private GameObject obj;
 	private Interpreter environment;
-	private boolean first = true;
 	private File file;
 	
 	public GameObjectAction(Persona mob, String option, GameObject obj) {
@@ -59,7 +59,40 @@ public class GameObjectAction extends Action {
 	}
 	
 	@Override
-	public boolean run() {
+	public void run() throws SuspendExecution {
+		getOwner().setFacing(Facing.face(obj.getCenter()));
+		
+		boolean done = false;
+		
+		while(!done){
+			if (environment == null) {
+				if (getOwner() instanceof Client) {
+					((Client) getOwner()).sendMessage("Option not implemented.");
+				}
+				return;
+			}
+			NameSpace ns = environment.getNameSpace();
+			Object o;
+			try {
+				o = ns.invokeMethod("run", new Object[] { getOwner(), obj }, environment);
+			}
+			catch (EvalError e) {
+				e.printStackTrace();
+				return; //Error, stop.
+			}
+			
+			try {
+				done = (boolean) Primitive.unwrap(o);
+				wait(1);
+			}
+			catch (RuntimeException e) {
+				//ClassCastException or NullPointerException
+				Log.warning("Method run(Persona, GameObject) in ScriptAction in script " + file.getPath() + " should return true (done) or false (continue). Got " + o);
+				return;
+			}
+		}
+		
+		/*
 		if (first) {
 			getOwner().setFacing(Facing.face(obj.getCenter()));
 			first = false;
@@ -89,7 +122,7 @@ public class GameObjectAction extends Action {
 			//ClassCastException or NullPointerException
 			Log.warning("Method run(Persona, GameObject) in ScriptAction in script " + file.getPath() + " should return true (done) or false (continue). Got " + o);
 			return true;
-		}
+		}*/
 	}
 	
 	@Override

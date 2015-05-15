@@ -184,7 +184,7 @@ public class LogonConnection {
 				e.printStackTrace();
 				continue;
 			}
-			Log.debug("logonserver gave packet " + packet.getOpcode());
+			//Log.debug("logonserver gave packet " + packet.getOpcode());
 			decoder.decode(packet.getOpcode(), packet);
 		}
 	}

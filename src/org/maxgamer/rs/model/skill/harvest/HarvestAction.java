@@ -7,6 +7,8 @@ import org.maxgamer.rs.model.entity.mob.persona.Persona;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.map.GameObject;
 
+import co.paralleluniverse.fibers.SuspendExecution;
+
 /**
  * @author netherfoam
  */
@@ -45,39 +47,41 @@ public class HarvestAction extends Action {
 	}
 	
 	@Override
-	protected boolean run() {
+	protected void run() throws SuspendExecution {
 		if (tool == null) {
 			if (getOwner() instanceof Player) {
 				((Player) getOwner()).sendMessage("You need the appropriate tool to do that.");
-				return true;
+				return;
 			}
 		}
-		if (target.getData() <= 0) {
-			//We are done
-			return true;
+		
+		while(true){
+			if (target.getData() <= 0) {
+				//We are done
+				return;
+			}
+			
+			getOwner().getUpdateMask().setAnimation(tool.getAnimation(), 3);
+			
+			harvestTime--;
+			if (harvestTime > 0) {
+				//Keep harvesting
+				wait(1);
+				continue;
+			}
+			
+			target.setData(target.getData() - 1);
+			
+			if (getOwner() instanceof Persona) {
+				harvest.applyReward((Persona) getOwner());
+			}
+			
+			if (target.getData() == 0) {
+				harvest.replenish(target);
+				getOwner().getUpdateMask().setAnimation(null, 3);
+				return;
+			}
 		}
-		
-		getOwner().getUpdateMask().setAnimation(tool.getAnimation(), 3);
-		
-		harvestTime--;
-		if (harvestTime > 0) {
-			//Keep harvesting
-			return false;
-		}
-		
-		target.setData(target.getData() - 1);
-		
-		if (getOwner() instanceof Persona) {
-			harvest.applyReward((Persona) getOwner());
-		}
-		
-		if (target.getData() == 0) {
-			harvest.replenish(target);
-			getOwner().getUpdateMask().setAnimation(null, 3);
-			return true;
-		}
-		
-		return false;
 	}
 	
 	@Override

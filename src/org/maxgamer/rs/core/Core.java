@@ -2,6 +2,7 @@ package org.maxgamer.rs.core;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Date;
@@ -103,6 +104,23 @@ public class Core {
 		Field scl = ClassLoader.class.getDeclaredField("scl"); // Get system class loader
 		scl.setAccessible(true); // Set accessible
 		scl.set(null, CLASS_LOADER); // Update it to your class loader
+		
+		//We load all of the JAR files from lib/ automatically.
+		File libs = new File("lib");
+		File[] jars = libs.listFiles(new FilenameFilter() {
+			@Override
+			public boolean accept(File dir, String name) {
+				name = name.toLowerCase();
+				if(name.endsWith(".jar") || name.endsWith(".class")){
+					return true;
+				}
+				return false;
+			}
+		});
+		
+		for(File file : jars){
+			CLASS_LOADER.addURL(file.toURI().toURL());
+		}
 		
 		Thread.currentThread().setContextClassLoader(CLASS_LOADER);
 		
@@ -296,11 +314,11 @@ public class Core {
 				//Logon Database
 				if (type.equalsIgnoreCase("mysql")) {
 					Log.debug("World using MySQL Database.");
-					world = new Database(new MySQLC3P0Core(c.getString("host", "localhost"), c.getString("user", "root"), c.getString("pass", ""), c.getString("database", "database"), c.getString("port", "3306")));
+					world = new Database(new MySQLC3P0Core(c.getString("host", "localhost"), c.getString("user", "root"), c.getString("pass", ""), c.getString("database", "titan"), c.getString("port", "3306")));
 				}
 				else {
-					Log.debug("World using SQLite Database: " + c.getString("file", "sql" + File.separator + "sqlite.db"));
-					world = new Database(new SQLiteCore(new File(c.getString("file", "sql" + File.separator + "sqlite.db"))));
+					Log.debug("World using SQLite Database: " + c.getString("file", "sql" + File.separator + "titan.db"));
+					world = new Database(new SQLiteCore(new File(c.getString("file", "sql" + File.separator + "titan.db"))));
 				}
 				Log.debug("Database connection established.");
 			}

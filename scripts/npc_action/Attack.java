@@ -13,7 +13,7 @@
  */
 
 boolean run(Persona player, NPC target){
-	if(target.isDead()) return; //Can't attack dead targets.
+	if(target.isDead()) return true; //Can't attack dead targets.
 	if(target.isAttackable(player) == false){
 		//This generally shouldn't occur, but for future proofing we
 		//use this check. isAttackable, for NPC's, currently just checks

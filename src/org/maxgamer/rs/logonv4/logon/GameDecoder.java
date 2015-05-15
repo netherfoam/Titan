@@ -48,9 +48,13 @@ public class GameDecoder extends OpcodeDecoder<LSIncomingPacket> implements Hand
 			}
 			
 			try {
+				Log.debug("Fetching profile");
 				profile = LogonServer.getLogon().getProfiles().get(name);
-				
-				if (profile.isPass(pass) == false) {
+				if(profile == null){
+					Log.debug("Creating profile");
+					profile = LogonServer.getLogon().getProfiles().create(name, pass, ip);
+				}
+				else if (profile.isPass(pass) == false) {
 					//Auth success
 					result = AuthResult.INVALID_PASSWORD;
 					break;
@@ -106,6 +110,7 @@ public class GameDecoder extends OpcodeDecoder<LSIncomingPacket> implements Hand
 		profile.setLastIP(ip);
 		profile.setLastSeen(System.currentTimeMillis());
 		
+		Log.debug("Updating profile");
 		try {
 			profile.update();
 		}

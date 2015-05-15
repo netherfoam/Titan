@@ -4,6 +4,8 @@ import org.maxgamer.rs.model.entity.mob.Animation;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.map.Location;
 
+import co.paralleluniverse.fibers.SuspendExecution;
+
 /**
  * @author netherfoam
  */
@@ -19,11 +21,9 @@ public class ObjectTeleportAction extends ObjectInteractAction {
 	}
 	
 	@Override
-	protected boolean run() {
-		if (super.run()) {
-			getOwner().teleport(this.dest);
-			return true;
-		}
-		return false;
+	protected void run() throws SuspendExecution {
+		getOwner().getUpdateMask().setAnimation(anim, 5);
+		wait(anim.getDelay());
+		getOwner().teleport(this.dest);
 	}
 }

@@ -10,6 +10,8 @@ import org.maxgamer.rs.model.map.path.Path;
 import org.maxgamer.rs.model.map.path.PathFinder;
 import org.maxgamer.rs.structure.timings.StopWatch;
 
+import co.paralleluniverse.fibers.SuspendExecution;
+
 /**
  * Represents when a mob wanders to a random nearby location. This does not
  * force the mob to walk. This action will never make the mob leave the radius.
@@ -21,7 +23,6 @@ import org.maxgamer.rs.structure.timings.StopWatch;
 public class WanderAction extends Action {
 	private Location center;
 	private int radius;
-	private int pause = 0;
 	private int minWait;
 	private int maxWait;
 	
@@ -78,11 +79,11 @@ public class WanderAction extends Action {
 	}
 	
 	@Override
-	protected boolean run() {
+	protected void run() throws SuspendExecution {
 		//Notes:
 		// - If this method is called, then we have no walk in the actions queue.
 		// - Walking does not call yield(), it finishes though.
-		
+		/*
 		if (pause > 0) {
 			//We're waiting before wandering again
 			pause--;
@@ -98,7 +99,21 @@ public class WanderAction extends Action {
 		//Time we wait *after* the walk we just queued.
 		pause = Erratic.nextInt(minWait, maxWait);
 		
-		return false;
+		return false;*/
+		int pause = Erratic.nextInt(minWait, maxWait);
+		while(true){
+			if(pause > 0) {
+				yield();
+				pause--;
+			}
+			else{
+				StopWatch timer = Core.getTimings().start("npc-wander-pathing");
+				WalkAction walk = new WalkAction(getOwner(), doPath());
+				getOwner().getActions().insertBefore(this, walk);
+				timer.stop();
+			}
+			wait(1);
+		}
 	}
 	
 	@Override

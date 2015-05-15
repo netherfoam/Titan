@@ -43,6 +43,8 @@ public class ProfileManager {
 			p.load(rs);
 		}
 		rs.close();
+		ps.close();
+		con.close();
 		return p; //Possibly null
 	}
 	

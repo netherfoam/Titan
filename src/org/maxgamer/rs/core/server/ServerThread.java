@@ -2,6 +2,7 @@ package org.maxgamer.rs.core.server;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
 
 import org.maxgamer.rs.core.Core;
@@ -11,10 +12,13 @@ import org.maxgamer.rs.model.entity.mob.persona.Persona;
 import org.maxgamer.rs.model.skill.SkillType;
 import org.maxgamer.rs.network.Session;
 
+import co.paralleluniverse.fibers.FiberExecutorScheduler;
+import co.paralleluniverse.fibers.FiberScheduler;
+
 /**
  * @author netherfoam
  */
-public class ServerThread {
+public class ServerThread implements Executor {
 	private ArrayList<Runnable> queue;
 	private Server server;
 	private long start;
@@ -24,10 +28,12 @@ public class ServerThread {
 	private long working = 0;
 	
 	private long lastPrint = 0;
+	private FiberScheduler fex;
 	
 	public ServerThread(Server server) {
 		this.server = server;
 		this.queue = new ArrayList<Runnable>();
+		this.fex = new FiberExecutorScheduler("ServerThread-FiberExec", this);
 	}
 	
 	public Server getServer() {
@@ -173,5 +179,14 @@ public class ServerThread {
 			this.queue.notify();
 		}
 		return t;
+	}
+	
+	public FiberScheduler getFiberScheduler() {
+		return fex;
+	}
+	
+	@Override
+	public void execute(Runnable command) {
+		this.submit(command);
 	}
 }

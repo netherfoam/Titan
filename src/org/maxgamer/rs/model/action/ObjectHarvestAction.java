@@ -12,6 +12,8 @@ import org.maxgamer.rs.model.item.inventory.ContainerException;
 import org.maxgamer.rs.model.map.DynamicGameObject;
 import org.maxgamer.rs.model.map.GameObject;
 
+import co.paralleluniverse.fibers.SuspendExecution;
+
 /**
  * @author netherfoam
  */
@@ -55,9 +57,9 @@ public class ObjectHarvestAction extends Action {
 	}
 	
 	@Override
-	protected boolean run() {
+	protected void run() throws SuspendExecution {
 		if (obj.getData() <= 0) {
-			return true; //Done, object is destroyed possibly by another player
+			return; //Done, object is destroyed possibly by another player
 		}
 		if (anim != null) {
 			getOwner().getUpdateMask().setAnimation(anim, 3);
@@ -65,58 +67,60 @@ public class ObjectHarvestAction extends Action {
 		if (gfx != null) {
 			getOwner().getUpdateMask().setGraphics(gfx);
 		}
-		if (--curDelay > 0) {
-			return false; //Not done
-		}
 		
-		if (reward != null && mob instanceof Persona) {
-			Persona p = (Persona) mob;
-			try {
-				p.getInventory().add(reward);
-			}
-			catch (ContainerException e) {
-				if (p instanceof Player) {
-					((Player) p).sendMessage("Not enough space!");
+		while(obj.getData() > 0){
+			wait(curDelay);
+			
+			if (reward != null && mob instanceof Persona) {
+				Persona p = (Persona) mob;
+				try {
+					p.getInventory().add(reward);
 				}
-				return true;
-			}
-		}
-		
-		obj.setData(obj.getData() - 1);
-		if (obj.hasData() == false) {
-			if (anim != null) {
-				getOwner().getUpdateMask().setAnimation(null, 3);
-			}
-			
-			obj.hide();
-			
-			DynamicGameObject rep = null;
-			if (replaceId >= 0) {
-				rep = new DynamicGameObject(replaceId, obj.getType());
-				rep.setFacing(obj.getFacing());
-				rep.setLocation(obj.getLocation());
-				
-			}
-			
-			final DynamicGameObject del = rep;
-			//Core.getServer().getTicker().submit(respawnTicks, new Tickable() {
-			new Tickable() {
-				@Override
-				public void tick() {
-					if (del != null) {
-						del.destroy();
+				catch (ContainerException e) {
+					if (p instanceof Player) {
+						((Player) p).sendMessage("Not enough space!");
 					}
-					obj.show();
-					obj.setData(-1);
+					return;
 				}
-			}.queue(respawnTicks);
+			}
 			
-			return true;
+			obj.setData(obj.getData() - 1);
+			if (obj.hasData() == false) {
+				if (anim != null) {
+					getOwner().getUpdateMask().setAnimation(null, 3);
+				}
+				
+				obj.hide();
+				
+				DynamicGameObject rep = null;
+				if (replaceId >= 0) {
+					rep = new DynamicGameObject(replaceId, obj.getType());
+					rep.setFacing(obj.getFacing());
+					rep.setLocation(obj.getLocation());
+					
+				}
+				
+				final DynamicGameObject del = rep;
+				//Core.getServer().getTicker().submit(respawnTicks, new Tickable() {
+				new Tickable() {
+					@Override
+					public void tick() {
+						if (del != null) {
+							del.destroy();
+						}
+						obj.show();
+						obj.setData(-1);
+					}
+				}.queue(respawnTicks);
+				
+				return;
+			}
+			
+			//Generate our next delay
+			curDelay = Erratic.nextInt(minDelay, maxDelay);
+			wait(1);
+			continue;
 		}
-		
-		//Generate our next delay
-		curDelay = Erratic.nextInt(minDelay, maxDelay);
-		return false;
 	}
 	
 	@Override

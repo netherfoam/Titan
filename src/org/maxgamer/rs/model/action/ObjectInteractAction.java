@@ -1,15 +1,15 @@
 package org.maxgamer.rs.model.action;
 
-import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.model.entity.mob.Animation;
 import org.maxgamer.rs.model.entity.mob.Mob;
+
+import co.paralleluniverse.fibers.SuspendExecution;
 
 /**
  * @author netherfoam
  */
 public class ObjectInteractAction extends Action {
-	private int end = -1;
-	private Animation anim;
+	protected Animation anim;
 	
 	public ObjectInteractAction(Mob mob, Animation anim) {
 		super(mob);
@@ -20,7 +20,8 @@ public class ObjectInteractAction extends Action {
 	}
 	
 	@Override
-	protected boolean run() {
+	protected void run() throws SuspendExecution {
+		/*
 		if (end == -1) {
 			//First time run() has been invoked
 			end = Core.getServer().getTicker().getTicks() + anim.getDelay();
@@ -32,7 +33,10 @@ public class ObjectInteractAction extends Action {
 		}
 		else {
 			return false; //Not done.
-		}
+		}*/
+		
+		getOwner().getUpdateMask().setAnimation(anim, 5);
+		wait(anim.getDelay());
 	}
 	
 	@Override

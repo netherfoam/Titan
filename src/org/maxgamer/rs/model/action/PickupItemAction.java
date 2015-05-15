@@ -21,10 +21,8 @@ public class PickupItemAction extends Action {
 	}
 	
 	@Override
-	public boolean run() {
-		if (item.isDestroyed()) return true; //Dead item, end of task
-		
-		if (item.getLocation().equals(getOwner().getLocation())) {
+	public void run() {
+		if (item.isDestroyed() == false && item.getLocation().equals(getOwner().getLocation())) {
 			item.destroy();
 			try {
 				getOwner().getInventory().add(item.getItem());
@@ -32,13 +30,13 @@ public class PickupItemAction extends Action {
 			catch (ContainerException e) {
 				//TODO: Should we just ignore this?
 			}
-			return true;
+			return;
 		}
 		
 		//Else, we've failed to pick the item up since we're not
 		//at that location. We still return true because we are
 		//done though.
-		return true;
+		return;
 	}
 	
 	@Override

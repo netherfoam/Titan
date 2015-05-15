@@ -2,17 +2,22 @@ package org.maxgamer.rs.model.action;
 
 import java.util.LinkedList;
 
+import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.model.entity.mob.Mob;
+
+import co.paralleluniverse.fibers.Fiber;
+import co.paralleluniverse.fibers.SuspendExecution;
 
 /**
  * An abstract class which represents an action that a player may perform, such
  * as combat or chopping an oak tree.
  * @author netherfoam
  */
-public abstract class Action {
+public abstract class Action{
 	/** The mob who is performing the action */
 	protected final Mob mob;
 	protected LinkedList<Action> paired = new LinkedList<Action>();
+	private Fiber<Void> fiber;
 	
 	/**
 	 * Constructs a new Action, but does not apply it, for the given mob.
@@ -32,6 +37,39 @@ public abstract class Action {
 		return mob;
 	}
 	
+	protected void wait(int ticks) throws SuspendExecution{
+		while(ticks-- > 0){
+			Fiber.park();
+		}
+	}
+	
+	protected boolean tick(){
+		if(fiber == null){
+			fiber = new Fiber<Void>(this.toString(), Core.getServer().getThread().getFiberScheduler()){
+				private static final long serialVersionUID = 1842342854418180882L;
+	
+				@Override
+				public Void run() throws SuspendExecution{
+					Action.this.run();
+					return null;
+				}
+			};
+			
+			fiber.start();
+			return false;
+		}
+		else{
+			fiber.unpark();
+			
+			if(fiber.isTerminated()){
+				return true;
+			}
+			else{
+				return false;
+			}
+		}
+	}
+	
 	/**
 	 * Called when a tick passes and this action is the first action in the
 	 * queue. If the action has finished, this method should return true. If the
@@ -41,7 +79,7 @@ public abstract class Action {
 	 * not, it's cancel() method will always be invoked.
 	 * @return true if finished, false if continue to call run() every tick.
 	 */
-	protected abstract boolean run();
+	protected abstract void run() throws SuspendExecution;
 	
 	/**
 	 * Cancels this action. This is called when it is interrupted or cancelled

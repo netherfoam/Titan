@@ -15,8 +15,8 @@ import org.maxgamer.rs.logonv4.ProfileManager;
 import org.maxgamer.rs.structure.ServerHost;
 import org.maxgamer.rs.structure.sql.Database;
 import org.maxgamer.rs.structure.sql.Database.ConnectionException;
-import org.maxgamer.rs.structure.sql.DatabaseCore;
 import org.maxgamer.rs.structure.sql.MySQLC3P0Core;
+import org.maxgamer.rs.structure.sql.SQLiteCore;
 import org.maxgamer.structure.configs.ConfigSection;
 import org.maxgamer.structure.configs.FileConfig;
 
@@ -82,10 +82,32 @@ public class LogonServer extends ServerHost<WorldHost> {
 	public LogonServer(ConfigSection config) throws IOException, ConnectionException {
 		super(config.getInt("port", 2709));
 		this.hostPass = config.getString("pass");
-		ConfigSection details = config.getSection("database");
-		DatabaseCore core = new MySQLC3P0Core(details.getString("host", "localhost"), details.getString("user", "root"), details.getString("pass", ""), details.getString("database", "logon"), details.getString("port", "" + 3306));
-		Database db = new Database(core);
-		this.profiles = new ProfileManager(db);
+		
+		Database world;
+		try {
+			//Database initialization
+			ConfigSection c = config.getSection("database");
+			String type = c.getString("type", "sqlite");
+			
+			//Logon Database
+			if (type.equalsIgnoreCase("mysql")) {
+				Log.debug("World using MySQL Database.");
+				world = new Database(new MySQLC3P0Core(c.getString("host", "localhost"), c.getString("user", "root"), c.getString("pass", ""), c.getString("database", "titan"), c.getString("port", "3306")));
+			}
+			else {
+				Log.debug("World using SQLite Database: " + c.getString("file", "sql" + File.separator + "profiles.db"));
+				world = new Database(new SQLiteCore(new File(c.getString("file", "sql" + File.separator + "profiles.db"))));
+			}
+			Log.debug("Database connection established.");
+		}
+		catch (Exception e) {
+			Log.severe("Failed to establish database connection, exitting.");
+			e.printStackTrace();
+			System.exit(1);
+			return;
+		}
+		
+		this.profiles = new ProfileManager(world);
 	}
 	
 	public boolean isOnline(String player) {

@@ -11,6 +11,7 @@ import org.maxgamer.rs.module.ScriptUtil;
 import org.maxgamer.rs.network.Client;
 import org.maxgamer.rs.structure.timings.StopWatch;
 
+import co.paralleluniverse.fibers.SuspendExecution;
 import bsh.EvalError;
 import bsh.Interpreter;
 import bsh.NameSpace;
@@ -22,7 +23,6 @@ import bsh.Primitive;
 public class NPCAction extends Action {
 	private NPC npc;
 	private Interpreter environment;
-	private boolean first = true;
 	private File file;
 	
 	public NPCAction(Persona mob, String option, NPC obj) {
@@ -59,36 +59,38 @@ public class NPCAction extends Action {
 	}
 	
 	@Override
-	public boolean run() {
-		if (first) {
-			getOwner().setFacing(Facing.face(npc));
-			first = false;
-		}
-		
+	public void run() throws SuspendExecution {
 		if (environment == null) {
 			if (getOwner() instanceof Client) {
 				((Client) getOwner()).sendMessage("Option not implemented.");
 			}
-			return true;
-		}
-		NameSpace ns = environment.getNameSpace();
-		Object o;
-		try {
-			o = ns.invokeMethod("run", new Object[] { getOwner(), npc }, environment);
-		}
-		catch (EvalError e) {
-			e.printStackTrace();
-			return true; //Error, stop.
+			return;
 		}
 		
-		try {
-			boolean b = (boolean) Primitive.unwrap(o);
-			return b;
-		}
-		catch (RuntimeException e) {
-			//ClassCastException or NullPointerException
-			Log.warning("Method run(Persona, GameObject) in ScriptAction in script " + file.getPath() + " should return true (done) or false (continue). Got " + o);
-			return true;
+		getOwner().setFacing(Facing.face(npc));
+		
+		NameSpace ns = environment.getNameSpace();
+		Object o;
+		boolean done = false;
+		
+		while(!done){
+			try {
+				o = ns.invokeMethod("run", new Object[] { getOwner(), npc }, environment);
+			}
+			catch (EvalError e) {
+				e.printStackTrace();
+				return; //Error, stop.
+			}
+			
+			try {
+				done = (boolean) Primitive.unwrap(o);
+				wait(1);
+			}
+			catch (RuntimeException e) {
+				//ClassCastException or NullPointerException
+				Log.warning("Method run(Persona, NPC) in ScriptAction in script " + file.getPath() + " should return true (done) or false (continue). Got " + o);
+				return;
+			}
 		}
 	}
 	

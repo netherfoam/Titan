@@ -9,6 +9,8 @@ import org.maxgamer.rs.model.item.inventory.Container;
 import org.maxgamer.rs.model.item.inventory.ContainerException;
 import org.maxgamer.rs.model.item.inventory.ContainerState;
 
+import co.paralleluniverse.fibers.SuspendExecution;
+
 /**
  * @author netherfoam
  */
@@ -42,11 +44,32 @@ public class AlchemySpell extends ItemSpell {
 		
 		source.getActions().clear();
 		source.getActions().queue(new Action(source) {
-			int tick = 0;
-			
 			@Override
-			protected boolean run() {
-				if (tick == 0) {
+			protected void run() throws SuspendExecution {
+				displayCast(source);
+				
+				wait(4);
+				
+				ContainerState state = c.getState();
+				try {
+					state.remove(slot, item.setAmount(1));
+				}
+				catch (ContainerException e) {
+					return; //The item could not be removed
+				}
+				
+				try {
+					state.add(ItemStack.create(995, coins));
+				}
+				catch (ContainerException e) {
+					if (source instanceof Persona) {
+						((Persona) source).getLostAndFound().add(ItemStack.create(995, coins));
+					}
+				}
+				
+				state.apply();
+				
+				/*if (tick == 0) {
 					displayCast(source);
 				}
 				
@@ -73,7 +96,7 @@ public class AlchemySpell extends ItemSpell {
 					state.apply();
 					return true;
 				}
-				return false;
+				return false;*/
 			}
 			
 			@Override

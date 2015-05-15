@@ -2,9 +2,9 @@ package org.maxgamer.rs.structure.sql;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Properties;
 
 import org.maxgamer.rs.lib.log.Log;
@@ -13,6 +13,14 @@ import org.maxgamer.rs.lib.log.Log;
  * @author netherfoam
  */
 public class MySQLCore implements DatabaseCore {
+	private static class Con {
+		private Connection c;
+		private long lastUsed;
+	}
+	
+	private HashMap<Long, Con> connections = new HashMap<>();
+	private long timeout = 20 * 60 * 1000; //Timeout after 20 minutes.
+	
 	private String url;
 	/** The connection properties... user, pass, autoReconnect.. */
 	private Properties info;
@@ -35,12 +43,70 @@ public class MySQLCore implements DatabaseCore {
 		Log.debug("Connection to " + host + ", user: " + user + ", pass: " + pass + ", database: " + database);
 	}
 	
+	private boolean validate(Con c) throws SQLException{
+		if(c == null){
+			return false;
+		}
+		
+		if(c.c == null){
+			return false;
+		}
+		
+		if(c.c.isClosed()){
+			return false;
+		}
+		
+		try{
+			if(c.c.isValid(10) == false){
+				c.c.close();
+				return false;
+			}
+		}
+		catch(AbstractMethodError e){
+			//SQLite
+		}
+		
+		if(c.lastUsed + timeout < System.currentTimeMillis()){
+			c.c.close();
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Fetches the connection to this database for querying. Try to avoid doing
+	 * this in the main thread. This gives each thread a separate connection. If
+	 * the connection is closed, another is retrieved when this method is
+	 * called.
+	 * @return Fetches the connection to this database for querying.
+	 */
+	public Connection getConnection() throws SQLException {
+		Thread t = Thread.currentThread();
+		Con c = connections.get(Long.valueOf(t.getId()));
+		
+		if(validate(c) == false){
+			System.out.println("Database connection invalidated");
+			c = null;
+		}
+		if (c == null) {
+			c = new Con();
+			c.c = this.getNewConnection();
+			connections.put(Long.valueOf(t.getId()), c);
+			Log.debug("Returning NEW connection for thread " + t.getName() + "#" + t.getId());
+		}
+		
+		c.lastUsed = System.currentTimeMillis();
+		
+		return c.c;
+	}
+	
 	/**
 	 * Gets the database connection for executing queries on.
 	 * @return The database connection
 	 * @throws SQLException
 	 */
-	public Connection getConnection() {
+	private Connection getNewConnection() {
 		for (int i = 0; i < MAX_CONNECTIONS; i++) {
 			Connection connection = pool.get(i);
 			try {
@@ -65,26 +131,7 @@ public class MySQLCore implements DatabaseCore {
 	}
 	
 	@Override
-	public void queue(BufferStatement bs) {
-		try {
-			Connection con = this.getConnection();
-			PreparedStatement ps = bs.prepareStatement(con);
-			ps.execute();
-			ps.close();
-		}
-		catch (SQLException e) {
-			e.printStackTrace();
-			return;
-		}
-	}
-	
-	@Override
 	public void close() {
-		//Nothing, because queries are executed immediately for MySQL
-	}
-	
-	@Override
-	public void flush() {
 		//Nothing, because queries are executed immediately for MySQL
 	}
 }

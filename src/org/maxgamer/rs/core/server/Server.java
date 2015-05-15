@@ -242,7 +242,9 @@ public class Server {
 					Log.debug("Modules Loaded!");
 					
 					Server.this.logon.start();
-					events.register(new SpawnManager());
+					if(Core.getWorldConfig().getBoolean("load.npcs", true)){
+						events.register(new SpawnManager());
+					}
 					//SpawnManager.loadAll();
 					
 					//Autosave

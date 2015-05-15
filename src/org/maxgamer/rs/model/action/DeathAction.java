@@ -4,12 +4,13 @@ import org.maxgamer.rs.events.mob.MobDeathEvent;
 import org.maxgamer.rs.model.entity.mob.Animation;
 import org.maxgamer.rs.model.entity.mob.Mob;
 
+import co.paralleluniverse.fibers.SuspendExecution;
+
 /**
  * @author netherfoam
  */
 public class DeathAction extends Action {
 	private Animation anim;
-	private int ticks = 0;
 	
 	public DeathAction(Mob mob) {
 		super(mob);
@@ -19,29 +20,18 @@ public class DeathAction extends Action {
 	}
 	
 	@Override
-	protected boolean run() {
-		ticks++;
+	protected void run() throws SuspendExecution {
+		getOwner().getUpdateMask().setAnimation(anim, 50);
 		
-		if (ticks == 1 && anim != null) {
-			//First run
-			getOwner().getUpdateMask().setAnimation(anim, 50);
-		}
+		wait(anim == null ? 4 : anim.getDuration(true));
 		
-		//Hide the NPC
-		if ((ticks == 4 && anim == null) || (anim != null && ticks == anim.getDuration(true))) {
-			MobDeathEvent e = new MobDeathEvent(getOwner());
-			e.call();
-			getOwner().onDeath();
-			getOwner().hide();
-		}
+		MobDeathEvent e = new MobDeathEvent(getOwner());
+		e.call();
+		getOwner().onDeath();
+		getOwner().hide();
 		
-		//Spawn the NPC in the world again
-		if (ticks > getOwner().getRespawnTicks()) {
-			getOwner().respawn();
-			return true; //Done
-		}
-		
-		return false;
+		wait(getOwner().getRespawnTicks());
+		getOwner().respawn();
 	}
 	
 	@Override

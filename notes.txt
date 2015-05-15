@@ -8,6 +8,11 @@ LogonServer:
 	- RemoteProtocol.java class to forward protocol requests to another server.
 	- Accept a CommandManager and ConsoleSender in Constructor for LogonServer
 	
+- Clean out unused .jar dependencies
+- Add sqlite database, use as default
+- Automatically load all .jars from lib/ folder
+- Force check that logon and world SQLite .db files are not the same file!
+	
 Code Quality:
 	- Some item prices are displayed differently in general stores based on stock quantity. Why?
 	- Hide Definition classes, only expose them to the instances of those definitons, and make those instances

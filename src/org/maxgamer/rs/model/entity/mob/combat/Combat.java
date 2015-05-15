@@ -13,6 +13,8 @@ import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.facing.Facing;
 import org.maxgamer.rs.model.map.path.AStar;
 
+import co.paralleluniverse.fibers.SuspendExecution;
+
 /**
  * @author netherfoam
  */
@@ -345,62 +347,73 @@ public class Combat extends Action {
 	}
 	
 	@Override
-	protected boolean run() {
-		//Dead mobs don't fight very often.
-		if (this.getOwner().isDead() || this.getOwner().getLocation() == null || this.getOwner().isDestroyed()) {
-			setTarget(null);
-			return true;
-		}
+	protected void run() throws SuspendExecution {
 		
-		Mob target = getTarget();
-		if (target == null) {
-			return true;
-		}
-		
-		//TODO: Check if getOwner().isVisible(target) or something
-		if (target.getLocation() == null || target.isDead() || target.isDestroyed()) {
-			//The target is no longer valid.
-			setTarget(null);
-			return true;
-		}
-		
-		//TODO: Attackable check
-		//TODO: Non-multicombat zone check
-		
-		if (this.attack == null) {
-			this.attack = this.getOwner().nextAttack();
+		while(true){
+			//Dead mobs don't fight very often.
+			if (this.getOwner().isDead() || this.getOwner().getLocation() == null || this.getOwner().isDestroyed()) {
+				setTarget(null);
+				return;
+			}
+			
+			Mob target = getTarget();
+			if (target == null) {
+				return;
+			}
+			
+			//TODO: Check if getOwner().isVisible(target) or something
+			if (target.getLocation() == null || target.isDead() || target.isDestroyed()) {
+				//The target is no longer valid.
+				setTarget(null);
+				return;
+			}
+			
+			//TODO: Attackable check
+			//TODO: Non-multicombat zone check
 			
 			if (this.attack == null) {
-				setTarget(null);
-				return true; //We have no performable attack.
+				this.attack = this.getOwner().nextAttack();
+				
+				if (this.attack == null) {
+					setTarget(null);
+					return; //We have no performable attack.
+				}
 			}
-		}
-		
-		//If combat check fails, return false (attempt again)
-		int range = attack.getMaxDistance();
-		if (target.getLocation().withinRange(getOwner().getLocation(), range) == false && getOwner().getLocation().isDiagonal(target.getLocation()) == false) {
-			return false;
-		}
-		
-		getOwner().setFacing(Facing.face(target));
-		
-		//Ensure we're adequately warmed up to do the attack
-		if (Core.getServer().getTicker().getTicks() < lastAttack + attack.getWarmupTicks()) {
-			return false; //We need to spend longer waiting 
-		}
-		
-		if (this.attack.run(target)) {
-			//The attack was completed.
-			this.attack = null;
-			this.lastAttack = Core.getServer().getTicker().getTicks();
-		}
-		
-		if (target.isDead()) {
-			setTarget(null);
-			return true; //We're done, our opponent is dead
-		}
-		else {
-			return false; //We're not done fighting
+			
+			//If combat check fails, return false (attempt again)
+			int range = attack.getMaxDistance();
+			if (target.getLocation().withinRange(getOwner().getLocation(), range) == false && getOwner().getLocation().isDiagonal(target.getLocation()) == false) {
+				//return false;
+				wait(1);
+				continue;
+			}
+			
+			getOwner().setFacing(Facing.face(target));
+			
+			//Ensure we're adequately warmed up to do the attack
+			if (Core.getServer().getTicker().getTicks() < lastAttack + attack.getWarmupTicks()) {
+				//return false; //We need to spend longer waiting
+				wait(1);
+				continue;
+			}
+			
+			if (this.attack.run(target)) {
+				//The attack was completed.
+				this.attack = null;
+				this.lastAttack = Core.getServer().getTicker().getTicks();
+			}
+			
+			if (target.isDead()) {
+				setTarget(null);
+				//return true; //We're done, our opponent is dead
+				wait(1);
+				continue;
+			}
+			else {
+				//return false; //We're not done fighting
+				wait(1);
+				continue;
+			}
 		}
 	}
 	

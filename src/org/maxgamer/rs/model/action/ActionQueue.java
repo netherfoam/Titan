@@ -19,7 +19,6 @@ import org.maxgamer.rs.model.entity.mob.Mob;
  * when necessary.
  * @author netherfoam
  */
-//public class ActionQueue implements Tickable{
 public class ActionQueue extends FastTickable {
 	/** The mob that this action queue is for */
 	private Mob owner;
@@ -237,12 +236,6 @@ public class ActionQueue extends FastTickable {
 		if (Core.getServer().getThread().isServerThread() == false) {
 			throw new RuntimeException("ActionQueue should only be ticked on the Server thread.");
 		}
-		/*
-		 * if(lastTick == Core.getServer().getTicker().getTicks()){ throw new
-		 * RuntimeException
-		 * ("ActionQueue has already been ticked for this server tick!"); }
-		 * lastTick = Core.getServer().getTicker().getTicks();
-		 */
 		
 		synchronized (queue) {
 			if (getOwner().isLoaded() == false) {
@@ -261,7 +254,7 @@ public class ActionQueue extends FastTickable {
 			
 			Action w = queue.getFirst();
 			try {
-				if (w.run()) { //We do not want this run() call made inside a synchronization block.
+				if (w.tick()) { //We do not want this run() call made inside a synchronization block.
 					//Note we may have other values inserted before this Action when performing
 					//the run() call. The queue could change any state!
 					queue.remove(w);
@@ -317,7 +310,7 @@ public class ActionQueue extends FastTickable {
 			
 			try {
 				//Performed inside of synchronization block.
-				if (w.run()) {
+				if (w.tick()) {
 					queue.remove(w);
 				}
 			}

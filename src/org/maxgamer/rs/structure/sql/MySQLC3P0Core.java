@@ -2,9 +2,13 @@ package org.maxgamer.rs.structure.sql;
 
 import java.beans.PropertyVetoException;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
 import java.util.Properties;
+
+import org.maxgamer.rs.lib.log.Log;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
@@ -12,6 +16,14 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
  * @author netherfoam
  */
 public class MySQLC3P0Core implements DatabaseCore {
+	private static class Con {
+		private Connection c;
+		private long lastUsed;
+	}
+	
+	private HashMap<Long, Con> connections = new HashMap<>();
+	private long timeout = 20 * 60 * 1000; //Timeout after 20 minutes.
+	
 	private ComboPooledDataSource pool;
 	
 	public MySQLC3P0Core(String host, String user, String pass, String database, String port) {
@@ -38,12 +50,89 @@ public class MySQLC3P0Core implements DatabaseCore {
 		pool.setMaxPoolSize(20);
 	}
 	
+	public int prune() {
+		int n = 0;
+		Iterator<Entry<Long, Con>> cit = connections.entrySet().iterator();
+		while (cit.hasNext()) {
+			Entry<Long, Con> entry = cit.next();
+			Con con = entry.getValue();
+			if (con.lastUsed + timeout < System.currentTimeMillis()) {
+				try {
+					con.c.close();
+				}
+				catch (SQLException e) {
+					
+				}
+				cit.remove();
+			}
+		}
+		return n;
+	}
+	
+	private boolean validate(Con c) throws SQLException{
+		if(c == null){
+			return false;
+		}
+		
+		if(c.c == null){
+			return false;
+		}
+		
+		if(c.c.isClosed()){
+			return false;
+		}
+		
+		try{
+			if(c.c.isValid(10) == false){
+				c.c.close();
+				return false;
+			}
+		}
+		catch(AbstractMethodError e){
+			//SQLite
+		}
+		
+		if(c.lastUsed + timeout < System.currentTimeMillis()){
+			c.c.close();
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Fetches the connection to this database for querying. Try to avoid doing
+	 * this in the main thread. This gives each thread a separate connection. If
+	 * the connection is closed, another is retrieved when this method is
+	 * called.
+	 * @return Fetches the connection to this database for querying.
+	 */
+	public Connection getConnection() throws SQLException {
+		Thread t = Thread.currentThread();
+		Con c = connections.get(Long.valueOf(t.getId()));
+		
+		if(validate(c) == false){
+			System.out.println("Database connection invalidated");
+			c = null;
+		}
+		if (c == null) {
+			c = new Con();
+			c.c = this.getNewConnection();
+			connections.put(Long.valueOf(t.getId()), c);
+			Log.debug("Returning NEW connection for thread " + t.getName() + "#" + t.getId());
+		}
+		
+		c.lastUsed = System.currentTimeMillis();
+		
+		return c.c;
+	}
+	
 	/**
 	 * Gets the database connection for executing queries on.
 	 * @return The database connection
 	 * @throws SQLException
 	 */
-	public Connection getConnection() {
+	public Connection getNewConnection() {
 		try {
 			Connection con = pool.getConnection();
 			if (con.isValid(5)) {
@@ -60,26 +149,7 @@ public class MySQLC3P0Core implements DatabaseCore {
 	}
 	
 	@Override
-	public void queue(BufferStatement bs) {
-		try {
-			Connection con = this.getConnection();
-			PreparedStatement ps = bs.prepareStatement(con);
-			ps.execute();
-			ps.close();
-		}
-		catch (SQLException e) {
-			e.printStackTrace();
-			return;
-		}
-	}
-	
-	@Override
 	public void close() {
-		//Nothing, because queries are executed immediately for MySQL
-	}
-	
-	@Override
-	public void flush() {
 		//Nothing, because queries are executed immediately for MySQL
 	}
 }

@@ -5,6 +5,8 @@ import java.lang.ref.WeakReference;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.map.Location;
 
+import co.paralleluniverse.fibers.SuspendExecution;
+
 /**
  * A class to handle one mob following another.
  * @author netherfoam
@@ -68,7 +70,7 @@ public abstract class Follow extends Action {
 	}
 	
 	@Override
-	protected abstract boolean run();
+	protected abstract void run() throws SuspendExecution;
 	
 	@Override
 	protected void onCancel() {

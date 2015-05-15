@@ -3,6 +3,8 @@ package org.maxgamer.rs.model.action;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.model.entity.mob.Mob;
 
+import co.paralleluniverse.fibers.SuspendExecution;
+
 /**
  * @author netherfoam
  */
@@ -15,28 +17,25 @@ public abstract class BackgroundAction extends Action {
 	}
 	
 	@Override
-	protected final boolean run() {
-		if (state == 0) {
-			state = 1;
-			Core.submit(new Runnable() {
-				@Override
-				public void run() {
-					calculate();
-					
-					if (isCancelRequested() == false) {
-						state = 2;
-					}
+	protected final void run() throws SuspendExecution {
+		Core.submit(new Runnable() {
+			@Override
+			public void run() {
+				calculate();
+				
+				if (isCancelRequested() == false) {
+					state = 2;
 				}
-			}, true);
-			return false;
+			}
+		}, true);
+		
+		while(state == 1){
+			wait(1);
 		}
-		if (state == 1) {
-			return false; //Calculating
+		
+		while(!actuate()){
+			wait(1);
 		}
-		if (state == 2) {
-			return actuate();
-		}
-		throw new IllegalStateException();
 	}
 	
 	public abstract void calculate();

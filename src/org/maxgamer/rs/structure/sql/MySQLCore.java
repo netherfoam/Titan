@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
 
-import org.maxgamer.rs.lib.log.Log;
-
 /**
  * @author netherfoam
  */
@@ -37,10 +35,9 @@ public class MySQLCore implements DatabaseCore {
 		info.put("characterEncoding", "utf8");
 		this.url = "jdbc:mysql://" + host + ":" + port + "/" + database;
 		
-		for (int i = 0; i < MAX_CONNECTIONS; i++)
+		for (int i = 0; i < MAX_CONNECTIONS; i++){
 			pool.add(null);
-		
-		Log.debug("Connection to " + host + ", user: " + user + ", pass: " + pass + ", database: " + database);
+		}
 	}
 	
 	private boolean validate(Con c) throws SQLException{
@@ -86,14 +83,12 @@ public class MySQLCore implements DatabaseCore {
 		Con c = connections.get(Long.valueOf(t.getId()));
 		
 		if(validate(c) == false){
-			System.out.println("Database connection invalidated");
 			c = null;
 		}
 		if (c == null) {
 			c = new Con();
 			c.c = this.getNewConnection();
 			connections.put(Long.valueOf(t.getId()), c);
-			Log.debug("Returning NEW connection for thread " + t.getName() + "#" + t.getId());
 		}
 		
 		c.lastUsed = System.currentTimeMillis();

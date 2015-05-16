@@ -1,16 +1,5 @@
 Release:
-	Update Mask: 
-		- Disable mask updating if no Client Player's are online
-		- Improve logon server packets.
-	
-LogonServer:
-	- Stop using magic numbers for packet opcodes
-	- RemoteProtocol.java class to forward protocol requests to another server.
-	- Accept a CommandManager and ConsoleSender in Constructor for LogonServer
-	
-- Clean out unused .jar dependencies
-- Add sqlite database, use as default
-- Force check that logon and world SQLite .db files are not the same file!
+	- Force check that logon and world SQLite .db files are not the same file!
 	
 Code Quality:
 	- Some item prices are displayed differently in general stores based on stock quantity. Why?
@@ -27,16 +16,6 @@ Code Quality:
 	- YML configuration properly
 		- Constructors?
 	- Dialogue interfaces
-	- exit to lobby is broken again (must wait to write buffered all data to socket before closing socket)
-	
-Bots:
-	- checkAttacks() on each loop
-		- checkAttacks() should ensure player has bow ammo if ranging
-		- check for runes if autocasting
-	- On equip,
-		- If using a bow, ensure has ammo if ranging
-	- If bots cannot find bank, use teleport.
-	- Won't equip whip if not wielding a weapon?
 		
 Alva:
 	- Duel Arena Module

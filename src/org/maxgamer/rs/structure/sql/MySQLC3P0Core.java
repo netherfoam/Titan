@@ -112,14 +112,12 @@ public class MySQLC3P0Core implements DatabaseCore {
 		Con c = connections.get(Long.valueOf(t.getId()));
 		
 		if(validate(c) == false){
-			System.out.println("Database connection invalidated");
 			c = null;
 		}
 		if (c == null) {
 			c = new Con();
 			c.c = this.getNewConnection();
 			connections.put(Long.valueOf(t.getId()), c);
-			Log.debug("Returning NEW connection for thread " + t.getName() + "#" + t.getId());
 		}
 		
 		c.lastUsed = System.currentTimeMillis();

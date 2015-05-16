@@ -96,7 +96,7 @@ public class LogonDecoder extends OpcodeDecoder<LSIncomingPacket> {
 				AuthResult result = AuthResult.get(in.readByte() & 0xFF);
 				
 				Session session = Core.getServer().getNetwork().getSessionByID(sessionId);
-				if (session == null) {
+				if (session == null || session.isConnected() == false) {
 					return;
 				}
 				
@@ -163,7 +163,7 @@ public class LogonDecoder extends OpcodeDecoder<LSIncomingPacket> {
 					}
 				} while (false);
 				//We failed with some kind of code
-				Log.debug("error logging in: " + result);
+				Log.debug("Error logging in: " + result);
 				session.write(result.getCode());
 			}
 		}, false);

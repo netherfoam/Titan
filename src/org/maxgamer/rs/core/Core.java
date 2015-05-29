@@ -189,7 +189,7 @@ public class Core {
 	 * Fetches the cache interface for the server.
 	 * @return the cache interface
 	 */
-	public static Cache getCache() {
+	public synchronized static Cache getCache() {
 		if (cache == null) {
 			try {
 				Log.debug("Loading Cache...");
@@ -267,7 +267,7 @@ public class Core {
 	 * Fetches the config file that is used for the world settings
 	 * @return the config file for the world settings
 	 */
-	public static FileConfig getWorldConfig() {
+	public synchronized static FileConfig getWorldConfig() {
 		if (worldCfg == null) {
 			worldCfg = new FileConfig(new File("config" + File.separatorChar + "world.yml"));
 			try {
@@ -286,7 +286,7 @@ public class Core {
 	 * Fetches the SQL database for the world
 	 * @return the world database
 	 */
-	public static Database getWorldDatabase() {
+	public synchronized static Database getWorldDatabase() {
 		if (world == null) {
 			try {
 				//Database initialization
@@ -328,7 +328,7 @@ public class Core {
 	 * and may not be done in sync.
 	 * @param r The runnable task to execute
 	 */
-	public static synchronized Future<?> submit(Runnable r, boolean async) {
+	public synchronized static Future<?> submit(Runnable r, boolean async) {
 		if (async) return threadPool.submit(r);
 		else {
 			return getServer().getThread().submit(r);
@@ -343,7 +343,7 @@ public class Core {
 	 * @param r The runnable
 	 * @param delay The task delay in milliseconds.
 	 */
-	public static synchronized Future<Void> submit(Runnable r, long delay, boolean async) {
+	public synchronized static Future<Void> submit(Runnable r, long delay, boolean async) {
 		return scheduler.queue(r, delay, async);
 	}
 	
@@ -367,7 +367,7 @@ public class Core {
 		Log.close();
 	}
 	
-	public static Timings getTimings() {
+	public synchronized static Timings getTimings() {
 		if (timings == null) {
 			timings = new Timings();
 		}

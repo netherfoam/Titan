@@ -1,5 +1,6 @@
 Release:
 	- Force check that logon and world SQLite .db files are not the same file!
+	- Make BeanScript use same concept as actions
 	
 Code Quality:
 	- Some item prices are displayed differently in general stores based on stock quantity. Why?
@@ -16,6 +17,7 @@ Code Quality:
 	- YML configuration properly
 		- Constructors?
 	- Dialogue interfaces
+	
 		
 Alva:
 	- Duel Arena Module

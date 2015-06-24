@@ -1,0 +1,8 @@
+Scripts:
+	Compiled CLASS Files for each Option
+	Location: scripts/type/Option_Name.class (Rewrite ' ' and '-' to '_', append .class)
+	Cache classes
+	
+	interface OptionHandler{
+		abstract void run() throws SuspendExecution;
+	}

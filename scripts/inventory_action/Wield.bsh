@@ -1,4 +1,4 @@
-boolean run(Player player, ItemStack item, int slot){
+void run(Player player, ItemStack item, int slot){
 	if(item.getWeapon() == null){
 		player.getCheats().log(10, "Attempted to wear an item which has no equipment slot.");
 		return true;
@@ -34,7 +34,7 @@ boolean run(Player player, ItemStack item, int slot){
 				//We're already at the max stack size->
 				//Nothing will be accomplished by equipping this->
 				self.yield();
-				return true;
+				return;
 			}
 		}
 		else{
@@ -49,5 +49,4 @@ boolean run(Player player, ItemStack item, int slot){
 		equip.set(target.getSlot(), item);
 	}
 	self.yield();
-	return true;
 }

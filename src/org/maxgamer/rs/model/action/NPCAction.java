@@ -3,7 +3,6 @@ package org.maxgamer.rs.model.action;
 import java.io.File;
 
 import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.entity.mob.facing.Facing;
 import org.maxgamer.rs.model.entity.mob.npc.NPC;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;
@@ -11,11 +10,10 @@ import org.maxgamer.rs.module.ScriptUtil;
 import org.maxgamer.rs.network.Client;
 import org.maxgamer.rs.structure.timings.StopWatch;
 
-import co.paralleluniverse.fibers.SuspendExecution;
 import bsh.EvalError;
 import bsh.Interpreter;
 import bsh.NameSpace;
-import bsh.Primitive;
+import co.paralleluniverse.fibers.SuspendExecution;
 
 /**
  * @author netherfoam
@@ -23,8 +21,6 @@ import bsh.Primitive;
 public class NPCAction extends Action {
 	private NPC npc;
 	private Interpreter environment;
-	private File file;
-	
 	public NPCAction(Persona mob, String option, NPC obj) {
 		super(mob);
 		StopWatch w = Core.getTimings().start(getClass().getSimpleName());
@@ -41,7 +37,6 @@ public class NPCAction extends Action {
 				catch (EvalError e) {
 					e.printStackTrace();
 				}
-				this.file = f;
 				break;
 			}
 		}
@@ -70,27 +65,13 @@ public class NPCAction extends Action {
 		getOwner().setFacing(Facing.face(npc));
 		
 		NameSpace ns = environment.getNameSpace();
-		Object o;
-		boolean done = false;
 		
-		while(!done){
-			try {
-				o = ns.invokeMethod("run", new Object[] { getOwner(), npc }, environment);
-			}
-			catch (EvalError e) {
-				e.printStackTrace();
-				return; //Error, stop.
-			}
-			
-			try {
-				done = (boolean) Primitive.unwrap(o);
-				wait(1);
-			}
-			catch (RuntimeException e) {
-				//ClassCastException or NullPointerException
-				Log.warning("Method run(Persona, NPC) in ScriptAction in script " + file.getPath() + " should return true (done) or false (continue). Got " + o);
-				return;
-			}
+		try {
+			ns.invokeMethod("run", new Object[] { getOwner(), npc }, environment);
+		}
+		catch (EvalError e) {
+			e.printStackTrace();
+			return; //Error, stop.
 		}
 	}
 	

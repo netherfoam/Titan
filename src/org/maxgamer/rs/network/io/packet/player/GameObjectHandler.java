@@ -120,7 +120,7 @@ public class GameObjectHandler implements PacketProcessor<Player> {
 				
 				p.getActions().clear();
 				
-				GameObjectAction script = new GameObjectAction(p, s, g);
+				GameObjectAction script = new GameObjectAction(p, g, s);
 				if (path.isEmpty() == false) {
 					WalkAction walk = new WalkAction(p, path);
 					walk.pair(script);

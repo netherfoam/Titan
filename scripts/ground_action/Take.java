@@ -1,19 +1,32 @@
-boolean run(Persona p, GroundItemStack ground){
-	if(ground.isDestroyed()) return true; //Dead item, end of task
+package ground_action;
+
+import java.util.Map;
+
+import org.maxgamer.rs.model.entity.mob.InventoryHolder;
+import org.maxgamer.rs.model.entity.mob.Mob;
+import org.maxgamer.rs.model.item.ground.GroundItemStack;
+import org.maxgamer.rs.model.item.inventory.ContainerException;
+import org.maxgamer.rs.network.Client;
+import org.maxgamer.rs.script.OptionHandler;
+
+public class Take implements OptionHandler {
 	
-	if(ground.getLocation().equals(p.getLocation())){
-		ground.destroy();
-		try{
-			p.getInventory().add(ground.getItem());
-		}
-		catch(ContainerException e){
-			if(p instanceof Client){
-				((Client) p).sendMessage("You need more space to pick that up.");
+	public void run(Mob m, Map<String, Object> args) {
+		GroundItemStack ground = (GroundItemStack) args.get("item");
+		if (ground.isDestroyed()) return; //Dead item, end of task
+		
+		if (ground.getLocation().equals(m.getLocation())) {
+			ground.destroy();
+			try {
+				if(m instanceof InventoryHolder){
+					((InventoryHolder) m).getInventory().add(ground.getItem());
+				}
+			}
+			catch (ContainerException e) {
+				if (m instanceof Client) {
+					((Client) m).sendMessage("You need more space to pick that up.");
+				}
 			}
 		}
-		self.yield();
-		return true;
 	}
-	self.yield();
-	return true;
 }

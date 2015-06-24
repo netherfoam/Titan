@@ -8,8 +8,6 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Properties;
 
-import org.maxgamer.rs.lib.log.Log;
-
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 /**

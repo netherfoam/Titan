@@ -37,7 +37,19 @@ public abstract class Action{
 		return mob;
 	}
 	
-	protected void wait(int ticks) throws SuspendExecution{
+	/**
+	 * Waits for the given number of ticks. This may only be invoked from a Fiber, otherwise an exception
+	 * is thrown. A SuspendExecution is not an exception, but a marker that the method may cause
+	 * the current fiber to be suspended. This method may be used without blocking the thread, but
+	 * while blocking the current Fiber. This is a neat way of writing events so that they are cleaner and
+	 * do not need non-local variables to track states or to be ridden with callbacks.
+	 * @param ticks the number of ticks to wait before returning. 
+	 * @throws SuspendExecution
+	 */
+	public static void wait(int ticks) throws SuspendExecution{
+		if(Fiber.isCurrentFiber() == false){
+			throw new RuntimeException("wait() may only be invoked by a Fiber.");
+		}
 		while(ticks-- > 0){
 			Fiber.park();
 		}

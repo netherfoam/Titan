@@ -3,6 +3,7 @@ package org.maxgamer.rs.command;
 import java.io.File;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -44,7 +45,7 @@ public class CommandManager {
 	public void load(File commands) {
 		if (commands.exists()) {
 			ScriptLoader<Command> scriptLoader = new ScriptLoader<Command>(Command.class);
-			LinkedList<Class<Command>> scripts = scriptLoader.getScripts(commands);
+			Collection<Class<Command>> scripts = scriptLoader.getScripts(commands).values();
 			
 			for (Class<Command> clazz : scripts) {
 				//We don't want interfaces or incomplete classes to be registered as commands.

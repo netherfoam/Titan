@@ -12,7 +12,7 @@
  * In NPC option scripts, the player does not need to be next to the NPC, so pathfinding is up to the user.
  */
 
-boolean run(Persona player, NPC target){
+void run(Persona player, NPC target){
 	if(target.isDead()) return true; //Can't attack dead targets.
 	if(target.isAttackable(player) == false){
 		//This generally shouldn't occur, but for future proofing we
@@ -20,8 +20,7 @@ boolean run(Persona player, NPC target){
 		//that the target has the option "Attack", and this script can
 		//only be invoked if the target has the option "Attack".
 		player.sendMessage("You can't attack that target");
-		return true;
+		return;
 	}
 	player.getCombat().setTarget(target);
-	return true;
 }

@@ -3,7 +3,6 @@ package org.maxgamer.rs.model.item.ground;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.model.entity.Entity;
 import org.maxgamer.rs.model.entity.mob.Mob;
-import org.maxgamer.rs.model.entity.mob.persona.Persona;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.map.Location;
 
@@ -29,7 +28,7 @@ public class GroundItemStack extends Entity implements Comparable<GroundItemStac
 	/**
 	 * The player who owns this item stack, eg for privacy.
 	 */
-	protected Persona owner;
+	protected Mob owner;
 	
 	/**
 	 * Creates a new GroundItemStack. This item will not be spawned until the
@@ -40,7 +39,7 @@ public class GroundItemStack extends Entity implements Comparable<GroundItemStac
 	 * @param expires The number of ticks this item will be valid for. When this
 	 *        tick number is reached, it will be removed from the world
 	 */
-	public GroundItemStack(ItemStack stack, Persona owner, int privacy, int expires) {
+	public GroundItemStack(ItemStack stack, Mob owner, int privacy, int expires) {
 		if (stack == null) throw new NullPointerException("ItemStack may not be null");
 		if (owner == null && privacy > 0) throw new IllegalArgumentException("If owner is null, privacy may not be > 0. Given privacy " + privacy);
 		if (owner != null && privacy < 0) throw new IllegalArgumentException("If owner != null, then privacy ticks must be >= 0");
@@ -94,7 +93,7 @@ public class GroundItemStack extends Entity implements Comparable<GroundItemStac
 	 * Fetches the owner of this item, may be null if public
 	 * @return the owner of this item
 	 */
-	public Persona getOwner() {
+	public Mob getOwner() {
 		return owner;
 	}
 	

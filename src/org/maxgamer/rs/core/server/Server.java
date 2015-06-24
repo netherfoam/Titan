@@ -231,12 +231,10 @@ public class Server {
 					Server.this.groundItems = new GroundItemManager();
 					//Server.this.scripts = new BeanScriptEngine();
 					
-					Log.debug("Loading EventManager");
-					events = new EventManager();
-					events.reload();
-					commands = new CommandManager(events);
+					getEvents();
+					
 					Log.debug("Loading Commands...");
-					commands.load(new File("bin" + File.separator + "org" + File.separator + "maxgamer" + File.separator + "rs" + File.separator + "command" + File.separator + "commands"));
+					getCommands();
 					Log.debug("Loading Modules...");
 					Server.this.modules.load();
 					Log.debug("Modules Loaded!");
@@ -329,6 +327,12 @@ public class Server {
 	 * @return the command manager instance
 	 */
 	public CommandManager getCommands() {
+		if(commands == null){
+			Log.info("Loading commands...");
+			commands = new CommandManager(events);
+			commands.load(new File("bin" + File.separator + "org" + File.separator + "maxgamer" + File.separator + "rs" + File.separator + "command" + File.separator + "commands"));
+			Log.info("...Loaded commands!");
+		}
 		return commands;
 	}
 	
@@ -358,6 +362,12 @@ public class Server {
 	 * @return the event manager.
 	 */
 	public EventManager getEvents() {
+		if(events == null){
+			Log.debug("Loading EventManager...");
+			events = new EventManager();
+			events.reload();
+			Log.debug("...Loaded EventManager!");
+		}
 		return events;
 	}
 	

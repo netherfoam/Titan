@@ -24,6 +24,7 @@ import org.maxgamer.rs.lib.log.Logger.LogLevel;
 import org.maxgamer.rs.model.entity.mob.combat.RangeAttack;
 import org.maxgamer.rs.model.entity.mob.npc.NPCGroup;
 import org.maxgamer.rs.model.item.ItemProto;
+import org.maxgamer.rs.script.ScriptManager;
 import org.maxgamer.rs.structure.sql.Database;
 import org.maxgamer.rs.structure.sql.MySQLC3P0Core;
 import org.maxgamer.rs.structure.sql.SQLiteCore;
@@ -90,6 +91,8 @@ public class Core {
 	 * a class from MusicModule using this ClassLoader.
 	 */
 	public static final DynamicClassLoader CLASS_LOADER = new DynamicClassLoader(Core.class.getClassLoader());
+	
+	private static ScriptManager scripts;
 	
 	/**
 	 * Initializes the core of the server
@@ -171,6 +174,8 @@ public class Core {
 		RangeAttack.init();
 		Log.info("NPCGroup Loading...");
 		if (!lazy) NPCGroup.reload();
+		
+		getScripts();
 		
 		ConfigSection cfg = Core.getWorldConfig().getSection("world");
 		server = new Server(cfg); //Binds port port
@@ -279,6 +284,20 @@ public class Core {
 			}
 		}
 		return cache;
+	}
+	
+	/**
+	 * The scripts for the server
+	 * @return the scripts for the server
+	 */
+	public static ScriptManager getScripts(){
+		if(scripts == null){
+			Log.info("Loading Scripts...");
+			scripts = new ScriptManager();
+			scripts.reload(new File("scripts"));
+			Log.info("...Scripts Loaded!");
+		}
+		return scripts;
 	}
 	
 	/**

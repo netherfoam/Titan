@@ -1,50 +1,26 @@
 package org.maxgamer.rs.model.action;
 
-import java.io.File;
+import java.util.HashMap;
 
 import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;
 import org.maxgamer.rs.model.item.ground.GroundItemStack;
-import org.maxgamer.rs.module.ScriptUtil;
 import org.maxgamer.rs.network.Client;
-import org.maxgamer.rs.structure.timings.StopWatch;
+import org.maxgamer.rs.script.ScriptSpace;
 
 import co.paralleluniverse.fibers.SuspendExecution;
-import bsh.EvalError;
-import bsh.Interpreter;
-import bsh.NameSpace;
-import bsh.Primitive;
 
 /**
  * @author netherfoam
  */
 public class GroundItemAction extends Action {
 	private GroundItemStack item;
-	private Interpreter environment;
-	private File file;
+	private String option;
 	
 	public GroundItemAction(Persona mob, String option, GroundItemStack item) {
 		super(mob);
 		this.item = item;
-		
-		StopWatch w = Core.getTimings().start(getClass().getSimpleName());
-		File[] files = new File[] { new File("scripts" + File.separator + "ground_action" + File.separator + item.getItem().getName(), option + ".java"), new File("scripts" + File.separator + "ground_action", option + ".java") };
-		
-		for (File f : files) {
-			if (f.exists()) {
-				this.environment = ScriptUtil.getScript(f);
-				try {
-					this.environment.set("self", this);
-				}
-				catch (EvalError e) {
-					e.printStackTrace();
-				}
-				this.file = f;
-				break;
-			}
-		}
-		w.stop();
+		this.option = option;
 	}
 	
 	@Override
@@ -59,36 +35,19 @@ public class GroundItemAction extends Action {
 	
 	@Override
 	public void run() throws SuspendExecution {
-		if (environment == null) {
-			if (getOwner() instanceof Client) {
-				((Client) getOwner()).sendMessage("GroundItem option not implemented.");
+		HashMap<String, Object> map = new HashMap<>(2);
+		map.put("item", item);
+		map.put("option", option);
+		
+		ScriptSpace ss = Core.getScripts().get(getOwner(), map, "ground_action", item.getItem().getName(), option);
+		if(ss == null){
+			if(getOwner() instanceof Client){
+				((Client) getOwner()).sendMessage(option + " not implemented.");
 			}
 			return;
 		}
 		
-		boolean done = false;
-		NameSpace ns = environment.getNameSpace();
-		Object o;
-		
-		while(!done){
-			try {
-				o = ns.invokeMethod("run", new Object[] { getOwner(), item }, environment);
-			}
-			catch (EvalError e) {
-				e.printStackTrace();
-				return; //Error, stop.
-			}
-			
-			try {
-				done = (boolean) Primitive.unwrap(o);
-				wait(1);
-			}
-			catch (RuntimeException e) {
-				//ClassCastException or NullPointerException
-				Log.warning("Method run(Persona, ItemStack) in ScriptAction in script " + file.getPath() + " should return true (done) or false (continue). Got " + o);
-				return;
-			}
-		}
+		ss.run();
 	}
 	
 	@Override

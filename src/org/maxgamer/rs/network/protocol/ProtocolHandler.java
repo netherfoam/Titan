@@ -66,5 +66,7 @@ public abstract class ProtocolHandler<T extends Client> {
 	public abstract void sendIgnores(String name);
 	
 	public abstract void sendUnlockIgnores();
+
+	public abstract void sendSound(int i, int j, int k);
 	
 }

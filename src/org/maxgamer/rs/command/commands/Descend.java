@@ -2,6 +2,7 @@ package org.maxgamer.rs.command.commands;
 
 import org.maxgamer.rs.command.CmdName;
 import org.maxgamer.rs.command.PlayerCommand;
+import org.maxgamer.rs.lib.Calc;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
 import org.maxgamer.rs.model.map.Location;
@@ -15,11 +16,20 @@ public class Descend implements PlayerCommand {
 	@Override
 	public void execute(Player player, String[] args) throws Exception {
 		Location l = player.getLocation();
-		if (l.z <= 0) {
-			player.sendMessage("May not descend any further.");
-			return;
+		int level;
+		if(args.length > 0){
+			try{
+				level = -Integer.parseInt(args[0]);
+			}
+			catch(NumberFormatException e){
+				player.sendMessage("Usage: ::descend [amount]");
+				return;
+			}
 		}
-		player.teleport(l.add(0, 0, -1));
+		else{
+			level = -1;
+		}
+		player.teleport(new Location(l.getMap(), l.x, l.y, Calc.between(0, 3, level + l.z)));
 	}
 	
 	@Override

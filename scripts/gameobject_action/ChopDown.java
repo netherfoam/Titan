@@ -11,11 +11,11 @@ import org.maxgamer.rs.model.map.GameObject;
 import org.maxgamer.rs.model.skill.SkillType;
 import org.maxgamer.rs.model.skill.harvest.HarvestTool;
 import org.maxgamer.rs.model.skill.harvest.Harvestable;
-import org.maxgamer.rs.script.OptionHandler;
+import org.maxgamer.rs.script.ActionHandler;
 
 import co.paralleluniverse.fibers.SuspendExecution;
 
-public class ChopDown implements OptionHandler {
+public class ChopDown extends ActionHandler {
 	public static final HarvestTool BRONZE_AXE = new HarvestTool(ItemStack.create(1351), SkillType.WOODCUTTING, 1, 879, 1.0);
 	public static final HarvestTool IRON_AXE = new HarvestTool(ItemStack.create(1349), SkillType.WOODCUTTING, 1, 877, 1.3);
 	public static final HarvestTool STEEL_AXE = new HarvestTool(ItemStack.create(1353), SkillType.WOODCUTTING, 1, 875, 1.6);

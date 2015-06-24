@@ -11,6 +11,8 @@ import org.maxgamer.rs.network.io.packet.RSOutgoingPacket;
 import org.maxgamer.rs.network.io.stream.RSOutputStream;
 import org.maxgamer.rs.structure.Util;
 
+import com.mysql.jdbc.NotImplemented;
+
 /**
  * @author netherfoam
  */
@@ -171,5 +173,10 @@ public class Lobby637Protocol extends LobbyProtocol {
 		byte[] data = bb.getPayload();
 		getPlayer().getSession().write((byte) data.length);
 		getPlayer().getSession().write(data);
+	}
+
+	@Override
+	public void sendSound(int i, int j, int k) {
+		throw new RuntimeException("Not implemented");
 	}
 }

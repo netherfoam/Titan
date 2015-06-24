@@ -6,9 +6,9 @@ import org.maxgamer.rs.model.action.ObjectTeleportAction;
 import org.maxgamer.rs.model.entity.mob.Animation;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.map.Location;
-import org.maxgamer.rs.script.OptionHandler;
+import org.maxgamer.rs.script.ActionHandler;
 
-public class ClimbDown implements OptionHandler {
+public class ClimbDown extends ActionHandler {
 	public void run(Mob p, Map<String, Object> args) {
 		Location src = p.getLocation();
 		Location dest;

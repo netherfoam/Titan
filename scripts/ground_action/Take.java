@@ -7,9 +7,9 @@ import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.item.ground.GroundItemStack;
 import org.maxgamer.rs.model.item.inventory.ContainerException;
 import org.maxgamer.rs.network.Client;
-import org.maxgamer.rs.script.OptionHandler;
+import org.maxgamer.rs.script.ActionHandler;
 
-public class Take implements OptionHandler {
+public class Take extends ActionHandler {
 	
 	public void run(Mob m, Map<String, Object> args) {
 		GroundItemStack ground = (GroundItemStack) args.get("item");
@@ -28,5 +28,6 @@ public class Take implements OptionHandler {
 				}
 			}
 		}
+		yield();
 	}
 }

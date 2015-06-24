@@ -29,7 +29,7 @@ public class Location extends Position implements MBR {
 	}
 	
 	/** The map that this position is based on */
-	private WorldMap map;
+	public final WorldMap map;
 	
 	/** The height plane for this location. */
 	public final int z;

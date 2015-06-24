@@ -42,7 +42,7 @@ public class GameObjectAction extends Action {
 		map.put("target", target);
 		map.put("option", option);
 		
-		ScriptSpace ss = Core.getScripts().get(getOwner(), map, "gameobject_action", target.getName(), option);
+		ScriptSpace ss = Core.getScripts().get(getOwner(), this, map, "gameobject_action", target.getName(), option);
 		if(ss == null){
 			if(getOwner() instanceof Client){
 				((Client) getOwner()).sendMessage(option + " not implemented.");

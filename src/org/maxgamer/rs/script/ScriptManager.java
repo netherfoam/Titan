@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 
 import org.maxgamer.io.ScriptLoader;
 import org.maxgamer.rs.lib.log.Log;
+import org.maxgamer.rs.model.action.Action;
 import org.maxgamer.rs.model.entity.mob.Mob;
 
 import co.paralleluniverse.fibers.SuspendExecution;
@@ -16,7 +17,7 @@ public class ScriptManager{
 	/**
 	 * The scripts we've loaded
 	 */
-	private HashMap<String, Class<OptionHandler>> scripts;
+	private HashMap<String, Class<ActionHandler>> scripts;
 	
 	/**
 	 * Constructs a script manager for the given folder
@@ -28,10 +29,10 @@ public class ScriptManager{
 	
 	public void reload(File folder){
 		scripts = new HashMap<>();
-		ScriptLoader<OptionHandler> s = new ScriptLoader<OptionHandler>(OptionHandler.class);
-		HashMap<File, Class<OptionHandler>> files = s.getScripts(folder);
+		ScriptLoader<ActionHandler> s = new ScriptLoader<ActionHandler>(ActionHandler.class);
+		HashMap<File, Class<ActionHandler>> files = s.getScripts(folder);
 		
-		for(Entry<File, Class<OptionHandler>> entry : files.entrySet()){
+		for(Entry<File, Class<ActionHandler>> entry : files.entrySet()){
 			scripts.put(entry.getKey().getPath().toLowerCase(), entry.getValue());
 		}
 	}
@@ -46,8 +47,8 @@ public class ScriptManager{
 	 * 		  "gameobject_actions\Rock\Mine.java" then "gameobject_actions\Mine.java", then
 	 * 		  "Mine.java", returning null if none succeed
 	 */
-	public ScriptSpace get(Mob mob, Map<String, Object> args, String... names) {
-		Class<OptionHandler> clazz = null;
+	public ScriptSpace get(Mob mob, Action a, Map<String, Object> args, String... names) {
+		Class<ActionHandler> clazz = null;
 		
 		//Replace anything that isn't a valid char in java names with an underscore
 		for(int i = 0; i < names.length; i++){
@@ -74,7 +75,8 @@ public class ScriptManager{
 		
 		//We found a script
 		try{
-			final OptionHandler h = clazz.newInstance();
+			final ActionHandler h = clazz.newInstance();
+			h.setAction(a);
 			ScriptSpace script = new ScriptSpace(mob, args){
 				@Override
 				public void run() throws SuspendExecution{

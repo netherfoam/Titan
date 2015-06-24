@@ -1,17 +1,13 @@
 package org.maxgamer.rs.model.action;
 
-import java.io.File;
+import java.util.HashMap;
 
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;
 import org.maxgamer.rs.model.item.ItemStack;
-import org.maxgamer.rs.module.ScriptUtil;
 import org.maxgamer.rs.network.Client;
-import org.maxgamer.rs.structure.timings.StopWatch;
+import org.maxgamer.rs.script.ScriptSpace;
 
-import bsh.EvalError;
-import bsh.Interpreter;
-import bsh.NameSpace;
 import co.paralleluniverse.fibers.SuspendExecution;
 
 /**
@@ -19,30 +15,14 @@ import co.paralleluniverse.fibers.SuspendExecution;
  */
 public class ItemAction extends Action {
 	private ItemStack item;
-	private Interpreter environment;
 	private int slot;
+	private String option;
 	
 	public ItemAction(Persona mob, String option, ItemStack item, int slot) {
 		super(mob);
 		this.item = item;
 		this.slot = slot;
-		
-		StopWatch w = Core.getTimings().start(getClass().getSimpleName());
-		File[] files = new File[] { new File("scripts" + File.separator + "inventory_action" + File.separator + item.getName(), option + ".java"), new File("scripts" + File.separator + "inventory_action", option + ".java") };
-		
-		for (File f : files) {
-			if (f.exists()) {
-				this.environment = ScriptUtil.getScript(f);
-				try {
-					this.environment.set("self", this);
-				}
-				catch (EvalError e) {
-					e.printStackTrace();
-				}
-				break;
-			}
-		}
-		w.stop();
+		this.option = option;
 	}
 	
 	@Override
@@ -57,21 +37,20 @@ public class ItemAction extends Action {
 	
 	@Override
 	public void run() throws SuspendExecution {
-		if (environment == null) {
-			if (getOwner() instanceof Client) {
-				((Client) getOwner()).sendMessage("Item option not implemented.");
+		HashMap<String, Object> map = new HashMap<>(2);
+		map.put("item", item);
+		map.put("option", option);
+		map.put("slot", slot);
+		
+		ScriptSpace ss = Core.getScripts().get(getOwner(), map, "inventory_action", item.getName(), option);
+		if(ss == null){
+			if(getOwner() instanceof Client){
+				((Client) getOwner()).sendMessage(option + " not implemented.");
 			}
 			return;
 		}
 		
-		NameSpace ns = environment.getNameSpace();
-		try {
-			ns.invokeMethod("run", new Object[] { getOwner(), item, slot }, environment);
-		}
-		catch (EvalError e) {
-			e.printStackTrace();
-			return; //Error, stop.
-		}
+		ss.run();
 	}
 	
 	@Override

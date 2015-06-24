@@ -1,51 +1,32 @@
 package org.maxgamer.rs.model.action;
 
-import java.io.File;
+import java.util.HashMap;
 
 import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.model.entity.mob.facing.Facing;
+import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.npc.NPC;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;
-import org.maxgamer.rs.module.ScriptUtil;
 import org.maxgamer.rs.network.Client;
-import org.maxgamer.rs.structure.timings.StopWatch;
+import org.maxgamer.rs.script.ScriptSpace;
 
-import bsh.EvalError;
-import bsh.Interpreter;
-import bsh.NameSpace;
 import co.paralleluniverse.fibers.SuspendExecution;
 
 /**
  * @author netherfoam
  */
 public class NPCAction extends Action {
-	private NPC npc;
-	private Interpreter environment;
-	public NPCAction(Persona mob, String option, NPC obj) {
+	private NPC target;
+	private String option;
+	
+	public NPCAction(Mob mob, String option, NPC npc) {
 		super(mob);
-		StopWatch w = Core.getTimings().start(getClass().getSimpleName());
-		this.npc = obj;
-		
-		File[] files = new File[] { new File("scripts" + File.separator + "npc_action" + File.separator + obj.getName(), option + ".java"), new File("scripts" + File.separator + "npc_action", option + ".java") };
-		
-		for (File f : files) {
-			if (f.exists()) {
-				this.environment = ScriptUtil.getScript(f);
-				try {
-					this.environment.set("self", this);
-				}
-				catch (EvalError e) {
-					e.printStackTrace();
-				}
-				break;
-			}
-		}
-		w.stop();
+		this.target = npc;
+		this.option = option;
 	}
 	
 	@Override
 	public String toString() {
-		return super.toString() + " obj=[" + npc.toString() + "]";
+		return super.toString() + " obj=[" + target.toString() + "]";
 	}
 	
 	@Override
@@ -55,24 +36,19 @@ public class NPCAction extends Action {
 	
 	@Override
 	public void run() throws SuspendExecution {
-		if (environment == null) {
-			if (getOwner() instanceof Client) {
-				((Client) getOwner()).sendMessage("Option not implemented.");
+		HashMap<String, Object> map = new HashMap<>(2);
+		map.put("target", target);
+		map.put("option", option);
+		
+		ScriptSpace ss = Core.getScripts().get(getOwner(), map, "npc_action", target.getName(), option);
+		if(ss == null){
+			if(getOwner() instanceof Client){
+				((Client) getOwner()).sendMessage(option + " not implemented.");
 			}
 			return;
 		}
 		
-		getOwner().setFacing(Facing.face(npc));
-		
-		NameSpace ns = environment.getNameSpace();
-		
-		try {
-			ns.invokeMethod("run", new Object[] { getOwner(), npc }, environment);
-		}
-		catch (EvalError e) {
-			e.printStackTrace();
-			return; //Error, stop.
-		}
+		ss.run();
 	}
 	
 	@Override

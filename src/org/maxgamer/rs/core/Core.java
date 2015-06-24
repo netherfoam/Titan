@@ -2,7 +2,6 @@ package org.maxgamer.rs.core;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Date;
@@ -83,6 +82,8 @@ public class Core {
 	 * The RS cache that is to be loaded and used.
 	 */
 	private static Cache cache;
+
+	private static ScriptManager scripts;
 	
 	/**
 	 * This class loader is used so that the Module system works. It is a shared
@@ -91,8 +92,6 @@ public class Core {
 	 * a class from MusicModule using this ClassLoader.
 	 */
 	public static final DynamicClassLoader CLASS_LOADER = new DynamicClassLoader(Core.class.getClassLoader());
-	
-	private static ScriptManager scripts;
 	
 	/**
 	 * Initializes the core of the server
@@ -107,23 +106,6 @@ public class Core {
 		Field scl = ClassLoader.class.getDeclaredField("scl"); // Get system class loader
 		scl.setAccessible(true); // Set accessible
 		scl.set(null, CLASS_LOADER); // Update it to your class loader
-		
-		//We load all of the JAR files from lib/ automatically.
-		File libs = new File("lib");
-		File[] jars = libs.listFiles(new FilenameFilter() {
-			@Override
-			public boolean accept(File dir, String name) {
-				name = name.toLowerCase();
-				if(name.endsWith(".jar") || name.endsWith(".class")){
-					return true;
-				}
-				return false;
-			}
-		});
-		
-		for(File file : jars){
-			CLASS_LOADER.addURL(file.toURI().toURL());
-		}
 		
 		Thread.currentThread().setContextClassLoader(CLASS_LOADER);
 		
@@ -175,8 +157,6 @@ public class Core {
 		Log.info("NPCGroup Loading...");
 		if (!lazy) NPCGroup.reload();
 		
-		getScripts();
-		
 		ConfigSection cfg = Core.getWorldConfig().getSection("world");
 		server = new Server(cfg); //Binds port port
 		scheduler = new Scheduler(server.getThread(), threadPool);
@@ -212,7 +192,7 @@ public class Core {
 	 * Fetches the cache interface for the server.
 	 * @return the cache interface
 	 */
-	public static Cache getCache() {
+	public synchronized static Cache getCache() {
 		if (cache == null) {
 			try {
 				Log.debug("Loading Cache...");
@@ -287,24 +267,10 @@ public class Core {
 	}
 	
 	/**
-	 * The scripts for the server
-	 * @return the scripts for the server
-	 */
-	public static ScriptManager getScripts(){
-		if(scripts == null){
-			Log.info("Loading Scripts...");
-			scripts = new ScriptManager();
-			scripts.reload(new File("scripts"));
-			Log.info("...Scripts Loaded!");
-		}
-		return scripts;
-	}
-	
-	/**
 	 * Fetches the config file that is used for the world settings
 	 * @return the config file for the world settings
 	 */
-	public static FileConfig getWorldConfig() {
+	public synchronized static FileConfig getWorldConfig() {
 		if (worldCfg == null) {
 			worldCfg = new FileConfig(new File("config" + File.separatorChar + "world.yml"));
 			try {
@@ -323,7 +289,7 @@ public class Core {
 	 * Fetches the SQL database for the world
 	 * @return the world database
 	 */
-	public static Database getWorldDatabase() {
+	public synchronized static Database getWorldDatabase() {
 		if (world == null) {
 			try {
 				//Database initialization
@@ -333,11 +299,11 @@ public class Core {
 				//Logon Database
 				if (type.equalsIgnoreCase("mysql")) {
 					Log.debug("World using MySQL Database.");
-					world = new Database(new MySQLC3P0Core(c.getString("host", "localhost"), c.getString("user", "root"), c.getString("pass", ""), c.getString("database", "titan"), c.getString("port", "3306")));
+					world = new Database(new MySQLC3P0Core(c.getString("host", "localhost"), c.getString("user", "root"), c.getString("pass", ""), c.getString("database", "database"), c.getString("port", "3306")));
 				}
 				else {
-					Log.debug("World using SQLite Database: " + c.getString("file", "sql" + File.separator + "titan.db"));
-					world = new Database(new SQLiteCore(new File(c.getString("file", "sql" + File.separator + "titan.db"))));
+					Log.debug("World using SQLite Database: " + c.getString("file", "sql" + File.separator + "sqlite.db"));
+					world = new Database(new SQLiteCore(new File(c.getString("file", "sql" + File.separator + "sqlite.db"))));
 				}
 				Log.debug("Database connection established.");
 			}
@@ -348,6 +314,14 @@ public class Core {
 			}
 		}
 		return world;
+	}
+	
+	public synchronized static ScriptManager getScripts() {
+		if(scripts == null){
+			scripts = new ScriptManager();
+			scripts.reload(new File("scripts"));
+		}
+		return scripts;
 	}
 	
 	/**
@@ -365,7 +339,7 @@ public class Core {
 	 * and may not be done in sync.
 	 * @param r The runnable task to execute
 	 */
-	public static synchronized Future<?> submit(Runnable r, boolean async) {
+	public synchronized static Future<?> submit(Runnable r, boolean async) {
 		if (async) return threadPool.submit(r);
 		else {
 			return getServer().getThread().submit(r);
@@ -380,7 +354,7 @@ public class Core {
 	 * @param r The runnable
 	 * @param delay The task delay in milliseconds.
 	 */
-	public static synchronized Future<Void> submit(Runnable r, long delay, boolean async) {
+	public synchronized static Future<Void> submit(Runnable r, long delay, boolean async) {
 		return scheduler.queue(r, delay, async);
 	}
 	
@@ -404,7 +378,7 @@ public class Core {
 		Log.close();
 	}
 	
-	public static Timings getTimings() {
+	public synchronized static Timings getTimings() {
 		if (timings == null) {
 			timings = new Timings();
 		}

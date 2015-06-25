@@ -124,6 +124,11 @@ public class ActionQueue extends FastTickable {
 		throw new IllegalStateException("No such action marker found for insert operation (Marker not found)");
 	}
 	
+	/**
+	 * Inserts the given action at the start of the queue, may interrupt another action but
+	 * does not cancel the other action. Eg use for equipping items. 
+	 * @param insert The action to insert
+	 */
 	public void insertFirst(Action insert){
 		if (insert == null) {
 			throw new NullPointerException("Insert may not be null");
@@ -134,6 +139,9 @@ public class ActionQueue extends FastTickable {
 		
 		synchronized (queue) {
 			queue.addFirst(insert);
+			if(this.isQueued() == false){
+				this.queue();
+			}
 		}
 	}
 	

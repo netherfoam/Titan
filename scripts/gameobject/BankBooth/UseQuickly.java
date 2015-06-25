@@ -1,4 +1,4 @@
-package gameobject_action.BankBooth;
+package gameobject.BankBooth;
 
 import java.util.Map;
 

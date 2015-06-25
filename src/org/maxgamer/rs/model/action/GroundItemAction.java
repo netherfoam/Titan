@@ -39,7 +39,7 @@ public class GroundItemAction extends Action {
 		map.put("item", item);
 		map.put("option", option);
 		
-		ScriptSpace ss = Core.getScripts().get(getOwner(), this, map, "ground_action", item.getItem().getName(), option);
+		ScriptSpace ss = Core.getScripts().get(getOwner(), this, map, "ground", item.getItem().getName(), option);
 		if(ss == null){
 			if(getOwner() instanceof Client){
 				((Client) getOwner()).sendMessage(option + " not implemented.");
@@ -48,6 +48,7 @@ public class GroundItemAction extends Action {
 		}
 		
 		ss.run();
+		this.yield(); //This action was an alias for another, it should not cost a tick.
 	}
 	
 	@Override

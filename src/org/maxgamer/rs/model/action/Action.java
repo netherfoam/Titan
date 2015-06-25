@@ -55,7 +55,7 @@ public abstract class Action{
 		}
 	}
 	
-	protected boolean tick(){
+	protected void tick(){
 		if(fiber == null){
 			fiber = new Fiber<Void>(this.toString(), Core.getServer().getThread().getFiberScheduler()){
 				private static final long serialVersionUID = 1842342854418180882L;
@@ -63,22 +63,23 @@ public abstract class Action{
 				@Override
 				public Void run() throws SuspendExecution{
 					Action.this.run();
+					//Notify the action queue this action has ended
+					getOwner().getActions().end(Action.this);
 					return null;
 				}
 			};
 			
+			//Fiber doesn't get executed right here! It is in the ServerThread list of things to run after this call
+			// - And right now, *THIS* is being executed, not the fiber!
 			fiber.start();
-			return false;
 		}
 		else{
-			fiber.unpark();
-			
 			if(fiber.isTerminated()){
-				return true;
+				throw new RuntimeException("Action's Fiber was terminated, but Action was requested to tick() anyway?");
 			}
-			else{
-				return false;
-			}
+			//Fiber doesn't get executed right here! It is in the ServerThread list of things to run after this call
+			// - And right now, *THIS* is being executed, not the fiber!
+			fiber.unpark();
 		}
 	}
 	

@@ -1,4 +1,4 @@
-package inventory_action;
+package inventory;
 
 import java.util.Map;
 

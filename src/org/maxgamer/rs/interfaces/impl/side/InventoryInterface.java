@@ -5,6 +5,7 @@ import java.util.Arrays;
 import org.maxgamer.rs.interfaces.SettingsBuilder;
 import org.maxgamer.rs.interfaces.SideInterface;
 import org.maxgamer.rs.interfaces.Window;
+import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.action.ItemAction;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.item.ItemStack;
@@ -128,7 +129,7 @@ public class InventoryInterface extends SideInterface {
 		}
 		
 		if (option >= item.getInventoryOptions().length) {
-			System.out.println("Bad option: " + option + ", available are " + Arrays.toString(item.getInventoryOptions()));
+			Log.debug("Bad option: " + option + ", available are " + Arrays.toString(item.getInventoryOptions()));
 			return;
 		}
 		
@@ -138,10 +139,8 @@ public class InventoryInterface extends SideInterface {
 			return;
 		}
 		
-		//Core.getServer().getScriptEngine().run("inventory_item/" + s, "run", player, item, slot);
 		ItemAction script = new ItemAction(getPlayer(), s, item, slot);
-		getPlayer().getActions().clear();
-		getPlayer().getActions().queue(script);
+		getPlayer().getActions().insertFirst(script);
 	}
 	
 	@Override

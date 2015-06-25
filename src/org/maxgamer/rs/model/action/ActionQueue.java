@@ -124,6 +124,19 @@ public class ActionQueue extends FastTickable {
 		throw new IllegalStateException("No such action marker found for insert operation (Marker not found)");
 	}
 	
+	public void insertFirst(Action insert){
+		if (insert == null) {
+			throw new NullPointerException("Insert may not be null");
+		}
+		if (isQueued(insert)) {
+			throw new IllegalArgumentException("That Action is already queued.");
+		}
+		
+		synchronized (queue) {
+			queue.addFirst(insert);
+		}
+	}
+	
 	/**
 	 * Inserts the given action after the given marker action.
 	 * @param marker the action to look for
@@ -254,11 +267,7 @@ public class ActionQueue extends FastTickable {
 			
 			Action w = queue.getFirst();
 			try {
-				if (w.tick()) { //We do not want this run() call made inside a synchronization block.
-					//Note we may have other values inserted before this Action when performing
-					//the run() call. The queue could change any state!
-					queue.remove(w);
-				}
+				w.tick(); //W will end itself when its done.
 			}
 			catch (Exception e) {
 				//Our task failed to work properly.
@@ -267,17 +276,24 @@ public class ActionQueue extends FastTickable {
 				Log.warning("Error ticking ActionQueue for Mob " + owner + ". Action: " + w);
 				e.printStackTrace();
 			}
-			
-			if (queue.isEmpty()) {
-				return; //Nothing more to tick
-			}
-			else {
-				//w.run() may have added actions to our queue, which may submit us to ticks.
-				//Thus we must use cancelAndSubmit()
-				//Core.getServer().getTicker().cancelAndSubmit(1, this);
-				if (this.isQueued() == false) {
-					this.queue();
-				}
+			//We do not know if we will finish, so we queue again anyway.
+			this.queue();
+		}
+	}
+	
+	/**
+	 * Gracefully ends the action - Called when the action has finished. This removes it from
+	 * the queue of actions to run, and thus it will not be run again. This is different to
+	 * cancelling a task, which will inform the task that it was cancelled forcefully. If you
+	 * wish to cancel an action, use cancel. If your action has exited its run() method, this
+	 * method will be called for you by the Fiber which ran your action.
+	 * @param a the action which is ending
+	 */
+	public void end(Action a){
+		synchronized(this){
+			this.queue.remove(a);
+			if(this.isEmpty() && this.isQueued()){
+				this.cancel();
 			}
 		}
 	}
@@ -310,9 +326,7 @@ public class ActionQueue extends FastTickable {
 			
 			try {
 				//Performed inside of synchronization block.
-				if (w.tick()) {
-					queue.remove(w);
-				}
+				w.tick(); //w will end itself when its finished
 			}
 			catch (Exception e) {
 				//Our task failed to work properly.
@@ -320,15 +334,6 @@ public class ActionQueue extends FastTickable {
 				
 				Log.warning("Error ticking ActionQueue for Mob " + owner + ". Action: " + w);
 				e.printStackTrace();
-			}
-			
-			if (queue.isEmpty()) {
-				//Core.getServer().getTicker().cancel(this);
-				if (this.isQueued()) {
-					this.cancel();
-				}
-				
-				//assert Core.getServer().getTicker().isSubmitted(this) == false;
 			}
 		}
 	}

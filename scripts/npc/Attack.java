@@ -11,7 +11,7 @@
  * 
  * In NPC option scripts, the player does not need to be next to the NPC, so pathfinding is up to the user.
  */
-package npc_action;
+package npc;
 
 import java.util.Map;
 

@@ -1,4 +1,4 @@
-package gameobject_action;
+package gameobject;
 
 import java.util.Map;
 

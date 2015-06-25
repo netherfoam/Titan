@@ -462,11 +462,6 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 	}
 	
 	public boolean move(Path path) {
-		if (isRooted()) {
-			//Rooted mobs may not move.
-			return false;
-		}
-		
 		PersonaMovementUpdate m = (PersonaMovementUpdate) getUpdateMask().getMovement();
 		if (m.hasTeleported()) {
 			//Can't move while teleporting

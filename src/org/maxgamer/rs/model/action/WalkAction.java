@@ -42,6 +42,12 @@ public class WalkAction extends Action {
 				continue;
 			}
 			
+			if (getOwner().isRooted()) {
+				//Rooted mobs may not move.
+				wait(1);
+				continue;
+			}
+			
 			done = getOwner().move(this.path);
 			wait(1);
 		}

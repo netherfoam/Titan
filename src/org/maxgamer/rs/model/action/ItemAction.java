@@ -42,7 +42,7 @@ public class ItemAction extends Action {
 		map.put("option", option);
 		map.put("slot", slot);
 		
-		ScriptSpace ss = Core.getScripts().get(getOwner(), this, map, "inventory_action", item.getName(), option);
+		ScriptSpace ss = Core.getScripts().get(getOwner(), this, map, "inventory", item.getName(), option);
 		if(ss == null){
 			if(getOwner() instanceof Client){
 				((Client) getOwner()).sendMessage(option + " not implemented.");

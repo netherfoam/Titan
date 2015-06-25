@@ -12,6 +12,8 @@ import org.maxgamer.rs.model.entity.mob.Animation;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.facing.Facing;
 import org.maxgamer.rs.model.map.path.AStar;
+import org.maxgamer.rs.model.map.path.Path;
+import org.maxgamer.rs.model.map.path.PathFinder;
 
 import co.paralleluniverse.fibers.SuspendExecution;
 
@@ -133,7 +135,16 @@ public class Combat extends Action {
 	 * @return true if reachable, false if combat can't be done.
 	 */
 	public boolean isTargetReachable() {
-		return getTarget() != null && this.follow != null && this.follow.isFollowing() && this.follow.isReachable();
+		//if getTarget() != null && this.follow != null && this.follow.isFollowing() && this.follow.isReachable();
+		if(getTarget() == null || this.follow == null || this.follow.isFollowing() == false){
+			return false;
+		}
+		
+		PathFinder finder = new AStar(8);
+		Path path = finder.findPath(getOwner().getLocation(), getTarget().getLocation(), getTarget().getLocation(), getOwner().getSizeX(), getOwner().getSizeY());
+		if(path.hasFailed()) return false;
+		
+		return true;
 	}
 	
 	/**

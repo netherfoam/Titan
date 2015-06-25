@@ -40,7 +40,7 @@ public class NPCAction extends Action {
 		map.put("target", target);
 		map.put("option", option);
 		
-		ScriptSpace ss = Core.getScripts().get(getOwner(), this, map, "npc_action", target.getName(), option);
+		ScriptSpace ss = Core.getScripts().get(getOwner(), this, map, "npc", target.getName(), option);
 		if(ss == null){
 			if(getOwner() instanceof Client){
 				((Client) getOwner()).sendMessage(option + " not implemented.");
@@ -49,6 +49,7 @@ public class NPCAction extends Action {
 		}
 		
 		ss.run();
+		this.yield(); //This action was an alias for another, it should not cost a tick.
 	}
 	
 	@Override

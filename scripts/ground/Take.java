@@ -1,4 +1,4 @@
-package ground_action;
+package ground;
 
 import java.util.Map;
 

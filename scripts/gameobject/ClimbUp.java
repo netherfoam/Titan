@@ -1,4 +1,4 @@
-package gameobject_action;
+package gameobject;
 
 import java.util.Map;
 
@@ -8,15 +8,15 @@ import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.map.Location;
 import org.maxgamer.rs.script.ActionHandler;
 
-public class ClimbDown extends ActionHandler {
+public class ClimbUp extends ActionHandler {
 	public void run(Mob p, Map<String, Object> args) {
 		Location src = p.getLocation();
 		Location dest;
-		if (src.z == 0) {
-			dest = src.add(0, 6400, 0);
+		if (src.y >= 6400) {
+			dest = src.add(0, -6400, 0);
 		}
 		else {
-			dest = src.add(0, 0, -1);
+			dest = src.add(0, 0, 1);
 		}
 		
 		ObjectTeleportAction mc = new ObjectTeleportAction(p, new Animation(828), dest);

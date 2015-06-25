@@ -1,4 +1,4 @@
-package inventory_action;
+package inventory;
 
 import java.util.Map;
 
@@ -17,6 +17,6 @@ public class Drop extends ActionHandler{
 		((InventoryHolder) m).getInventory().remove(slot, item);
 		GroundItemStack ground = new GroundItemStack(item, m, 30, 180);
 		ground.setLocation(m.getLocation());
-		yield();
+		yield(); //This action was an alias for another, it should not cost a tick.
 	}
 }

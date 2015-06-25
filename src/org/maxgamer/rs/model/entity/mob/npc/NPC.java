@@ -311,11 +311,6 @@ public class NPC extends Mob {
 	
 	@Override
 	public boolean move(Path path) {
-		if (isRooted()) {
-			//Rooted mobs may not move.
-			return false;
-		}
-		
 		MovementUpdate m = this.getUpdateMask().getMovement();
 		if (m.hasTeleported()) {
 			//Can't move while teleporting

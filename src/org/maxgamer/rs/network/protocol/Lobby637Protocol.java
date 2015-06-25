@@ -11,8 +11,6 @@ import org.maxgamer.rs.network.io.packet.RSOutgoingPacket;
 import org.maxgamer.rs.network.io.stream.RSOutputStream;
 import org.maxgamer.rs.structure.Util;
 
-import com.mysql.jdbc.NotImplemented;
-
 /**
  * @author netherfoam
  */

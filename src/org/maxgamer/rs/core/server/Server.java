@@ -346,17 +346,6 @@ public class Server {
 	}
 	
 	/**
-	 * Fetches the instance of the script engine used by this server. This
-	 * allows for handling of content related things like using item options,
-	 * NPC options or interacting with game objects. Basically, our equivalant
-	 * of RuneScript
-	 * @return the script engine for this server
-	 */
-	/*
-	 * public BeanScriptEngine getScriptEngine(){ return scripts; }
-	 */
-	
-	/**
 	 * Returns the EventManager for the server which allows registration of
 	 * event listeners and calling of events.
 	 * @return the event manager.
@@ -365,8 +354,9 @@ public class Server {
 		if(events == null){
 			Log.debug("Loading EventManager...");
 			events = new EventManager();
-			events.reload();
+			events.reload(Core.getCodeSource());
 			Log.debug("...Loaded EventManager!");
+			Log.debug(events.describe());
 		}
 		return events;
 	}

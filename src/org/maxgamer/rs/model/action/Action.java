@@ -55,6 +55,12 @@ public abstract class Action{
 		}
 	}
 	
+	/**
+	 * Called successively upon a tick when this action is able to be run.
+	 * This moves the internal fiber, either creating a new one if it is the first time,
+	 * or unparking an existing one if it is a sequential time. If the action has finished,
+	 * this will raise an exception.
+	 */
 	protected void tick(){
 		if(fiber == null){
 			fiber = new Fiber<Void>(this.toString(), Core.getServer().getThread().getFiberScheduler()){

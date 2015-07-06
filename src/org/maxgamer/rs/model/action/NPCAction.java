@@ -49,7 +49,6 @@ public class NPCAction extends Action {
 		}
 		
 		ss.run();
-		this.yield(); //This action was an alias for another, it should not cost a tick.
 	}
 	
 	@Override

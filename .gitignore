@@ -12,3 +12,4 @@ bin/*
 config/*.yml
 crash/
 players/
+doc/

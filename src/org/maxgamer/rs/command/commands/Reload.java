@@ -25,7 +25,8 @@ public class Reload implements GenericCommand {
 		Core.getServer().getModules().unload();
 		Core.getServer().getModules().load();
 		sender.sendMessage("Modules reloaded.");
-		Core.getScripts().reload(new File("scripts"));
+		Core.getScripts().clear();
+		Core.getScripts().load(new File("scripts"));
 	}
 	
 	@Override

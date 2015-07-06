@@ -44,4 +44,8 @@ public class MobAttackEvent extends MobEvent implements Cancellable {
 	public void setCancelled(boolean c) {
 		this.cancel = c;
 	}
+	
+	public void setDamage(Damage damage){
+		this.damage = damage;
+	}
 }

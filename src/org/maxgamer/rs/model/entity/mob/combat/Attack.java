@@ -1,6 +1,7 @@
 package org.maxgamer.rs.model.entity.mob.combat;
 
 import java.util.Iterator;
+import java.util.LinkedList;
 
 import org.maxgamer.rs.events.mob.MobAttackEvent;
 import org.maxgamer.rs.lib.log.Log;
@@ -67,13 +68,18 @@ public abstract class Attack {
 		}
 		
 		//Throw mob attack event here
-		Iterator<Damage> adit = damage.getDamages().iterator();
+		Iterator<Damage> adit = new LinkedList<>(damage.getDamages()).iterator();
 		while (adit.hasNext()) {
 			Damage d = adit.next();
 			MobAttackEvent act = new MobAttackEvent(attacker, this, d, d.getTarget());
 			act.call();
 			if (act.isCancelled()) {
-				adit.remove();
+				//adit.remove();
+				damage.getDamages().remove(d);
+			}
+			else if(d != act.getDamage()){
+				//Our damage was changed during the event
+				damage.add(act.getDamage());
 			}
 		}
 		

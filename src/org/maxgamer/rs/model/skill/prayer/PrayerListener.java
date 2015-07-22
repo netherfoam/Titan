@@ -5,12 +5,15 @@ import org.maxgamer.event.EventHandler;
 import org.maxgamer.event.EventListener;
 import org.maxgamer.event.EventPriority;
 import org.maxgamer.rs.events.mob.MobAttackEvent;
-import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.combat.Damage;
 import org.maxgamer.rs.model.entity.mob.combat.DamageType;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;
 
+/**
+ * Listener class that handles prayer on-attack effects, like protect and deflect prayers.
+ * @author netherfoam
+ */
 @AutoRegister
 public class PrayerListener implements EventListener {
 	

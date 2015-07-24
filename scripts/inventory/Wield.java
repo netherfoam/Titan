@@ -9,7 +9,9 @@ import org.maxgamer.rs.model.item.WieldType;
 import org.maxgamer.rs.model.item.inventory.Container;
 import org.maxgamer.rs.network.Client;
 import org.maxgamer.rs.script.ActionHandler;
+import org.maxgamer.rs.script.Script;
 
+@Script(type=ItemStack.class, options={"Wield", "Wear"})
 public class Wield extends ActionHandler {
 	
 	public void run(Mob mob, Map<String, Object> args) {

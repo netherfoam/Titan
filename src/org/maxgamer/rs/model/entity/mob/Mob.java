@@ -366,7 +366,11 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 *        will override lower ones.
 	 */
 	public void animate(int emo, int priority) {
-		getUpdateMask().setAnimation(new Animation(emo), priority);
+		animate(new Animation(emo), priority);
+	}
+	
+	public void animate(Animation anim, int priority){
+		getUpdateMask().setAnimation(anim, priority);
 	}
 	
 	/**
@@ -472,6 +476,20 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 */
 	public boolean isDead() {
 		return health <= 0;
+	}
+	
+	/**
+	 * Determines if this mob is visible to the given mob. This method should be overridden
+	 * if the mob can become invisible.
+	 * @param to
+	 * @return
+	 */
+	public boolean isVisible(Mob to){
+		if(isDestroyed()){
+			return false;
+		}
+		
+		return true;
 	}
 	
 	/**

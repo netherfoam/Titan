@@ -1525,7 +1525,7 @@ public class Game637Protocol extends GameProtocol {
 			}
 			
 			Persona p = Core.getServer().getPersonas().get(index);
-			if (p == null || l.withinRange(p.getLocation(), getPlayer().getViewDistance().getTileSize()) == false) {
+			if (p == null || l.near(p.getLocation(), getPlayer().getViewDistance().getTileSize()) == false) {
 				out.writeBits(18, 0);
 			}
 			else {

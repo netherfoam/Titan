@@ -47,7 +47,7 @@ public class FriendFollow extends Follow {
 
 	@Override
 	public boolean isSatisfied() {
-		if(getOwner().getLocation().withinRange(getTarget().getLocation(), prefDistance) == false){
+		if(getOwner().getLocation().near(getTarget().getLocation(), prefDistance) == false){
 			return false;
 		}
 		return true;

@@ -10,9 +10,11 @@ import org.maxgamer.rs.model.item.inventory.ContainerException;
 import org.maxgamer.rs.model.map.GameObject;
 import org.maxgamer.rs.network.Client;
 import org.maxgamer.rs.script.ActionHandler;
+import org.maxgamer.rs.script.Script;
 
 import co.paralleluniverse.fibers.SuspendExecution;
 
+@Script(type=GameObject.class, options={"Pick"})
 public class Pick extends ActionHandler {
 	public void run(Mob p, Map<String, Object> args) throws SuspendExecution {
 		GameObject g = (GameObject) args.get("target");

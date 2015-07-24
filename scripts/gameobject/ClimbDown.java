@@ -5,9 +5,12 @@ import java.util.Map;
 import org.maxgamer.rs.model.action.ObjectTeleportAction;
 import org.maxgamer.rs.model.entity.mob.Animation;
 import org.maxgamer.rs.model.entity.mob.Mob;
+import org.maxgamer.rs.model.map.GameObject;
 import org.maxgamer.rs.model.map.Location;
 import org.maxgamer.rs.script.ActionHandler;
+import org.maxgamer.rs.script.Script;
 
+@Script(type=GameObject.class, options={"Climb-down"})
 public class ClimbDown extends ActionHandler {
 	public void run(Mob p, Map<String, Object> args) {
 		Location src = p.getLocation();

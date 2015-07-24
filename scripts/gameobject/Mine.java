@@ -13,9 +13,11 @@ import org.maxgamer.rs.model.skill.harvest.HarvestTool;
 import org.maxgamer.rs.model.skill.harvest.Harvestable;
 import org.maxgamer.rs.network.Client;
 import org.maxgamer.rs.script.ActionHandler;
+import org.maxgamer.rs.script.Script;
 
 import co.paralleluniverse.fibers.SuspendExecution;
 
+@Script(type=GameObject.class, options={"Mine"})
 public class Mine extends ActionHandler{
 	public static final HarvestTool BRONZE_PICKAXE = 	new HarvestTool(ItemStack.create(1265), SkillType.MINING, 1, 10001, 1.0);
 	public static final HarvestTool IRON_PICKAXE = 		new HarvestTool(ItemStack.create(1267), SkillType.MINING, 1, 10002, 1.3);

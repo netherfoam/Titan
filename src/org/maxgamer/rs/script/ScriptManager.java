@@ -1,19 +1,32 @@
 package org.maxgamer.rs.script;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.maxgamer.io.ScriptLoader;
+import org.maxgamer.io.ScriptLoader.ClassTransformer;
 import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.action.Action;
 import org.maxgamer.rs.model.entity.mob.Mob;
 
 import co.paralleluniverse.fibers.SuspendExecution;
+import co.paralleluniverse.fibers.instrument.QuasarInstrumentor;
 
 public class ScriptManager {
+	/**
+	 * Quick class transformer to request that Quasar parse classes first, because we manage
+	 * to somehow skip the JavaAgent otherwise.
+	 */
+	private ClassTransformer quasar = new ClassTransformer() {
+		@Override
+		public byte[] transform(String clazz, byte[] src) {
+			QuasarInstrumentor inst = new QuasarInstrumentor(Thread.currentThread().getContextClassLoader());
+			return inst.instrumentClass(clazz, src);
+		}
+	};
+	
 	/**
 	 * The scripts we've loaded
 	 */
@@ -32,10 +45,15 @@ public class ScriptManager {
 	 * @param folder the folder to load all of the scripts from
 	 */
 	public void load(File folder) {
-		ScriptLoader<ActionHandler> s = new ScriptLoader<ActionHandler>(ActionHandler.class);
+		ScriptLoader<ActionHandler> s = new ScriptLoader<ActionHandler>(ActionHandler.class, quasar);
 		HashMap<File, Class<ActionHandler>> files = s.getScripts(folder);
 		
 		for (Entry<File, Class<ActionHandler>> entry : files.entrySet()) {
+			if(entry.getValue().getAnnotation(Script.class) == null){
+				Log.warning("Script " + entry.getKey() + " does not have an @Script annotation, it will not be loaded.");
+				continue;
+			}
+			
 			scripts.put(entry.getKey().getPath().toLowerCase(), entry.getValue());
 		}
 	}
@@ -47,29 +65,53 @@ public class ScriptManager {
 		scripts.clear();
 	}
 	
+	private static boolean contains(int[] array, int v){
+		for(int i : array){
+			if(i == v) return true;
+		}
+		return false;
+	}
+	
+	private static boolean contains(String[] array, String v){
+		for(String s : array){
+			if(s.equalsIgnoreCase(v)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	/**
 	 * returns true if the given script exists
 	 * @param names the script folder names, see also {@link ScriptManager#get(Mob, Action, Map, String...)}
 	 * @return true if the given script exists else false
+	 * @throws NullPointerException if clazz is null
 	 */
-	public boolean has(String... names) {
-		//Replace anything that isn't a valid char in java names with an underscore
-		for (int i = 0; i < names.length; i++) {
-			names[i] = names[i].replaceAll("[^0-9A-Za-z_]", "").toLowerCase();
+	public boolean has(Object target, int id, String name, String option) {
+		if(target == null) throw new NullPointerException("Class may not be null");
+		
+		for(Class<ActionHandler> handler : this.scripts.values()){
+			Script s = handler.getAnnotation(Script.class);
+			
+			if(s.type().isInstance(target) == false){
+				continue;
+			}
+			
+			if(s.ids().length > 0 && contains(s.ids(), id) == false){
+				continue;
+			}
+			
+			if(s.names().length > 0 && contains(s.names(), name) == false){
+				continue;
+			}
+			
+			if(s.options().length > 0 && contains(s.options(), option) == false){
+				continue;
+			}
+			
+			return true;
 		}
 		
-		//Attempt to find which script to run, trying the most specific script first
-		for (int i = 0; i < names.length; i++) {
-			String s = "";
-			for (int n = 0; n < names.length - 1 - i; n++) {
-				s += names[n] + File.separatorChar;
-			}
-			s += names[names.length - 1] + ".class";
-			
-			if (scripts.get("scripts" + File.separatorChar + s) != null) {
-				return true;
-			}
-		}
 		return false;
 	}
 	
@@ -86,29 +128,34 @@ public class ScriptManager {
 	 *        "gameobject_actions\Mine.java", then "Mine.java", returning null
 	 *        if none succeed
 	 */
-	public ScriptSpace get(Mob mob, Action a, Map<String, Object> args, String... names) {
+	public ScriptSpace get(Mob mob, Action a, Map<String, Object> args, Object target, int id, String name, String option) {
 		Class<ActionHandler> clazz = null;
+		if(target == null) throw new NullPointerException("Target may not be null");
 		
-		//Replace anything that isn't a valid char in java names with an underscore
-		for (int i = 0; i < names.length; i++) {
-			names[i] = names[i].replaceAll("[^0-9A-Za-z_]", "").toLowerCase();
-		}
-		
-		//Attempt to find which script to run, trying the most specific script first
-		for (int i = 0; i < names.length; i++) {
-			String s = "";
-			for (int n = 0; n < names.length - 1 - i; n++) {
-				s += names[n] + File.separatorChar;
-			}
-			s += names[names.length - 1] + ".class";
+		for(Class<ActionHandler> handler : this.scripts.values()){
+			Script s = handler.getAnnotation(Script.class);
 			
-			clazz = scripts.get("scripts" + File.separatorChar + s);
-			if (clazz != null) break;
+			if(s.type().isInstance(target) == false){
+				continue;
+			}
+			
+			if(s.ids().length > 0 && contains(s.ids(), id) == false){
+				continue;
+			}
+			
+			if(s.names().length > 0 && contains(s.names(), name) == false){
+				continue;
+			}
+			
+			if(s.options().length > 0 && contains(s.options(), option) == false){
+				continue;
+			}
+			
+			clazz = handler;
+			break;
 		}
 		
-		//We had no script whatsoever
-		if (clazz == null) {
-			Log.debug("Script not found: " + Arrays.toString(names) + ", available: " + scripts.keySet());
+		if(clazz == null){
 			return null;
 		}
 		
@@ -126,7 +173,7 @@ public class ScriptManager {
 			
 		}
 		catch (Throwable t) {
-			Log.warning("Error constructing script " + Arrays.toString(names));
+			Log.warning("Error constructing script " + id + "[" + name + "]#" + option);
 			t.printStackTrace();
 			return null;
 		}

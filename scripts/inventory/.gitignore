@@ -3,3 +3,9 @@
 /Eat.class
 /Wear.class
 /Wield.class
+/Drink.class
+/Drink$Effect.class
+/Drink$PotionEffect.class
+/Drink$Drinks.class
+/Drink$Potion.class
+/Drink$BuffEffect.class

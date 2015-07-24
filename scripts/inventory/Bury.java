@@ -9,9 +9,11 @@ import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.skill.SkillType;
 import org.maxgamer.rs.network.Client;
 import org.maxgamer.rs.script.ActionHandler;
+import org.maxgamer.rs.script.Script;
 
 import co.paralleluniverse.fibers.SuspendExecution;
 
+@Script(type=ItemStack.class, options={"Bury"})
 public class Bury extends ActionHandler{
 	//IDs of bones -              normal - burnt - wolf - monkey - bat - big - jogre - zogre - shaikahan - baby - wyvern - dragon - fayrg - raurg - dagannoth - ourg - frost-dragon
 	private static final int[] bones = new int[]{526,    528,    2859,  3183,    530,  532,  3125,   4812,   3123,       534,   6812,    536,     4830,   4832,   6729,       4834,  18830};

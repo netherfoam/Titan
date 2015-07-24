@@ -77,7 +77,7 @@ public class Combat extends Action {
 				throw new IllegalArgumentException("Target is on Z axis " + target.getLocation().z + ", but " + getOwner() + " is on Z axis " + getOwner().getLocation().z);
 			}
 			
-			if (target.getLocation().withinRange(getOwner().getLocation(), 100) == false) {
+			if (target.getLocation().near(getOwner().getLocation(), 100) == false) {
 				throw new IllegalArgumentException("That target (" + target + ") is too far away!");
 			}
 			
@@ -154,7 +154,7 @@ public class Combat extends Action {
 	public Mob getTarget() {
 		if (target != null) {
 			//TODO: Maybe we should check we can reach the target still, with a primitive path finder?
-			if (target.getLocation() == null || target.isDead() || target.isDestroyed() || target.getLocation().withinRange(getOwner().getLocation(), 15) == false) {
+			if (target.getLocation() == null || target.isDead() || target.isDestroyed() || target.getLocation().near(getOwner().getLocation(), 15) == false) {
 				setTarget(null);
 			}
 		}
@@ -393,7 +393,7 @@ public class Combat extends Action {
 			
 			//If combat check fails, return false (attempt again)
 			int range = attack.getMaxDistance();
-			if (target.getLocation().withinRange(getOwner().getLocation(), range) == false && getOwner().getLocation().isDiagonal(target.getLocation()) == false) {
+			if (target.getLocation().near(getOwner().getLocation(), range) == false && getOwner().getLocation().isDiagonal(target.getLocation()) == false) {
 				//return false;
 				wait(1);
 				continue;

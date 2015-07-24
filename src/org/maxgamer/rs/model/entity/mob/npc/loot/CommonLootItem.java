@@ -28,6 +28,17 @@ public class CommonLootItem extends LootItem {
 		this(iStack.getId(), weight, min, max);
 	}
 	
+	/**
+	 * Constructs a CommonLootItem with the given ItemStack and weight, and
+	 * min and max values of 1. This calls the CommonLootItem(ItemStac, double, min, min)
+	 * constructor.
+	 * @param iStack the item stack
+	 * @param weight the weight
+	 */
+	public CommonLootItem(ItemStack iStack, double weight){
+		this(iStack, weight, 1, 1);
+	}
+	
 	public CommonLootItem(int itemId, double weight, int min, int max) {
 		super(weight);
 		this.itemId = itemId;

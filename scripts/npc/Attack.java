@@ -19,7 +19,9 @@ import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.npc.NPC;
 import org.maxgamer.rs.network.Client;
 import org.maxgamer.rs.script.ActionHandler;
+import org.maxgamer.rs.script.Script;
 
+@Script(type=NPC.class, options="Attack")
 public class Attack extends ActionHandler {
 	public void run(Mob mob, Map<String, Object> args) {
 		NPC target = (NPC) args.get("target");

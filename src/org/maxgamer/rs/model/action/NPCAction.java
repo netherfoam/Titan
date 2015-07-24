@@ -40,14 +40,13 @@ public class NPCAction extends Action {
 		map.put("target", target);
 		map.put("option", option);
 		
-		ScriptSpace ss = Core.getScripts().get(getOwner(), this, map, "npc", target.getName(), option);
+		ScriptSpace ss = Core.getScripts().get(getOwner(), this, map, target, target.getId(), target.getName(), option);
 		if(ss == null){
 			if(getOwner() instanceof Client){
 				((Client) getOwner()).sendMessage(option + " not implemented.");
 			}
 			return;
 		}
-		
 		ss.run();
 	}
 	

@@ -1,6 +1,13 @@
 package org.maxgamer.rs.script;
 
-public @interface Only {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface Script {
 	/**
 	 * An array of the item ids that this class processes, or empty for all
 	 * Eg, item, NPC, or object ids. Default is all
@@ -22,4 +29,11 @@ public @interface Only {
 	 * @return an array of the names that this class processes
 	 */
 	public String[] options() default {};
+	
+	/**
+	 * The type of class that this action will handle. Classes may extend
+	 * the requested type.
+	 * @return The type of class that this action handles
+	 */
+	public Class<?> type();
 }

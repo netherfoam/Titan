@@ -8,9 +8,11 @@ import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.network.Client;
 import org.maxgamer.rs.script.ActionHandler;
+import org.maxgamer.rs.script.Script;
 
 import co.paralleluniverse.fibers.SuspendExecution;
 
+@Script(type=ItemStack.class, options={"Eat"})
 public class Eat extends ActionHandler{
 	//IDs of food - Cabbage, potato, lobster, swordfish, shark
 	static int[] ids = new int[]{1965, 1942, 379, 373, 385};

@@ -8,7 +8,9 @@ import org.maxgamer.rs.model.item.ground.GroundItemStack;
 import org.maxgamer.rs.model.item.inventory.ContainerException;
 import org.maxgamer.rs.network.Client;
 import org.maxgamer.rs.script.ActionHandler;
+import org.maxgamer.rs.script.Script;
 
+@Script(type=GroundItemStack.class, options={"Take"})
 public class Take extends ActionHandler {
 	
 	public void run(Mob m, Map<String, Object> args) {

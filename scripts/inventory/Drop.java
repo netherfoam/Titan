@@ -7,7 +7,9 @@ import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.item.ground.GroundItemStack;
 import org.maxgamer.rs.script.ActionHandler;
+import org.maxgamer.rs.script.Script;
 
+@Script(type=ItemStack.class, options={"Drop"})
 public class Drop extends ActionHandler{
 
 	public void run(Mob m, Map<String, Object> args){

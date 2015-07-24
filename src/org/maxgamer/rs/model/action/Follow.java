@@ -82,7 +82,7 @@ public abstract class Follow extends Action {
 		
 		Location d = getTarget().getLocation();
 		
-		if (d.withinRange(getOwner().getLocation(), getBreakDistance()) == false) {
+		if (d.near(getOwner().getLocation(), getBreakDistance()) == false) {
 			return false;
 		}
 		

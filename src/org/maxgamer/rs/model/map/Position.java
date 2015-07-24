@@ -54,7 +54,7 @@ public class Position {
 	 * @param max the max distance
 	 * @return true for less than or equal distance, false otherwise.
 	 */
-	public boolean withinRange(Position p, int max) {
+	public boolean near(Position p, int max) {
 		return distanceSq(p) <= max * max;
 	}
 	

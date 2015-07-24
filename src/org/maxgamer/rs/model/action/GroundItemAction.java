@@ -39,7 +39,8 @@ public class GroundItemAction extends Action {
 		map.put("item", item);
 		map.put("option", option);
 		
-		ScriptSpace ss = Core.getScripts().get(getOwner(), this, map, "ground", item.getItem().getName(), option);
+		//ScriptSpace ss = Core.getScripts().get(getOwner(), this, map, "ground", item.getItem().getName(), option);
+		ScriptSpace ss = Core.getScripts().get(getOwner(), this, map, item, item.getItem().getId(), item.getItem().getName(), option);
 		if(ss == null){
 			if(getOwner() instanceof Client){
 				((Client) getOwner()).sendMessage(option + " not implemented.");

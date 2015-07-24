@@ -61,10 +61,21 @@ public class WeightedPicker<T extends Weighted> {
 	
 	/**
 	 * Creates a new weighted picker.
+	 */
+	public WeightedPicker() {
+	}
+	
+	@SuppressWarnings("unchecked")
+	/**
+	 * Creates a new weighted picker.
 	 * @param options The predefined set of Weighted objects which can be
 	 *        selected.
 	 */
-	public WeightedPicker() {
+	public WeightedPicker(T... options){
+		this();
+		for(T w : options){
+			this.add(w);
+		}
 	}
 	
 	/**

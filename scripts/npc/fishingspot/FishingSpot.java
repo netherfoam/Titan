@@ -5,21 +5,31 @@ package npc.fishingspot;
 
 import java.util.Map;
 
+import org.maxgamer.rs.model.action.Action;
 import org.maxgamer.rs.model.entity.mob.Animation;
+import org.maxgamer.rs.model.entity.mob.InventoryHolder;
 import org.maxgamer.rs.model.entity.mob.Mob;
+import org.maxgamer.rs.model.entity.mob.facing.Facing;
 import org.maxgamer.rs.model.entity.mob.npc.NPC;
+import org.maxgamer.rs.model.entity.mob.npc.loot.CommonLootItem;
+import org.maxgamer.rs.model.entity.mob.npc.loot.LootItem;
+import org.maxgamer.rs.model.entity.mob.npc.loot.WeightedPicker;
+import org.maxgamer.rs.model.item.ItemStack;
+import org.maxgamer.rs.model.item.inventory.Container;
+import org.maxgamer.rs.model.item.inventory.ContainerException;
+import org.maxgamer.rs.model.skill.SkillType;
 import org.maxgamer.rs.network.Client;
 import org.maxgamer.rs.script.ActionHandler;
-import org.maxgamer.rs.script.Only;
+import org.maxgamer.rs.script.Script;
 
 import co.paralleluniverse.fibers.SuspendExecution;
 
 /**
  * @author netherfoam
  */
-
+@Script(type=NPC.class, names="Fishing spot")
 public class FishingSpot extends ActionHandler {
-	private enum Fish {
+	private static enum Fish {
 	    SHRIMP(317, 10, 1),
 	    SARDINE(327, 20, 5),
 	    HERRING(345, 30, 10),
@@ -40,51 +50,80 @@ public class FishingSpot extends ActionHandler {
 	    CAVE_FISH(15264, 300, 85);
 
 	    private final int id;
-	    private final int xp;
-	    private final int level;
 
 	    private Fish(int id, int xp, int level) {
 	        this.id = id;
-	        this.xp = xp;
-	        this.level = level;
+	    }
+	    
+	    public ItemStack item(){
+	    	return ItemStack.create(this.id);
+	    }
+	    
+	    public CommonLootItem loot(double weight){
+	    	return new CommonLootItem(this.item(), weight);
 	    }
 	}
 	
-	private enum Type {
-	    NET_NET_AND_BAIT("Net", 316, new Animation(621), 303, -1, Fish.SHRIMP, Fish.ANCHOVIES),
-	    BAIT_NET_AND_BAIT("Bait", 316, new Animation(622), 307, 313, Fish.SARDINE, Fish.HERRING),
-	    LURE_LURE_AND_BAIT("Lure", 317, new Animation(622), 309, 314, Fish.TROUT, Fish.SALMON),
-	    BAIT_LURE_AND_BAIT("Bait", 317, new Animation(622), 307, 313, Fish.PIKE, Fish.CAVE_FISH),
-	    CAGE_CAGE_AND_HARPOON("Cage", 321, new Animation(619), 301, -1, Fish.LOBSTER),
-	    HARPOON_CAGE_AND_HARPOON("Harpoon", 321, new Animation(618), 311, -1, Fish.TUNA, Fish.SWORDFISH, Fish.MONKFISH),
-	    BIG_NET_NET_AND_HARPOON("Net", 322, new Animation(621), 305, -1, Fish.MACKEREL, Fish.COD, Fish.BASS),
-	    HARPOON_NET_AND_HARPOON("Harpoon", 322, new Animation(618), 311, -1, Fish.SHARK);
-	    
-	    public static Type forNPC(int id, String option){
-	    	//TODO: Small optimisation available here
-	    	for(Type t : Type.values()){
-	    		if(t.npcId == id && t.option.equalsIgnoreCase(option)){
-	    			return t;
-	    		}
-	    	}
-	    	return null;
-	    }
-
-	    private final int npcId;
-	    private final int item;
-	    private final int bait;
-	    private final String option;
-	    private final Animation animation;
-	    private final Fish[] fish;
-
-	    private Type(String option, int npcId, Animation animation, int item, int bait, Fish... fish) {
-	        this.npcId = npcId;
-	        this.item = item;
-	        this.bait = bait;
-	        this.fish = fish;
-	        this.animation = animation;
-	        this.option = option;
-	    }
+	private static class BaitType{
+		/**
+		 * Compatible NPCs
+		 */
+		private int[] npcIds;
+		private String option;
+		private WeightedPicker<LootItem> loots;
+		private Animation animation;
+	    private int level;
+	    private double xp;
+	    private ItemStack tool;
+		
+		public BaitType(int[] npcs, String option, ItemStack tool, Animation animation, int level, double xp, LootItem...options){
+			this.npcIds = npcs;
+			this.option = option;
+			this.animation = animation;
+			this.level = level;
+			this.xp = xp;
+			this.loots = new WeightedPicker<LootItem>(options);
+			this.tool = tool;
+		}
+	}
+	
+	private static ItemStack NET = ItemStack.create(303);
+	private static ItemStack ROD = ItemStack.create(307);
+	private static ItemStack CAGE = ItemStack.create(301);
+	private static ItemStack HARPOON = ItemStack.create(311);
+	
+	private static BaitType[] types;
+	
+	static{
+		types = new BaitType[]{
+				//Bait and Lure fishing spots TODO: There are loads of these that aren't done yet.
+				new BaitType(new int[]{233, 234, 235, 236}, "Bait", NET, new Animation(621), 1, 10, Fish.SHRIMP.loot(50)),
+				
+				new BaitType(new int[]{309, 310, 311, 312, 313, 314, 315, 316, 317, 318, 328, 329, 331}, "Lure", ROD, new Animation(622), 20, 50, Fish.TROUT.loot(50), Fish.SALMON.loot(50)),
+				new BaitType(new int[]{309, 310, 311, 312, 313, 314, 315, 316, 317, 318, 328, 329, 331}, "Bait", ROD, new Animation(622), 25, 60, Fish.PIKE.loot(50), Fish.CAVE_FISH.loot(50)),
+				
+				new BaitType(new int[]{319, 320, 321, 322, 323, 324, 325, 326, 327, 328, 330, 332, 334}, "Net", NET, new Animation(622), 1, 10, Fish.SHRIMP.loot(50), Fish.ANCHOVIES.loot(50)), 
+				new BaitType(new int[]{319, 320, 321, 322, 323, 324, 325, 326, 327, 328, 330, 332, 334}, "Bait", ROD, new Animation(622), 5, 10, Fish.SARDINE.loot(50), Fish.HERRING.loot(50)), 
+				
+				
+				//new BaitType(??, "Cage", new Animation(619), Fish.LOBSTER.loot(50)),
+				
+				new BaitType(new int[]{312, 333}, "Cage", CAGE, new Animation(619), 40, 90, Fish.LOBSTER.loot(50)),
+				new BaitType(new int[]{312, 333}, "Harpoon", HARPOON, new Animation(618), 50, 100, Fish.SWORDFISH.loot(50), Fish.TUNA.loot(50)),
+		};
+	}
+	
+	public static BaitType getType(int npc, String option){
+		for(BaitType t : types){
+			for(int i : t.npcIds){
+				if(i == npc){
+					if(t.option.equalsIgnoreCase(option)){
+						return t;
+					}
+				}
+			}
+		}
+		return null;
 	}
 	
 	@Override
@@ -92,12 +131,55 @@ public class FishingSpot extends ActionHandler {
 		NPC target = (NPC) args.get("target");
 		String option = (String) args.get("option");
 		
-		Type t = Type.forNPC(target.getId(), option);
+		BaitType t = getType(target.getId(), option);
 		if(t == null){
 			if(mob instanceof Client){
-				((Client) mob).sendMessage("Unimplemented fish type");
+				((Client) mob).sendMessage("That Fish isn't implemented. Ask a developer or an administrator to code it!");
 			}
 			return;
 		}
+		
+		mob.setFacing(Facing.face(target.getLocation()));
+		
+		if(t.level > mob.getSkills().getLevel(SkillType.FISHING, true)){
+			if(mob instanceof Client){
+				((Client) mob).sendMessage("You need a fishing level of " + t.level + " for that!");
+			}
+			return;
+		}
+		
+		Container inv = null;
+		if(mob instanceof InventoryHolder){
+			inv = ((InventoryHolder) mob).getInventory();
+			
+			if(t.tool != null && inv.contains(t.tool) == false){
+				if(mob instanceof Client){
+					((Client) mob).sendMessage("You need a " + t.tool.getName().toLowerCase() + " to fish there.");
+				}
+				return;
+			}
+		}
+		
+		while((inv == null || inv.isFull() == false) && mob.getLocation().near(target.getLocation(), 1) && target.isVisible(mob)){
+			mob.animate(t.animation, 10);
+			Action.wait(3);
+			
+			if(inv != null){
+				ItemStack loot = t.loots.next().getItemStack();
+				if(loot != null){
+					try{
+						inv.add(loot);
+						if(mob instanceof Client){
+							((Client) mob).sendMessage("You " + t.option.toLowerCase() + " a " + loot.getName() + ".");
+						}
+						mob.getSkills().addExp(SkillType.FISHING, t.xp);
+					}
+					catch(ContainerException e){
+						return;
+					}
+				}
+			}
+		}
+		
 	}
 }

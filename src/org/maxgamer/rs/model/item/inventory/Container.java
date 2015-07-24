@@ -749,8 +749,21 @@ public abstract class Container implements Cloneable, Iterable<ItemStack>, YMLSe
 	 * @return True if this inventory contains nothing.
 	 */
 	public final synchronized boolean isEmpty() {
-		for (ItemStack i : this.getItems()) {
-			if (i != null) {
+		for(int i = this.getSize() - 1; i >= 0; i--){
+			if(this.get(i) != null){
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Returns true if this inventory has at least one completely empty slot
+	 * @return True if this inventory has at least one completely empty slot
+	 */
+	public final synchronized boolean isFull() {
+		for(int i = this.getSize() - 1; i >= 0; i--){
+			if(this.get(i) == null){
 				return false;
 			}
 		}

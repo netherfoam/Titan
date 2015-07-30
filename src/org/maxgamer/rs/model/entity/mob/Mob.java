@@ -608,4 +608,8 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 * @return
 	 */
 	public abstract String getName();
+	
+	public void sendMessage(String msg){
+		//Empty
+	}
 }

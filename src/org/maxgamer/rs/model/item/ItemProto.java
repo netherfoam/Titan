@@ -1,6 +1,7 @@
 package org.maxgamer.rs.model.item;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.nio.ByteBuffer;
@@ -30,6 +31,63 @@ public class ItemProto extends Definition {
 	private static HashMap<Integer, ItemProto> definitions = new HashMap<Integer, ItemProto>(2000);
 	
 	/**
+	 * Forces a load of the given result set into a proto item
+	 * @param con
+	 * @param rs
+	 * @return
+	 * @throws SQLException
+	 * @throws IOException
+	 */
+	private static ItemProto from(Connection con, ResultSet rs) throws SQLException, IOException{
+		ItemProto proto = new ItemProto(rs.getInt("id"));
+		try {
+			proto.load(rs);
+			
+			String reqs = proto.getString("requirements");
+			
+			if (reqs != null && reqs.isEmpty() == false) {
+				for (String s : reqs.split(",")) {
+					//First is skill id
+					//second is level
+					String[] parts = s.split(":");
+					int skillId = Integer.parseInt(parts[0]);
+					int skillLvl = Integer.parseInt(parts[1]);
+					
+					SkillType t;
+					try {
+						t = SkillType.values()[skillId];
+					}
+					catch (IndexOutOfBoundsException e) {
+						// Bad skill ID
+						System.out.println("Item id " + rs.getInt("id") + " (" + proto.name + ") has a bad skill ID for a requirement (Given " + skillId + ")");
+						continue;
+					}
+					
+					proto.requirements.put(t, skillLvl);
+				}
+			}
+			
+			PreparedStatement ps = con.prepareStatement("SELECT * FROM item_weapons WHERE id = " + proto.getId());
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				Weapon w = new Weapon();
+				w.load(rs);
+				proto.weapon = w;
+			}
+		}
+		catch (SQLException e) {
+			//Is there anything we should be doing here?
+			throw e;
+		}
+		
+		Archive a = Core.getCache().getArchive(IDX.ITEMS, proto.getId() >> 8);
+		ByteBuffer bb = a.get(proto.getId() & 0xFF);
+		if (bb == null) throw new FileNotFoundException("ItemID " + proto.getId() + " not available in cache.");
+		proto.readOpcodeValues(bb);
+		
+		return proto;
+	}
+	/**
 	 * Fetch the item definition by id.
 	 * @param id the id
 	 * @return the definition or null if not loaded
@@ -39,58 +97,12 @@ public class ItemProto extends Definition {
 		ItemProto proto = definitions.get(id);
 		if (proto == null) {
 			try {
-				proto = new ItemProto(id);
-				try {
-					Connection con = Core.getWorldDatabase().getConnection();
-					PreparedStatement ps = con.prepareStatement("SELECT * FROM item_defs WHERE id = " + id);
-					ResultSet rs = ps.executeQuery();
-					if (rs.next()) {
-						proto.load(rs);
-						
-						String reqs = proto.getString("requirements");
-						
-						if (reqs != null && reqs.isEmpty() == false) {
-							for (String s : reqs.split(",")) {
-								//First is skill id
-								//second is level
-								String[] parts = s.split(":");
-								int skillId = Integer.parseInt(parts[0]);
-								int skillLvl = Integer.parseInt(parts[1]);
-								
-								SkillType t;
-								try {
-									t = SkillType.values()[skillId];
-								}
-								catch (IndexOutOfBoundsException e) {
-									// Bad skill ID
-									System.out.println("Item id " + id + " (" + proto.name + ") has a bad skill ID for a requirement (Given " + skillId + ")");
-									continue;
-								}
-								
-								proto.requirements.put(t, skillLvl);
-							}
-						}
-					}
-					rs.close();
-					ps.close();
-					
-					ps = con.prepareStatement("SELECT * FROM item_weapons WHERE id = " + id);
-					rs = ps.executeQuery();
-					if (rs.next()) {
-						Weapon w = new Weapon();
-						w.load(rs);
-						proto.weapon = w;
-					}
+				Connection con = Core.getWorldDatabase().getConnection();
+				PreparedStatement ps = con.prepareStatement("SELECT * FROM item_defs WHERE id = " + id);
+				ResultSet rs = ps.executeQuery();
+				if (rs.next()) {
+					proto = ItemProto.from(con, rs);
 				}
-				catch (SQLException e) {
-					//Is there anything we should be doing here?
-					throw e;
-				}
-				
-				Archive a = Core.getCache().getArchive(IDX.ITEMS, id >> 8);
-				ByteBuffer bb = a.get(id & 0xFF);
-				if (bb == null) throw new FileNotFoundException("ItemID " + id + " not available in cache.");
-				proto.readOpcodeValues(bb);
 			}
 			catch (Exception e) {
 				throw new RuntimeException(e);
@@ -187,6 +199,39 @@ public class ItemProto extends Definition {
 	private ItemProto(int id) {
 		super("item_definitions");
 		this.id = (short) id;
+	}
+	
+	public int getCharges(){
+		int start = this.name.lastIndexOf('(');
+		int end = this.name.lastIndexOf(')');
+		
+		if(start == -1 || end == -1 || start > end) throw new RuntimeException("Item does not have charges.");
+		
+		try{
+			return Integer.parseInt(this.name.substring(start + 1, end));
+		}
+		catch(NumberFormatException e){
+			throw new RuntimeException("Item does not have charges.");
+		}
+	}
+	
+	public ItemProto toCharges(int n){
+		try{
+			int end = this.name.lastIndexOf('(');
+			String next = this.name.substring(0, end) + '(' + n + ')';
+			
+			Connection con = Core.getWorldDatabase().getConnection();
+			PreparedStatement ps = con.prepareStatement("SELECT * FROM item_defs WHERE name = ?");
+			ps.setString(1, next);
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				return ItemProto.from(con, rs);
+			}
+			throw new RuntimeException(next + " item is not in database. Cannot set charges to " + n);
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	public int getId() {

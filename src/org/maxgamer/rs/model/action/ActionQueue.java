@@ -27,13 +27,6 @@ public class ActionQueue extends FastTickable {
 	private LinkedList<Action> queue = new LinkedList<>(); //FIFO queue
 	
 	/**
-	 * The last tick that this queue was ticked. This is used for safety
-	 * checking. If this queue is ticked twice on the same server tick, then an
-	 * Exception is thrown. This variable is used to detect the tick.
-	 */
-	//private int lastTick = -1;
-	
-	/**
 	 * Constructs a new ActionQueue for the given mob.
 	 * @param owner the mob who this queue will belong to.
 	 * @throws NullPointerException if owner is null
@@ -78,9 +71,6 @@ public class ActionQueue extends FastTickable {
 				//We can assume that if the queue is not empty, we are currently
 				//subscribed to the server's ticker for the next tick.
 				
-				//TODO: This may cause consistency issues, eg we may have already been queued
-				//if there is a bug in the synchronization of this class.
-				//Core.getServer().getTicker().submit(1, this);
 				if (isQueued() == false) {
 					this.queue();
 				}

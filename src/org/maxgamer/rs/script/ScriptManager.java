@@ -1,60 +1,53 @@
 package org.maxgamer.rs.script;
 
 import java.io.File;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.Map;
-import java.util.Map.Entry;
 
-import org.maxgamer.io.ScriptLoader;
-import org.maxgamer.io.ScriptLoader.ClassTransformer;
+import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.action.Action;
 import org.maxgamer.rs.model.entity.mob.Mob;
 
 import co.paralleluniverse.fibers.SuspendExecution;
-import co.paralleluniverse.fibers.instrument.QuasarInstrumentor;
 
 public class ScriptManager {
 	/**
-	 * Quick class transformer to request that Quasar parse classes first, because we manage
-	 * to somehow skip the JavaAgent otherwise.
-	 */
-	private ClassTransformer quasar = new ClassTransformer() {
-		@Override
-		public byte[] transform(String clazz, byte[] src) {
-			QuasarInstrumentor inst = new QuasarInstrumentor(Thread.currentThread().getContextClassLoader());
-			return inst.instrumentClass(clazz, src);
-		}
-	};
-	
-	/**
 	 * The scripts we've loaded
 	 */
-	private HashMap<String, Class<ActionHandler>> scripts;
+	private Collection<Class<? extends ActionHandler>> scripts;
+	
+	private ScriptClassLoader loader;
 	
 	/**
 	 * Constructs a script manager for the given folder
 	 * @param folder the folder we're getting scripts from
 	 */
 	public ScriptManager() {
-		this.scripts = new HashMap<>();
+		this.scripts = new ArrayList<>();
+		this.loader = new ScriptClassLoader(Core.CLASS_LOADER);
 	}
 	
 	/**
 	 * Loads all of the scripts from the given folder
 	 * @param folder the folder to load all of the scripts from
 	 */
+	@SuppressWarnings("unchecked")
 	public void load(File folder) {
-		ScriptLoader<ActionHandler> s = new ScriptLoader<ActionHandler>(ActionHandler.class, quasar);
-		HashMap<File, Class<ActionHandler>> files = s.getScripts(folder);
+		//ScriptLoader<ActionHandler> s = new ScriptLoader<ActionHandler>(ActionHandler.class, quasar);
+		loader.reload(folder);
+		Collection<Class<?>> classes = loader.getClasses(); 
 		
-		for (Entry<File, Class<ActionHandler>> entry : files.entrySet()) {
-			if(entry.getValue().getAnnotation(Script.class) == null){
-				Log.warning("Script " + entry.getKey() + " does not have an @Script annotation, it will not be loaded.");
+		for (Class<?> c : classes) {
+			if(isSuperClass(c, ActionHandler.class) == false) continue;
+			if(c.getAnnotation(Script.class) == null){
+				Log.warning("Script ActionHandler " + c.getName() + " does not have an @Script annotation, it will not be loaded.");
 				continue;
 			}
 			
-			scripts.put(entry.getKey().getPath().toLowerCase(), entry.getValue());
+			scripts.add((Class<? extends ActionHandler>)c);
 		}
 	}
 	
@@ -90,7 +83,7 @@ public class ScriptManager {
 	public boolean has(Object target, int id, String name, String option) {
 		if(target == null) throw new NullPointerException("Class may not be null");
 		
-		for(Class<ActionHandler> handler : this.scripts.values()){
+		for(Class<? extends ActionHandler> handler : this.scripts){
 			Script s = handler.getAnnotation(Script.class);
 			
 			if(s.type().isInstance(target) == false){
@@ -129,10 +122,10 @@ public class ScriptManager {
 	 *        if none succeed
 	 */
 	public ScriptSpace get(Mob mob, Action a, Map<String, Object> args, Object target, int id, String name, String option) {
-		Class<ActionHandler> clazz = null;
+		Class<? extends ActionHandler> clazz = null;
 		if(target == null) throw new NullPointerException("Target may not be null");
 		
-		for(Class<ActionHandler> handler : this.scripts.values()){
+		for(Class<? extends ActionHandler> handler : this.scripts){
 			Script s = handler.getAnnotation(Script.class);
 			
 			if(s.type().isInstance(target) == false){
@@ -177,5 +170,52 @@ public class ScriptManager {
 			t.printStackTrace();
 			return null;
 		}
+	}
+	
+	/**
+	 * Returns true if the given base class is a subclass of the given
+	 * superclass.
+	 * @param base The base class
+	 * @param superClazz The class which might be a super class
+	 * @return true if the given base class is a subclass of the given
+	 *         superclass.
+	 */
+	private static boolean isSuperClass(Class<?> base, Class<?> superClazz) {
+		while (base != null) {
+			if (base.equals(superClazz)) {
+				return true;
+			}
+			base = base.getSuperclass();
+		}
+		return false;
+	}
+	
+	/**
+	 * Returns true if the given base class implements the given interface
+	 * @param interfac the interface class
+	 * @param child the base class
+	 * @return true if the base class implements the interface class, else false
+	 */
+	private static boolean isInterface(Class<?> interfac, Class<?> child) {
+		LinkedList<Class<?>> interfaces = new LinkedList<Class<?>>();
+		Class<?>[] starters = child.getInterfaces();
+		
+		for (int i = 0; i < starters.length; i++) {
+			interfaces.add(starters[i]);
+		}
+		
+		while (interfaces.isEmpty() == false) {
+			Class<?> face = interfaces.pop();
+			if (face.getName().equals(interfac.getName())) {
+				return true;
+			}
+			else {
+				starters = face.getInterfaces();
+				for (int i = 0; i < starters.length; i++) {
+					interfaces.add(starters[i]);
+				}
+			}
+		}
+		return false;
 	}
 }

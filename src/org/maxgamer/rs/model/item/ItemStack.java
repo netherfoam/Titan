@@ -90,6 +90,14 @@ public class ItemStack implements Comparable<ItemStack>, YMLSerializable {
 		return proto;
 	}
 	
+	public int getCharges(){
+		return getDefinition().getCharges();
+	}
+	
+	public ItemStack setCharges(int charges){
+		return ItemStack.create(getDefinition().toCharges(charges).getId(), getAmount(), getHealth());
+	}
+	
 	public Weapon getWeapon() {
 		return getDefinition().getWeapon();
 	}

@@ -1,0 +1,3 @@
+APIs:
+	- Messaging for mobs/players that doesn' require instanceof check
+	

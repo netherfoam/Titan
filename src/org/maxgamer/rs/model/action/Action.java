@@ -3,6 +3,7 @@ package org.maxgamer.rs.model.action;
 import java.util.LinkedList;
 
 import org.maxgamer.rs.core.Core;
+import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.entity.mob.Mob;
 
 import co.paralleluniverse.fibers.Fiber;
@@ -68,7 +69,14 @@ public abstract class Action{
 	
 				@Override
 				public Void run() throws SuspendExecution{
-					Action.this.run();
+					try{
+						Action.this.run();
+					}
+					catch(Exception e){
+						Log.warning("There was an Exception thrown while running an Action. Details:");
+						Log.warning("Mob: " + Action.this.getOwner() + ", Action: " + Action.this);
+						e.printStackTrace();
+					}
 					//Notify the action queue this action has ended
 					getOwner().getActions().end(Action.this);
 					return null;

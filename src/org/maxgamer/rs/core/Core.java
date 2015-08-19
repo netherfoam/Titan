@@ -19,6 +19,7 @@ import org.maxgamer.rs.cache.reference.Reference;
 import org.maxgamer.rs.cache.reference.ReferenceTable;
 import org.maxgamer.rs.command.ConsoleSender;
 import org.maxgamer.rs.core.server.Server;
+import org.maxgamer.rs.lib.Files;
 import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.lib.log.Logger.LogLevel;
 import org.maxgamer.rs.model.entity.mob.combat.RangeAttack;
@@ -287,7 +288,23 @@ public class Core {
 	 */
 	public synchronized static FileConfig getWorldConfig() {
 		if (worldCfg == null) {
-			worldCfg = new FileConfig(new File("config" + File.separatorChar + "world.yml"));
+			File cfgFile = new File("config" + File.separatorChar + "world.yml");
+			if(cfgFile.exists() == false){
+				File dist = new File("config" + File.separatorChar + "world.yml.dist");
+				if(dist.exists()){
+					try{
+						Files.copy(dist, cfgFile);
+					}
+					catch(IOException e){
+						Log.warning("Could not copy " + dist + " to " + cfgFile);
+					}
+				}
+				else{
+					Log.warning(dist + " does not exist. Can't copy server config to " + cfgFile + "!");
+				}
+			}
+			
+			worldCfg = new FileConfig(cfgFile);
 			try {
 				worldCfg.reload();
 			}

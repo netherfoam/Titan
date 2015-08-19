@@ -16,7 +16,8 @@ Code Quality:
 	- YML configuration properly
 		- Constructors?
 	- Dialogue interfaces
-	
+	- Replace all usage of Eloquent with DatabaseModel
+	- Search for all unused classes
 		
 Alva:
 	- Duel Arena Module

@@ -5,7 +5,6 @@ import java.util.HashMap;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;
 import org.maxgamer.rs.model.item.ItemStack;
-import org.maxgamer.rs.network.Client;
 import org.maxgamer.rs.script.ScriptSpace;
 
 import co.paralleluniverse.fibers.SuspendExecution;
@@ -42,12 +41,9 @@ public class ItemAction extends Action {
 		map.put("option", option);
 		map.put("slot", slot);
 		
-		//ScriptSpace ss = Core.getScripts().get(getOwner(), this, map, "inventory", item.getName(), option);
 		ScriptSpace ss = Core.getScripts().get(getOwner(), this, map, item, item.getId(), item.getName(), option);
 		if(ss == null){
-			if(getOwner() instanceof Client){
-				((Client) getOwner()).sendMessage(option + " not implemented.");
-			}
+			getOwner().sendMessage(option + " not implemented.");
 			return;
 		}
 		
@@ -61,6 +57,6 @@ public class ItemAction extends Action {
 	
 	@Override
 	protected boolean isCancellable() {
-		return true;
+		return false;
 	}
 }

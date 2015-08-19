@@ -360,7 +360,9 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	
 	/**
 	 * Animates the mob with the given animation and priority. This is a
-	 * shorthand method for accessing the update mask.
+	 * shorthand method for accessing the update mask. Standard levels
+	 * of priority are 5 for eat/drink, 10 for bury/pick, 50 for death,
+	 * 20 for attack, 5 for defence
 	 * @param emo the animation id
 	 * @param priority the priority of the animation. Higher priority animations
 	 *        will override lower ones.
@@ -369,6 +371,15 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 		animate(new Animation(emo), priority);
 	}
 	
+	/**
+	 * Animates the mob with the given animation and priority. This is a
+	 * shorthand method for accessing the update mask. Standard levels
+	 * of priority are 5 for eat/drink, 10 for bury/pick, 50 for death,
+	 * 20 for attack, 5 for defence
+	 * @param anim the animation
+	 * @param priority the priority of the animation. Higher priority animations
+	 *        will override lower ones.
+	 */
 	public void animate(Animation anim, int priority){
 		getUpdateMask().setAnimation(anim, priority);
 	}

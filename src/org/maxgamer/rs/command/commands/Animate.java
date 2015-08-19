@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import org.maxgamer.rs.command.CmdName;
 import org.maxgamer.rs.command.PlayerCommand;
-import org.maxgamer.rs.model.entity.mob.Animation;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
 
@@ -21,7 +20,7 @@ public class Animate implements PlayerCommand {
 			return;
 		}
 		int anim = Integer.parseInt(args[0]);
-		p.getUpdateMask().setAnimation(new Animation(anim), 100);
+		p.animate(anim, 100);
 	}
 	
 	@Override

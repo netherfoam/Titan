@@ -140,7 +140,7 @@ public class InventoryInterface extends SideInterface {
 		}
 		
 		ItemAction script = new ItemAction(getPlayer(), s, item, slot);
-		getPlayer().getActions().insertFirst(script);
+		getPlayer().getActions().queue(script);
 	}
 	
 	@Override

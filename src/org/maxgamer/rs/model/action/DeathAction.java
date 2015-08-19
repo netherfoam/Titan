@@ -23,7 +23,7 @@ public class DeathAction extends Action {
 	protected void run() throws SuspendExecution {
 		getOwner().getUpdateMask().setAnimation(anim, 50);
 		
-		wait(anim == null ? 4 : anim.getDuration(true));
+		wait(anim == null ? 3 : anim.getDuration(true));
 		
 		MobDeathEvent e = new MobDeathEvent(getOwner());
 		e.call();

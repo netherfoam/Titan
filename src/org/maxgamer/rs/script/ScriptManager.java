@@ -3,7 +3,6 @@ package org.maxgamer.rs.script;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.Map;
 
 import org.maxgamer.rs.core.Core;
@@ -186,35 +185,6 @@ public class ScriptManager {
 				return true;
 			}
 			base = base.getSuperclass();
-		}
-		return false;
-	}
-	
-	/**
-	 * Returns true if the given base class implements the given interface
-	 * @param interfac the interface class
-	 * @param child the base class
-	 * @return true if the base class implements the interface class, else false
-	 */
-	private static boolean isInterface(Class<?> interfac, Class<?> child) {
-		LinkedList<Class<?>> interfaces = new LinkedList<Class<?>>();
-		Class<?>[] starters = child.getInterfaces();
-		
-		for (int i = 0; i < starters.length; i++) {
-			interfaces.add(starters[i]);
-		}
-		
-		while (interfaces.isEmpty() == false) {
-			Class<?> face = interfaces.pop();
-			if (face.getName().equals(interfac.getName())) {
-				return true;
-			}
-			else {
-				starters = face.getInterfaces();
-				for (int i = 0; i < starters.length; i++) {
-					interfaces.add(starters[i]);
-				}
-			}
 		}
 		return false;
 	}

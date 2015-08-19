@@ -87,6 +87,11 @@ public class ItemProto extends Definition {
 		
 		return proto;
 	}
+	
+	/*public static ItemProto forName(String case_sensitive) {
+		
+	}*/
+	
 	/**
 	 * Fetch the item definition by id.
 	 * @param id the id

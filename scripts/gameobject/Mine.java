@@ -105,7 +105,7 @@ public class Mine extends ActionHandler{
 		}
 		
 		while(obj.getData() > 0){
-			m.getUpdateMask().setAnimation(tool.getAnimation(), 3);
+			m.animate(tool.getAnimation(), 10);
 			
 			Action.wait(harvestTime);
 			

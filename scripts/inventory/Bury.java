@@ -33,7 +33,7 @@ public class Bury extends ActionHandler{
 				
 				//Do an animation action, we continue when it's finished
 				//p.getActions().insertBefore(self, new AnimateAction(p, 827, false));
-				mob.animate(827, 5);
+				mob.animate(827, 10);
 				if(mob instanceof Client){
 					((Client) mob).getProtocol().sendSound(2738, 0, 1);
 				}

@@ -9,6 +9,7 @@ import java.util.Scanner;
 
 import org.maxgamer.rs.command.CommandManager;
 import org.maxgamer.rs.command.CommandSender;
+import org.maxgamer.rs.lib.Files;
 import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.logonv4.LSOutgoingPacket;
 import org.maxgamer.rs.logonv4.ProfileManager;
@@ -62,8 +63,25 @@ public class LogonServer extends ServerHost<WorldHost> {
 	}
 	
 	public static void init(CommandManager commands) throws IOException, ConnectionException {
-		FileConfig config = new FileConfig(new File("config", "logon.yml"));
+		File cfgFile = new File("config", "logon.yml");
+		if(cfgFile.exists() == false){
+			File dist = new File("config" + File.separatorChar + "logon.yml.dist");
+			if(dist.exists()){
+				try{
+					Files.copy(dist, cfgFile);
+				}
+				catch(IOException e){
+					Log.warning("Could not copy " + dist + " to " + cfgFile);
+				}
+			}
+			else{
+				Log.warning(dist + " does not exist. Can't copy server config to " + cfgFile + "!");
+			}
+		}
+		
+		FileConfig config = new FileConfig(cfgFile);
 		config.reload();
+		
 		LOGON = new LogonServer(config);
 		LOGON.start();
 		commands.load(new File("bin" + File.separator + "org" + File.separator + "maxgamer" + File.separator + "rs" + File.separator + "logonv4" + File.separator + "logon" + File.separator + "commands"));

@@ -65,8 +65,6 @@ public class ActionQueue extends FastTickable {
 		
 		synchronized (queue) {
 			if (queue.isEmpty()) {
-				//assert Core.getServer().getTicker().isSubmitted(this) == false : "Empty queue, but is submitted already?";
-				
 				queue.add(w);
 				//We can assume that if the queue is not empty, we are currently
 				//subscribed to the server's ticker for the next tick.
@@ -78,8 +76,26 @@ public class ActionQueue extends FastTickable {
 				assert isQueued(w) : "Queued task but task is not queued";
 			}
 			else {
+				//If the new action is not cancellable (A foreground'ish action, like eating)
+				//then it should be prioritised over actions which are cancellable (background'ish
+				//actions, like walking & combat)
+				if(w.isCancellable() == false){
+					for(Action a : this.queue){
+						if(a.isCancellable()){
+							this.insertBefore(a, w);
+							return;
+						}
+						else if(a.isCancellable() == false){
+							//This action shouldn't be run, we're busy!
+							return;
+						}
+					}
+				}
+				
 				queue.add(w);
 			}
+			
+			
 		}
 	}
 	

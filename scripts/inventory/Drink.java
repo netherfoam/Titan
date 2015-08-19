@@ -135,7 +135,7 @@ public class Drink extends ActionHandler{
 			i.apply();
 		}
 		
-		m.animate(829, 3);
-		Action.wait(3);
+		m.animate(829, 5);
+		Action.wait(1);
 	}
 }

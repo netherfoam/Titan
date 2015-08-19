@@ -932,7 +932,8 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 	
 	@Override
 	public int getRespawnTicks() {
-		return 4;
+		//Immediately respawn players.
+		return 0;
 	}
 	
 	/**

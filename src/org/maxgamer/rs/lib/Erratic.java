@@ -47,6 +47,17 @@ public class Erratic {
 		 * double value = 0; do { value = Math.floor(mean + r.nextGaussian() *
 		 * deviation); } while (value < 0 || value > maximum); return value;
 		 */
-		return r.nextDouble() * maximum;
+		
+		int chance = r.nextInt(3);
+		double v = r.nextDouble();
+		while(chance-- > 0){
+			double n = r.nextDouble();
+			if(n + v > 1){
+				continue;
+			}
+			v = v + n;
+		}
+		
+		return v * maximum;
 	}
 }

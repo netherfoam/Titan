@@ -1,14 +1,12 @@
 package org.maxgamer.rs.model.item;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.nio.ByteBuffer;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +20,7 @@ import org.maxgamer.rs.model.entity.mob.Bonus;
 import org.maxgamer.rs.model.entity.mob.combat.AttackStyle;
 import org.maxgamer.rs.model.item.weapon.Weapon;
 import org.maxgamer.rs.model.skill.SkillType;
+import org.maxgamer.structure.dbmodel.Mapping;
 
 /**
  * @author netherfoam
@@ -29,68 +28,15 @@ import org.maxgamer.rs.model.skill.SkillType;
 public class ItemProto extends Definition {
 	/** cached item definitions for later use */
 	private static HashMap<Integer, ItemProto> definitions = new HashMap<Integer, ItemProto>(2000);
+	private static HashMap<String, Integer> names = new HashMap<>();
 	
-	/**
-	 * Forces a load of the given result set into a proto item
-	 * @param con
-	 * @param rs
-	 * @return
-	 * @throws SQLException
-	 * @throws IOException
-	 */
-	private static ItemProto from(Connection con, ResultSet rs) throws SQLException, IOException{
-		ItemProto proto = new ItemProto(rs.getInt("id"));
-		try {
-			proto.load(rs);
-			
-			String reqs = proto.getString("requirements");
-			
-			if (reqs != null && reqs.isEmpty() == false) {
-				for (String s : reqs.split(",")) {
-					//First is skill id
-					//second is level
-					String[] parts = s.split(":");
-					int skillId = Integer.parseInt(parts[0]);
-					int skillLvl = Integer.parseInt(parts[1]);
-					
-					SkillType t;
-					try {
-						t = SkillType.values()[skillId];
-					}
-					catch (IndexOutOfBoundsException e) {
-						// Bad skill ID
-						System.out.println("Item id " + rs.getInt("id") + " (" + proto.name + ") has a bad skill ID for a requirement (Given " + skillId + ")");
-						continue;
-					}
-					
-					proto.requirements.put(t, skillLvl);
-				}
-			}
-			
-			PreparedStatement ps = con.prepareStatement("SELECT * FROM item_weapons WHERE id = " + proto.getId());
-			rs = ps.executeQuery();
-			if (rs.next()) {
-				Weapon w = new Weapon();
-				w.load(rs);
-				proto.weapon = w;
-			}
+	public static ItemProto forName(String name){
+		Integer id = names.get(name);
+		if(id == null){
+			return null;
 		}
-		catch (SQLException e) {
-			//Is there anything we should be doing here?
-			throw e;
-		}
-		
-		Archive a = Core.getCache().getArchive(IDX.ITEMS, proto.getId() >> 8);
-		ByteBuffer bb = a.get(proto.getId() & 0xFF);
-		if (bb == null) throw new FileNotFoundException("ItemID " + proto.getId() + " not available in cache.");
-		proto.readOpcodeValues(bb);
-		
-		return proto;
+		return getDefinition(id);
 	}
-	
-	/*public static ItemProto forName(String case_sensitive) {
-		
-	}*/
 	
 	/**
 	 * Fetch the item definition by id.
@@ -103,10 +49,23 @@ public class ItemProto extends Definition {
 		if (proto == null) {
 			try {
 				Connection con = Core.getWorldDatabase().getConnection();
-				PreparedStatement ps = con.prepareStatement("SELECT * FROM item_defs WHERE id = " + id);
+				PreparedStatement ps = con.prepareStatement("SELECT * from item_defs d LEFT JOIN item_weapons w ON d.id = w.id WHERE d.id = " + id);
 				ResultSet rs = ps.executeQuery();
 				if (rs.next()) {
-					proto = ItemProto.from(con, rs);
+					proto = new ItemProto(id);
+					proto.reload(rs);
+					
+					if(rs.getObject("equipmentType") != null){
+						Weapon w = new Weapon(id);
+						w.reload(rs);
+						proto.weapon = w;
+					}
+					
+					Archive a = Core.getCache().getArchive(IDX.ITEMS, id >> 8);
+					ByteBuffer bb = a.get(id & 0xFF);
+					if (bb == null) throw new FileNotFoundException("ItemID " + id + " not available in cache.");
+					proto.readOpcodeValues(bb);
+					
 				}
 			}
 			catch (Exception e) {
@@ -117,23 +76,24 @@ public class ItemProto extends Definition {
 		return proto;
 	}
 	
-	public static void init(boolean lazy) throws Exception {
-		if (lazy == false) {
-			Connection con = Core.getWorldDatabase().getConnection();
-			PreparedStatement ps = con.prepareStatement("SELECT id FROM item_definitions");
-			ResultSet rs = ps.executeQuery();
-			while (rs.next()) {
-				getDefinition(rs.getInt("id"));
-			}
-			rs.close();
-			ps.close();
+	/**
+	 * Loads all required information. Optionally grabs extra info if the lazy parameter is false
+	 * @param lazy
+	 * @throws Exception
+	 */
+	public static void init() throws Exception {
+		Connection con = Core.getWorldDatabase().getConnection();
+		PreparedStatement ps = con.prepareStatement("SELECT i.id, i.name FROM item_defs i");
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			names.put(rs.getString("i.name"), rs.getInt("i.id"));
 		}
+		rs.close();
+		ps.close();
 	}
 	
+	@Mapping
 	protected short id;
-	
-	/* Database values */
-	protected HashMap<SkillType, Integer> requirements = new HashMap<SkillType, Integer>();
 	
 	/* Cache Values */
 	protected String name;
@@ -201,8 +161,29 @@ public class ItemProto extends Definition {
 	 */
 	private HashMap<Integer, Object> clientScriptData;
 	
+	@Mapping
+	private String examine;
+	@Mapping
+	private boolean tradeable;
+	@Mapping
+	private boolean droppable;
+	@Mapping
+	private long maxStack;
+	@Mapping
+	private int value;
+	@Mapping
+	private int lowAlchemy;
+	@Mapping
+	private int highAlchemy;
+	@Mapping
+	private double weight;
+	@Mapping
+	private boolean noted;
+	@Mapping(serializer = RequirementSerializer.class)
+	protected HashMap<SkillType, Integer> requirements = new HashMap<SkillType, Integer>();
+	
 	private ItemProto(int id) {
-		super("item_definitions");
+		super("item_definitions", "id", id);
 		this.id = (short) id;
 	}
 	
@@ -225,14 +206,7 @@ public class ItemProto extends Definition {
 			int end = this.name.lastIndexOf('(');
 			String next = this.name.substring(0, end) + '(' + n + ')';
 			
-			Connection con = Core.getWorldDatabase().getConnection();
-			PreparedStatement ps = con.prepareStatement("SELECT * FROM item_defs WHERE name = ?");
-			ps.setString(1, next);
-			ResultSet rs = ps.executeQuery();
-			if (rs.next()) {
-				return ItemProto.from(con, rs);
-			}
-			throw new RuntimeException(next + " item is not in database. Cannot set charges to " + n);
+			return ItemProto.forName(next);
 		}
 		catch (Exception e) {
 			throw new RuntimeException(e);
@@ -274,35 +248,35 @@ public class ItemProto extends Definition {
 	}
 	
 	public String getExamine() {
-		return getString("examine");
+		return examine;
 	}
 	
 	public boolean isTradeable() {
-		return getBoolean("tradeable");
+		return tradeable;
 	}
 	
 	public boolean isDroppable() {
-		return getBoolean("droppable");
+		return droppable;
 	}
 	
 	public long getMaxStack() {
-		return getLong("maxStack");
+		return maxStack;
 	}
 	
 	public int getValue() {
-		return getInt("value");
+		return value;
 	}
 	
 	public int getLowAlchemy() {
-		return getInt("lowAlchemy");
+		return lowAlchemy;
 	}
 	
 	public int getHighAlchemy() {
-		return getInt("highAlchemy");
+		return highAlchemy;
 	}
 	
 	public double getWeight() {
-		return getDouble("weight");
+		return weight;
 	}
 	
 	public int getTeamId() {

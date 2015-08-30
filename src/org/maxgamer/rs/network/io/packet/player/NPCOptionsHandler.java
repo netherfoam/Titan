@@ -62,7 +62,7 @@ public class NPCOptionsHandler implements PacketProcessor<Player> {
 			case EXAMINE:
 				int npcId = packet.readShort();
 				try {
-					NPCDefinition d = NPC.getDefinition(npcId);
+					NPCDefinition d = NPCDefinition.getDefinition(npcId);
 					player.sendMessage(d.getExamine());
 					
 					//TODO DEBUG: Send the player the options they can click on the NPC

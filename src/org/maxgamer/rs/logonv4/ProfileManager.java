@@ -5,9 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import net.crackstation.hash.PasswordHash;
-
-import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.structure.sql.Database;
 
 /**
@@ -39,8 +36,8 @@ public class ProfileManager {
 		ResultSet rs = ps.executeQuery();
 		
 		if (rs.next()) {
-			p = new Profile(this);
-			p.load(rs);
+			p = new Profile(this, user);
+			p.reload(rs);
 		}
 		rs.close();
 		ps.close();
@@ -60,21 +57,7 @@ public class ProfileManager {
 	 *         or the database is unavailable
 	 */
 	public Profile create(String user, String pass, String ip) throws SQLException {
-		try {
-			pass = Profile.PASS_HASH_PREFIX + PasswordHash.hash(pass);
-		}
-		catch (Exception e) {
-			//In this case, pass has not changed and will be used later.
-			Log.severe("Failed to hash password");
-			e.printStackTrace();
-		}
-		
-		Profile p = new Profile(this);
-		p.setField("user", user);
-		p.setField("user_clean", user.toLowerCase());
-		p.setField("pass", pass);
-		p.setField("lastSeen", System.currentTimeMillis());
-		p.setField("lastIp", ip);
+		Profile p = new Profile(this, user, pass, System.currentTimeMillis(), ip);
 		
 		Connection con = db.getConnection();
 		p.insert(con);

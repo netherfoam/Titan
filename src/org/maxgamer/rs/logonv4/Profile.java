@@ -7,13 +7,14 @@ import java.sql.SQLException;
 import net.crackstation.hash.PasswordHash;
 
 import org.maxgamer.rs.lib.log.Log;
-import org.maxgamer.structure.dbmodel.DatabaseModel;
+import org.maxgamer.structure.dbmodel.Mapping;
+import org.maxgamer.structure.dbmodel.Transparent;
 
 /**
  * Represents a user profile, one that may be offline or online.
  * @author netherfoam
  */
-public class Profile extends DatabaseModel {
+public class Profile extends Transparent {
 	/**
 	 * The prefix we use for passwords in the database. If a password does not
 	 * start with this prefix, then we can assume the password is not hashed and
@@ -49,17 +50,34 @@ public class Profile extends DatabaseModel {
 	
 	private ProfileManager manager;
 	
+	@Mapping
+	private String user;
+	@Mapping
+	private String user_clean;
+	@Mapping
+	private String pass;
+	@Mapping
+	private String lastIp;
+	@Mapping
+	private long lastSeen;
+	@Mapping
+	private int rights;
+	
 	/**
 	 * Private constructor
 	 */
-	protected Profile(ProfileManager m) {
-		super("profiles", "user_clean");
+	protected Profile(ProfileManager m, String name) {
+		super("profiles", new String[]{"user_clean"}, new Object[]{name.toLowerCase()});
 		this.manager = m;
+		this.user_clean = name.toLowerCase();
+		this.user = name;
 	}
 	
-	protected Object setField(String field, Object o) {
-		//This makes the method protected, so that ProfileManager may access it.
-		return super.setField(field, o);
+	public Profile(ProfileManager m, String name, String pass, long lastSeen, String lastIp){
+		this(m, name);
+		this.setPass(pass);
+		this.setLastSeen(lastSeen);
+		this.setLastIP(lastIp);
 	}
 	
 	/**
@@ -67,7 +85,7 @@ public class Profile extends DatabaseModel {
 	 * @return the name of this player
 	 */
 	public String getName() {
-		return getString("user");
+		return user;
 	}
 	
 	/**
@@ -76,7 +94,7 @@ public class Profile extends DatabaseModel {
 	 *         spaces ' '
 	 */
 	public String getCleanName() {
-		return getString("user_clean");
+		return user_clean;
 	}
 	
 	/**
@@ -88,7 +106,7 @@ public class Profile extends DatabaseModel {
 	 * @return true if the password is valid
 	 */
 	public boolean isPass(String raw) {
-		String real = getString("pass");
+		String real = this.pass;
 		if (real == raw) return true;
 		if (raw == null) return false;
 		
@@ -96,7 +114,7 @@ public class Profile extends DatabaseModel {
 			if (real.startsWith(PASS_HASH_PREFIX) == false) {
 				//This password is not encrypted
 				real = PASS_HASH_PREFIX + PasswordHash.hash(real);
-				setField("pass", real);
+				this.pass = real;
 			}
 			
 			real = real.substring(PASS_HASH_PREFIX.length());
@@ -128,7 +146,7 @@ public class Profile extends DatabaseModel {
 			e.printStackTrace();
 			return;
 		}
-		setField("pass", raw);
+		this.pass = raw;
 	}
 	
 	/**
@@ -136,7 +154,7 @@ public class Profile extends DatabaseModel {
 	 * @return The last known IP, may be an empty String - eg ""
 	 */
 	public String getLastIP() {
-		return getString("lastIp");
+		return this.lastIp;
 	}
 	
 	/**
@@ -144,7 +162,7 @@ public class Profile extends DatabaseModel {
 	 * @return The last time this player was seen in epoch milliseconds
 	 */
 	public long getLastSeen() {
-		return getLong("lastSeen");
+		return this.lastSeen;
 	}
 	
 	/**
@@ -153,7 +171,7 @@ public class Profile extends DatabaseModel {
 	 * @return the rights level of this player
 	 */
 	public int getRights() {
-		return getInt("rights");
+		return rights;
 	}
 	
 	/**
@@ -161,7 +179,7 @@ public class Profile extends DatabaseModel {
 	 * @param rights the new rights level
 	 */
 	public void setRights(int rights) {
-		setField("rights", rights);
+		this.rights = rights;
 	}
 	
 	/**
@@ -169,7 +187,7 @@ public class Profile extends DatabaseModel {
 	 * @param epochMS the last seen time in milliseconds since epoch time, 1970.
 	 */
 	public void setLastSeen(long epochMS) {
-		setField("lastSeen", epochMS);
+		this.lastSeen = epochMS;
 	}
 	
 	/**
@@ -177,7 +195,7 @@ public class Profile extends DatabaseModel {
 	 * @param ip the last known IP
 	 */
 	public void setLastIP(String ip) {
-		setField("lastIp", ip);
+		this.lastIp = ip;
 	}
 	
 	public void update() throws SQLException {

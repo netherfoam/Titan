@@ -153,7 +153,7 @@ public class Core {
 		boolean lazy = getWorldConfig().getBoolean("loading.lazy", false);
 		
 		//Loading
-		ItemProto.init(lazy);
+		ItemProto.init();
 		Log.info("RangeAttack Loading...");
 		RangeAttack.init();
 		Log.info("NPCGroup Loading...");

@@ -23,6 +23,11 @@ public enum SkillType {
 		}
 	}
 	
+	public static SkillType forId(int id){
+		//Is this optimised by the compiler?
+		return SkillType.values()[id];
+	}
+	
 	/** Network ID */
 	private byte id;
 	/** Max level */

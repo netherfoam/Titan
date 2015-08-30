@@ -1,15 +1,6 @@
 package org.maxgamer.rs.model.entity.mob.npc;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.HashMap;
-
-import org.maxgamer.rs.cache.Archive;
 import org.maxgamer.rs.cache.EncryptedException;
-import org.maxgamer.rs.cache.IDX;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.core.server.WorldFullException;
 import org.maxgamer.rs.events.mob.MobMoveEvent;
@@ -41,44 +32,6 @@ import org.maxgamer.rs.model.skill.SkillType;
  * @author netherfoam
  */
 public class NPC extends Mob {
-	/**
-	 * A HashMap of <DefinitionID, NPCDefinition> for caching loaded
-	 * NPCDefinitions.
-	 */
-	private static HashMap<Integer, NPCDefinition> definitions = new HashMap<Integer, NPCDefinition>(300);
-	
-	/**
-	 * Loads the NPCDefinition for the given ID if necessary (it is then
-	 * cached), otherwise it is loaded from the cache and then returned.
-	 * @param id the NPC's Definition ID
-	 * @return the NPCDefinition, not null
-	 * @throws IOException if there was an error reading the cache (Client side
-	 *         info)
-	 * @throws SQLException if there was an error reading the SQL database
-	 *         (Server side info)
-	 */
-	public static NPCDefinition getDefinition(int id) throws IOException, SQLException {
-		//Ensure we don't have a previously loaded version
-		NPCDefinition d = definitions.get(id);
-		if (d != null) return d;
-		
-		//We don't have a previous version. We shall now load it and cache it.
-		Archive a = Core.getCache().getArchive(IDX.NPCS, id >> 7);
-		ByteBuffer bb = a.get(id & 0x7F); //Last 7 bits are our ID within the archive
-		d = NPCDefinition.decode(id, bb);
-		definitions.put(id, d);
-		
-		PreparedStatement ps = Core.getWorldDatabase().getConnection().prepareStatement("SELECT * FROM npc_definitions WHERE id = ?");
-		ps.setInt(1, id);
-		ResultSet rs = ps.executeQuery();
-		if (rs.next()) d.load(rs);
-		else {
-			throw new IllegalArgumentException("The given NPC does not exist in the database.");
-		}
-		
-		return d;
-	}
-	
 	/**
 	 * The index in the array of NPC's the server holds, of this NPC
 	 */
@@ -116,7 +69,7 @@ public class NPC extends Mob {
 	public NPC(int defId) throws WorldFullException {
 		super(1, 1);
 		try {
-			this.definition = getDefinition(defId);
+			this.definition = NPCDefinition.getDefinition(defId);
 		}
 		catch (Exception e) {
 			if (e instanceof RuntimeException) {

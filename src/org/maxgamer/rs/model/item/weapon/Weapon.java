@@ -1,62 +1,67 @@
 package org.maxgamer.rs.model.item.weapon;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
+import org.maxgamer.rs.definition.Definition;
 import org.maxgamer.rs.model.item.WieldType;
-import org.maxgamer.structure.Eloquent;
+import org.maxgamer.structure.dbmodel.FixedArraySerializer;
+import org.maxgamer.structure.dbmodel.Mapping;
 
 /**
  * @author netherfoam
  */
-public class Weapon extends Eloquent {
-	private int[] bonuses = new int[15]; //TODO: Magic number
+public class Weapon extends Definition {
+	@Mapping
+	private int id;
 	
-	public Weapon() {
-		super("item_weapons");
-	}
+	@Mapping
+	private boolean fullBody;
+	@Mapping
+	private boolean fullHat;
+	@Mapping
+	private boolean fullMask;
+	@Mapping
+	private int equipmentType;
+	@Mapping
+	private int wornModel;
 	
-	@Override
-	public void load(ResultSet rs) throws SQLException {
-		super.load(rs);
-		for (int i = 0; i < bonuses.length; i++) {
-			bonuses[i] = this.getInt("bonus" + i);
-		}
+	@Mapping(serializer = FixedArraySerializer.class)
+	private int[] bonus;
+	
+	public Weapon(int id) {
+		super("item_weapons", "id", id);
 	}
 	
 	public int getId() {
-		return getInt("id");
+		return id;
 	}
 	
 	public int getBonus(int type) {
-		return bonuses[type];
+		return bonus[type];
 	}
 	
 	public int[] getBonuses() {
-		return bonuses;
+		return bonus.clone();
 	}
 	
 	public boolean isFullBody() {
-		return getBoolean("fullBody");
+		return fullBody;
 	}
 	
 	public boolean isFullHat() {
-		return getBoolean("fullHat");
+		return fullHat;
 	}
 	
 	public boolean isFullMask() {
-		return getBoolean("fullMask");
+		return fullMask;
 	}
 	
 	public WieldType getSlot() {
-		int type = getInt("equipmentType");
-		if (type < 0) return null;
+		if (equipmentType < 0) return null;
 		
-		return WieldType.forSlot(type);
+		return WieldType.forSlot(equipmentType);
 	}
 	
 	public int getWornModel() {
-		return getInt("wornModel");
+		return wornModel;
 	}
 	
 }

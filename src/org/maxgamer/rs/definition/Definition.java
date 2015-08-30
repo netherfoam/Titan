@@ -1,12 +1,22 @@
 package org.maxgamer.rs.definition;
 
-import org.maxgamer.structure.Eloquent;
+import org.maxgamer.structure.dbmodel.Transparent;
 
 /**
  * @author netherfoam
  */
-public abstract class Definition extends Eloquent {
-	public Definition(String table) {
-		super(table);
+//public abstract class Definition extends Eloquent {
+public abstract class Definition extends Transparent{
+	public Definition(String table, String[] keys, Object[] values) {
+		super(table, keys, values);
+	}
+	public Definition(String table, String[] keys){
+		super(table, keys, null);
+	}
+	public Definition(String table, String key, Object value){
+		this(table, new String[]{key}, new Object[]{value});
+	}
+	public Definition(String table, String key){
+		this(table, new String[]{key});
 	}
 }

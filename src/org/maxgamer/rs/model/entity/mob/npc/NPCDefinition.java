@@ -2,14 +2,61 @@ package org.maxgamer.rs.model.entity.mob.npc;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
 
+import org.maxgamer.rs.cache.Archive;
+import org.maxgamer.rs.cache.IDX;
+import org.maxgamer.rs.core.Core;
+import org.maxgamer.rs.definition.Definition;
 import org.maxgamer.rs.lib.BufferUtils;
-import org.maxgamer.structure.Eloquent;
+import org.maxgamer.structure.dbmodel.FixedArraySerializer;
+import org.maxgamer.structure.dbmodel.Mapping;
 
 /**
  * @author netherfoam
  */
-public class NPCDefinition extends Eloquent {
+public class NPCDefinition extends Definition {
+	/**
+	 * A HashMap of <DefinitionID, NPCDefinition> for caching loaded
+	 * NPCDefinitions.
+	 */
+	private static HashMap<Integer, NPCDefinition> definitions = new HashMap<Integer, NPCDefinition>(300);
+	
+	/**
+	 * Loads the NPCDefinition for the given ID if necessary (it is then
+	 * cached), otherwise it is loaded from the cache and then returned.
+	 * @param id the NPC's Definition ID
+	 * @return the NPCDefinition, not null
+	 * @throws IOException if there was an error reading the cache (Client side
+	 *         info)
+	 * @throws SQLException if there was an error reading the SQL database
+	 *         (Server side info)
+	 */
+	public static NPCDefinition getDefinition(int id) throws IOException, SQLException {
+		//Ensure we don't have a previously loaded version
+		NPCDefinition d = definitions.get(id);
+		if (d != null) return d;
+		
+		//We don't have a previous version. We shall now load it and cache it.
+		Archive a = Core.getCache().getArchive(IDX.NPCS, id >> 7);
+		ByteBuffer bb = a.get(id & 0x7F); //Last 7 bits are our ID within the archive
+		d = NPCDefinition.decode(id, bb);
+		definitions.put(id, d);
+		
+		PreparedStatement ps = Core.getWorldDatabase().getConnection().prepareStatement("SELECT * FROM npc_definitions WHERE id = ?");
+		ps.setInt(1, id);
+		ResultSet rs = ps.executeQuery();
+		if (rs.next()) d.reload(rs);
+		else {
+			throw new IllegalArgumentException("The given NPC does not exist in the database.");
+		}
+		
+		return d;
+	}
+	
 	public static NPCDefinition decode(int id, ByteBuffer bb) throws IOException {
 		NPCDefinition d = new NPCDefinition(id);
 		int opcode = -1;
@@ -681,7 +728,7 @@ public class NPCDefinition extends Eloquent {
 	//Serverside values
 	
 	protected NPCDefinition(int id) {
-		super("npc_definitions");
+		super("npc_definitions", "id", id);
 		this.id = id;
 		/*
 		 * aBoolean3172 = true; aBoolean3169 = true; aBoolean3196 = false;
@@ -697,92 +744,145 @@ public class NPCDefinition extends Eloquent {
 		 */
 	}
 	
+	//Values stored in the database. These are not always guaranteed
+	//to be correct or sane since they are not official data.
+	@Mapping
+	private int groupId;
+	@Mapping(serializer=FixedArraySerializer.class)
+	private int[] bonus;
+	@Mapping
+	private boolean poisonImmune;
+	@Mapping
+	private boolean isMagic;
+	@Mapping
+	private boolean isRange;
+	@Mapping
+	private boolean isMelee;
+	@Mapping
+	private boolean isAggressive;
+	@Mapping
+	private boolean walk;
+	@Mapping
+	private int projectileId;
+	@Mapping
+	private int endGraphics;
+	@Mapping
+	private int startGraphics;
+	@Mapping
+	private int attackAnimation;
+	@Mapping
+	private int defenceAnimation;
+	@Mapping
+	private int deathAnimation;
+	@Mapping
+	private int respawnDelay;
+	@Mapping
+	private int maxHealth;
+	
+	@Mapping
+	private int attackLevel;
+	@Mapping
+	private int strengthLevel;
+	@Mapping
+	private int defenceLevel;
+	@Mapping
+	private int rangeLevel;
+	@Mapping
+	private int magicLevel;
+	@Mapping
+	private int attackDelay;
+	
+	@Mapping
+	private String examine;
+	
+	
+	
 	public int getGroupId() {
-		return getInt("groupId");
+		return groupId;
 	}
 	
 	public int getBonus(int type) {
-		return getInt("bonus" + type);
+		return bonus[type];
 	}
 	
 	public boolean isPoisonable() {
-		return !getBoolean("poisonImmune");
+		return !poisonImmune;
 	}
 	
 	public boolean isMagic() {
-		return getBoolean("isMagic");
+		return isMagic;
 	}
 	
 	public boolean isRange() {
-		return getBoolean("isRange");
+		return isRange;
 	}
 	
 	public boolean isMelee() {
-		return getBoolean("isMelee");
+		return isMelee;
 	}
 	
 	public boolean isAggressive() {
-		return getBoolean("isAggressive");
+		return isAggressive;
 	}
 	
 	public boolean canWalk() {
-		return getBoolean("walk");
+		return walk;
 	}
 	
 	public int getProjectileId() {
-		return getInt("projectileId");
+		return projectileId;
 	}
 	
 	public int getEndGraphics() {
-		return getInt("endGraphics");
+		return endGraphics;
 	}
 	
 	public int getStartGraphics() {
-		return getInt("startGraphics");
+		return startGraphics;
 	}
 	
 	public int getAttackAnimation() {
-		return getInt("attackAnimation");
+		return attackAnimation;
 	}
 	
 	public int getDefenceAnimation() {
-		return getInt("defenceAnimation");
+		return defenceAnimation;
 	}
 	
 	public int getDeathAnimation() {
-		return getInt("deathAnimation");
+		return deathAnimation;
 	}
 	
 	public int getRespawnDelayTicks() {
-		return getInt("respawnDelay");
+		return respawnDelay;
 	}
 	
 	public int getMaxHealth() {
-		return getInt("maxHealth");
+		return maxHealth;
 	}
 	
 	public int getRangeLevel() {
-		return getInt("rangeLevel");
+		return rangeLevel;
 	}
 	
 	public int getMagicLevel() {
-		return getInt("magicLevel");
+		return this.magicLevel;
 	}
 	
 	public int getDefenceLevel() {
-		return getInt("defenceLevel");
+		return this.defenceLevel;
 	}
 	
 	public int getStrengthLevel() {
-		return getInt("strengthLevel");
+		return this.strengthLevel;
 	}
 	
 	public int getAttackLevel() {
-		return getInt("attackLevel");
+		return this.attackLevel;
 	}
 	
 	public String getExamine() {
-		return getString("examine");
+		return examine;
 	}
 	
 	/**
@@ -861,6 +961,6 @@ public class NPCDefinition extends Eloquent {
 	}
 	
 	public int getAttackDelay() {
-		return getInt("attackDelay");
+		return this.attackDelay;
 	}
 }

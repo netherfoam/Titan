@@ -74,6 +74,10 @@ public class Skill implements YMLSerializable {
 		return this.modifier;
 	}
 	
+	public SkillType getType(){
+		return this.type;
+	}
+	
 	@Override
 	public ConfigSection serialize() {
 		ConfigSection map = new ConfigSection();

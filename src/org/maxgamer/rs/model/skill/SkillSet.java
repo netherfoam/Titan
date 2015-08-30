@@ -3,7 +3,8 @@ package org.maxgamer.rs.model.skill;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import org.maxgamer.rs.lib.log.Log;
+import org.maxgamer.rs.core.tick.Tickable;
+import org.maxgamer.rs.lib.Calc;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.npc.NPC;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;
@@ -27,6 +28,12 @@ public class SkillSet implements YMLSerializable {
 	 * holds the current exp and modifier.
 	 */
 	protected final HashMap<SkillType, Skill> skills = new HashMap<SkillType, Skill>();
+	
+	/**
+	 * Tick task levels stats towards their normal value over time. One invocation
+	 * per 30 seconds, or 50 ticks.
+	 */
+	private Tickable normalizer;
 	
 	/**
 	 * Constructs a new SkillSet which only has attack, strength, defence, magic
@@ -225,6 +232,9 @@ public class SkillSet implements YMLSerializable {
 			out.writeByteS((byte) getLevel(t) + (int) getModifier(t));
 			c.write(out);
 		}
+		if(modifier != 0){
+			this.normalize();
+		}
 	}
 	
 	/**
@@ -275,8 +285,6 @@ public class SkillSet implements YMLSerializable {
 		double delta = (multiplier - 1) * realLev;
 		
 		if (delta > 0) {
-			//curMod += delta;
-			//curMod = Math.min(curMod + delta, delta);
 			if (curMod + delta > delta) {
 				curMod = Math.max(curMod, delta);
 			}
@@ -309,7 +317,6 @@ public class SkillSet implements YMLSerializable {
 		
 		double modifier = getModifier(type);
 		levels = Math.min(0, levels + modifier);
-		Log.info("Leevls: " + levels);
 		this.setModifier(type, levels);
 	}
 	
@@ -352,6 +359,44 @@ public class SkillSet implements YMLSerializable {
 			setExp(t, s.getExp());
 			setModifier(t, s.getModifier());
 		}
-		
+	}
+	
+	private void normalize(){
+		if(this.normalizer == null || this.normalizer.isQueued() == false){
+			this.normalizer = new Tickable(){
+				@Override
+				public void tick() {
+					for(Skill s : skills.values()){
+						if(s.getModifier() == 0) continue;
+						if(s.getType() == SkillType.PRAYER) continue;
+						double mod = s.getModifier();
+						
+						if(s.getModifier() > 0){
+							setModifier(s.getType(), Calc.max(mod - 1, 0));
+						}
+						else{
+							setModifier(s.getType(), Calc.min(mod + 1, 0));
+						}
+					}
+					if(isNormalized() == false){
+						this.queue(50);
+					}
+					else{
+						normalizer = null; //We are done, indicate so
+					}
+				}
+			};
+			this.normalizer.queue(50);
+		}
+	}
+	
+	private boolean isNormalized(){
+		for(Skill s : this.skills.values()){
+			if(s.getType() == SkillType.PRAYER) continue;
+			if(s.getModifier() != 0){
+				return false;
+			}
+		}
+		return true;
 	}
 }

@@ -39,14 +39,15 @@ public class Erratic {
 	 * @return The randomized value.
 	 */
 	public static double getGaussian(double meanModifier, double maximum) {
-		//TODO: This may caused a crash at some stage (See crash/jstack_1.txt for stacktrace of threads)
-		//Thus we are using r.nextDouble() * maximum instead.
-		
+		//Caused a crash at some stage (See crash/jstack_1.txt for stacktrace of threads)
+		//Thus we are using r.nextDouble() * maximum instead. This is original source code from 
+		//dementhium.
 		/*
 		 * double mean = maximum * meanModifier; double deviation = mean * 1.79;
 		 * double value = 0; do { value = Math.floor(mean + r.nextGaussian() *
 		 * deviation); } while (value < 0 || value > maximum); return value;
 		 */
+		//TODO: This algorithm needs to be... improved.
 		
 		int chance = r.nextInt(3);
 		double v = r.nextDouble();

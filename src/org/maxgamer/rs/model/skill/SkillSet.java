@@ -309,7 +309,7 @@ public class SkillSet implements YMLSerializable {
 		
 		double modifier = getModifier(type);
 		levels = Math.min(0, levels + modifier);
-		Log.info("Leevls: " + levels);
+		Log.info("Levels: " + levels);
 		this.setModifier(type, levels);
 	}
 	

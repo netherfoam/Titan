@@ -16,6 +16,7 @@ import org.maxgamer.rs.cache.IDX;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.definition.Definition;
 import org.maxgamer.rs.lib.BufferUtils;
+import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.entity.mob.Bonus;
 import org.maxgamer.rs.model.entity.mob.combat.AttackStyle;
 import org.maxgamer.rs.model.item.weapon.Weapon;
@@ -28,7 +29,7 @@ import org.maxgamer.structure.dbmodel.Mapping;
 public class ItemProto extends Definition {
 	/** cached item definitions for later use */
 	private static HashMap<Integer, ItemProto> definitions = new HashMap<Integer, ItemProto>(2000);
-	private static HashMap<String, Integer> names = new HashMap<>();
+	private static HashMap<String, Integer> names = new HashMap<String, Integer>();
 	
 	public static ItemProto forName(String name){
 		Integer id = names.get(name);
@@ -83,7 +84,7 @@ public class ItemProto extends Definition {
 	 */
 	public static void init() throws Exception {
 		Connection con = Core.getWorldDatabase().getConnection();
-		PreparedStatement ps = con.prepareStatement("SELECT i.id, i.name FROM item_defs i");
+		PreparedStatement ps = con.prepareStatement("SELECT i.id, i.name FROM item_defs i WHERE noted = 0");
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
 			names.put(rs.getString("i.name"), rs.getInt("i.id"));
@@ -177,8 +178,8 @@ public class ItemProto extends Definition {
 	private int highAlchemy;
 	@Mapping
 	private double weight;
-	@Mapping
-	private boolean noted;
+/*	@Mapping
+	private boolean noted;*/
 	@Mapping(serializer = RequirementSerializer.class)
 	protected HashMap<SkillType, Integer> requirements = new HashMap<SkillType, Integer>();
 	

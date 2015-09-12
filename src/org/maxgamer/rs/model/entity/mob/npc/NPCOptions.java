@@ -10,7 +10,7 @@ import org.maxgamer.rs.model.entity.mob.persona.Persona;
  * @author netherfoam TODO: This is not used
  */
 public class NPCOptions {
-	private final static HashMap<String, NPCOption> options = new HashMap<>();
+	private final static HashMap<String, NPCOption> options = new HashMap<String, NPCOption>();
 	
 	public static final NPCOption ATTACK = new NPCOption("Attack") {
 		@Override

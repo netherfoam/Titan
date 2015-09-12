@@ -19,7 +19,7 @@ public class Area implements MBR {
 	
 	public Area(Location min, Location max) {
 		if (min.getMap() != max.getMap()) throw new IllegalArgumentException("An Area must range across only one map.");
-		this.flags = new HashSet<>(0);
+		this.flags = new HashSet<AreaFlag>(0);
 		int minX, minY, minZ;
 		int maxX, maxY, maxZ;
 		

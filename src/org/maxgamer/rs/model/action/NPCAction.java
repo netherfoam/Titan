@@ -7,6 +7,7 @@ import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.npc.NPC;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;
 import org.maxgamer.rs.network.Client;
+import org.maxgamer.rs.script.ScriptFilter;
 import org.maxgamer.rs.script.ScriptSpace;
 
 import co.paralleluniverse.fibers.SuspendExecution;
@@ -36,11 +37,16 @@ public class NPCAction extends Action {
 	
 	@Override
 	public void run() throws SuspendExecution {
-		HashMap<String, Object> map = new HashMap<>(2);
+		HashMap<String, Object> map = new HashMap<String, Object>(2);
 		map.put("target", target);
 		map.put("option", option);
 		
-		ScriptSpace ss = Core.getScripts().get(getOwner(), this, map, target, target.getId(), target.getName(), option);
+		ScriptFilter filter = new ScriptFilter(target.getClass());
+		filter.setId(target.getId());
+		filter.setName(target.getName());
+		filter.setOption(option);
+		
+		ScriptSpace ss = Core.getScripts().get(getOwner(), this, map, filter);
 		if(ss == null){
 			if(getOwner() instanceof Client){
 				((Client) getOwner()).sendMessage(option + " not implemented.");

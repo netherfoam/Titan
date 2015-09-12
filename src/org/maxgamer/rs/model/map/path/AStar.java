@@ -4,6 +4,7 @@ import java.util.PriorityQueue;
 
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.lib.Calc;
+import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.map.GameObject;
 import org.maxgamer.rs.model.map.Location;
 import org.maxgamer.rs.model.map.Position;
@@ -87,10 +88,10 @@ public class AStar implements PathFinder {
 	}
 	
 	private static NodeMap createMap(Location start, Position min, Position max, int buffer) {
-		int minX = Calc.min(start.x, min.x, max.x);
-		int minY = Calc.min(start.y, min.y, max.y);
-		int maxX = Calc.max(start.x, min.x, max.x);
-		int maxY = Calc.max(start.y, min.y, max.y);
+		int minX = Calc.mini(start.x, min.x, max.x);
+		int minY = Calc.mini(start.y, min.y, max.y);
+		int maxX = Calc.maxi(start.x, min.x, max.x);
+		int maxY = Calc.maxi(start.y, min.y, max.y);
 		
 		NodeMap map = new NodeMap(buffer, new Position(minX, minY), new Position(maxX, maxY));
 		return map;
@@ -169,6 +170,10 @@ public class AStar implements PathFinder {
 		NodeMap map = createMap(start, min, max, this.buffer);
 		
 		return this.findPath(start, min, max, xSize, ySize, map);
+	}
+	
+	public Path findPath(Mob m, Position min, Position max, GameObject... ignores){
+		return findPath(m.getLocation(), min, max, m.getSizeX(), m.getSizeY(), ignores);
 	}
 	
 	public Path findPath(Location start, Position min, Position max, int xSize, int ySize, GameObject... ignores) {

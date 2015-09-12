@@ -19,7 +19,7 @@ public class LootImport {
 		Scanner sc = new Scanner(new File("data", "drop_tables_up.txt"));
 		PreparedStatement addAlways = con.prepareStatement("INSERT INTO npc_group_loot_guarantee (groupId, itemId, amount) VALUES (?, ?, ?)");
 		PreparedStatement addWeighted = con.prepareStatement("INSERT INTO npc_group_loot (groupId, itemId, min, max, chance) VALUES (?, ?, ?, ?, ?)");
-		HashSet<Integer> groups = new HashSet<>(8192);
+		HashSet<Integer> groups = new HashSet<Integer>(8192);
 		
 		PreparedStatement ps1 = con.prepareStatement("SELECT * FROM npc_definitions");
 		ResultSet rs = ps1.executeQuery();
@@ -29,7 +29,7 @@ public class LootImport {
 		rs.close();
 		ps1.close();
 		
-		HashSet<String> permaKeys = new HashSet<>(8192);
+		HashSet<String> permaKeys = new HashSet<String>(8192);
 		
 		while (sc.hasNextLine()) {
 			String line = sc.nextLine();

@@ -83,7 +83,7 @@ public class Util {
 		
 		for (int i = 0; i < objects.length - 1; i++) {
 			if (objects[i] instanceof Boolean) {
-				objects[i] = ((boolean) objects[i]) == true ? 1 : 0;
+				objects[i] = ((Boolean) objects[i]) == true ? 1 : 0;
 			}
 			ps.print(String.valueOf(objects[i]) + ", ");
 		}

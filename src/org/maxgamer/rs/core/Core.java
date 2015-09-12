@@ -274,7 +274,10 @@ public class Core {
 				cache.rebuildChecksum();
 			}
 			catch (IOException e) {
-				Log.severe("Failed to load cache, exitting");
+				Log.severe("There was an error loading the cache. Please ensure you placed it in the cache/ folder" + 
+						   "and that it is in tact and readable.");
+				Log.severe("Failed to load cache");
+				Log.severe("Failed to start.");
 				e.printStackTrace();
 				System.exit(2);
 			}

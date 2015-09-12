@@ -11,7 +11,7 @@ public class Faction {
 	}
 	
 	private String name;
-	private HashMap<Faction, FactionStatus> relations = new HashMap<>();
+	private HashMap<Faction, FactionStatus> relations = new HashMap<Faction, FactionStatus>();
 	
 	public Faction(String name) {
 		if (name == null || name.isEmpty()) {

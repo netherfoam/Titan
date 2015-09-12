@@ -52,8 +52,8 @@ public class ScriptClassLoader extends ClassLoader{
 		return payload;
 	}
 	
-	private HashMap<String, Class<?>> classes = new HashMap<>();
-	private HashMap<String, byte[]> binaries = new HashMap<>();
+	private HashMap<String, Class<?>> classes = new HashMap<String, Class<?>>();
+	private HashMap<String, byte[]> binaries = new HashMap<String, byte[]>();
 	
 	public ScriptClassLoader(ClassLoader parent){
 		super(parent);

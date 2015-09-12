@@ -94,7 +94,7 @@ public class Server {
 	 * 32767 is (Possibly?) the max number of NPCs. NPCs are stored separately
 	 * to players.
 	 */
-	private EntityList<NPC> npcs = new EntityList<>(32767);
+	private EntityList<NPC> npcs = new EntityList<NPC>(32767);
 	
 	/**
 	 * The primary server thread wrapper
@@ -356,7 +356,6 @@ public class Server {
 			events = new EventManager();
 			events.reload(Core.getCodeSource());
 			Log.debug("...Loaded EventManager!");
-			Log.debug(events.describe());
 		}
 		return events;
 	}
@@ -400,7 +399,7 @@ public class Server {
 	}
 	
 	public Collection<Client> getClients() {
-		ArrayList<Client> clients = new ArrayList<>(lobby.size() + personas.getCount());
+		ArrayList<Client> clients = new ArrayList<Client>(lobby.size() + personas.getCount());
 		for (Persona p : personas) {
 			if (p instanceof Client) clients.add((Client) p);
 		}

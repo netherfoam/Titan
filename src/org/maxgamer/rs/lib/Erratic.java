@@ -16,6 +16,10 @@ public class Erratic {
 		return r.nextBoolean();
 	}
 	
+	public static int nextInt(int max){
+		return r.nextInt(max);
+	}
+	
 	/**
 	 * Gets the next boolean but with a bias chance. If the given value is 1,
 	 * this will always return true. If the given value is 2, this will return

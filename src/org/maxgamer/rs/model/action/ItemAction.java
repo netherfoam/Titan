@@ -5,6 +5,7 @@ import java.util.HashMap;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;
 import org.maxgamer.rs.model.item.ItemStack;
+import org.maxgamer.rs.script.ScriptFilter;
 import org.maxgamer.rs.script.ScriptSpace;
 
 import co.paralleluniverse.fibers.SuspendExecution;
@@ -36,12 +37,17 @@ public class ItemAction extends Action {
 	
 	@Override
 	public void run() throws SuspendExecution {
-		HashMap<String, Object> map = new HashMap<>(2);
+		HashMap<String, Object> map = new HashMap<String, Object>(2);
 		map.put("item", item);
 		map.put("option", option);
 		map.put("slot", slot);
 		
-		ScriptSpace ss = Core.getScripts().get(getOwner(), this, map, item, item.getId(), item.getName(), option);
+		ScriptFilter filter = new ScriptFilter(item.getClass());
+		filter.setId(item.getId());
+		filter.setName(item.getName());
+		filter.setOption(option);
+		
+		ScriptSpace ss = Core.getScripts().get(getOwner(), this, map, filter);
 		if(ss == null){
 			getOwner().sendMessage(option + " not implemented.");
 			return;

@@ -20,8 +20,8 @@ public class CombatPathFinder implements PathFinder {
 		int dx = best.x - start.x;
 		int dy = best.y - start.y;
 		
-		int dxs = Calc.between(-1, 1, dx);
-		int dys = Calc.between(-1, 1, dy);
+		int dxs = Calc.betweeni(-1, 1, dx);
+		int dys = Calc.betweeni(-1, 1, dy);
 		
 		Location pos = start;
 		boolean fail = false;

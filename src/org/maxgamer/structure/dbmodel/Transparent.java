@@ -69,7 +69,7 @@ public class Transparent{
 			
 			int i = 0;
 			
-			HashMap<String, Object> attributes = new HashMap<>(1);
+			HashMap<String, Object> attributes = new HashMap<String, Object>(1);
 			while(fit.hasNext()){
 				Field f = fit.next();
 				
@@ -142,7 +142,7 @@ public class Transparent{
 			
 			int i = 0;
 			
-			HashMap<String, Object> attributes = new HashMap<>(fields.size());
+			HashMap<String, Object> attributes = new HashMap<String, Object>(fields.size());
 			while(fit.hasNext()){
 				Field f = fit.next();
 				
@@ -288,7 +288,7 @@ public class Transparent{
 	 * @return All fields in this transparent object with the @Mapping annotation
 	 */
 	private HashSet<Field> getFields(){
-		HashSet<Field> fields = new HashSet<>();
+		HashSet<Field> fields = new HashSet<Field>();
 		for(Field f : getClass().getDeclaredFields()){
 			Annotation a = f.getAnnotation(Mapping.class);
 			if(a == null) continue;

@@ -229,6 +229,10 @@ public class RSInputBuffer {
 		return (byte) (128 - readByte());
 	}
 	
+    public int readLEInt() {
+        return readByte() + (readByte() << 8) + (readByte() << 16) + (readByte() << 24);
+    }
+	
 	/**
 	 * Reads a little-endian type A short.
 	 *

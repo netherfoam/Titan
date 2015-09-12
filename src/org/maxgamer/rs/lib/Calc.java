@@ -8,25 +8,25 @@ public class Calc {
 		return number >= min && number <= max;
 	}
 	
-	public static double between(double min, double max, double val) {
+	public static double betweend(double min, double max, double val) {
 		if (val > max) return max;
 		if (val < min) return min;
 		return val;
 	}
 	
-	public static long between(long min, long max, long val) {
+	public static long betweenl(long min, long max, long val) {
 		if (val > max) return max;
 		if (val < min) return min;
 		return val;
 	}
 	
-	public static int between(int min, int max, int val) {
+	public static int betweeni(int min, int max, int val) {
 		if (val > max) return max;
 		if (val < min) return min;
 		return val;
 	}
 	
-	public static long min(long... longs) {
+	public static long minl(long... longs) {
 		long min = longs[0];
 		for (int i = 1; i < longs.length; i++) {
 			if (longs[i] < min) min = longs[i];
@@ -34,7 +34,7 @@ public class Calc {
 		return min;
 	}
 	
-	public static int min(int... ints) {
+	public static int mini(int... ints) {
 		int min = ints[0];
 		for (int i = 1; i < ints.length; i++) {
 			if (ints[i] < min) min = ints[i];
@@ -42,7 +42,7 @@ public class Calc {
 		return min;
 	}
 	
-	public static double min(double... doubles) {
+	public static double mind(double... doubles) {
 		double min = doubles[0];
 		for (int i = 1; i < doubles.length; i++) {
 			if (doubles[i] < min) min = doubles[i];
@@ -50,7 +50,7 @@ public class Calc {
 		return min;
 	}
 	
-	public static int max(int... ints) {
+	public static int maxi(int... ints) {
 		int max = ints[0];
 		for (int i = 1; i < ints.length; i++) {
 			if (ints[i] > max) max = ints[i];
@@ -58,7 +58,7 @@ public class Calc {
 		return max;
 	}
 	
-	public static long max(long... longs) {
+	public static long maxl(long... longs) {
 		long max = longs[0];
 		for (int i = 1; i < longs.length; i++) {
 			if (longs[i] > max) max = longs[i];
@@ -66,7 +66,7 @@ public class Calc {
 		return max;
 	}
 	
-	public static double max(double... doubles) {
+	public static double maxd(double... doubles) {
 		double max = doubles[0];
 		for (int i = 1; i < doubles.length; i++) {
 			if (doubles[i] > max) max = doubles[i];

@@ -473,12 +473,12 @@ public class ConfigSection implements Map<String, Object>{
 		try{
 			Object o = getObject(k);
 			if(o instanceof Boolean){
-				return (boolean) o;
+				return (Boolean) o;
 			}
 			else if(o instanceof Number){
 				return ((Number) o).doubleValue() != 0; //Nonzero values are true.
 			}
-			return (boolean) o; //This will probably fail.
+			return (Boolean) o; //This will probably fail.
 		}
 		catch(Exception e){
 			return fallback;

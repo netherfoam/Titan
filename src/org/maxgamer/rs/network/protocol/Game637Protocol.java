@@ -60,6 +60,7 @@ import org.maxgamer.rs.network.io.packet.player.InputHandler;
 import org.maxgamer.rs.network.io.packet.player.InterfaceComponentOnInterfaceComponentHandler;
 import org.maxgamer.rs.network.io.packet.player.InterfaceHandler;
 import org.maxgamer.rs.network.io.packet.player.ItemMoveHandler;
+import org.maxgamer.rs.network.io.packet.player.ItemOnObjectHandler;
 import org.maxgamer.rs.network.io.packet.player.KeyHandler;
 import org.maxgamer.rs.network.io.packet.player.LoadHandler;
 import org.maxgamer.rs.network.io.packet.player.LocaleHandler;
@@ -91,7 +92,7 @@ public class Game637Protocol extends GameProtocol {
 	public static final int MAX_LOCAL_NPCS = 255; //Protocol-limited
 	public static final PacketManager<Player> PACKET_MANAGER = new PacketManager<Player>();
 	
-	private static HashMap<Integer, CS2> scripts = new HashMap<>();
+	private static HashMap<Integer, CS2> scripts = new HashMap<Integer, CS2>();
 	
 	static {
 		//Unknown packets.
@@ -184,6 +185,8 @@ public class Game637Protocol extends GameProtocol {
 		PACKET_MANAGER.setHandler(DialogueHandler.OPCODE, new DialogueHandler());
 		PACKET_MANAGER.setHandler(GrandExchangeHandler.OPCODE, new GrandExchangeHandler());
 		PACKET_MANAGER.setHandler(WorldMapHandler.OPCODE, new WorldMapHandler());
+		
+		PACKET_MANAGER.setHandler(ItemOnObjectHandler.OPCODE, new ItemOnObjectHandler());
 	}
 	
 	/** An array of players who are within view distance of this player */
@@ -501,7 +504,7 @@ public class Game637Protocol extends GameProtocol {
 			}
 		}
 		
-		ArrayList<NPC> sortedNPCList = new ArrayList<>(sortedNpcs);
+		ArrayList<NPC> sortedNPCList = new ArrayList<NPC>(sortedNpcs);
 		
 		out.writeByte(localNpcs.size()); //Will never be > 255
 		
@@ -659,7 +662,7 @@ public class Game637Protocol extends GameProtocol {
 					else {
 						scale = 0; //No health left.
 					}
-					block.writeByte(Calc.between(0, 255, scale)); //Scale of 0-255, how healthy are you?
+					block.writeByte(Calc.betweeni(0, 255, scale)); //Scale of 0-255, how healthy are you?
 				}
 			}
 		}
@@ -893,7 +896,7 @@ public class Game637Protocol extends GameProtocol {
 					//How much green is left on the hitbar, scale 0-255
 					//If a player's health is greater than their max health, the result of
 					//this will be >255. This is why we use Math.min()
-					buffer.writeByte(Calc.between(0, 255, p.getHealth() * 255 / p.getMaxHealth()));
+					buffer.writeByte(Calc.betweeni(0, 255, p.getHealth() * 255 / p.getMaxHealth()));
 					
 				}
 			}
@@ -1429,7 +1432,7 @@ public class Game637Protocol extends GameProtocol {
 			
 			out.startBitAccess();
 			int mapHash = getPlayer().getViewDistance().getTileSize() >> 4; //Bitshift right by 3, then divide by 2 (equals bitshift right 4)
-			ArrayList<Integer> regionids = new ArrayList<>();
+			ArrayList<Integer> regionids = new ArrayList<Integer>();
 			
 			for (int z = 0; z < 4; z++) {
 				for (int chunkX = (cx - mapHash); chunkX <= (cx + mapHash); chunkX++) {

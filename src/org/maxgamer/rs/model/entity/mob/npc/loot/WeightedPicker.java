@@ -11,7 +11,7 @@ public class WeightedPicker<T extends Weighted> {
 	
 	public static void main(String[] args) {
 		//Simulation
-		ArrayList<NamedWeight> weights = new ArrayList<>();
+		ArrayList<NamedWeight> weights = new ArrayList<NamedWeight>();
 		weights.add(new NamedWeight("Alpha", 50));
 		weights.add(new NamedWeight("Bravo", 50));
 		weights.add(new NamedWeight("Charlie", 50));
@@ -65,7 +65,6 @@ public class WeightedPicker<T extends Weighted> {
 	public WeightedPicker() {
 	}
 	
-	@SuppressWarnings("unchecked")
 	/**
 	 * Creates a new weighted picker.
 	 * @param options The predefined set of Weighted objects which can be

@@ -40,7 +40,7 @@ public class RequirementSerializer implements Serializer{
 	public Object deserialize(Field field, ResultSet rs) throws SQLException {
 		String serial = rs.getString("requirements");
 		if(serial == null) return null;
-		HashMap<SkillType, Integer> map = new HashMap<>(1);
+		HashMap<SkillType, Integer> map = new HashMap<SkillType, Integer>(1);
 		for(String piece : serial.split(";")){
 			if(piece.isEmpty()) continue;
 			

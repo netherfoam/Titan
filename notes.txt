@@ -1,5 +1,6 @@
 Release:
-	- Force check that logon and world SQLite .db files are not the same file!
+	- JAR version
+	- Finish food implementation demo
 	
 Code Quality:
 	- Some item prices are displayed differently in general stores based on stock quantity. Why?
@@ -65,3 +66,28 @@ Features:
 Cool gameframe:
 	getProtocol().sendWindowPane(548, 2); //Not 746 though
 
+
+java.lang.ExceptionInInitializerError
+	at item_on_object.Cook.run(Cook.java:79)
+	at org.maxgamer.rs.script.ScriptManager$1.run(ScriptManager.java:159)
+	at org.maxgamer.rs.model.action.ItemOnObjectAction.run(ItemOnObjectAction.java:54)
+	at org.maxgamer.rs.model.action.Action$1.run(Action.java:73)
+	at org.maxgamer.rs.model.action.Action$1.run(Action.java:1)
+	at co.paralleluniverse.fibers.Fiber.run1(Fiber.java:1008)
+	at co.paralleluniverse.fibers.Fiber.exec(Fiber.java:722)
+	at co.paralleluniverse.fibers.RunnableFiberTask.doExec(RunnableFiberTask.java:94)
+	at co.paralleluniverse.fibers.RunnableFiberTask.run(RunnableFiberTask.java:85)
+	at org.maxgamer.rs.core.server.ServerThread$1.run(ServerThread.java:128)
+Caused by: java.lang.NullPointerException
+	at item_on_object.Cook$Food.<init>(Cook.java:68)
+	at item_on_object.Cook$Food.<clinit>(Cook.java:25)
+	... 10 more
+[WARN] ActionQueue.tick() Error ticking ActionQueue for Mob netherfoam. Action: ItemOnObjectAction item=[Raw lobster(377) x1] object=[Range(24283) type=10,hidden=false,facing: WEST,ac=2,solid=true,low=false]
+java.lang.RuntimeException: Action's Fiber was terminated, but Action was requested to tick() anyway?
+	at org.maxgamer.rs.model.action.Action.tick(Action.java:92)
+	at org.maxgamer.rs.model.action.ActionQueue.tick(ActionQueue.java:284)
+	at org.maxgamer.rs.core.tick.FastTickable.run(FastTickable.java:65)
+	at org.maxgamer.rs.core.tick.FastTickable.access$1(FastTickable.java:57)
+	at org.maxgamer.rs.core.tick.FastTickable$RunRequest.run(FastTickable.java:22)
+	at org.maxgamer.rs.core.server.ServerThreadTask.run(ServerThreadTask.java:38)
+	at org.maxgamer.rs.core.server.ServerThread$1.run(ServerThread.java:128)

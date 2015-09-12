@@ -127,7 +127,7 @@ public class SpawnManager implements EventListener {
 		}
 	}
 	
-	private HashSet<Integer> loaded = new HashSet<>(2048);
+	private HashSet<Integer> loaded = new HashSet<Integer>(2048);
 	
 	@EventHandler(priority = EventPriority.LOW)
 	public void onLoad(ChunkLoadEvent e) {

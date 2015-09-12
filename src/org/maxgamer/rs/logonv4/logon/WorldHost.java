@@ -119,7 +119,7 @@ public class WorldHost extends ServerSession {
 		super.close(flush);
 		
 		if (this.isAuthenticated()) {
-			ArrayList<Profile> profiles = new ArrayList<>(online.values());
+			ArrayList<Profile> profiles = new ArrayList<Profile>(online.values());
 			for (Profile p : profiles) {
 				this.remove(p); //Notifies servers
 			}

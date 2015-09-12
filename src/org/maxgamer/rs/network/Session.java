@@ -278,7 +278,7 @@ public class Session extends ServerSession {
 		
 		server.onClose(this);
 		
-		ArrayList<Runnable> closeHandlers = new ArrayList<>(this.closeHandlers);
+		ArrayList<Runnable> closeHandlers = new ArrayList<Runnable>(this.closeHandlers);
 		this.closeHandlers.clear(); //Empties them, so that we can't end up in a close() cycle.
 		
 		for (Runnable r : closeHandlers) {
@@ -291,6 +291,11 @@ public class Session extends ServerSession {
 	
 	@Override
 	public String toString() {
-		return "#" + this.sessionNumber + "@" + getIP().getAddress().getHostAddress();
+		String addr = null;
+		try{
+			addr = getIP().getAddress().getHostAddress();
+		}
+		catch(NullPointerException e){}
+		return "#" + this.sessionNumber + "@" + addr;
 	}
 }

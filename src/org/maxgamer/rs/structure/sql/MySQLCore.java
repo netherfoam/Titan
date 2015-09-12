@@ -16,7 +16,7 @@ public class MySQLCore implements DatabaseCore {
 		private long lastUsed;
 	}
 	
-	private HashMap<Long, Con> connections = new HashMap<>();
+	private HashMap<Long, Con> connections = new HashMap<Long, Con>();
 	private long timeout = 20 * 60 * 1000; //Timeout after 20 minutes.
 	
 	private String url;

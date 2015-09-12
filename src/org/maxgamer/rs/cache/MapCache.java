@@ -39,7 +39,7 @@ public class MapCache {
 			objects.put(key, bb);
 			return bb.asReadOnlyBuffer(); //This is necessary, as we're storing the above bb in the objects map
 		}
-		catch (Exception e) {
+		catch (IOException e) {
 			throw e;
 		}
 	}

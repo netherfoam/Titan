@@ -74,7 +74,7 @@ public abstract class ServerSession {
 	public ServerSession(SocketChannel channel, SelectionKey key) {
 		this.channel = channel;
 		this.key = key;
-		this.write = new LinkedList<>();
+		this.write = new LinkedList<ByteBuffer>();
 		
 		this.read = ByteBuffer.allocate(BUFFER_MIN_SIZE);
 		this.read.limit(this.read.position()); //No data

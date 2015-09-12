@@ -6,6 +6,7 @@ import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;
 import org.maxgamer.rs.model.item.ground.GroundItemStack;
 import org.maxgamer.rs.network.Client;
+import org.maxgamer.rs.script.ScriptFilter;
 import org.maxgamer.rs.script.ScriptSpace;
 
 import co.paralleluniverse.fibers.SuspendExecution;
@@ -35,12 +36,17 @@ public class GroundItemAction extends Action {
 	
 	@Override
 	public void run() throws SuspendExecution {
-		HashMap<String, Object> map = new HashMap<>(2);
+		HashMap<String, Object> map = new HashMap<String, Object>(2);
 		map.put("item", item);
 		map.put("option", option);
 		
+		ScriptFilter filter = new ScriptFilter(item.getClass());
+		filter.setId(item.getItem().getId());
+		filter.setName(item.getItem().getName());
+		filter.setOption(option);
+		
 		//ScriptSpace ss = Core.getScripts().get(getOwner(), this, map, "ground", item.getItem().getName(), option);
-		ScriptSpace ss = Core.getScripts().get(getOwner(), this, map, item, item.getItem().getId(), item.getItem().getName(), option);
+		ScriptSpace ss = Core.getScripts().get(getOwner(), this, map, filter);
 		if(ss == null){
 			if(getOwner() instanceof Client){
 				((Client) getOwner()).sendMessage(option + " not implemented.");

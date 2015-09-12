@@ -49,7 +49,7 @@ public class ServerThread implements Executor {
 	public double getUsage() {
 		long now = System.currentTimeMillis();
 		long time = now - this.start;
-		return (double) Calc.between(0, this.working / (double) time, 1);
+		return Calc.betweend(0, this.working / (double) time, 1);
 	}
 	
 	/**

@@ -81,7 +81,7 @@ public abstract class WorldMap {
 		this.name = name;
 		
 		StopWatch w = Core.getTimings().start("map-init");
-		entities = new AreaGrid<>(sizeX, sizeY, 8);
+		entities = new AreaGrid<MBR>(sizeX, sizeY, 8);
 		chunks = new Chunk[sizeX >> CHUNK_BITS][sizeY >> CHUNK_BITS][4];
 		w.stop();
 	}

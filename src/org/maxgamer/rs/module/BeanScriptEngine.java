@@ -111,7 +111,7 @@ public class BeanScriptEngine {
 				public int getRankRequired() {
 					NameSpace ns = script.getNameSpace();
 					try {
-						return (int) ns.invokeMethod("getRankRequired", new Object[0], script);
+						return (Integer) ns.invokeMethod("getRankRequired", new Object[0], script);
 					}
 					catch (Exception e) {
 						return Rights.ADMIN;

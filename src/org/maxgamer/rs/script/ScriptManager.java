@@ -25,7 +25,7 @@ public class ScriptManager {
 	 * @param folder the folder we're getting scripts from
 	 */
 	public ScriptManager() {
-		this.scripts = new ArrayList<>();
+		this.scripts = new ArrayList<Class<? extends ActionHandler>>();
 		this.loader = new ScriptClassLoader(Core.CLASS_LOADER);
 	}
 	
@@ -79,25 +79,23 @@ public class ScriptManager {
 	 * @return true if the given script exists else false
 	 * @throws NullPointerException if clazz is null
 	 */
-	public boolean has(Object target, int id, String name, String option) {
-		if(target == null) throw new NullPointerException("Class may not be null");
-		
+	public boolean has(ScriptFilter filter){
 		for(Class<? extends ActionHandler> handler : this.scripts){
 			Script s = handler.getAnnotation(Script.class);
 			
-			if(s.type().isInstance(target) == false){
+			if(s.type().isAssignableFrom(filter.getType()) == false){
 				continue;
 			}
 			
-			if(s.ids().length > 0 && contains(s.ids(), id) == false){
+			if(s.ids().length > 0 && filter.getId() != ScriptFilter.NO_ID && contains(s.ids(), filter.getId()) == false){
 				continue;
 			}
 			
-			if(s.names().length > 0 && contains(s.names(), name) == false){
+			if(s.names().length > 0 && filter.getName() != null && contains(s.names(), filter.getName()) == false){
 				continue;
 			}
 			
-			if(s.options().length > 0 && contains(s.options(), option) == false){
+			if(s.options().length > 0 && filter.getOption() != null && contains(s.options(), filter.getOption()) == false){
 				continue;
 			}
 			
@@ -120,26 +118,26 @@ public class ScriptManager {
 	 *        "gameobject_actions\Mine.java", then "Mine.java", returning null
 	 *        if none succeed
 	 */
-	public ScriptSpace get(Mob mob, Action a, Map<String, Object> args, Object target, int id, String name, String option) {
+	public ScriptSpace get(Mob mob, Action a, Map<String, Object> args, ScriptFilter filter){
 		Class<? extends ActionHandler> clazz = null;
-		if(target == null) throw new NullPointerException("Target may not be null");
+		if(filter == null) throw new NullPointerException("Target may not be null");
 		
 		for(Class<? extends ActionHandler> handler : this.scripts){
 			Script s = handler.getAnnotation(Script.class);
 			
-			if(s.type().isInstance(target) == false){
+			if(s.type().isAssignableFrom(filter.getType()) == false){
 				continue;
 			}
 			
-			if(s.ids().length > 0 && contains(s.ids(), id) == false){
+			if(s.ids().length > 0 && filter.getId() != ScriptFilter.NO_ID && contains(s.ids(), filter.getId()) == false){
 				continue;
 			}
 			
-			if(s.names().length > 0 && contains(s.names(), name) == false){
+			if(s.names().length > 0 && filter.getName() != null && contains(s.names(), filter.getName()) == false){
 				continue;
 			}
 			
-			if(s.options().length > 0 && contains(s.options(), option) == false){
+			if(s.options().length > 0 && filter.getOption() != null && contains(s.options(), filter.getOption()) == false){
 				continue;
 			}
 			
@@ -165,7 +163,7 @@ public class ScriptManager {
 			
 		}
 		catch (Throwable t) {
-			Log.warning("Error constructing script " + id + "[" + name + "]#" + option);
+			Log.warning("Error constructing script " + clazz);
 			t.printStackTrace();
 			return null;
 		}

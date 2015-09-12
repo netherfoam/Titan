@@ -24,7 +24,7 @@ public class ActionQueue extends FastTickable {
 	private Mob owner;
 	
 	/** The list of actions the owner wishes to execute in order */
-	private LinkedList<Action> queue = new LinkedList<>(); //FIFO queue
+	private LinkedList<Action> queue = new LinkedList<Action>(); //FIFO queue
 	
 	/**
 	 * Constructs a new ActionQueue for the given mob.
@@ -237,7 +237,7 @@ public class ActionQueue extends FastTickable {
 	 */
 	public void clear() {
 		synchronized (queue) {
-			Iterator<Action> wit = new ArrayList<>(queue).iterator();
+			Iterator<Action> wit = new ArrayList<Action>(queue).iterator();
 			while (wit.hasNext()) {
 				Action w = wit.next();
 				

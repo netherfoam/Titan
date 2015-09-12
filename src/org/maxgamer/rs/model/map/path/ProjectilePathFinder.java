@@ -57,13 +57,13 @@ public class ProjectilePathFinder implements PathFinder {
 		//Both may not be a decimal at the same time.
 		if (rx != (int) rx) {
 			dirs = new Direction[2];
-			dirs[0] = Directions.get((int) Calc.between(-1, 1, rx), (int) ry);
+			dirs[0] = Directions.get((int) Calc.betweend(-1, 1, rx), (int) ry);
 			dirs[1] = Directions.get(0, (int) ry);
 		}
 		else if (ry != (int) ry) {
 			//If rx == (int) rx, this can never occur.
 			dirs = new Direction[2];
-			dirs[0] = Directions.get((int) rx, (int) Calc.between(-1, 1, ry));
+			dirs[0] = Directions.get((int) rx, (int) Calc.betweend(-1, 1, ry));
 			dirs[1] = Directions.get((int) rx, 0);
 		}
 		else {
@@ -89,7 +89,7 @@ public class ProjectilePathFinder implements PathFinder {
 				//Increment ty by 1
 				//Increment tx by dx / dy
 				tx += dx / absdy;
-				ty += (int) Calc.between(-1, 1, dy);
+				ty += (int) Calc.betweend(-1, 1, dy);
 			}
 		}
 		else {
@@ -109,7 +109,7 @@ public class ProjectilePathFinder implements PathFinder {
 				//Increment ty by dy / dx
 				//Increment tx by 1
 				ty += dy / absdx;
-				tx += (int) Calc.between(-1, 1, dx);
+				tx += (int) Calc.betweend(-1, 1, dx);
 			}
 		}
 		//The path will always be empty.

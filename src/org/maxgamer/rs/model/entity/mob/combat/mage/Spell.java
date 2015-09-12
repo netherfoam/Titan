@@ -46,7 +46,7 @@ public abstract class Spell {
 			return false;
 		}
 		
-		ArrayList<ItemStack> runes = new ArrayList<>(this.runes.length);
+		ArrayList<ItemStack> runes = new ArrayList<ItemStack>(this.runes.length);
 		for (ItemStack rune : this.runes) {
 			runes.add(rune);
 		}
@@ -103,7 +103,7 @@ public abstract class Spell {
 	}
 	
 	public boolean takeConsumables(Mob mob) {
-		ArrayList<ItemStack> runes = new ArrayList<>(this.runes.length);
+		ArrayList<ItemStack> runes = new ArrayList<ItemStack>(this.runes.length);
 		for (ItemStack rune : this.runes) {
 			runes.add(rune);
 		}

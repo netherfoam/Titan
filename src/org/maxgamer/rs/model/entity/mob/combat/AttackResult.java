@@ -40,7 +40,7 @@ public class AttackResult implements Iterable<Damage> {
 	 * @return all of the mobs that will be hit by this attack
 	 */
 	public HashSet<Mob> getTargets() {
-		HashSet<Mob> targets = new HashSet<>(damages.size());
+		HashSet<Mob> targets = new HashSet<Mob>(damages.size());
 		for (Damage d : damages) {
 			targets.add(d.getTarget());
 		}

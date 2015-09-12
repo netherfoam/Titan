@@ -29,7 +29,7 @@ public class LostAndFound implements YMLSerializable {
 	 * will be at the start of the list, while most recently lost items will be
 	 * at the end of the list.
 	 */
-	private LinkedList<ItemStack> mail = new LinkedList<>();
+	private LinkedList<ItemStack> mail = new LinkedList<ItemStack>();
 	
 	private Tickable replacer = null;
 	

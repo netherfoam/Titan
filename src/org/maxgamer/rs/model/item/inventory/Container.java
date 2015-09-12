@@ -25,7 +25,7 @@ public abstract class Container implements Cloneable, Iterable<ItemStack>, YMLSe
 	 * The ContainerListeners which want to be notified when something changes
 	 * in this container.
 	 */
-	private LinkedList<ContainerListener> listeners = new LinkedList<>();
+	private LinkedList<ContainerListener> listeners = new LinkedList<ContainerListener>();
 	
 	/**
 	 * Constructors & Item Stacking

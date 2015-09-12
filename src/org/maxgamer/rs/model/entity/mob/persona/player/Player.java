@@ -531,7 +531,7 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 				if (iface.isVisible()) this.gamepane.close(iface); //May close other interfaces as well, which is why the check is necessary.
 			}
 		}
-		LinkedList<Client> list = new LinkedList<>();
+		LinkedList<Client> list = new LinkedList<Client>();
 		list.add(this);
 		Core.getServer().getLogon().getAPI().save(list);
 		

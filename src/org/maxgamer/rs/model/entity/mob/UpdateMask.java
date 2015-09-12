@@ -71,10 +71,10 @@ public class UpdateMask implements Mask {
 	 * @param d the damage that was dealt
 	 */
 	public void addHit(Mob from, Damage d) {
-		if (hits == null) hits = new HashMap<>(1);
+		if (hits == null) hits = new HashMap<Mob, ArrayList<Damage>>(1);
 		ArrayList<Damage> list = hits.get(from);
 		if (list == null) {
-			list = new ArrayList<>(1);
+			list = new ArrayList<Damage>(1);
 			hits.put(from, list);
 		}
 		list.add(d);

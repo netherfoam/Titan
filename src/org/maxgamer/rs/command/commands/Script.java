@@ -22,7 +22,7 @@ import bsh.UtilEvalError;
  * @author netherfoam
  */
 public class Script implements PlayerCommand, EventListener {
-	private WeakHashMap<CommandSender, Program> scripters = new WeakHashMap<>(1);
+	private WeakHashMap<CommandSender, Program> scripters = new WeakHashMap<CommandSender, Program>(1);
 	
 	public Script() {
 		Core.getServer().getEvents().register(this);

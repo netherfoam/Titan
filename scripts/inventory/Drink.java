@@ -122,7 +122,7 @@ public class Drink extends ActionHandler{
 		
 		if(m instanceof InventoryHolder){
 			ContainerState i = ((InventoryHolder) m).getInventory().getState();
-			int slot = (int) args.get("slot");
+			int slot = (Integer) args.get("slot");
 			
 			i.remove(slot, item);
 			int charges = item.getCharges();

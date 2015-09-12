@@ -372,10 +372,10 @@ public class SkillSet implements YMLSerializable {
 						double mod = s.getModifier();
 						
 						if(s.getModifier() > 0){
-							setModifier(s.getType(), Calc.max(mod - 1, 0));
+							setModifier(s.getType(), Calc.maxd(mod - 1, 0));
 						}
 						else{
-							setModifier(s.getType(), Calc.min(mod + 1, 0));
+							setModifier(s.getType(), Calc.mind(mod + 1, 0));
 						}
 					}
 					if(isNormalized() == false){

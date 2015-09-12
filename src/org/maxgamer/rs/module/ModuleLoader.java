@@ -63,7 +63,13 @@ public class ModuleLoader {
 		
 		for (File f : files) {
 			Log.info("Loading module " + f.getName());
-			load(f);
+			try {
+				load(f);
+			}
+			catch (Throwable e) {
+				Log.info("Exception loading module " + f.getName());
+				e.printStackTrace();
+			}
 		}
 		
 		//This is just a total stab in the dark guess.
@@ -79,8 +85,9 @@ public class ModuleLoader {
 	 * Otherwise it returns the loaded module.
 	 * @param f the file to load from
 	 * @return the module.
+	 * @throws Throwable 
 	 */
-	public Module load(File f) {
+	public Module load(File f) throws Throwable {
 		JarFile jar = null;
 		try {
 			jar = new JarFile(f);

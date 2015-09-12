@@ -30,7 +30,7 @@ public class Ascend implements PlayerCommand {
 		else{
 			level = 1;
 		}
-		player.teleport(new Location(l.getMap(), l.x, l.y, Calc.between(0, 3, level + l.z)));
+		player.teleport(new Location(l.getMap(), l.x, l.y, Calc.betweeni(0, 3, level + l.z)));
 	}
 	
 	@Override

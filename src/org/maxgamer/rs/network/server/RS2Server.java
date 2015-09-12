@@ -19,7 +19,7 @@ public class RS2Server extends ServerHost<Session> {
 	 * A map of session ID to session, these sessions are guaranteed to be still
 	 * open on our side.
 	 */
-	private HashMap<Integer, Session> sessions = new HashMap<>();
+	private HashMap<Integer, Session> sessions = new HashMap<Integer, Session>();
 	
 	/**
 	 * Constructs a new RS2Server for the given port and the given Server

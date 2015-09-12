@@ -49,7 +49,7 @@ public class Combat extends Action {
 	 */
 	public Combat(Mob owner) {
 		super(owner);
-		this.hits = new HashMap<>(1);
+		this.hits = new HashMap<Mob, ArrayList<Damage>>();
 	}
 	
 	/**
@@ -82,11 +82,11 @@ public class Combat extends Action {
 			}
 			
 			if (isInCombat() == false) {
-				this.hits = new HashMap<>(1);
+				this.hits = new HashMap<Mob, ArrayList<Damage>>();
 			}
 			
 			if (target.getCombat().isInCombat() == false) {
-				target.getCombat().hits = new HashMap<>(1);
+				target.getCombat().hits = new HashMap<Mob, ArrayList<Damage>>();
 			}
 		}
 		
@@ -265,7 +265,7 @@ public class Combat extends Action {
 		setTarget(null);
 		setLastAttacker(null);
 		this.attack = null;
-		this.hits = new HashMap<>(1);
+		this.hits = new HashMap<Mob, ArrayList<Damage>>();
 	}
 	
 	/**

@@ -15,7 +15,7 @@ import com.mchange.v3.filecache.FileNotCachedException;
  * @author netherfoam
  */
 public class CacheRequestHandler extends RawHandler {
-	private HashMap<Integer, Integer> requests = new HashMap<>(2048); //HashSet of all files requested
+	private HashMap<Integer, Integer> requests = new HashMap<Integer, Integer>(2048); //HashSet of all files requested
 	
 	public CacheRequestHandler(Session s) {
 		super(s);

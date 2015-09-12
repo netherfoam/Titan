@@ -27,7 +27,7 @@ public abstract class ServerHost<T extends ServerSession> implements Runnable {
 	/**
 	 * The map of SelectionKey to ServerSessions used by this host
 	 */
-	private HashMap<SelectionKey, T> sessions = new HashMap<>();
+	private HashMap<SelectionKey, T> sessions = new HashMap<SelectionKey, T>();
 	
 	/**
 	 * The last used selector

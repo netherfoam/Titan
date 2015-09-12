@@ -28,10 +28,10 @@ public class RangeAttack extends Attack {
 		private RangeWeapon() {
 		} //Private constructor 
 		
-		private HashMap<RangeAmmo, Integer> ammos = new HashMap<>(4);
+		private HashMap<RangeAmmo, Integer> ammos = new HashMap<RangeAmmo, Integer>(4);
 		
 		public HashMap<RangeAmmo, Integer> getAmmo() {
-			return new HashMap<>(ammos);
+			return new HashMap<RangeAmmo, Integer>(ammos);
 		}
 		
 		public boolean isAmmo(ItemStack item) {
@@ -61,8 +61,8 @@ public class RangeAttack extends Attack {
 	private static HashMap<Integer, RangeAmmo> ammos;
 	
 	public static void init() throws SQLException {
-		weapons = new HashMap<>(256);
-		ammos = new HashMap<>(3000);
+		weapons = new HashMap<Integer, RangeWeapon>(256);
+		ammos = new HashMap<Integer, RangeAmmo>(3000);
 		Connection con = Core.getWorldDatabase().getConnection();
 		
 		PreparedStatement ps = con.prepareStatement("SELECT * FROM item_ammo");

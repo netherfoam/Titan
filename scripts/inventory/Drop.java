@@ -14,7 +14,7 @@ public class Drop extends ActionHandler{
 
 	public void run(Mob m, Map<String, Object> args){
 		ItemStack item = (ItemStack) args.get("item");
-		int slot = (int) args.get("slot");
+		int slot = (Integer) args.get("slot");
 		
 		((InventoryHolder) m).getInventory().remove(slot, item);
 		GroundItemStack ground = new GroundItemStack(item, m, 30, 180);

@@ -98,7 +98,7 @@ public class ServerTicker implements Runnable {
 		
 		TickableWrapper task;
 		//Add all of the tickables to a list of ticks we will execute.
-		LinkedList<TickableWrapper> shortlist = new LinkedList<>();
+		LinkedList<TickableWrapper> shortlist = new LinkedList<TickableWrapper>();
 		
 		synchronized (this.tickables) {
 			while ((task = this.tickables.peek()) != null && task.getPeriod() <= ticks) {

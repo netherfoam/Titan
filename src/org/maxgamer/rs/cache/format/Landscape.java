@@ -194,7 +194,7 @@ public class Landscape {
 	/**
 	 * The list of objects in this landscape in no particular order
 	 */
-	private ArrayList<ObjectData> objects = new ArrayList<>(4096);
+	private ArrayList<ObjectData> objects = new ArrayList<ObjectData>(4096);
 	
 	private Landscape() {
 		//Private constructor
@@ -337,7 +337,7 @@ public class Landscape {
 				d.toObject(map, xOffset, yOffset, zOffset);
 			}
 		}
-		catch (Exception e) {
+		catch (IOException e) {
 			e.printStackTrace();
 			throw e;
 		}

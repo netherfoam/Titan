@@ -13,12 +13,12 @@ public class GroundItemManager extends Tickable {
 	/**
 	 * The queue of items which are currently private
 	 */
-	private PriorityQueue<GroundItemStack> privates = new PriorityQueue<>();
+	private PriorityQueue<GroundItemStack> privates = new PriorityQueue<GroundItemStack>();
 	
 	/**
 	 * The queue of items which are currently public
 	 */
-	private PriorityQueue<GroundItemStack> publics = new PriorityQueue<>();
+	private PriorityQueue<GroundItemStack> publics = new PriorityQueue<GroundItemStack>();
 	
 	/**
 	 * Constructs a new, empty ground item manager

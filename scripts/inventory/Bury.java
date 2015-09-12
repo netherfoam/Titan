@@ -21,7 +21,7 @@ public class Bury extends ActionHandler{
 	private static final double[] xp = new double[]{10,  10,     10,    12.5,    12.5, 20,   20,     25,     30,         35,    40,      50,      52.5,   55,     65,         75,    85};
 	
 	public void run(Mob mob, Map<String, Object> args) throws SuspendExecution{
-		int slot = (int) args.get("slot");
+		int slot = (Integer) args.get("slot");
 		ItemStack item = (ItemStack) args.get("item");
 		//Find the bone
 		for(int i = 0; i < bones.length; i++){

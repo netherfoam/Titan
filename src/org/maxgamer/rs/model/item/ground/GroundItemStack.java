@@ -65,6 +65,15 @@ public class GroundItemStack extends Entity implements Comparable<GroundItemStac
 	}
 	
 	/**
+	 * The ID of the item represented by this GroundItemStack, shorthand for
+	 * getItem().getId()
+	 * @return The ID of the item represented by this GroundItemStack
+	 */
+	public int getId(){
+		return stack.getId();
+	}
+	
+	/**
 	 * The ItemStack available here
 	 * @return
 	 */

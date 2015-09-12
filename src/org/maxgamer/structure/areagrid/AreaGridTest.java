@@ -4,7 +4,7 @@ public class AreaGridTest{
 	public static void main(String[] args) {
 		//Unit test. This adds 3x3 Cubes to a new AreaGrid, except for the middle one and then queries for anything
 		//overlapping the middle grid. If any overlaps are detected, there is an error and the test has failed.
-		AreaGrid<MBR> g = new AreaGrid<>(64, 64, 8);
+		AreaGrid<MBR> g = new AreaGrid<MBR>(64, 64, 8);
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
 				if (i == 1 && j == 1) {

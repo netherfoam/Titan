@@ -11,7 +11,7 @@ import org.maxgamer.rs.network.Client;
  */
 public class CheatLog {
 	private Client c;
-	private ArrayList<String> violations = new ArrayList<>();
+	private ArrayList<String> violations = new ArrayList<String>();
 	private int severity = 0;
 	
 	private long lastTick;

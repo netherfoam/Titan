@@ -16,7 +16,7 @@ public class Wield extends ActionHandler {
 	
 	public void run(Mob mob, Map<String, Object> args) {
 		ItemStack item = (ItemStack) args.get("item");
-		int slot = (int) args.get("slot");
+		int slot = (Integer) args.get("slot");
 		
 		if (item.getWeapon() == null) {
 			if(mob instanceof Client){

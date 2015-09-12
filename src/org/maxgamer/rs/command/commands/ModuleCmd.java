@@ -6,13 +6,14 @@ import org.maxgamer.rs.command.CmdName;
 import org.maxgamer.rs.command.CommandSender;
 import org.maxgamer.rs.command.GenericCommand;
 import org.maxgamer.rs.core.Core;
+import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
 import org.maxgamer.rs.module.Module;
 
 /**
  * Re/loads the given module. This does not work for hotswapping code.
  * @author netherfoam
- *
+ * 
  */
 @CmdName(names = { "modules" })
 public class ModuleCmd implements GenericCommand {
@@ -46,9 +47,18 @@ public class ModuleCmd implements GenericCommand {
 				
 				Core.getServer().getModules().unload(m);
 				String module = m.getJar().getName();
-				m = Core.getServer().getModules().load(new File("modules", module));
-				sender.sendMessage("Reloaded " + m.getName());
-				sender.sendMessage("Please be aware that some modules may break when reloading, if issues occur then you should restart.");
+				try {
+					m = Core.getServer().getModules().load(new File("modules", module));
+					sender.sendMessage("Reloaded " + m.getName());
+					sender.sendMessage("Please be aware that some modules may break when reloading, if issues occur then you should restart.");
+				}
+				catch (Throwable e) {
+					sender.sendMessage("There was an issue reloading " + m.getName());
+					sender.sendMessage("Message: " + e.getMessage());
+					Log.warning("There was an issue reloading " + m.getName());
+					e.printStackTrace(); //To console
+				}
+				
 				return;
 			}
 			else if ("load".startsWith(args[0])) {
@@ -68,8 +78,16 @@ public class ModuleCmd implements GenericCommand {
 					sender.sendMessage("Module " + args[1] + ".jar not found in modules/ folder");
 					return;
 				}
-				m = Core.getServer().getModules().load(f);
-				sender.sendMessage("Loaded " + m.getName());
+				try {
+					m = Core.getServer().getModules().load(f);
+					sender.sendMessage("Loaded " + m.getName());
+				}
+				catch (Throwable e) {
+					sender.sendMessage("There was an issue reloading " + m.getName());
+					sender.sendMessage("Message: " + e.getMessage());
+					Log.warning("There was an issue reloading " + m.getName());
+					e.printStackTrace(); //To console
+				}
 				return;
 			}
 			else if ("unload".startsWith(args[0])) {

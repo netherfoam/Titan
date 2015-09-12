@@ -68,7 +68,7 @@ public abstract class Attack {
 		}
 		
 		//Throw mob attack event here
-		Iterator<Damage> adit = new LinkedList<>(damage.getDamages()).iterator();
+		Iterator<Damage> adit = new LinkedList<Damage>(damage.getDamages()).iterator();
 		while (adit.hasNext()) {
 			Damage d = adit.next();
 			MobAttackEvent act = new MobAttackEvent(attacker, this, d, d.getTarget());

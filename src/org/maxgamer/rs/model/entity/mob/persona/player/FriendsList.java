@@ -54,7 +54,7 @@ public final class FriendsList implements YMLSerializable {
 	 *         empty.
 	 */
 	public ArrayList<String> getFriends() {
-		return new ArrayList<>(this.friends.values());
+		return new ArrayList<String>(this.friends.values());
 	}
 	
 	/**
@@ -64,7 +64,7 @@ public final class FriendsList implements YMLSerializable {
 	 *         empty.
 	 */
 	public ArrayList<String> getIgnores() {
-		return new ArrayList<>(this.ignores.values());
+		return new ArrayList<String>(this.ignores.values());
 	}
 	
 	/**

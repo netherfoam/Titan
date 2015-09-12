@@ -106,7 +106,7 @@ public class ScriptLoader<T> {
 	 * @return the classes loaded, never null
 	 */
 	public HashMap<File, Class<T>> load(File from, boolean listAnonymous) {
-		HashMap<File, Class<T>> scripts = new HashMap<>();
+		HashMap<File, Class<T>> scripts = new HashMap<File, Class<T>>();
 		
 		if (!from.exists()) {
 			return scripts;

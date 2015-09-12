@@ -71,7 +71,7 @@ public class AuthHandler implements Handler {
 				}
 				
 				//Notify the new server about all currently connected players
-				for (WorldHost host : host.getServer().getSessions()) {
+				for (WorldHost host : this.host.getServer().getSessions()) {
 					if (host.isAuthenticated() == false) continue;
 					
 					for (Profile profile : host.getOnline()) {

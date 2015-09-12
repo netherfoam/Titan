@@ -92,7 +92,7 @@ public class BankInterface extends PrimaryInterface {
 						@Override
 						public void onInput(long value) {
 							//TODO: If noted, inventory check needs to be different.
-							value = Calc.min(value, this.getPlayer().getBank().getNumberOf(stack), getPlayer().getInventory().getSpaceFor(stack));
+							value = Calc.minl(value, this.getPlayer().getBank().getNumberOf(stack), getPlayer().getInventory().getSpaceFor(stack));
 							ItemStack item = stack.setAmount(value);
 							
 							if (item == null) { //Will become null if amount <= 0
@@ -139,7 +139,7 @@ public class BankInterface extends PrimaryInterface {
 			}
 			
 			//TODO: If noted, inventory check needs to be different.
-			long amount = Calc.min(item.getAmount(), this.getPlayer().getBank().getNumberOf(item), getPlayer().getInventory().getSpaceFor(item));
+			long amount = Calc.minl(item.getAmount(), this.getPlayer().getBank().getNumberOf(item), getPlayer().getInventory().getSpaceFor(item));
 			if (amount <= 0) {
 				return;
 			}

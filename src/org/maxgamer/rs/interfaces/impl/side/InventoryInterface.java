@@ -128,7 +128,13 @@ public class InventoryInterface extends SideInterface {
 			}
 		}
 		
-		if (option >= item.getInventoryOptions().length) {
+		if(option == item.getInventoryOptions().length){
+			//Examine
+			player.sendMessage(item.getId() + ": " + item.getExamine());
+			return;
+		}
+		
+		if (option > item.getInventoryOptions().length) {
 			Log.debug("Bad option: " + option + ", available are " + Arrays.toString(item.getInventoryOptions()));
 			return;
 		}

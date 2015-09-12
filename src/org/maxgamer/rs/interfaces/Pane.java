@@ -13,7 +13,7 @@ public abstract class Pane extends Window {
 	/**
 	 * Key is interface ID
 	 */
-	private HashMap<Integer, Interface> interfaces = new HashMap<>(16);
+	private HashMap<Integer, Interface> interfaces = new HashMap<Integer, Interface>(16);
 	
 	/**
 	 * Represents an interface for a single player.
@@ -96,7 +96,7 @@ public abstract class Pane extends Window {
 	 * @return a copy of the currently open child interfaces
 	 */
 	public Collection<Interface> getInterfaces() {
-		return new ArrayList<>(interfaces.values());
+		return new ArrayList<Interface>(interfaces.values());
 	}
 	
 	/**

@@ -23,7 +23,7 @@ public abstract class Follow extends Action {
 	/**
 	 * The mob who is being folloewd
 	 */
-	private WeakReference<Mob> target = new WeakReference<>(null);
+	private WeakReference<Mob> target = new WeakReference<Mob>(null);
 	private PathFinder pathFinder = new AStar(8);
 	
 	/**

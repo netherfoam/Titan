@@ -27,7 +27,7 @@ public class LogonAPI {
 	}
 	
 	public static class RemoteWorld {
-		protected HashSet<String> players = new HashSet<>();
+		protected HashSet<String> players = new HashSet<String>();
 		protected String ip;
 		protected String name;
 		protected String activity;
@@ -75,8 +75,8 @@ public class LogonAPI {
 		}
 	}
 	
-	protected HashMap<Integer, AuthRequest> authRequests = new HashMap<>();
-	protected HashMap<Integer, RemoteWorld> worlds = new HashMap<>();
+	protected HashMap<Integer, AuthRequest> authRequests = new HashMap<Integer, AuthRequest>();
+	protected HashMap<Integer, RemoteWorld> worlds = new HashMap<Integer, RemoteWorld>();
 	
 	private LogonConnection game;
 	

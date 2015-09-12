@@ -23,7 +23,7 @@ public class Eat extends ActionHandler{
 	int food = -1;
 	public void run(Mob mob, Map<String, Object> args) throws SuspendExecution{
 		ItemStack item = (ItemStack) args.get("item");
-		int slot = (int) args.get("slot");
+		int slot = (Integer) args.get("slot");
 		
 		//Find the food
 		for(int i = 0; i < ids.length; i++){
@@ -38,11 +38,7 @@ public class Eat extends ActionHandler{
 					((Client) mob).getProtocol().sendSound(2393, 255, 255);
 				}
 				
-				Action.wait(3);
-				
-				if(mob instanceof Client){
-					((Client) mob).sendMessage("That food has not been implemented yet, sorry!");
-				}
+				Action.wait(2);
 				
 				//We are guaranteed to have a valid food here. Attempt to heal the player.
 				mob.setHealth(Math.min(mob.getHealth() + hps[food], mob.getMaxHealth()));
@@ -55,9 +51,6 @@ public class Eat extends ActionHandler{
 			}
 		}
 		
-		//Not implemented
-		if(mob instanceof Client){
-			((Client) mob).sendMessage("That bone has not been implemented yet, sorry!");
-		}
+		mob.sendMessage("That food has not been implemented yet, sorry!");
 	}
 }

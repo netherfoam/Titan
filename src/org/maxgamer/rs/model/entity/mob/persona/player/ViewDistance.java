@@ -73,11 +73,11 @@ public enum ViewDistance {
 		int chunks = getChunkRadius();
 		WorldMap m = center.getMap();
 		
-		int minX = Calc.between(0, m.getSizeX() - 1, (center.x & ~0x7) - (chunks * 8));
-		int minY = Calc.between(0, m.getSizeY() - 1, (center.y & ~0x7) - (chunks * 8));
+		int minX = Calc.betweeni(0, m.getSizeX() - 1, (center.x & ~0x7) - (chunks * 8));
+		int minY = Calc.betweeni(0, m.getSizeY() - 1, (center.y & ~0x7) - (chunks * 8));
 		
-		int maxX = Calc.between(0, m.getSizeX() - 1, (center.x & ~0x7) + (chunks * 8) + 7);
-		int maxY = Calc.between(0, m.getSizeY() - 1, (center.y & ~0x7) + (chunks * 8) + 7);
+		int maxX = Calc.betweeni(0, m.getSizeX() - 1, (center.x & ~0x7) + (chunks * 8) + 7);
+		int maxY = Calc.betweeni(0, m.getSizeY() - 1, (center.y & ~0x7) + (chunks * 8) + 7);
 		
 		Cube cube = new Cube(new int[] { minX, minY, 0 }, new int[] { maxX - minX, maxY - minY, 3 }); //TODO: Should this really be 4? not 3?
 		return cube;

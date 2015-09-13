@@ -1,15 +1,11 @@
 Release:
 	- JAR version
-	- Restructure packages
-	- Replace if(instanceof Client) sendMessage() calls
-	
 	
 Code Quality:
 	- Some item prices are displayed differently in general stores based on stock quantity. Why?
 	- Hide Definition classes, only expose them to the instances of those definitons, and make those instances
 	  provide methods for accessing fields of the definitions.
-	- Move common protocol methods to ProtocolHandler.java
-	- Being attacked cancels a walking action 
+	- Move common protocol methods to ProtocolHandler.java 
 	- Factions
 		- Set wilderness faction on entering wilderness
 	- Sounds

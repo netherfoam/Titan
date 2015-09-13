@@ -189,4 +189,14 @@ public class ServerThread implements Executor {
 	public void execute(Runnable command) {
 		this.submit(command);
 	}
+
+	/**
+	 * Asserts that the current thread is the ServerThread / Primary thread.
+	 * @throws IllegalThreadException if the assertion fails
+	 */
+	public void assertThread(){
+		if(Thread.currentThread() != this.thread){
+			throw new IllegalThreadException("Attempted to run thread " + Thread.currentThread() + " but must be only run on the ServerThread " + this.thread);
+		}
+	}
 }

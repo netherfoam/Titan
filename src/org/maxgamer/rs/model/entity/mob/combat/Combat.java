@@ -182,7 +182,7 @@ public class Combat extends Action {
 		this.lastAttacker = m;
 		if (m != null) {
 			this.lastAttacked = Core.getServer().getTicker().getTicks();
-			if (getOwner().isRetaliate() && getTarget() == null && m.isAttackable(getOwner()) && m.isHidden() == false && m.isDead() == false && m.getLocation().z == getOwner().getLocation().z) {
+			if (getOwner().isRetaliate() && getOwner().getActions().isEmpty() && getTarget() == null && m.isAttackable(getOwner()) && m.isHidden() == false && m.isDead() == false && m.getLocation().z == getOwner().getLocation().z) {
 				getOwner().getActions().clear(); //Cancel any actions previously given if possible
 				setTarget(m);
 			}

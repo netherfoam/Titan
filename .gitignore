@@ -13,3 +13,4 @@ config/*.yml
 crash/
 players/
 doc/
+*.class

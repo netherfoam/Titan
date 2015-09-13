@@ -48,6 +48,8 @@ public abstract class Action{
 	 * @throws SuspendExecution
 	 */
 	public static void wait(int ticks) throws SuspendExecution{
+		Core.getServer().getThread().assertThread();
+		
 		if(Fiber.isCurrentFiber() == false){
 			throw new RuntimeException("wait() may only be invoked by a Fiber.");
 		}
@@ -63,6 +65,7 @@ public abstract class Action{
 	 * this will raise an exception.
 	 */
 	protected void tick(){
+		Core.getServer().getThread().assertThread();
 		if(fiber == null){
 			fiber = new Fiber<Void>(this.toString(), Core.getServer().getThread().getFiberScheduler()){
 				private static final long serialVersionUID = 1842342854418180882L;
@@ -89,7 +92,8 @@ public abstract class Action{
 		}
 		else{
 			if(fiber.isTerminated()){
-				throw new RuntimeException("Action's Fiber was terminated, but Action was requested to tick() anyway?");
+				return;
+				//throw new RuntimeException("Action's Fiber was terminated, but Action was requested to tick() anyway?");
 			}
 			//Fiber doesn't get executed right here! It is in the ServerThread list of things to run after this call
 			// - And right now, *THIS* is being executed, not the fiber!

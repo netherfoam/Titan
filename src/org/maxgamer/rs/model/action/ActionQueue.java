@@ -328,7 +328,9 @@ public class ActionQueue extends FastTickable {
 		synchronized (queue) {
 			//Yielder is requesting that we allow the next item in the queue to be ticked.
 			int index = queue.indexOf(yielder);
-			if (index == -1) throw new IllegalArgumentException("Action attempted to yield, when it was not queued and thus cannot yield.");
+			if (index == -1) return; //Cannot yield, since it is not queued
+			//throw new IllegalArgumentException("Action attempted to yield, when it was not queued and thus cannot yield.");
+			
 			Action w;
 			
 			if (index < queue.size() - 1) { //If there's another item after the yielder

@@ -9,7 +9,7 @@ import org.maxgamer.rs.model.entity.mob.persona.Persona;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.skill.SkillType;
 import org.maxgamer.rs.structure.YMLSerializable;
-import org.maxgamer.structure.configs.ConfigSection;
+import org.maxgamer.rs.structure.configs.ConfigSection;
 
 /**
  * @author netherfoam, alva

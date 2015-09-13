@@ -9,11 +9,11 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Scanner;
 
-import org.maxgamer.event.EventHandler;
-import org.maxgamer.event.EventListener;
-import org.maxgamer.event.EventPriority;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.core.server.WorldFullException;
+import org.maxgamer.rs.event.EventHandler;
+import org.maxgamer.rs.event.EventListener;
+import org.maxgamer.rs.event.EventPriority;
 import org.maxgamer.rs.events.world.ChunkLoadEvent;
 import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.map.ClipMasks;

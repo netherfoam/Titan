@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 
 import org.maxgamer.rs.network.LobbyPlayer;
-import org.maxgamer.structure.TrieSet;
+import org.maxgamer.rs.structure.TrieSet;
 
 /**
  * @author netherfoam

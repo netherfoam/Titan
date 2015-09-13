@@ -3,7 +3,7 @@ package org.maxgamer.rs.model.entity.mob.persona;
 import java.util.HashMap;
 
 import org.maxgamer.rs.model.entity.EntityList;
-import org.maxgamer.structure.TrieSet;
+import org.maxgamer.rs.structure.TrieSet;
 
 /**
  * Represents an Entity list with a special feature for fetching players based

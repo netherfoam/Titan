@@ -2,7 +2,7 @@ package org.maxgamer.rs.module;
 
 import java.io.File;
 
-import org.maxgamer.structure.configs.FileConfig;
+import org.maxgamer.rs.structure.configs.FileConfig;
 
 /**
  * A Module class which represents a plugin that may be loaded from the modules

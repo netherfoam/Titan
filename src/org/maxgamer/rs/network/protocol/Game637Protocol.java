@@ -74,9 +74,9 @@ import org.maxgamer.rs.network.io.packet.player.SpellOnMobHandler;
 import org.maxgamer.rs.network.io.packet.player.UnknownHandler;
 import org.maxgamer.rs.network.io.packet.player.WorldMapHandler;
 import org.maxgamer.rs.network.io.stream.RSOutputStream;
-import org.maxgamer.structure.areagrid.Cube;
-import org.maxgamer.structure.areagrid.MBR;
-import org.maxgamer.structure.areagrid.MBRUtil;
+import org.maxgamer.rs.structure.areagrid.Cube;
+import org.maxgamer.rs.structure.areagrid.MBR;
+import org.maxgamer.rs.structure.areagrid.MBRUtil;
 
 /**
  * @author netherfoam

@@ -1,8 +1,8 @@
 package org.maxgamer.rs.events;
 
-import org.maxgamer.event.Event;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.core.server.IllegalThreadException;
+import org.maxgamer.rs.event.Event;
 
 /**
  * @author netherfoam

@@ -1,8 +1,8 @@
 package org.maxgamer.rs.events.server;
 
-import org.maxgamer.event.Cancellable;
 import org.maxgamer.rs.command.Command;
 import org.maxgamer.rs.command.CommandSender;
+import org.maxgamer.rs.event.Cancellable;
 import org.maxgamer.rs.events.RSEvent;
 
 /**

@@ -2,8 +2,8 @@ package org.maxgamer.rs.model.item.weapon;
 
 import org.maxgamer.rs.definition.Definition;
 import org.maxgamer.rs.model.item.WieldType;
-import org.maxgamer.structure.dbmodel.FixedArraySerializer;
-import org.maxgamer.structure.dbmodel.Mapping;
+import org.maxgamer.rs.structure.dbmodel.FixedArraySerializer;
+import org.maxgamer.rs.structure.dbmodel.Mapping;
 
 /**
  * @author netherfoam

@@ -9,7 +9,7 @@ import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.item.ItemProto;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.structure.YMLSerializable;
-import org.maxgamer.structure.configs.ConfigSection;
+import org.maxgamer.rs.structure.configs.ConfigSection;
 
 /**
  * @author Netherfoam

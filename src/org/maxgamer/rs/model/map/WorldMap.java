@@ -7,10 +7,10 @@ import org.maxgamer.rs.cache.EncryptedException;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.persona.player.ViewDistance;
+import org.maxgamer.rs.structure.areagrid.AreaGrid;
+import org.maxgamer.rs.structure.areagrid.Cube;
+import org.maxgamer.rs.structure.areagrid.MBR;
 import org.maxgamer.rs.structure.timings.StopWatch;
-import org.maxgamer.structure.areagrid.AreaGrid;
-import org.maxgamer.structure.areagrid.Cube;
-import org.maxgamer.structure.areagrid.MBR;
 
 /**
  * @author netherfoam

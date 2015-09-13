@@ -17,7 +17,7 @@ import org.maxgamer.rs.network.LobbyPlayer;
 import org.maxgamer.rs.network.Session;
 import org.maxgamer.rs.network.io.rawhandler.GamePacketHandler;
 import org.maxgamer.rs.network.io.rawhandler.LobbyHandler;
-import org.maxgamer.structure.configs.ConfigSection;
+import org.maxgamer.rs.structure.configs.ConfigSection;
 
 /**
  * @author netherfoam

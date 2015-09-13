@@ -7,8 +7,8 @@ import java.sql.SQLException;
 import net.crackstation.hash.PasswordHash;
 
 import org.maxgamer.rs.lib.log.Log;
-import org.maxgamer.structure.dbmodel.Mapping;
-import org.maxgamer.structure.dbmodel.Transparent;
+import org.maxgamer.rs.structure.dbmodel.Mapping;
+import org.maxgamer.rs.structure.dbmodel.Transparent;
 
 /**
  * Represents a user profile, one that may be offline or online.

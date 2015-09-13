@@ -18,7 +18,6 @@ import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.item.inventory.Container;
 import org.maxgamer.rs.model.item.inventory.ContainerException;
 import org.maxgamer.rs.model.skill.SkillType;
-import org.maxgamer.rs.network.Client;
 import org.maxgamer.rs.script.ActionHandler;
 import org.maxgamer.rs.script.Script;
 
@@ -133,18 +132,14 @@ public class FishingSpot extends ActionHandler {
 		
 		BaitType t = getType(target.getId(), option);
 		if(t == null){
-			if(mob instanceof Client){
-				((Client) mob).sendMessage("That Fish isn't implemented. Ask a developer or an administrator to code it!");
-			}
+			mob.sendMessage("That Fish isn't implemented. Ask a developer or an administrator to code it!");
 			return;
 		}
 		
 		mob.setFacing(Facing.face(target.getLocation()));
 		
 		if(t.level > mob.getSkills().getLevel(SkillType.FISHING, true)){
-			if(mob instanceof Client){
-				((Client) mob).sendMessage("You need a fishing level of " + t.level + " for that!");
-			}
+			mob.sendMessage("You need a fishing level of " + t.level + " for that!");
 			return;
 		}
 		
@@ -153,9 +148,7 @@ public class FishingSpot extends ActionHandler {
 			inv = ((InventoryHolder) mob).getInventory();
 			
 			if(t.tool != null && inv.contains(t.tool) == false){
-				if(mob instanceof Client){
-					((Client) mob).sendMessage("You need a " + t.tool.getName().toLowerCase() + " to fish there.");
-				}
+				mob.sendMessage("You need a " + t.tool.getName().toLowerCase() + " to fish there.");
 				return;
 			}
 		}
@@ -169,9 +162,7 @@ public class FishingSpot extends ActionHandler {
 				if(loot != null){
 					try{
 						inv.add(loot);
-						if(mob instanceof Client){
-							((Client) mob).sendMessage("You " + t.option.toLowerCase() + " a " + loot.getName() + ".");
-						}
+						mob.sendMessage("You " + t.option.toLowerCase() + " a " + loot.getName() + ".");
 						mob.getSkills().addExp(SkillType.FISHING, t.xp);
 					}
 					catch(ContainerException e){

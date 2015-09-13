@@ -1,9 +1,9 @@
 package org.maxgamer.rs.model.entity.mob.persona.player;
 
 import org.maxgamer.rs.model.map.Location;
-import org.maxgamer.structure.areagrid.Cube;
-import org.maxgamer.structure.areagrid.MBR;
-import org.maxgamer.structure.areagrid.MBRUtil;
+import org.maxgamer.rs.structure.areagrid.Cube;
+import org.maxgamer.rs.structure.areagrid.MBR;
+import org.maxgamer.rs.structure.areagrid.MBRUtil;
 
 /**
  * A class to represent the area visible to a player at a given point in time.

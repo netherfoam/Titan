@@ -1,6 +1,6 @@
 package org.maxgamer.rs.structure;
 
-import org.maxgamer.structure.configs.ConfigSection;
+import org.maxgamer.rs.structure.configs.ConfigSection;
 
 /**
  * Represents an object which may be serialized and deserialized from a YML

@@ -1,6 +1,6 @@
 package org.maxgamer.rs.definition;
 
-import org.maxgamer.structure.dbmodel.Transparent;
+import org.maxgamer.rs.structure.dbmodel.Transparent;
 
 /**
  * @author netherfoam

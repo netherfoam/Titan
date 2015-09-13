@@ -4,9 +4,9 @@ import java.util.HashSet;
 
 import org.maxgamer.rs.model.map.path.Direction;
 import org.maxgamer.rs.model.map.path.Directions;
-import org.maxgamer.structure.areagrid.Cube;
-import org.maxgamer.structure.areagrid.MBR;
-import org.maxgamer.structure.configs.ConfigSection;
+import org.maxgamer.rs.structure.areagrid.Cube;
+import org.maxgamer.rs.structure.areagrid.MBR;
+import org.maxgamer.rs.structure.configs.ConfigSection;
 
 /**
  * Represents a location in game.

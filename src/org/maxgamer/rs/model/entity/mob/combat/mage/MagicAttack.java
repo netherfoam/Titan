@@ -9,7 +9,6 @@ import org.maxgamer.rs.model.entity.mob.combat.AttackResult;
 import org.maxgamer.rs.model.entity.mob.combat.Damage;
 import org.maxgamer.rs.model.entity.mob.combat.DamageType;
 import org.maxgamer.rs.model.entity.mob.combat.Projectile;
-import org.maxgamer.rs.network.Client;
 
 /**
  * @author netherfoam
@@ -46,9 +45,7 @@ public class MagicAttack extends Attack {
 	@Override
 	public boolean prepare(Mob target, AttackResult damage) {
 		if (this.spell.hasRequirements(attacker) == false) {
-			if (attacker instanceof Client) {
-				((Client) attacker).sendMessage("You don't have enough runes to cast that spell.");
-			}
+			attacker.sendMessage("You don't have enough runes to cast that spell.");
 			return false;
 		}
 		

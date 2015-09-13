@@ -54,6 +54,11 @@ public class ItemOnObjectHandler implements PacketProcessor<Player> {
 		
 		for(GameObject g : l.getNearby(GameObject.class, 0)){
 			if(g.getId() == objectId){
+				if(g.getName() == null){
+					player.getCheats().log(10, "Player attempted to use an item on an object which has no name.");
+					return;
+				}
+				
 				AStar finder = new AStar(20);
 				Path path = finder.findPath(player.getLocation(), g.getLocation(), g.getLocation().add(g.getSizeX() - 1, g.getSizeY() - 1), player.getSizeX(), player.getSizeY(), g);
 				

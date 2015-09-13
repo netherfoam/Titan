@@ -6,10 +6,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.maxgamer.event.EventManager;
 import org.maxgamer.rs.command.CommandManager;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.core.tick.Tickable;
+import org.maxgamer.rs.event.EventManager;
 import org.maxgamer.rs.events.server.ServerShutdownEvent;
 import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.logonv4.game.LogonConnection;
@@ -30,10 +30,10 @@ import org.maxgamer.rs.module.ModuleLoader;
 import org.maxgamer.rs.network.Client;
 import org.maxgamer.rs.network.LobbyPlayer;
 import org.maxgamer.rs.network.server.RS2Server;
+import org.maxgamer.rs.structure.configs.ConfigSection;
+import org.maxgamer.rs.structure.configs.FileConfig;
 import org.maxgamer.rs.structure.sql.Database.ConnectionException;
 import org.maxgamer.rs.structure.timings.StopWatch;
-import org.maxgamer.structure.configs.ConfigSection;
-import org.maxgamer.structure.configs.FileConfig;
 
 /**
  * @author netherfoam

@@ -12,8 +12,8 @@ import org.maxgamer.rs.cache.IDX;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.definition.Definition;
 import org.maxgamer.rs.lib.BufferUtils;
-import org.maxgamer.structure.dbmodel.FixedArraySerializer;
-import org.maxgamer.structure.dbmodel.Mapping;
+import org.maxgamer.rs.structure.dbmodel.FixedArraySerializer;
+import org.maxgamer.rs.structure.dbmodel.Mapping;
 
 /**
  * @author netherfoam

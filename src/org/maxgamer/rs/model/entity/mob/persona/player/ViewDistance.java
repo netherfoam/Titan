@@ -3,7 +3,7 @@ package org.maxgamer.rs.model.entity.mob.persona.player;
 import org.maxgamer.rs.lib.Calc;
 import org.maxgamer.rs.model.map.Location;
 import org.maxgamer.rs.model.map.WorldMap;
-import org.maxgamer.structure.areagrid.Cube;
+import org.maxgamer.rs.structure.areagrid.Cube;
 
 /**
  * Represents the view distance for a player. This is how many tiles the

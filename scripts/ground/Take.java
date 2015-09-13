@@ -6,7 +6,6 @@ import org.maxgamer.rs.model.entity.mob.InventoryHolder;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.item.ground.GroundItemStack;
 import org.maxgamer.rs.model.item.inventory.ContainerException;
-import org.maxgamer.rs.network.Client;
 import org.maxgamer.rs.script.ActionHandler;
 import org.maxgamer.rs.script.Script;
 
@@ -25,9 +24,7 @@ public class Take extends ActionHandler {
 				}
 			}
 			catch (ContainerException e) {
-				if (m instanceof Client) {
-					((Client) m).sendMessage("You need more space to pick that up.");
-				}
+				m.sendMessage("You need more space to pick that up.");
 			}
 		}
 		yield();

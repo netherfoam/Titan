@@ -1,9 +1,9 @@
 package org.maxgamer.rs.model.skill.prayer;
 
-import org.maxgamer.event.AutoRegister;
-import org.maxgamer.event.EventHandler;
-import org.maxgamer.event.EventListener;
-import org.maxgamer.event.EventPriority;
+import org.maxgamer.rs.event.AutoRegister;
+import org.maxgamer.rs.event.EventHandler;
+import org.maxgamer.rs.event.EventListener;
+import org.maxgamer.rs.event.EventPriority;
 import org.maxgamer.rs.events.mob.MobAttackEvent;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.combat.Damage;

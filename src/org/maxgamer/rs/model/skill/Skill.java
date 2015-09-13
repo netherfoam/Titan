@@ -1,7 +1,7 @@
 package org.maxgamer.rs.model.skill;
 
 import org.maxgamer.rs.structure.YMLSerializable;
-import org.maxgamer.structure.configs.ConfigSection;
+import org.maxgamer.rs.structure.configs.ConfigSection;
 
 /**
  * Represents a player's skill.

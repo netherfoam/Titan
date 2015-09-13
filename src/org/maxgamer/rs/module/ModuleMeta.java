@@ -3,8 +3,8 @@ package org.maxgamer.rs.module;
 import java.io.File;
 import java.net.URLClassLoader;
 
-import org.maxgamer.structure.configs.ConfigSection;
-import org.maxgamer.structure.configs.FileConfig;
+import org.maxgamer.rs.structure.configs.ConfigSection;
+import org.maxgamer.rs.structure.configs.FileConfig;
 
 /**
  * @author netherfoam

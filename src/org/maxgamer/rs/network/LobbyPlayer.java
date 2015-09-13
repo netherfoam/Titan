@@ -11,7 +11,7 @@ import org.maxgamer.rs.model.entity.mob.persona.player.NoSuchProtocolException;
 import org.maxgamer.rs.network.io.packet.RSOutgoingPacket;
 import org.maxgamer.rs.network.protocol.Lobby637Protocol;
 import org.maxgamer.rs.network.protocol.LobbyProtocol;
-import org.maxgamer.structure.configs.ConfigSection;
+import org.maxgamer.rs.structure.configs.ConfigSection;
 
 /**
  * Represents a player who is currently logged in to the Lobby. Authenticated

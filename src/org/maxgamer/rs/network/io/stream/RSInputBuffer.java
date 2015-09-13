@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 
-import org.maxgamer.io.ByteReader;
+import org.maxgamer.rs.io.ByteReader;
 
 /**
  * Basically a stream wrapper with some frequently used RS methods

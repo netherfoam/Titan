@@ -11,7 +11,7 @@ import org.maxgamer.rs.model.entity.mob.persona.Persona;
 import org.maxgamer.rs.network.Client;
 import org.maxgamer.rs.network.io.packet.RSOutgoingPacket;
 import org.maxgamer.rs.structure.YMLSerializable;
-import org.maxgamer.structure.configs.ConfigSection;
+import org.maxgamer.rs.structure.configs.ConfigSection;
 
 /**
  * @author netherfoam

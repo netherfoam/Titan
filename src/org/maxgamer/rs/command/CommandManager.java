@@ -11,14 +11,14 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.maxgamer.event.EventManager;
-import org.maxgamer.io.ScriptLoader;
 import org.maxgamer.rs.core.Core;
+import org.maxgamer.rs.event.EventManager;
 import org.maxgamer.rs.events.server.CommandEvent;
+import org.maxgamer.rs.io.ScriptLoader;
 import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
-import org.maxgamer.structure.TrieSet;
-import org.maxgamer.structure.configs.ConfigSection;
+import org.maxgamer.rs.structure.TrieSet;
+import org.maxgamer.rs.structure.configs.ConfigSection;
 
 /**
  * @author netherfoam

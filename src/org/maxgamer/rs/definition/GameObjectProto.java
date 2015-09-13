@@ -1,18 +1,10 @@
 package org.maxgamer.rs.definition;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
-import org.maxgamer.io.ByteBufferInputStream;
-import org.maxgamer.rs.cache.Archive;
-import org.maxgamer.rs.cache.Cache;
-import org.maxgamer.rs.cache.IDX;
 import org.maxgamer.rs.cache.RSInputStream;
-import org.maxgamer.rs.structure.sql.SQLiteCore;
+import org.maxgamer.rs.io.ByteBufferInputStream;
 
 /* Class352 - Decompiled by JODE
  * Visit http://jode.sourceforge.net/
@@ -744,75 +736,5 @@ public final class GameObjectProto {
 	@Override
 	public String toString() {
 		return "Solid: " + (isSolid ? "T" : "F") + ", AC: " + actionCount + ", ClipFlag: " + (clippingFlag ? "T" : "F");
-	}
-	
-	public static void main(String[] args) throws Exception {
-		Cache cache = new Cache();
-		cache.load(new File("cache"));
-		
-		SQLiteCore core = new SQLiteCore(new File("sql/sqlite.db"));
-		Connection con = core.getConnection();
-		
-		PreparedStatement ps = con.prepareStatement("SELECT * FROM gameobject_definitions");
-		ResultSet rs = ps.executeQuery();
-		int pos = 0;
-		int size = 57264;
-		int progress = 0;
-		
-		while (rs.next()) {
-			int id = rs.getInt("id");
-			int actionCount = rs.getInt("actionCount");
-			boolean clippingFlag = rs.getBoolean("clippingFlag");
-			boolean solid = rs.getBoolean("solid");
-			int sizeX = rs.getInt("sizeX");
-			int sizeY = rs.getInt("sizeY");
-			
-			Archive a = cache.getArchive(IDX.OBJECTS, id >>> 8);
-			
-			GameObjectProto proto = null;
-			try {
-				proto = GameObjectProto.decode(id, a.get(id & 0xFF));
-				
-				if (proto.id != id) {
-					throw new RuntimeException("id " + id + " " + proto.id);
-				}
-				
-				if (proto.actionCount != actionCount) {
-					throw new RuntimeException("actionCount " + actionCount + " " + proto.actionCount);
-				}
-				if (proto.clippingFlag != clippingFlag) {
-					throw new RuntimeException("clippingFlag " + clippingFlag + " " + proto.clippingFlag);
-				}
-				if (proto.isSolid != solid) {
-					throw new RuntimeException("solid " + solid + " " + proto.isSolid);
-				}
-				if (proto.sizeY != sizeY) {
-					throw new RuntimeException("sizeX " + sizeY + " " + proto.sizeY);
-				}
-				if (proto.sizeX != sizeX) {
-					throw new RuntimeException("sizeY " + sizeX + " " + proto.sizeX);
-				}
-			}
-			catch (Exception e) {
-				System.out.println("id " + id + "(" + rs.getString("name") + ")... " + e.getMessage());
-				System.out.println(proto);
-				GameObjectProto p2 = new GameObjectProto();
-				p2.id = id;
-				p2.actionCount = actionCount;
-				p2.clippingFlag = clippingFlag;
-				p2.isSolid = solid;
-				p2.sizeY = sizeY;
-				p2.sizeX = sizeX;
-				System.out.println(p2);
-			}
-			pos++;
-			
-			if (pos * 100 / size > progress) {
-				progress++;
-				System.out.print("|");
-			}
-		}
-		rs.close();
-		System.out.println("\nDone");
 	}
 }

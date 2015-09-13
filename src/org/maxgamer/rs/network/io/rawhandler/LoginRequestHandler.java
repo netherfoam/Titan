@@ -3,9 +3,9 @@ package org.maxgamer.rs.network.io.rawhandler;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import org.maxgamer.io.InputStreamWrapper;
 import org.maxgamer.rs.cache.XTEAKey;
 import org.maxgamer.rs.core.Core;
+import org.maxgamer.rs.io.InputStreamWrapper;
 import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.entity.mob.persona.player.ScreenSettings;
 import org.maxgamer.rs.network.AuthResult;

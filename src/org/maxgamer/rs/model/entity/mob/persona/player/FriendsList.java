@@ -9,7 +9,7 @@ import org.maxgamer.rs.events.mob.persona.player.RemoveFriendEvent;
 import org.maxgamer.rs.logonv4.game.LogonAPI.RemoteWorld;
 import org.maxgamer.rs.network.Client;
 import org.maxgamer.rs.structure.YMLSerializable;
-import org.maxgamer.structure.configs.ConfigSection;
+import org.maxgamer.rs.structure.configs.ConfigSection;
 
 /**
  * @author netherfoam, alva

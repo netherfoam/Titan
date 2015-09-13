@@ -1,51 +1,15 @@
 package org.maxgamer.rs.cache.format;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 
-import org.maxgamer.structure.ReflectUtil;
+import org.maxgamer.rs.structure.ReflectUtil;
 
 /**
  * @author netherfoam
  */
 public class CS2 {
-	/**
-	 * Unit test
-	 */
-	public static void main(String[] args) throws IOException {
-		File idx12 = new File("extract", "idx12");
-		File[] files = new File[] { new File(idx12, "file11.dat") }; //idx12.listFiles();
-		int success = 0, failure = 0;
-		int progress = 0;
-		for (int i = 0; i < files.length; i++) {
-			if (i * 80 / files.length > progress) {
-				//Progress bar
-				System.out.print("|");
-			}
-			
-			File f = files[i];
-			FileInputStream in = new FileInputStream(f);
-			byte[] data = new byte[in.available()];
-			in.read(data);
-			in.close();
-			
-			ByteBuffer bb = ByteBuffer.wrap(data);
-			try {
-				CS2.decode(11, bb);
-			}
-			catch (Exception e) {
-				System.out.println("Error parsing " + f.getName());
-				e.printStackTrace();
-				failure++;
-			}
-		}
-		
-		System.out.println("Success: " + success + ", Failure: " + failure);
-	}
-	
 	/**
 	 * Decodes the given ClientScript buffer into a file. Throws IOException or
 	 * {@link BufferUnderflowException} if the script could not be interpreted.

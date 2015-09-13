@@ -3,7 +3,7 @@ package org.maxgamer.rs.model.entity.mob.persona.player;
 import java.util.ArrayList;
 
 import org.maxgamer.rs.structure.YMLSerializable;
-import org.maxgamer.structure.configs.ConfigSection;
+import org.maxgamer.rs.structure.configs.ConfigSection;
 
 /**
  * @author netherfoam, alva

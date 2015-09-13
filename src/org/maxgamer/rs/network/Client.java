@@ -7,7 +7,7 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.network.io.packet.RSOutgoingPacket;
 import org.maxgamer.rs.network.protocol.ProtocolHandler;
 import org.maxgamer.rs.structure.YMLSerializable;
-import org.maxgamer.structure.configs.ConfigSection;
+import org.maxgamer.rs.structure.configs.ConfigSection;
 
 /**
  * Represents a {@link Player} or {@link LobbyPlayer} which is controlled by a

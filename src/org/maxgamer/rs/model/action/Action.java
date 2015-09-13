@@ -72,10 +72,10 @@ public abstract class Action{
 					try{
 						Action.this.run();
 					}
-					catch(Exception e){
+					catch(Throwable t){
 						Log.warning("There was an Exception thrown while running an Action. Details:");
 						Log.warning("Mob: " + Action.this.getOwner() + ", Action: " + Action.this);
-						e.printStackTrace();
+						t.printStackTrace();
 					}
 					//Notify the action queue this action has ended
 					getOwner().getActions().end(Action.this);

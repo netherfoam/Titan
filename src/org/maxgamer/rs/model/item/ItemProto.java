@@ -16,12 +16,11 @@ import org.maxgamer.rs.cache.IDX;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.definition.Definition;
 import org.maxgamer.rs.lib.BufferUtils;
-import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.entity.mob.Bonus;
 import org.maxgamer.rs.model.entity.mob.combat.AttackStyle;
 import org.maxgamer.rs.model.item.weapon.Weapon;
 import org.maxgamer.rs.model.skill.SkillType;
-import org.maxgamer.structure.dbmodel.Mapping;
+import org.maxgamer.rs.structure.dbmodel.Mapping;
 
 /**
  * @author netherfoam

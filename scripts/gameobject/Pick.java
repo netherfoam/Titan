@@ -8,7 +8,6 @@ import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.item.inventory.ContainerException;
 import org.maxgamer.rs.model.map.GameObject;
-import org.maxgamer.rs.network.Client;
 import org.maxgamer.rs.script.ActionHandler;
 import org.maxgamer.rs.script.Script;
 
@@ -39,9 +38,7 @@ public class Pick extends ActionHandler {
 			g.hide(20); //Hide the plant for 20s
 		}
 		catch (ContainerException e) {
-			if (p instanceof Client) {
-				((Client) p).sendMessage("You need more room to pick that.");
-			}
+			p.sendMessage("You need more room to pick that.");
 		}
 	}
 }

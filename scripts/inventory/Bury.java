@@ -45,8 +45,6 @@ public class Bury extends ActionHandler{
 			}
 		}
 		//Not implemented
-		if(mob instanceof Client){
-			((Client) mob).sendMessage("That bone has not been implemented yet, sorry!");
-		}
+		mob.sendMessage("That bone has not been implemented yet, sorry!");
 	}
 }

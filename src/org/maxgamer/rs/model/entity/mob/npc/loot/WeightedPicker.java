@@ -8,50 +8,6 @@ import java.util.Random;
  * @author netherfoam
  */
 public class WeightedPicker<T extends Weighted> {
-	
-	public static void main(String[] args) {
-		//Simulation
-		ArrayList<NamedWeight> weights = new ArrayList<NamedWeight>();
-		weights.add(new NamedWeight("Alpha", 50));
-		weights.add(new NamedWeight("Bravo", 50));
-		weights.add(new NamedWeight("Charlie", 50));
-		weights.add(new NamedWeight("Delta", 150));
-		WeightedPicker<NamedWeight> p = new WeightedPicker<NamedWeight>();
-		for (NamedWeight w : weights) {
-			p.add(w);
-		}
-		
-		for (int i = 0; i < 300; i++) {
-			p.next().picks++;
-		}
-		
-		System.out.println("Name: Weight -> Picks");
-		for (NamedWeight w : weights) {
-			System.out.println(w.toString());
-		}
-	}
-	
-	private static class NamedWeight implements Weighted {
-		private double v;
-		private String name;
-		private int picks;
-		
-		public NamedWeight(String name, double v) {
-			this.name = name;
-			this.v = v;
-		}
-		
-		@Override
-		public double getWeight() {
-			return v;
-		}
-		
-		@Override
-		public String toString() {
-			return name + ": " + v + " -> " + picks;
-		}
-	}
-	
 	/** Our random number picker */
 	private static Random rand = new Random();
 	/** All the possible weighted objects which can be chosen */

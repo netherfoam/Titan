@@ -17,7 +17,6 @@ import java.util.Map;
 
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.npc.NPC;
-import org.maxgamer.rs.network.Client;
 import org.maxgamer.rs.script.ActionHandler;
 import org.maxgamer.rs.script.Script;
 
@@ -32,9 +31,7 @@ public class Attack extends ActionHandler {
 			//use this check. isAttackable, for NPC's, currently just checks
 			//that the target has the option "Attack", and this script can
 			//only be invoked if the target has the option "Attack".
-			if(mob instanceof Client){
-				((Client) mob).sendMessage("You can't attack that target");
-			}
+			mob.sendMessage("You can't attack that target");
 			return;
 		}
 		//After calling this, our action queue will be cleared and therefore this action will no longer be queued

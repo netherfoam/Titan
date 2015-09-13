@@ -3,8 +3,8 @@ package org.maxgamer.rs.cache.format;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import org.maxgamer.io.ByteBufferInputStream;
 import org.maxgamer.rs.cache.RSInputStream;
+import org.maxgamer.rs.io.ByteBufferInputStream;
 
 /* Class197 - Decompiled by JODE
  * Visit http://jode.sourceforge.net/

@@ -12,6 +12,7 @@ import org.maxgamer.rs.model.item.ItemProto;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.item.inventory.Container;
 import org.maxgamer.rs.model.item.inventory.ContainerException;
+import org.maxgamer.rs.model.map.GameObject;
 import org.maxgamer.rs.model.skill.SkillType;
 import org.maxgamer.rs.script.ActionHandler;
 import org.maxgamer.rs.script.Script;
@@ -80,7 +81,12 @@ public class Cook extends ActionHandler{
 	@Override
 	public void run(Mob mob, Map<String, Object> args) throws SuspendExecution {
 		ItemStack item = (ItemStack) args.get("item");
-		//GameObject target = (GameObject) args.get("target");
+		GameObject object = (GameObject) args.get("object");
+		
+		String name = object.getName().toLowerCase();
+		if(name.contains("range") == false && name.contains("stove") == false && name.contains("oven") == false && name.contains("fire") == false && name.contains("furnace") == false){
+			return;
+		}
 		
 		Food f = Food.get(item);
 		if(f == null){

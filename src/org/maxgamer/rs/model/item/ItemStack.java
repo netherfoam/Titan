@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import org.maxgamer.rs.model.item.weapon.Weapon;
 import org.maxgamer.rs.structure.YMLSerializable;
-import org.maxgamer.structure.configs.ConfigSection;
+import org.maxgamer.rs.structure.configs.ConfigSection;
 
 /**
  * @author netherfoam

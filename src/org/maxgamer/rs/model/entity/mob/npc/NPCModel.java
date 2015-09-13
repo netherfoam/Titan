@@ -2,7 +2,7 @@ package org.maxgamer.rs.model.entity.mob.npc;
 
 import java.io.IOException;
 
-import org.maxgamer.io.OutputStreamWrapper;
+import org.maxgamer.rs.io.OutputStreamWrapper;
 import org.maxgamer.rs.model.entity.mob.MobModel;
 
 /**

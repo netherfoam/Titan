@@ -1,6 +1,6 @@
 package org.maxgamer.rs.events.mob.persona;
 
-import org.maxgamer.event.Cancellable;
+import org.maxgamer.rs.event.Cancellable;
 import org.maxgamer.rs.events.RSEvent;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;

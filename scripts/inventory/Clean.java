@@ -7,7 +7,6 @@ import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.item.inventory.ContainerState;
 import org.maxgamer.rs.model.skill.SkillType;
-import org.maxgamer.rs.network.Client;
 import org.maxgamer.rs.script.ActionHandler;
 import org.maxgamer.rs.script.Script;
 
@@ -67,7 +66,7 @@ public class Clean extends ActionHandler{
 		
 		if (mob instanceof InventoryHolder) {
 			ContainerState i = ((InventoryHolder) mob).getInventory().getState();
-			int slot = (int) args.get("slot");
+			int slot = (Integer) args.get("slot");
 
 			for (Herb herb : Herb.values()) {
 				if (herb.getIdentifier() == item.getId()) {
@@ -86,8 +85,7 @@ public class Clean extends ActionHandler{
 				}
 			}
 			
-			if (mob instanceof Client) 
-				((Client)mob).sendMessage("That Herb is not implemented yet, sorry!");
+			mob.sendMessage("That Herb is not implemented yet, sorry!");
 		}
 	}
 }

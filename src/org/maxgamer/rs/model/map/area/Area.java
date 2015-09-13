@@ -6,8 +6,8 @@ import java.util.Set;
 
 import org.maxgamer.rs.model.map.Location;
 import org.maxgamer.rs.model.map.WorldMap;
-import org.maxgamer.structure.areagrid.MBR;
-import org.maxgamer.structure.areagrid.MBRUtil;
+import org.maxgamer.rs.structure.areagrid.MBR;
+import org.maxgamer.rs.structure.areagrid.MBRUtil;
 
 /**
  * @author netherfoam

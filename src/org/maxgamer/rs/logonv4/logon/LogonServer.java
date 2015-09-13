@@ -14,12 +14,12 @@ import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.logonv4.LSOutgoingPacket;
 import org.maxgamer.rs.logonv4.ProfileManager;
 import org.maxgamer.rs.structure.ServerHost;
+import org.maxgamer.rs.structure.configs.ConfigSection;
+import org.maxgamer.rs.structure.configs.FileConfig;
 import org.maxgamer.rs.structure.sql.Database;
 import org.maxgamer.rs.structure.sql.Database.ConnectionException;
 import org.maxgamer.rs.structure.sql.MySQLC3P0Core;
 import org.maxgamer.rs.structure.sql.SQLiteCore;
-import org.maxgamer.structure.configs.ConfigSection;
-import org.maxgamer.structure.configs.FileConfig;
 
 /**
  * @author netherfoam

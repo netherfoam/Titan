@@ -4,7 +4,7 @@ import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.core.server.IllegalThreadException;
 import org.maxgamer.rs.model.map.Location;
 import org.maxgamer.rs.model.map.WorldMap;
-import org.maxgamer.structure.areagrid.MBR;
+import org.maxgamer.rs.structure.areagrid.MBR;
 
 /**
  * Represents something in the world, whether visible or not. Can be game

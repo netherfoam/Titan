@@ -2,13 +2,13 @@ package org.maxgamer.rs.model.entity.mob.persona;
 
 import java.io.IOException;
 
-import org.maxgamer.io.OutputStreamWrapper;
+import org.maxgamer.rs.io.OutputStreamWrapper;
 import org.maxgamer.rs.model.entity.mob.MobModel;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.item.WieldType;
 import org.maxgamer.rs.model.item.inventory.Equipment;
 import org.maxgamer.rs.structure.YMLSerializable;
-import org.maxgamer.structure.configs.ConfigSection;
+import org.maxgamer.rs.structure.configs.ConfigSection;
 
 /**
  * @author netherfoam

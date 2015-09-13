@@ -15,7 +15,7 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.item.inventory.ContainerException;
-import org.maxgamer.structure.TrieSet;
+import org.maxgamer.rs.structure.TrieSet;
 
 /**
  * @author netherfoam

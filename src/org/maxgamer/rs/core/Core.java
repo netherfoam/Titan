@@ -26,12 +26,12 @@ import org.maxgamer.rs.model.entity.mob.combat.RangeAttack;
 import org.maxgamer.rs.model.entity.mob.npc.NPCGroup;
 import org.maxgamer.rs.model.item.ItemProto;
 import org.maxgamer.rs.script.ScriptManager;
+import org.maxgamer.rs.structure.configs.ConfigSection;
+import org.maxgamer.rs.structure.configs.FileConfig;
 import org.maxgamer.rs.structure.sql.Database;
 import org.maxgamer.rs.structure.sql.MySQLC3P0Core;
 import org.maxgamer.rs.structure.sql.SQLiteCore;
 import org.maxgamer.rs.structure.timings.Timings;
-import org.maxgamer.structure.configs.ConfigSection;
-import org.maxgamer.structure.configs.FileConfig;
 
 /**
  * Represents the core, responsible for running the server. Should keep this

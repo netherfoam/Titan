@@ -9,7 +9,7 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.item.inventory.ContainerException;
 import org.maxgamer.rs.structure.YMLSerializable;
-import org.maxgamer.structure.configs.ConfigSection;
+import org.maxgamer.rs.structure.configs.ConfigSection;
 
 /**
  * A class that allows to store items which are "Lost" in the server somewhere

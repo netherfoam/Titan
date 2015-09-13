@@ -3,8 +3,8 @@ package org.maxgamer.rs.model.map.area;
 import java.util.HashSet;
 
 import org.maxgamer.rs.model.map.WorldMap;
-import org.maxgamer.structure.areagrid.AreaGrid;
-import org.maxgamer.structure.areagrid.MBR;
+import org.maxgamer.rs.structure.areagrid.AreaGrid;
+import org.maxgamer.rs.structure.areagrid.MBR;
 
 /**
  * @author netherfoam

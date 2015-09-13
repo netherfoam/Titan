@@ -7,7 +7,6 @@ import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.facing.Facing;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;
 import org.maxgamer.rs.model.map.GameObject;
-import org.maxgamer.rs.network.Client;
 import org.maxgamer.rs.script.ScriptFilter;
 import org.maxgamer.rs.script.ScriptSpace;
 
@@ -50,9 +49,7 @@ public class GameObjectAction extends Action {
 		
 		ScriptSpace ss = Core.getScripts().get(getOwner(), this, map, filter);
 		if(ss == null){
-			if(getOwner() instanceof Client){
-				((Client) getOwner()).sendMessage(option + " not implemented.");
-			}
+			getOwner().sendMessage(option + " not implemented.");
 			return;
 		}
 		

@@ -1,6 +1,6 @@
 package org.maxgamer.rs.events.mob;
 
-import org.maxgamer.event.Cancellable;
+import org.maxgamer.rs.event.Cancellable;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.map.Position;
 

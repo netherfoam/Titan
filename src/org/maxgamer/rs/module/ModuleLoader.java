@@ -15,8 +15,8 @@ import java.util.zip.ZipEntry;
 
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.lib.log.Log;
-import org.maxgamer.structure.configs.ConfigSection;
-import org.maxgamer.structure.configs.FileConfig;
+import org.maxgamer.rs.structure.configs.ConfigSection;
+import org.maxgamer.rs.structure.configs.FileConfig;
 
 /**
  * @author netherfoam

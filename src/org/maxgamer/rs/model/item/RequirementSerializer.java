@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.maxgamer.rs.model.skill.SkillType;
-import org.maxgamer.structure.dbmodel.Serializer;
+import org.maxgamer.rs.structure.dbmodel.Serializer;
 
 public class RequirementSerializer implements Serializer{
 

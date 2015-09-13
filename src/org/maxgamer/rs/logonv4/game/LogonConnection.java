@@ -15,7 +15,7 @@ import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.logonv4.LSIncomingPacket;
 import org.maxgamer.rs.logonv4.LSOutgoingPacket;
 import org.maxgamer.rs.network.io.stream.RSOutputStream;
-import org.maxgamer.structure.configs.ConfigSection;
+import org.maxgamer.rs.structure.configs.ConfigSection;
 
 /**
  * @author netherfoam

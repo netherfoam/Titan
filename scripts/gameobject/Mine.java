@@ -11,7 +11,6 @@ import org.maxgamer.rs.model.map.GameObject;
 import org.maxgamer.rs.model.skill.SkillType;
 import org.maxgamer.rs.model.skill.harvest.HarvestTool;
 import org.maxgamer.rs.model.skill.harvest.Harvestable;
-import org.maxgamer.rs.network.Client;
 import org.maxgamer.rs.script.ActionHandler;
 import org.maxgamer.rs.script.Script;
 
@@ -94,10 +93,8 @@ public class Mine extends ActionHandler{
 		}
 		
 		if(tool == null){
-			if(m instanceof Client){
-				((Client) m).sendMessage("You need the appropriate tool to do that.");
-				return;
-			}
+			m.sendMessage("You need the appropriate tool to do that.");
+			return;
 		}
 		
 		if(obj.hasData() == false){

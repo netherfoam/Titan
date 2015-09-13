@@ -46,7 +46,7 @@ import org.maxgamer.rs.network.io.rawhandler.GamePacketHandler;
 import org.maxgamer.rs.network.protocol.Game637Protocol;
 import org.maxgamer.rs.network.protocol.ProtocolHandler;
 import org.maxgamer.rs.structure.YMLSerializable;
-import org.maxgamer.structure.configs.ConfigSection;
+import org.maxgamer.rs.structure.configs.ConfigSection;
 
 /**
  * Represents a player with a network connection to the server who is actively

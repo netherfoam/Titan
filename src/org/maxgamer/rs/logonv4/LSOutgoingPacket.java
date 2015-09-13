@@ -1,6 +1,6 @@
 package org.maxgamer.rs.logonv4;
 
-import org.maxgamer.io.ByteWriter;
+import org.maxgamer.rs.io.ByteWriter;
 import org.maxgamer.rs.network.io.stream.RSOutputStream;
 
 /**

@@ -10,7 +10,7 @@ database:
     #can be SQLite or MySQL
     type: mysql
     #Used for SQLite
-    file: sql\sqlite.db 
+    file: sql\world.db 
     host: localhost
     user: titan
     pass: pass

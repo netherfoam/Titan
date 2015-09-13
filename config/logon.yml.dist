@@ -9,6 +9,10 @@ pass: passwd5
 
 #The profiles database
 database:
+    # mysql or sqlite
+    type: mysql
+    #Used for SQLite
+    file: sql\logon.db 
     #The name of the database host (Default "localhost")
     host: localhost
     #The user for the database (default "root")

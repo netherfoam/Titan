@@ -15,7 +15,7 @@ public class NPCOptions {
 	public static final NPCOption ATTACK = new NPCOption("Attack") {
 		@Override
 		public void run(Persona clicker, NPC target) {
-			clicker.getCombat().setTarget(target);
+			clicker.setTarget(target);
 		}
 	};
 	

@@ -223,7 +223,9 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 					}
 					
 					setAttackStyle(style);
-					getCombat().cancelAttack();
+					
+					//Cancel any existing attack
+					getActions().clear();
 				}
 			}
 		});
@@ -279,7 +281,7 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 			}
 			
 			Persona owner = null;
-			Mob[] killers = getCombat().getKillers(DamageType.values());
+			Mob[] killers = getDamage().getKillers(DamageType.values());
 			for (int i = 0; i < killers.length; i++) {
 				if (killers[i] instanceof Persona) {
 					owner = (Persona) killers[i];
@@ -652,7 +654,7 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 		e.call();
 		
 		//Submit our health regen tick
-		//Core.getServer().getTicker().submit(6 - Core.getServer().getTicker().getTicks() % 6, new Tickable() {
+		//Core.getServer().getTicker().submit(6 - Core.getServer().getTicks() % 6, new Tickable() {
 		new Tickable() {
 			@Override
 			public void tick() {
@@ -660,7 +662,7 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 					return; //Cancelled 
 				}
 				
-				int healthTick = (int) (Core.getServer().getTicker().getTicks() % 6);
+				int healthTick = (int) (Core.getServer().getTicks() % 6);
 				if (!isDead() && healthTick == 0) {
 					//Regeneration tick
 					if (getHealth() > getMaxHealth()) {
@@ -675,7 +677,7 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 				//Core.getServer().getTicker().submit(6 - healthTick, this);
 				this.queue(6 - healthTick);
 			}
-		}.queue(6 - Core.getServer().getTicker().getTicks() % 6);
+		}.queue(6 - Core.getServer().getTicks() % 6);
 		
 		this.setHealth(this.config.getInt("health", getMaxHealth()));
 		this.setRetaliate(this.config.getBoolean("retaliate", this.isRetaliate()));

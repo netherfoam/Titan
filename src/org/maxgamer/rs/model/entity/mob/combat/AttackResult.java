@@ -30,7 +30,7 @@ public class AttackResult implements Iterable<Damage> {
 	 */
 	public void apply(Mob attacker) {
 		for (Damage d : damages) {
-			d.getTarget().getCombat().damage(attacker, d);
+			d.getTarget().getDamage().damage(attacker, d);
 		}
 	}
 	

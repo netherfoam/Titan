@@ -77,8 +77,8 @@ public abstract class Follow extends Action {
 	 * @return true if this follow is valid, false otherwise.
 	 */
 	public boolean isFollowing() {
-		if (getTarget() == null || getTarget().isDestroyed()) return false;
-		if (getOwner().isDestroyed()) return false;
+		if (getTarget() == null || getTarget().isDead()) return false;
+		if (getOwner().isDead()) return false;
 		
 		Location d = getTarget().getLocation();
 		

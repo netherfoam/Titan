@@ -47,8 +47,8 @@ public class GroundItemStack extends Entity implements Comparable<GroundItemStac
 		
 		this.stack = stack;
 		this.owner = owner;
-		this.privacy = privacy + Core.getServer().getTicker().getTicks();
-		this.expires = expires + Core.getServer().getTicker().getTicks();
+		this.privacy = privacy + Core.getServer().getTicks();
+		this.expires = expires + Core.getServer().getTicks();
 	}
 	
 	@Override
@@ -86,7 +86,7 @@ public class GroundItemStack extends Entity implements Comparable<GroundItemStac
 	 * @return true if this item has expired
 	 */
 	public boolean hasExpired() {
-		return Core.getServer().getTicker().getTicks() >= expires;
+		return Core.getServer().getTicks() >= expires;
 	}
 	
 	/**
@@ -95,7 +95,7 @@ public class GroundItemStack extends Entity implements Comparable<GroundItemStac
 	 * @return true if this item is currently public
 	 */
 	public boolean isPublic() {
-		return owner == null || Core.getServer().getTicker().getTicks() >= privacy;
+		return owner == null || Core.getServer().getTicks() >= privacy;
 	}
 	
 	/**

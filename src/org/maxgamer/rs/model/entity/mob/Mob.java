@@ -7,17 +7,19 @@ import org.maxgamer.rs.events.mob.MobUnloadEvent;
 import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.action.Action;
 import org.maxgamer.rs.model.action.ActionQueue;
+import org.maxgamer.rs.model.action.CombatFollow;
 import org.maxgamer.rs.model.action.DeathAction;
 import org.maxgamer.rs.model.action.WalkAction;
 import org.maxgamer.rs.model.entity.Entity;
 import org.maxgamer.rs.model.entity.mob.combat.Attack;
 import org.maxgamer.rs.model.entity.mob.combat.AttackStyle;
-import org.maxgamer.rs.model.entity.mob.combat.Combat;
+import org.maxgamer.rs.model.entity.mob.combat.DamageLog;
 import org.maxgamer.rs.model.entity.mob.facing.Facing;
 import org.maxgamer.rs.model.item.inventory.Equipment;
 import org.maxgamer.rs.model.map.ClipMasks;
 import org.maxgamer.rs.model.map.Location;
 import org.maxgamer.rs.model.map.Position;
+import org.maxgamer.rs.model.map.path.AStar;
 import org.maxgamer.rs.model.map.path.Path;
 import org.maxgamer.rs.model.map.path.PathFinder;
 import org.maxgamer.rs.model.skill.SkillSet;
@@ -38,7 +40,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	protected ActionQueue actionQueue;
 	
 	/** The damage dealt to this mob so far */
-	protected Combat combat;
+	protected DamageLog damage;
 	
 	/** The combat stats for this mob */
 	protected CombatStats combatStats;
@@ -69,6 +71,12 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	private Facing facing;
 	
 	/**
+	 * The mob we are trying to kill. Not all of our attacks necessarily
+	 * have to involve this target.
+	 */
+	private Mob target;
+	
+	/**
 	 * Constructs a new mob
 	 * @param sizeX the size of this mob along the X (East-West) axis
 	 * @param sizeY the size of this mob along the Y (North-South) axis
@@ -76,7 +84,42 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	public Mob(int sizeX, int sizeY) {
 		super(sizeX, sizeY);
 		this.actionQueue = new ActionQueue(this);
-		this.combat = new Combat(this);
+		this.damage = new DamageLog(this);
+	}
+	
+	public Mob getTarget(){
+		if(this.target != null){
+			if(this.target.isDead()){
+				this.setTarget(null);
+			}
+			else if(this.target.isAttackable(this) == false){
+				this.setTarget(null);
+			}
+			else if(this.target.isVisible(this) == false){
+				this.setTarget(null);
+			}
+			else if(this.target.getLocation().z != this.getLocation().z){
+				this.setTarget(null);
+			}
+			else if(this.target.getLocation().near(this.getLocation(), 25) == false){
+				this.setTarget(null);
+			}
+		}
+		return this.target;
+	}
+	
+	public void setTarget(Mob target){
+		this.target = target;
+		
+		if(target != null){
+			getDamage().setLastTarget(target);
+			//New target is not null
+			getActions().clear();
+			getActions().queue(new CombatFollow(this, target, new AStar(10)));
+		}
+		else{
+			getActions().clear();
+		}
 	}
 	
 	/**
@@ -134,7 +177,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 			throw new IllegalThreadException("Must be invoked in main thread");
 		}
 		
-		int tick = Core.getServer().getTicker().getTicks();
+		int tick = Core.getServer().getTicks();
 		
 		int newUnrootTick = tick + duration;
 		
@@ -260,7 +303,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 * Forcibly roots the mob until unroot() is called.
 	 */
 	public void root() {
-		root(Integer.MAX_VALUE - Core.getServer().getTicker().getTicks(), 0, true);
+		root(Integer.MAX_VALUE - Core.getServer().getTicks(), 0, true);
 	}
 	
 	/**
@@ -275,7 +318,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 * @return true if this mob may not move.
 	 */
 	public boolean isRooted() {
-		return Core.getServer().getTicker().getTicks() < unrootTick;
+		return Core.getServer().getTicks() < unrootTick;
 	}
 	
 	/**
@@ -305,8 +348,8 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 * The damage meter for this mob
 	 * @return the damage meter not null
 	 */
-	public Combat getCombat() {
-		return combat;
+	public DamageLog getDamage() {
+		return damage;
 	}
 	
 	/**
@@ -555,7 +598,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 			throw new IllegalThreadException("Must be invoked in main thread");
 		}
 		
-		getCombat().reset();
+		getDamage().reset();
 		restore();
 		if (isHidden()) show();
 	}

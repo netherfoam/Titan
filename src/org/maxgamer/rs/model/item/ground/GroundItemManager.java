@@ -108,7 +108,7 @@ public class GroundItemManager extends Tickable {
 	@Override
 	public void tick() {
 		int min = -1; //-1 will cancel us if need be
-		int tick = Core.getServer().getTicker().getTicks();
+		int tick = Core.getServer().getTicks();
 		
 		GroundItemStack g;
 		

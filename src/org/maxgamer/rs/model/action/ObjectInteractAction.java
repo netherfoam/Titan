@@ -24,11 +24,11 @@ public class ObjectInteractAction extends Action {
 		/*
 		if (end == -1) {
 			//First time run() has been invoked
-			end = Core.getServer().getTicker().getTicks() + anim.getDelay();
+			end = Core.getServer().getTicks() + anim.getDelay();
 			getOwner().getUpdateMask().setAnimation(anim, 5);
 		}
 		
-		if (Core.getServer().getTicker().getTicks() - 1 >= end) {
+		if (Core.getServer().getTicks() - 1 >= end) {
 			return true; //Done
 		}
 		else {

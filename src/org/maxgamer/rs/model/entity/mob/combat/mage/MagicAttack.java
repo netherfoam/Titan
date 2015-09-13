@@ -76,7 +76,7 @@ public class MagicAttack extends Attack {
 				//}
 				
 				//If the spell is not a damage one, setLastAttacker will never be called otherwise.
-				target.getCombat().setLastAttacker(attacker);
+				target.getDamage().setLastAttacker(attacker);
 			}
 		}.queue(1);
 		;

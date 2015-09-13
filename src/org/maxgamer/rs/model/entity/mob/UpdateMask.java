@@ -111,7 +111,7 @@ public class UpdateMask implements Mask {
 		}
 		
 		this.anim = a;
-		this.animEnd = Core.getServer().getTicker().getTicks() + a.getDuration(true);
+		this.animEnd = Core.getServer().getTicks() + a.getDuration(true);
 		this.animPriority = priority;
 	}
 	
@@ -120,7 +120,7 @@ public class UpdateMask implements Mask {
 	 * @return true if this mob is currently performing an animation.
 	 */
 	public boolean isAnimating() {
-		return animEnd > Core.getServer().getTicker().getTicks();
+		return animEnd > Core.getServer().getTicks();
 	}
 	
 	public Animation getAnimation() {

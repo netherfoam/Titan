@@ -130,6 +130,16 @@ public class ActionQueue extends FastTickable {
 		throw new IllegalStateException("No such action marker found for insert operation (Marker not found)");
 	}
 	
+	public boolean hasUncancellable(){
+		synchronized(this){
+			for(Action a : this.queue){
+				if(a.isCancellable() == false) return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	/**
 	 * Inserts the given action at the start of the queue, may interrupt another action but
 	 * does not cancel the other action. Eg use for equipping items. 

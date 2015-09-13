@@ -98,7 +98,7 @@ public class MagicInterface extends SideInterface {
 		TargetSpell t = (TargetSpell) s;
 		MagicAttack a = new MagicAttack(getPlayer(), t);
 		getPlayer().queueAttack(a);
-		getPlayer().getCombat().setTarget(target);
+		getPlayer().setTarget(target);
 	}
 	
 	@Override

@@ -355,8 +355,8 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 		int priority = 0;
 		priority -= p.getLocation().distanceSq(getLocation()); //Further away, less prioritized
 		
-		if (this.getCombat().getTarget() == p) priority += 50; //Our target, heavy weighted.
-		if (p.getCombat().getTarget() == this) priority += 25; //Targetting us, heavy weighted
+		if (this.getTarget() == p) priority += 50; //Our target, heavy weighted.
+		if (p.getTarget() == this) priority += 25; //Targetting us, heavy weighted
 		if (this.getFriends().isFriend(p.getName())) priority += 50; //You're my friend
 		if (p.getRights() > Rights.USER) priority += 25; //You're an admin
 		

@@ -57,7 +57,7 @@ public abstract class Tickable {
 	}
 	
 	public final void run() {
-		long now = Core.getServer().getTicker().getTicks();
+		long now = Core.getServer().getTicks();
 		if (now == lastTick) {
 			throw new RuntimeException("May not run Tickable, as the Tickable has already been ticked for this tick.");
 		}

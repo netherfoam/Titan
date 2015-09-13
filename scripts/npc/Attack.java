@@ -35,6 +35,6 @@ public class Attack extends ActionHandler {
 			return;
 		}
 		//After calling this, our action queue will be cleared and therefore this action will no longer be queued
-		mob.getCombat().setTarget(target);
+		mob.setTarget(target);
 	}
 }

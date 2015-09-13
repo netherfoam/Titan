@@ -1,6 +1,7 @@
 package org.maxgamer.rs.model.action;
 
 import org.maxgamer.rs.model.entity.mob.Mob;
+import org.maxgamer.rs.model.entity.mob.combat.AttackAction;
 import org.maxgamer.rs.model.map.path.Path;
 import org.maxgamer.rs.model.map.path.PathFinder;
 import org.maxgamer.rs.model.map.path.ProjectilePathFinder;
@@ -10,27 +11,35 @@ import org.maxgamer.rs.model.map.path.ProjectilePathFinder;
  * @author netherfoam
  */
 public class CombatFollow extends Follow {
-	private int prefDistance;
+	private AttackAction attack;
+	
 	/**
 	 * Constructs a new Follow object.
 	 * @param owner the mob who is following another
 	 * @throws NullPointerException if the owner is null
 	 */
-	public CombatFollow(Mob owner, Mob target, int prefDistance, int breakDistance, PathFinder pather) {
+	public CombatFollow(Mob owner, Mob target, PathFinder pather) {
 		super(owner, target, pather);
-		if (prefDistance > breakDistance) throw new IllegalArgumentException("Preferred distance must be <= breakDistance");
-		if (prefDistance <= 0 || breakDistance <= 0) throw new IllegalArgumentException("PrefDistance and BreakDistance must be > 0");
 		if (pather == null) throw new NullPointerException("Pather may not be null");
-		this.prefDistance = prefDistance;
 	}
 
 	@Override
 	public int getBreakDistance() {
 		return 10;
 	}
+	
+	public AttackAction getAttack(){
+		if(this.attack == null){
+			this.attack = new AttackAction(this.getOwner(), this.getTarget());
+		}
+		
+		return this.attack;
+	}
 
 	@Override
 	public boolean isSatisfied() {
+		int prefDistance = this.getAttack().getAttack().getMaxDistance();
+		
 		if(getOwner().getLocation().near(getTarget().getLocation(), prefDistance) == false){
 			return false;
 		}
@@ -48,6 +57,8 @@ public class CombatFollow extends Follow {
 
 	@Override
 	public void onWait() {
+		getOwner().getActions().insertBefore(this, getAttack());
+		this.attack = null;
 		yield();
 	}
 }

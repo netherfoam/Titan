@@ -102,7 +102,7 @@ public class NPC extends Mob {
 		//Spawn the loot for this NPC, it has died.
 		Location loc = getCenter();
 		
-		Mob[] killers = getCombat().getKillers(DamageType.values());
+		Mob[] killers = getDamage().getKillers(DamageType.values());
 		Persona killer = null;
 		for (int i = 0; i < killers.length; i++) {
 			if (killers[i] == null) continue;

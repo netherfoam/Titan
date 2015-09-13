@@ -36,7 +36,7 @@ public class PersonaOptions {
 		@Override
 		public void run(Persona clicker, Persona target) {
 			if (target.isDead() || target.isHidden()) return; //Can't attack dead/hidden players
-			clicker.getCombat().setTarget(target);
+			clicker.setTarget(target);
 		}
 	};
 	
@@ -47,7 +47,7 @@ public class PersonaOptions {
 				Player p = (Player) c;
 				
 				p.sendMessage("Inspection: " + t + " Health: " + t.getHealth() + "/" + t.getMaxHealth());
-				p.sendMessage("In Combat: " + t.getCombat().isInCombat() + " Damage Taken: " + t.getCombat().getTotal(DamageType.values()));
+				p.sendMessage("In Combat: " + t.getDamage().isInCombat() + " Damage Taken: " + t.getDamage().getTotal(DamageType.values()));
 				p.sendMessage("ActionQueue: " + t.getActions());
 				p.sendMessage("Rights: " + t.getRights() + ", Location: (" + t.getLocation().x + ", " + t.getLocation().y + ")");
 				p.sendMessage("Inventory " + t.getInventory().getTakenSlots() + "/" + t.getInventory().getSize());

@@ -516,4 +516,8 @@ public class Server {
 	public ServerThread getThread() {
 		return thread;
 	}
+
+	public int getTicks() {
+		return getTicker().getTicks();
+	}
 }

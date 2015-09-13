@@ -1,5 +1,6 @@
 Release:
 	- JAR version
+	- AIArmy AI's aren't wandering when they have nothing to do
 	
 Code Quality:
 	- Some item prices are displayed differently in general stores based on stock quantity. Why?

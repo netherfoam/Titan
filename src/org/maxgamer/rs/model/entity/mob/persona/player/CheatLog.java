@@ -60,7 +60,7 @@ public class CheatLog {
 	 */
 	public int getSeverity() {
 		//We want to vary this depending on how many ticks have passed
-		long ticks = Core.getServer().getTicker().getTicks();
+		long ticks = Core.getServer().getTicks();
 		int delta = (int) (ticks - this.lastTick);
 		
 		//Every 100 ticks (60 seconds) the player's hack rating decreases by 1.

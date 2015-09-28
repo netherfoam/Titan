@@ -7,28 +7,28 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import org.maxgamer.rs.io.ScriptLoader;
+import org.maxgamer.rs.lib.log.Log;
 
 public class EventManager {
 	private HashMap<EventPriority, LinkedList<HandlerExecutor>> listeners;
 	
 	public synchronized void reload(File... autoload_paths){
 		listeners = new HashMap<EventPriority, LinkedList<HandlerExecutor>>(EventPriority.values().length);
-		
 		for(File f : autoload_paths){
 			ScriptLoader<EventListener> listeners = new ScriptLoader<EventListener>(EventListener.class);
 			listeners.load(f, false);
-			for(Class<EventListener> clazz : listeners.getScripts(f).values()){
+			for(Class<EventListener> clazz : listeners.getScripts(f)){
 				//We don't want interfaces or incomplete classes to be registered as commands.
 				if(clazz.isInterface() || Modifier.isAbstract(clazz.getModifiers())) continue;
 				if(clazz.isAnnotationPresent(AutoRegister.class) == false) continue; //Don't autoregister.
 				
 				try{
 					EventListener listener = clazz.newInstance();
-					System.out.println("Auto-Registering " + clazz.getSimpleName());
+					Log.debug("Auto-Registering " + clazz.getSimpleName());
 					register(listener);
 				}
 				catch(Exception e){
-					System.out.println("Failed to register Generic Listener: " + clazz.getName());
+					Log.warning("Failed to register Generic Listener: " + clazz.getName());
 					e.printStackTrace();
 				}
 			}

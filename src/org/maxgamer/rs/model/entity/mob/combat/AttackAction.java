@@ -54,6 +54,7 @@ public class AttackAction extends Action {
 		long warmup = Core.getServer().getTicks() - getOwner().getDamage().getLastAttack();
 		
 		while(++warmup < getAttack().getWarmupTicks()){
+			wait(1);
 			if(getTarget() == null){
 				return;
 			}
@@ -66,12 +67,12 @@ public class AttackAction extends Action {
 			}
 			
 			getOwner().setFacing(Facing.face(getTarget()));
-			wait(1);
 		}
 		
-		if(getAttack().run(getTarget())){
+		Mob target = getTarget();
+		if(target != null && getAttack().run(target)){
 			getOwner().getDamage().setLastAttack(Core.getServer().getTicks());
-			getTarget().getDamage().setLastAttacker(getOwner());
+			target.getDamage().setLastAttacker(getOwner());
 		}
 	}
 	

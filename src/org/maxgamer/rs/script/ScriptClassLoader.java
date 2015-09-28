@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 
+import org.maxgamer.rs.io.classparse.ClassReference;
 import org.maxgamer.rs.lib.log.Log;
 
 import co.paralleluniverse.fibers.instrument.QuasarInstrumentor;

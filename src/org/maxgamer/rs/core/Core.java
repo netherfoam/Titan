@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -197,7 +198,9 @@ public class Core {
 	 */
 	public static File getCodeSource(){
 		try{
-			return new File(Core.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+			URL url = Core.class.getProtectionDomain().getCodeSource().getLocation();
+			return new File(url.toURI().getPath());
+			
 		}
 		catch(URISyntaxException e){
 			throw new RuntimeException("Couldn't locate Code Source. Source " + Core.class.getProtectionDomain().getCodeSource().getLocation().toString());

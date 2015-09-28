@@ -107,13 +107,6 @@ public class Server {
 	 */
 	private GroundItemManager groundItems;
 	
-	/**
-	 * The PHP-5 script engine for handling game actions like interacting with
-	 * an item, NPC or gameobject.
-	 */
-	//private BeanScriptEngine scripts;
-	
-	//private ServerLogonWatcher logon;
 	private LogonConnection logon;
 	
 	private ConfigSection config;
@@ -326,7 +319,7 @@ public class Server {
 	 * of commands.
 	 * @return the command manager instance
 	 */
-	public CommandManager getCommands() {
+	public synchronized CommandManager getCommands() {
 		if(commands == null){
 			Log.info("Loading commands...");
 			commands = new CommandManager(events);
@@ -350,7 +343,7 @@ public class Server {
 	 * event listeners and calling of events.
 	 * @return the event manager.
 	 */
-	public EventManager getEvents() {
+	public synchronized EventManager getEvents() {
 		if(events == null){
 			Log.debug("Loading EventManager...");
 			events = new EventManager();

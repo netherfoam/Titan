@@ -44,7 +44,6 @@ public class RareLootItem extends LootItem {
 				loot.add(l);
 			}
 			con.close();
-			System.out.println("Rare loot item generated. Options: " + loot.size());
 		}
 		catch (SQLException e) {
 			e.printStackTrace();

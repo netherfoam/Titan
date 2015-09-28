@@ -3,16 +3,22 @@ package org.maxgamer.rs.io;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.security.ProtectionDomain;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.LinkedList;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 import org.maxgamer.rs.io.classparse.ClassReference;
+import org.maxgamer.rs.lib.log.Log;
 
 /**
- * ScriptLoader class allows us to load class files from a directory and returns 
+ * ScriptLoader class allows us to load class files from a directory and returns
  * a list of classes that were loaded
  * @author netherfoam
  * @param <T>
@@ -28,55 +34,58 @@ public class ScriptLoader<T> {
 			super(parent);
 		}
 		
-		public Class<?> defineClass(File file) throws IOException{
+		public Class<?> defineClass(String name, byte[] data) throws IOException{
+			Class<?> c;
+			try {
+				//We want to find the class if it is already loaded. This searches
+				//all available classloaders and may not be desirable (If class names
+				//conflict, then this may result in a different file being loaded
+				//by the ClassLoader.)
+				c = Class.forName(name);
+			}
+			catch (ClassNotFoundException e) {
+				//We have no existing class, thus we define this new class here.
+				//This allows us to define a class without the class being placed
+				//in the correct package, which is a handy feature for new users.
+				if (transformer != null) {
+					data = transformer.transform(name, data);
+				}
+				
+				c = this.defineClass(null, data, 0, data.length, (ProtectionDomain) null);
+			}
+			
+			return c;
+		}
+		
+		public Class<?> defineClass(File file) throws IOException {
 			FileInputStream in = new FileInputStream(file);
 			
-			try{
+			try {
 				byte[] data = new byte[in.available()];
 				in.read(data);
-				
-				Class<?> c;
-				
 				ClassReference cr = ClassReference.decode(data);
-				try{
-					//We want to find the class if it is already loaded. This searches
-					//all available classloaders and may not be desirable (If class names
-					//conflict, then this may result in a different file being loaded
-					//by the ClassLoader.)
-					c = Class.forName(cr.getClassName());
-				}
-				catch(ClassNotFoundException e){
-					//We have no existing class, thus we define this new class here.
-					//This allows us to define a class without the class being placed
-					//in the correct package, which is a handy feature for new users.
-					if(transformer != null){
-						data = transformer.transform(cr.getClassName(), data);
-					}
-					
-					c = this.defineClass(null, data, 0, data.length, (ProtectionDomain) null);
-				}
 				
+				Class<?> c = this.defineClass(cr.getClassName(), data);
 				
-				for(File f : file.getParentFile().listFiles()){
-					if(f.getName().startsWith(cr.getClassName() + '$') && f.getName().endsWith(".class")){
+				for (File f : file.getParentFile().listFiles()) {
+					if (f.getName().startsWith(c.getCanonicalName() + '$') && f.getName().endsWith(".class")) {
 						//This is an inner class
-						System.out.println("Loading inner class " + f.getName());
+						Log.debug("Loading inner class " + f.getName());
 						this.defineClass(f);
 					}
 				}
 				
 				return c;
 			}
-			finally{
+			finally {
 				in.close();
 			}
 		}
 	}
 	
-	public static interface ClassTransformer{
+	public static interface ClassTransformer {
 		public abstract byte[] transform(String clazz, byte[] src);
 	}
-	
 	
 	/**
 	 * The type of class we're looking for
@@ -84,8 +93,10 @@ public class ScriptLoader<T> {
 	private Class<T> type;
 	private ClassTransformer transformer;
 	private ScriptClassLoader loader;
+	
 	/**
-	 * Constructs a new ScriptLoader class which will load the given type of classes
+	 * Constructs a new ScriptLoader class which will load the given type of
+	 * classes
 	 * @param types the type of classes to load
 	 */
 	public ScriptLoader(Class<T> types, ClassTransformer transformer) {
@@ -94,7 +105,7 @@ public class ScriptLoader<T> {
 		this.transformer = transformer;
 	}
 	
-	public ScriptLoader(Class<T> types){
+	public ScriptLoader(Class<T> types) {
 		this(types, null);
 	}
 	
@@ -102,17 +113,18 @@ public class ScriptLoader<T> {
 	 * Loads all classes from the given folder, and returns them as a map of
 	 * their file to the class that was loaded.
 	 * @param from the folder to load from
-	 * @param listAnonymous true to load anonymous classes (inner classes) as well
+	 * @param listAnonymous true to load anonymous classes (inner classes) as
+	 *        well
 	 * @return the classes loaded, never null
 	 */
-	public HashMap<File, Class<T>> load(File from, boolean listAnonymous) {
-		HashMap<File, Class<T>> scripts = new HashMap<File, Class<T>>();
+	public ArrayList<Class<T>> load(File from, boolean listAnonymous) {
+		ArrayList<Class<T>> scripts = new ArrayList<Class<T>>();
 		
 		if (!from.exists()) {
 			return scripts;
 		}
 		
-		if(from.isDirectory()){
+		if (from.isDirectory()) {
 			LinkedList<File> files = ScriptLoader.getFiles(from);
 			
 			URL[] urls = new URL[files.size()];
@@ -144,9 +156,8 @@ public class ScriptLoader<T> {
 						}
 					}
 					
-					if(listAnonymous || !clazz.isAnonymousClass()){
-						//scripts.add(clazz);
-						scripts.put(file, clazz);
+					if (listAnonymous || !clazz.isAnonymousClass()) {
+						scripts.add(clazz);
 					}
 				}
 				catch (Exception e) {
@@ -158,10 +169,64 @@ public class ScriptLoader<T> {
 				}
 			}
 		}
-		else if(from.isFile() && from.getName().endsWith(".jar")){
-			throw new RuntimeException(".jar script loading not implemented");
+		else if (from.isFile() && from.getName().endsWith(".jar")) {
+			try {
+				ClassLoader cl = new URLClassLoader(new URL[]{from.toURI().toURL()});
+				JarFile jarFile = new JarFile(from);
+				Enumeration<JarEntry> entry = jarFile.entries();
+				
+				while (entry.hasMoreElements()) {
+					JarEntry je = (JarEntry) entry.nextElement();
+					if (je.isDirectory() || !je.getName().endsWith(".class")) {
+						continue;
+					}
+					// -6 because of .class
+					String className = je.getName().substring(0, je.getName().length() - 6);
+					className = className.replace('/', '.');
+					try {
+						InputStream in = cl.getResourceAsStream(je.getName());
+						
+						byte[] data = new byte[in.available()];
+						in.read(data);
+						String name = je.getName().replaceAll("/", ".").substring(0, je.getName().length() - 6);
+						
+						@SuppressWarnings("unchecked")
+						Class<T> clazz = (Class<T>) this.loader.defineClass(name, data);
+						in.close();
+						
+						if (this.type.isInterface()) {
+							//It's an interface.
+							if (isInterface(this.type, clazz) == false) {
+								continue; //We're not looking for you.
+							}
+						}
+						else {
+							//It's a class
+							if (isSuperClass(clazz, this.type) == false) {
+								continue; //We're not looking for you.
+							}
+						}
+						
+						if (listAnonymous || !clazz.isAnonymousClass()) {
+							scripts.add(clazz);
+						}
+					}
+					catch (Exception e) {
+						Log.warning(e.getMessage() + " Failed to load - " + entry.getClass().getSimpleName());
+						e.printStackTrace();
+					}
+					catch (Error e) {
+						e.printStackTrace();
+						Log.warning("[Severe] Something went wrong loading " + je.getName());
+					}
+				}
+			}
+			catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-		else{
+		else {
 			throw new RuntimeException("Classes could not be loaded from the file " + from);
 		}
 		return scripts;
@@ -215,13 +280,14 @@ public class ScriptLoader<T> {
 	}
 	
 	/**
-	 * Loads the scripts from the given folder which correspond to this ScriptLoader's type
-	 * and then returns them. This does not load inner/anonymous classes.
+	 * Loads the scripts from the given folder which correspond to this
+	 * ScriptLoader's type and then returns them. This does not load
+	 * inner/anonymous classes.
 	 * @param from the file to load from
-	 * @return a map of file to class, where class is the class that was loaded from the matching
-	 * 		   file. Never null
+	 * @return a map of file to class, where class is the class that was loaded
+	 *         from the matching file. Never null
 	 */
-	public HashMap<File, Class<T>> getScripts(File from) {
+	public ArrayList<Class<T>> getScripts(File from) {
 		return load(from, false);
 	}
 	
@@ -246,8 +312,8 @@ public class ScriptLoader<T> {
 			if (f.isDirectory()) {
 				files.addAll(getFiles(f));
 			}
-			else{
-				if(f.getName().endsWith(".class")){
+			else {
+				if (f.getName().endsWith(".class")) {
 					files.add(f);
 				}
 			}

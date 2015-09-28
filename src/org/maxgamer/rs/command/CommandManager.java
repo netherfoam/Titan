@@ -45,7 +45,7 @@ public class CommandManager {
 	public void load(File commands) {
 		if (commands.exists()) {
 			ScriptLoader<Command> scriptLoader = new ScriptLoader<Command>(Command.class);
-			Collection<Class<Command>> scripts = scriptLoader.getScripts(commands).values();
+			Collection<Class<Command>> scripts = scriptLoader.getScripts(commands);
 			
 			for (Class<Command> clazz : scripts) {
 				//We don't want interfaces or incomplete classes to be registered as commands.

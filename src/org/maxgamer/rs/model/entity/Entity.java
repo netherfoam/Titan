@@ -97,7 +97,10 @@ public abstract class Entity implements MBR {
 	}
 	
 	/**
-	 * The center of this Entity.
+	 * The center of this Entity. This is the same as getLocation().add(sizeX/2, sizeY/2).
+	 * The center is rounded down, with a bias towards NORTH/EAST if sizeX/sizeY are even
+	 * (In effect, if there is no center, this will pick the title that is north, east, or
+	 * both of the real center)
 	 * @return
 	 */
 	public final Location getCenter() {

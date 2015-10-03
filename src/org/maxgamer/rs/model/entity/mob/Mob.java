@@ -376,7 +376,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 			throw new IllegalThreadException("Must be invoked in main thread");
 		}
 		
-		Path path = finder.findPath(getLocation(), to, to, 1, 1);
+		Path path = finder.findPath(getLocation(), to, to, getSizeX(), getSizeY());
 		
 		Action walk = new WalkAction(this, path);
 		getActions().clear();
@@ -505,6 +505,22 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 		}
 		
 		this.health = hp;
+	}
+	
+	/**
+	 * Heals this mob the given amount, with a maximum overhealing factor. The over healing effect
+	 * allows the mob to temporarily exceed its maximum health.
+	 * 
+	 * @param hp the health to add to this mobs health
+	 * @param overheal the maximum amount to surpass the mobs maximum health
+	 * 
+	 * @return the amount of health gained
+	 */
+	public int heal(int hp, int overheal){
+		if(hp < 0) throw new IllegalArgumentException("Requested to heal negative amount (" + hp + ")");
+		int cur = getHealth();
+		this.setHealth(Math.min(this.getHealth() + hp, this.getMaxHealth() + overheal));
+		return getHealth() - cur;
 	}
 	
 	/**

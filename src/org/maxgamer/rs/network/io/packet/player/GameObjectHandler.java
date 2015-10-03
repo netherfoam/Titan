@@ -1,9 +1,10 @@
 package org.maxgamer.rs.network.io.packet.player;
 
 import org.maxgamer.rs.definition.GameObjectProto;
+import org.maxgamer.rs.events.mob.MobUseObjectEvent;
 import org.maxgamer.rs.lib.log.Log;
-import org.maxgamer.rs.model.action.GameObjectAction;
 import org.maxgamer.rs.model.action.WalkAction;
+import org.maxgamer.rs.model.entity.mob.facing.Facing;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
 import org.maxgamer.rs.model.map.GameObject;
@@ -12,6 +13,8 @@ import org.maxgamer.rs.model.map.path.AStar;
 import org.maxgamer.rs.model.map.path.Path;
 import org.maxgamer.rs.network.io.packet.PacketProcessor;
 import org.maxgamer.rs.network.io.packet.RSIncomingPacket;
+
+import co.paralleluniverse.fibers.SuspendExecution;
 
 /**
  * @author netherfoam
@@ -39,14 +42,14 @@ public class GameObjectHandler implements PacketProcessor<Player> {
 				run = in.readByte() != 0;
 				x = in.readLEShortA();
 				y = in.readShortA();
-				option = 1;
+				option = 0;
 				break;
 			case SECOND_OPTION:
 				y = in.readShort();
 				id = in.readLEShort();
 				x = in.readShort();
 				run = in.readByteS() != 0;
-				option = 2;
+				option = 1;
 				break;
 			case THIRD_OPTION:
 				x = in.readShortA();
@@ -54,21 +57,21 @@ public class GameObjectHandler implements PacketProcessor<Player> {
 				run = (in.readByte() + 128) != 0;
 				y = in.readLEShortA();
 				
-				option = 3;
+				option = 2;
 				break;
 			case FOURTH_OPTION:
 				x = in.readLEShort();
 				y = in.readLEShort();
 				id = in.readShortA();
 				run = (in.readByte() + 128) != 0;
-				option = 4;
+				option = 3;
 				break;
 			case FIFTH_OPTION:
 				x = in.readShortA();
 				id = in.readLEShortA();
 				run = in.readByteA() != 0;
 				y = in.readLEShortA();
-				option = 5;
+				option = 4;
 				break;
 			case EXAMINE:
 				id = in.readShort();
@@ -100,7 +103,7 @@ public class GameObjectHandler implements PacketProcessor<Player> {
 		Location l = new Location(p.getLocation().getMap(), x, y, p.getLocation().z);
 		for (GameObject g : l.getNearby(GameObject.class, 0)) {
 			if (g.getId() == id && g.isHidden() == false) {
-				String s = g.getDefiniton().getOption(option - 1); //Becomes zero-based
+				String s = g.getDefiniton().getOption(option); //Becomes zero-based
 				if (s == null) {
 					p.getCheats().log(10, "Player attempted to use a NULL option on a gameobject. Gameobject: " + g + ", option: " + option + "/5");
 					return;
@@ -120,15 +123,26 @@ public class GameObjectHandler implements PacketProcessor<Player> {
 				
 				p.getActions().clear();
 				
-				GameObjectAction script = new GameObjectAction(p, g, s);
+				final MobUseObjectEvent e = new MobUseObjectEvent(p, g, option);
 				if (path.isEmpty() == false) {
-					WalkAction walk = new WalkAction(p, path);
-					walk.pair(script);
+					WalkAction walk = new WalkAction(p, path){
+						@Override
+						public void run() throws SuspendExecution{
+							super.run();
+							e.call();
+							if(e.isCancelled()){
+								return;
+							}
+						}
+					};
 					p.getActions().queue(walk);
-					p.getActions().insertAfter(walk, script);
 				}
 				else {
-					p.getActions().queue(script);
+					p.setFacing(Facing.face(g));
+					e.call();
+					if(e.isCancelled()){
+						return;
+					}
 				}
 				
 				return;

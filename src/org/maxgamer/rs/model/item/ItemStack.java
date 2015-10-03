@@ -228,6 +228,14 @@ public class ItemStack implements Comparable<ItemStack>, YMLSerializable {
 		return getDefinition().getInventoryOptions();
 	}
 	
+	public String getGroundOption(int id){
+		return getDefinition().getGroundOptions()[id];
+	}
+	
+	public String getInventoryOption(int id){
+		return getDefinition().getInventoryOptions()[id];
+	}
+	
 	public String[] getGroundOptions() {
 		return getDefinition().getGroundOptions();
 	}

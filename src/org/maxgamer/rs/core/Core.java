@@ -26,7 +26,6 @@ import org.maxgamer.rs.lib.log.Logger.LogLevel;
 import org.maxgamer.rs.model.entity.mob.combat.RangeAttack;
 import org.maxgamer.rs.model.entity.mob.npc.NPCGroup;
 import org.maxgamer.rs.model.item.ItemProto;
-import org.maxgamer.rs.script.ScriptManager;
 import org.maxgamer.rs.structure.configs.ConfigSection;
 import org.maxgamer.rs.structure.configs.FileConfig;
 import org.maxgamer.rs.structure.sql.Database;
@@ -85,8 +84,6 @@ public class Core {
 	 * The RS cache that is to be loaded and used.
 	 */
 	private static Cache cache;
-
-	private static ScriptManager scripts;
 	
 	/**
 	 * This class loader is used so that the Module system works. It is a shared
@@ -352,18 +349,6 @@ public class Core {
 			}
 		}
 		return world;
-	}
-	
-	/**
-	 * The scripts manager eg, for item options/actions
-	 * @return The scripts
-	 */
-	public synchronized static ScriptManager getScripts() {
-		if(scripts == null){
-			scripts = new ScriptManager();
-			scripts.load(new File("scripts"));
-		}
-		return scripts;
 	}
 	
 	/**

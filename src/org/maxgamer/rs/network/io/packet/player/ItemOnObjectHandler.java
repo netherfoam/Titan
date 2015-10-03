@@ -1,6 +1,6 @@
 package org.maxgamer.rs.network.io.packet.player;
 
-import org.maxgamer.rs.model.action.ItemOnObjectAction;
+import org.maxgamer.rs.events.mob.MobItemOnObjectEvent;
 import org.maxgamer.rs.model.action.WalkAction;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.item.ItemStack;
@@ -10,6 +10,8 @@ import org.maxgamer.rs.model.map.path.AStar;
 import org.maxgamer.rs.model.map.path.Path;
 import org.maxgamer.rs.network.io.packet.PacketProcessor;
 import org.maxgamer.rs.network.io.packet.RSIncomingPacket;
+
+import co.paralleluniverse.fibers.SuspendExecution;
 
 /**
  * @author netherfoam
@@ -73,7 +75,28 @@ public class ItemOnObjectHandler implements PacketProcessor<Player> {
 				
 				player.getActions().clear();
 				
-				ItemOnObjectAction use = new ItemOnObjectAction(player, g, item);
+				final MobItemOnObjectEvent e = new MobItemOnObjectEvent(player, g, item);
+				if (path.isEmpty() == false) {
+					WalkAction walk = new WalkAction(player, path){
+						@Override
+						public void run() throws SuspendExecution{
+							super.run();
+							e.call();
+							if(e.isCancelled()){
+								return;
+							}
+						}
+					};
+					player.getActions().queue(walk);
+				}
+				else {
+					e.call();
+					if(e.isCancelled()){
+						return;
+					}
+				}
+				
+				/*ItemOnObjectAction use = new ItemOnObjectAction(player, g, item);
 				if (path.isEmpty() == false) {
 					WalkAction walk = new WalkAction(player, path);
 					walk.pair(use);
@@ -82,7 +105,7 @@ public class ItemOnObjectHandler implements PacketProcessor<Player> {
 				}
 				else{
 					player.getActions().queue(use);
-				}
+				}*/
 			}
 		}
 	}

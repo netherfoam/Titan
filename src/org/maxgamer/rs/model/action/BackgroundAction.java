@@ -9,8 +9,17 @@ import co.paralleluniverse.fibers.SuspendExecution;
  * @author netherfoam
  */
 public abstract class BackgroundAction extends Action {
+	/* Still initializing */
+	private static final int INIT = 0;
+	
+	/* Secondary thread is processing */
+	private static final int PROCESSING = 1;
+	
+	/* Secondary thread has finished, we're ready to rumble */
+	private static final int CALCULATED = 2;
+	
 	private boolean cancelRequested;
-	private int state = 0;
+	private volatile int state = INIT;
 	
 	public BackgroundAction(Mob mob) {
 		super(mob);
@@ -18,18 +27,20 @@ public abstract class BackgroundAction extends Action {
 	
 	@Override
 	protected final void run() throws SuspendExecution {
+		state = INIT;
 		Core.submit(new Runnable() {
 			@Override
 			public void run() {
+				state = PROCESSING;
 				calculate();
 				
 				if (isCancelRequested() == false) {
-					state = 2;
+					state = CALCULATED;
 				}
 			}
 		}, true);
 		
-		while(state == 1){
+		while(state != CALCULATED){
 			wait(1);
 		}
 		

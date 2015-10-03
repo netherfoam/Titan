@@ -2,11 +2,11 @@ package org.maxgamer.rs.interfaces.impl.side;
 
 import java.util.Arrays;
 
+import org.maxgamer.rs.events.mob.MobUseItemEvent;
 import org.maxgamer.rs.interfaces.SettingsBuilder;
 import org.maxgamer.rs.interfaces.SideInterface;
 import org.maxgamer.rs.interfaces.Window;
 import org.maxgamer.rs.lib.log.Log;
-import org.maxgamer.rs.model.action.ItemAction;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.item.inventory.Container;
@@ -145,8 +145,11 @@ public class InventoryInterface extends SideInterface {
 			return;
 		}
 		
-		ItemAction script = new ItemAction(getPlayer(), s, item, slot);
-		getPlayer().getActions().queue(script);
+		MobUseItemEvent e = new MobUseItemEvent(getPlayer(), item, option, slot);
+		e.call();
+		if(e.isCancelled()){
+			return;
+		}
 	}
 	
 	@Override

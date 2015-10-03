@@ -1,6 +1,6 @@
 package org.maxgamer.rs.network.io.packet.player;
 
-import org.maxgamer.rs.model.action.GroundItemAction;
+import org.maxgamer.rs.events.mob.MobUseGroundItemEvent;
 import org.maxgamer.rs.model.action.WalkAction;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.item.ItemProto;
@@ -11,6 +11,8 @@ import org.maxgamer.rs.model.map.path.AStar;
 import org.maxgamer.rs.model.map.path.Path;
 import org.maxgamer.rs.network.io.packet.PacketProcessor;
 import org.maxgamer.rs.network.io.packet.RSIncomingPacket;
+
+import co.paralleluniverse.fibers.SuspendExecution;
 
 /**
  * @author netherfoam
@@ -48,14 +50,14 @@ public class GroundItemOptionsHandler implements PacketProcessor<Player> {
 				x = packet.readLEShortA();
 				itemId = packet.readLEShort();
 				y = packet.readLEShortA();
-				
+				option = 0;
 				break;
 			case SECOND_OPTION://Pickup
 				x = packet.readLEShort();
 				itemId = packet.readLEShort();
 				y = packet.readShortA();
 				ctrl = (packet.readByteC() != 0);
-				option = 2;
+				option = 1;
 				break;
 			//Appears to be the same OPCode as option two, even in the client :(
 			//case THIRD_OPTION:
@@ -65,13 +67,14 @@ public class GroundItemOptionsHandler implements PacketProcessor<Player> {
 				itemId = packet.readLEShortA();
 				x = packet.readLEShort();
 				ctrl = (packet.readByteA() != 0);
-				option = 4;
+				option = 3;
 				break;
 			case FIFTH_OPTION:
 				x = packet.readLEShortA();
 				itemId = packet.readLEShortA();
 				y = packet.readLEShortA();
 				ctrl = (packet.readByte() != 0);
+				option = 4;
 				break;
 			case EXAMINE: //TODO: Should we move this to a different handler?
 				itemId = packet.readShort();
@@ -101,25 +104,35 @@ public class GroundItemOptionsHandler implements PacketProcessor<Player> {
 		}
 		
 		//TODO: Throw GroundItemStackInteract event
-		String name = target.getItem().getGroundOptions()[option - 1];
+		String name = target.getItem().getGroundOptions()[option];
 		if (name == null) {
 			player.getCheats().log(30, "Player attempted to use a NULL option on GroundItemStack (ID " + target.getItem().getId() + ")");
 			return;
 		}
 		
-		//Handle it, chives!
-		//Core.getServer().getScriptEngine().run("ground_item/" + name, "run", player, target, name, option);
-		GroundItemAction script = new GroundItemAction(player, name, target);
 		player.getActions().clear();
 		AStar finder = new AStar(10);
 		Path path = finder.findPath(player.getLocation(), target.getLocation(), target.getLocation(), player.getSizeX(), player.getSizeY());
 		
+		final MobUseGroundItemEvent e = new MobUseGroundItemEvent(player, target, option);
 		if (path.isEmpty() == false) {
-			WalkAction walk = new WalkAction(player, path);
-			walk.pair(script);
+			WalkAction walk = new WalkAction(player, path){
+				@Override
+				public void run() throws SuspendExecution{
+					super.run();
+					e.call();
+					if(e.isCancelled()){
+						return;
+					}
+				}
+			};
 			player.getActions().queue(walk);
 		}
-		
-		player.getActions().queue(script);
+		else {
+			e.call();
+			if(e.isCancelled()){
+				return;
+			}
+		}
 	}
 }

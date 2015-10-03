@@ -2,6 +2,10 @@ package org.maxgamer.rs.module;
 
 import java.io.File;
 
+import org.maxgamer.rs.command.CommandManager;
+import org.maxgamer.rs.core.Core;
+import org.maxgamer.rs.core.server.Server;
+import org.maxgamer.rs.event.EventManager;
 import org.maxgamer.rs.structure.configs.FileConfig;
 
 /**
@@ -68,6 +72,18 @@ public abstract class Module {
 	public final File getFolder() {
 		File f = new File("modules", getName().toLowerCase());
 		return f;
+	}
+	
+	public final Server getServer(){
+		return Core.getServer();
+	}
+	
+	public final EventManager getEvents(){
+		return getServer().getEvents();
+	}
+	
+	public final CommandManager getCommands(){
+		return getServer().getCommands();
 	}
 	
 	/**

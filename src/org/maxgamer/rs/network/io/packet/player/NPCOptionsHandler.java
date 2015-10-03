@@ -3,8 +3,7 @@ package org.maxgamer.rs.network.io.packet.player;
 import java.util.Arrays;
 
 import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.events.mob.persona.PersonaInteractMobEvent;
-import org.maxgamer.rs.model.action.NPCAction;
+import org.maxgamer.rs.events.mob.MobUseNPCEvent;
 import org.maxgamer.rs.model.entity.mob.npc.NPC;
 import org.maxgamer.rs.model.entity.mob.npc.NPCDefinition;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
@@ -37,27 +36,27 @@ public class NPCOptionsHandler implements PacketProcessor<Player> {
 				run = packet.readByteS() == 1;
 				index = packet.readLEShort() - 1;
 				
-				option = 1;
+				option = 0;
 				break;
 			case SECOND_OPTION:
 				index = packet.readShort() - 1;
 				run = packet.readByte() == 1;
-				option = 2;
+				option = 1;
 				break;
 			case THIRD_OPTION:
 				index = packet.readShort() - 1;
 				run = packet.readByteA() == 1;
-				option = 3;
+				option = 2;
 				break;
 			case FOURTH_OPTION:
 				index = packet.readShort() - 1;
 				run = packet.readByteS() == 1;
-				option = 4;
+				option = 3;
 				break;
 			case FIFTH_OPTION:
 				index = packet.readShort() - 1;
 				run = packet.readByte() == 1;
-				option = 5;
+				option = 4;
 				break;
 			case EXAMINE:
 				int npcId = packet.readShort();
@@ -91,16 +90,8 @@ public class NPCOptionsHandler implements PacketProcessor<Player> {
 			return;
 		}
 		
-		PersonaInteractMobEvent e = new PersonaInteractMobEvent(player, target, option);
+		MobUseNPCEvent e = new MobUseNPCEvent(player, target, option);
 		e.call();
 		if (e.isCancelled()) return;
-		
-		//Get the NPC option they clicked
-		String type = target.getDefinition().getInteraction(option - 1);
-		
-		//Core.getServer().getScriptEngine().run("npc_option/" + type, "run", player, target, option);
-		NPCAction script = new NPCAction(player, type, target);
-		player.getActions().clear();
-		player.getActions().queue(script);
 	}
 }

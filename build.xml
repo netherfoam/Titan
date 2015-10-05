@@ -11,12 +11,7 @@
 
 	<target name="compile">
 		<mkdir dir="bin" />
-		<javac srcdir="src" destdir="bin" includeantruntime="false">
-			<classpath>
-				<fileset dir="lib">
-					<include name="*.jar" />
-				</fileset>
-			</classpath>
+		<javac srcdir="src" destdir="bin" includeantruntime="false" classpathref="class.path">
 		</javac>
 
 	</target>

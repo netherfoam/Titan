@@ -4,6 +4,7 @@
 .recommenders/
 .settings
 *.log
+Titan.jar
 
 data/cache.yml
 modules/*

@@ -86,4 +86,8 @@ public class AttackResult implements Iterable<Damage> {
 	public Iterator<Damage> iterator() {
 		return damages.iterator();
 	}
+
+	public void remove(Damage d) {
+		damages.remove(d);
+	}
 }

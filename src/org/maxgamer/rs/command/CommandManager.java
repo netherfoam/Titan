@@ -1,9 +1,6 @@
 package org.maxgamer.rs.command;
 
-import java.io.File;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -11,10 +8,69 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.maxgamer.rs.command.commands.Animate;
+import org.maxgamer.rs.command.commands.Announce;
+import org.maxgamer.rs.command.commands.Ascend;
+import org.maxgamer.rs.command.commands.Autocasts;
+import org.maxgamer.rs.command.commands.BankCmd;
+import org.maxgamer.rs.command.commands.Clear;
+import org.maxgamer.rs.command.commands.Clients;
+import org.maxgamer.rs.command.commands.Clip;
+import org.maxgamer.rs.command.commands.CloseInterface;
+import org.maxgamer.rs.command.commands.Connections;
+import org.maxgamer.rs.command.commands.CopyCat;
+import org.maxgamer.rs.command.commands.Debug;
+import org.maxgamer.rs.command.commands.Descend;
+import org.maxgamer.rs.command.commands.DialogueCmd;
+import org.maxgamer.rs.command.commands.Die;
+import org.maxgamer.rs.command.commands.GC;
+import org.maxgamer.rs.command.commands.GFX;
+import org.maxgamer.rs.command.commands.Gear;
+import org.maxgamer.rs.command.commands.Hide;
+import org.maxgamer.rs.command.commands.HideObjects;
+import org.maxgamer.rs.command.commands.Instance;
+import org.maxgamer.rs.command.commands.InterfaceList;
+import org.maxgamer.rs.command.commands.InterfaceShow;
+import org.maxgamer.rs.command.commands.Item;
+import org.maxgamer.rs.command.commands.ItemScriptDump;
+import org.maxgamer.rs.command.commands.Kick;
+import org.maxgamer.rs.command.commands.Kill;
+import org.maxgamer.rs.command.commands.LogonStatus;
+import org.maxgamer.rs.command.commands.ModuleCmd;
+import org.maxgamer.rs.command.commands.Nearby;
+import org.maxgamer.rs.command.commands.Picker;
+import org.maxgamer.rs.command.commands.Position;
+import org.maxgamer.rs.command.commands.Queues;
+import org.maxgamer.rs.command.commands.RangeGear;
+import org.maxgamer.rs.command.commands.Rank;
+import org.maxgamer.rs.command.commands.Reconnect;
+import org.maxgamer.rs.command.commands.Reload;
+import org.maxgamer.rs.command.commands.Restore;
+import org.maxgamer.rs.command.commands.Save;
+import org.maxgamer.rs.command.commands.Script;
+import org.maxgamer.rs.command.commands.Servers;
+import org.maxgamer.rs.command.commands.ShowFlags;
+import org.maxgamer.rs.command.commands.SkillLevel;
+import org.maxgamer.rs.command.commands.Sort;
+import org.maxgamer.rs.command.commands.Sound;
+import org.maxgamer.rs.command.commands.Spawn;
+import org.maxgamer.rs.command.commands.SpawnNPC;
+import org.maxgamer.rs.command.commands.SpawnObject;
+import org.maxgamer.rs.command.commands.Status;
+import org.maxgamer.rs.command.commands.Stop;
+import org.maxgamer.rs.command.commands.Sudo;
+import org.maxgamer.rs.command.commands.SwapPrayer;
+import org.maxgamer.rs.command.commands.TPTo;
+import org.maxgamer.rs.command.commands.Teleport;
+import org.maxgamer.rs.command.commands.Timings;
+import org.maxgamer.rs.command.commands.Title;
+import org.maxgamer.rs.command.commands.Tphere;
+import org.maxgamer.rs.command.commands.Vendor;
+import org.maxgamer.rs.command.commands.Whisper;
+import org.maxgamer.rs.command.commands.WorldMapBank;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.event.EventManager;
 import org.maxgamer.rs.events.server.CommandEvent;
-import org.maxgamer.rs.io.ScriptLoader;
 import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.structure.TrieSet;
@@ -42,36 +98,70 @@ public class CommandManager {
 	/**
 	 * Loads the command manager and all of its commands.
 	 */
-	public void load(File commands) {
-		if (commands.exists()) {
-			ScriptLoader<Command> scriptLoader = new ScriptLoader<Command>(Command.class);
-			Collection<Class<Command>> scripts = scriptLoader.getScripts(commands);
-			
-			for (Class<Command> clazz : scripts) {
-				//We don't want interfaces or incomplete classes to be registered as commands.
-				if (clazz.isInterface() || Modifier.isAbstract(clazz.getModifiers())) continue;
-				
-				try {
-					Command cmd = clazz.newInstance();
-					String name = cmd.getClass().getSimpleName();
-					register(name, cmd);
-					
-					//Register aliases from CmdName annotation
-					CmdName names = cmd.getClass().getAnnotation(CmdName.class);
-					if (names != null && names.names() != null) {
-						for (String s : names.names()) {
-							register(s, cmd);
-						}
-					}
-				}
-				catch (InstantiationException e) {
-					e.printStackTrace();
-				}
-				catch (IllegalAccessException e) {
-					e.printStackTrace();
-				}
-			}
-		}
+	public void load() {
+		this.register("animate", new Animate());
+		this.register("announce", new Announce());
+		this.register("ascend", new Ascend());
+		this.register("autocasts", new Autocasts());
+		this.register("bankcmd", new BankCmd());
+		this.register("character", new org.maxgamer.rs.command.commands.Character());
+		this.register("clear", new Clear());
+		this.register("clients", new Clients());
+		this.register("clip", new Clip());
+		this.register("closeinterface", new CloseInterface());
+		this.register("connections", new Connections());
+		this.register("copycat", new CopyCat());
+		this.register("debug", new Debug());
+		this.register("descend", new Descend());
+		this.register("dialoguecmd", new DialogueCmd());
+		this.register("die", new Die());
+		this.register("gc", new GC());
+		this.register("gear", new Gear());
+		this.register("gfx", new GFX());
+		this.register("hide", new Hide());
+		this.register("hideobjects", new HideObjects());
+		this.register("instance", new Instance());
+		this.register("interfacelist", new InterfaceList());
+		this.register("interfaceshow", new InterfaceShow());
+		this.register("item", new Item());
+		this.register("itemscriptdump", new ItemScriptDump());
+		this.register("kick", new Kick());
+		this.register("kill", new Kill());
+		this.register("list", new org.maxgamer.rs.command.commands.List());
+		this.register("logonstatus", new LogonStatus());
+		this.register("modulecmd", new ModuleCmd());
+		this.register("nearby", new Nearby());
+		this.register("picker", new Picker());
+		this.register("position", new Position());
+		this.register("queues", new Queues());
+		this.register("rangegear", new RangeGear());
+		this.register("rank", new Rank());
+		this.register("reconnect", new Reconnect());
+		this.register("reload", new Reload());
+		this.register("restore", new Restore());
+		this.register("save", new Save());
+		this.register("script", new Script());
+		this.register("servers", new Servers());
+		this.register("showflags", new ShowFlags());
+		this.register("skilllevel", new SkillLevel());
+		this.register("sort", new Sort());
+		this.register("sound", new Sound());
+		this.register("spawn", new Spawn());
+		this.register("spawnNPC", new SpawnNPC());
+		this.register("spawnobject", new SpawnObject());
+		this.register("spellbookcmd", new org.maxgamer.rs.command.commands.SpellbookCmd());
+		this.register("status", new Status());
+		this.register("stop", new Stop());
+		this.register("Sudo", new Sudo());
+		this.register("swapprayer", new SwapPrayer());
+		this.register("teleport", new Teleport());
+		this.register("timings", new Timings());
+		this.register("title", new Title());
+		this.register("tphere", new Tphere());
+		this.register("TPTo", new TPTo());
+		this.register("vendor", new Vendor());
+		this.register("whisper", new Whisper());
+		this.register("worldmapbank", new WorldMapBank());
 		
 		ConfigSection config = Core.getWorldConfig().getSection("commands", null);
 		if (config != null) {

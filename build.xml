@@ -1,0 +1,41 @@
+<project>
+	<path id="class.path">
+	    <fileset dir="lib">
+	        <include name="*.jar"/>
+	    </fileset>
+	</path>
+
+	<target name="clean">
+		<delete dir="bin" />
+	</target>
+
+	<target name="compile">
+		<mkdir dir="bin" />
+		<javac srcdir="src" destdir="bin" includeantruntime="false">
+			<classpath>
+				<fileset dir="lib">
+					<include name="*.jar" />
+				</fileset>
+			</classpath>
+		</javac>
+
+	</target>
+
+	<target name="jar" depends="compile">
+		<manifestclasspath property="lib.list" jarfile="Titan.jar">
+		    <classpath refid="class.path"/>
+		</manifestclasspath>
+		
+		<jar destfile="Titan.jar" basedir="bin">
+			<manifest>
+				<attribute name="Main-Class" value="org.maxgamer.rs.core.RSBootstrap" />
+				<attribute name="Class-Path" value="${lib.list}"/>
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="run" depends="jar">
+		<java jar="Titan.jar" fork="true" classpathref="class.path" />
+	</target>
+
+</project>

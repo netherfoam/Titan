@@ -1,7 +1,5 @@
 package org.maxgamer.rs.command.commands;
 
-import java.io.File;
-
 import org.maxgamer.rs.command.CommandSender;
 import org.maxgamer.rs.command.GenericCommand;
 import org.maxgamer.rs.core.Core;
@@ -18,7 +16,7 @@ public class Reload implements GenericCommand {
 		sender.sendMessage("Scripts reloaded.");
 		Core.getWorldConfig().reload();
 		sender.sendMessage("World config reloaded.");
-		Core.getServer().getCommands().load(new File("bin" + File.separator + "org" + File.separator + "maxgamer" + File.separator + "rs" + File.separator + "command" + File.separator + "commands"));
+		Core.getServer().getCommands().load();
 		sender.sendMessage("Commands reloaded");
 		NPCGroup.reload();
 		sender.sendMessage("NPCGroups reloaded");

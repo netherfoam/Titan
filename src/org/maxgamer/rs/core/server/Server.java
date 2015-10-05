@@ -323,7 +323,7 @@ public class Server {
 		if(commands == null){
 			Log.info("Loading commands...");
 			commands = new CommandManager(events);
-			commands.load(new File("bin" + File.separator + "org" + File.separator + "maxgamer" + File.separator + "rs" + File.separator + "command" + File.separator + "commands"));
+			commands.load();
 			Log.info("...Loaded commands!");
 		}
 		return commands;
@@ -347,7 +347,7 @@ public class Server {
 		if(events == null){
 			Log.debug("Loading EventManager...");
 			events = new EventManager();
-			events.reload(Core.getCodeSource());
+			events.reload();
 			Log.debug("...Loaded EventManager!");
 		}
 		return events;

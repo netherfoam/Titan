@@ -1,20 +1,5 @@
-[WARN] Action$1.run() Mob: Soul_Thunder_I, Action: CombatFollow
-java.lang.IllegalStateException: No such action marker found for insert operation (Marker not found)
-	at org.maxgamer.rs.model.action.ActionQueue.insertBefore(ActionQueue.java:130)
-	at org.maxgamer.rs.model.action.CombatFollow.onWait(CombatFollow.java:60)
-	at org.maxgamer.rs.model.action.Follow.run(Follow.java:136)
-	at org.maxgamer.rs.model.action.Action$1.run(Action.java:76)
-	at org.maxgamer.rs.model.action.Action$1.run(Action.java:1)
-	at co.paralleluniverse.fibers.Fiber.run1(Fiber.java:1008)
-	at co.paralleluniverse.fibers.Fiber.exec(Fiber.java:722)
-	at co.paralleluniverse.fibers.RunnableFiberTask.doExec(RunnableFiberTask.java:94)
-	at co.paralleluniverse.fibers.RunnableFiberTask.run(RunnableFiberTask.java:85)
-	at org.maxgamer.rs.core.server.ServerThread$1.run(ServerThread.java:128)
-
-
 Release:
-	- JAR version
-	- AIArmy AI's aren't wandering when they have nothing to do
+	- 
 	
 Code Quality:
 	- Some item prices are displayed differently in general stores based on stock quantity. Why?
@@ -31,7 +16,7 @@ Code Quality:
 		- Constructors?
 	- Dialogue interfaces
 	- Search for all unused classes
-		
+	
 Alva:
 	- Duel Arena Module
 	- Lobby button handling

@@ -141,6 +141,38 @@ public class ActionQueue extends FastTickable {
 	}
 	
 	/**
+	 * Returns the Action after the given marker. Useful for assertions.
+	 * @param marker the action in the queue which wants the action after it
+	 * @return the Action after the given action, or null if there is none or the marker wasn't found
+	 */
+	public Action after(Action marker){
+		synchronized(this){
+			for(int i = 0; i < this.queue.size() - 1; i++){
+				if(this.queue.get(i) == marker){
+					return this.queue.get(i + 1);
+				}
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Returns the Action before the given marker. Useful for assertions.
+	 * @param marker the action in the queue which wants the action before it
+	 * @return the Action before the given action, or null if there is none or the marker wasn't found
+	 */
+	public Action before(Action marker){
+		synchronized(this){
+			for(int i = 1; i < this.queue.size(); i++){
+				if(this.queue.get(i) == marker){
+					return this.queue.get(i - 1);
+				}
+			}
+		}
+		return null;
+	}
+	
+	/**
 	 * Inserts the given action at the start of the queue, may interrupt another action but
 	 * does not cancel the other action. Eg use for equipping items. 
 	 * @param insert The action to insert

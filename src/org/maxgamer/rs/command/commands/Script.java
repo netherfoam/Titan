@@ -1,5 +1,9 @@
 package org.maxgamer.rs.command.commands;
 
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Vector;
 import java.util.WeakHashMap;
 
 import org.maxgamer.rs.command.CommandSender;
@@ -71,6 +75,38 @@ public class Script implements PlayerCommand, EventListener {
 	}
 	
 	public class Program extends BookInterface {
+		public Map<String, String> getClassNames() {
+			ClassLoader loader = this.getClass().getClassLoader();
+			
+			try {
+				Map<String, String> classNames = new HashMap<String, String>(256);
+				while (loader != null) {
+					Field f = ClassLoader.class.getDeclaredField("classes");
+					f.setAccessible(true);
+					
+					@SuppressWarnings("unchecked")
+					Vector<Class<?>> classes = (Vector<Class<?>>) f.get(loader);
+					for (Class<?> c : new Vector<Class<?>>(classes)) {
+						classNames.put(c.getSimpleName(), c.getName());
+					}
+					loader = loader.getParent();
+				}
+				return classNames;
+			}
+			catch (NoSuchFieldException e) {
+				throw new RuntimeException(e);
+			}
+			catch (SecurityException e) {
+				throw new RuntimeException(e);
+			}
+			catch (IllegalArgumentException e) {
+				throw new RuntimeException(e);
+			}
+			catch (IllegalAccessException e) {
+				throw new RuntimeException(e);
+			}
+		}
+		
 		private StringBuilder text;
 		private int line = 0;
 		
@@ -84,7 +120,7 @@ public class Script implements PlayerCommand, EventListener {
 			getPlayer().sendMessage("Running script...");
 			try {
 				StringBuilder imports = new StringBuilder(8192);
-				for (String imp : Core.CLASS_LOADER.getClassNames().values()) {
+				for (String imp : this.getClassNames().values()) {
 					imports.append("import " + imp + ";\n");
 				}
 				i.eval(imports.toString() + text.toString());

@@ -1,38 +1,20 @@
 package org.maxgamer.rs.event;
 
-import java.io.File;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import org.maxgamer.rs.io.ScriptLoader;
-import org.maxgamer.rs.lib.log.Log;
+import org.maxgamer.rs.model.entity.mob.npc.SpawnManager;
+import org.maxgamer.rs.model.skill.prayer.PrayerListener;
 
 public class EventManager {
 	private HashMap<EventPriority, LinkedList<HandlerExecutor>> listeners;
 	
-	public synchronized void reload(File... autoload_paths){
+	public synchronized void reload(){
 		listeners = new HashMap<EventPriority, LinkedList<HandlerExecutor>>(EventPriority.values().length);
-		for(File f : autoload_paths){
-			ScriptLoader<EventListener> listeners = new ScriptLoader<EventListener>(EventListener.class);
-			listeners.load(f, false);
-			for(Class<EventListener> clazz : listeners.getScripts(f)){
-				//We don't want interfaces or incomplete classes to be registered as commands.
-				if(clazz.isInterface() || Modifier.isAbstract(clazz.getModifiers())) continue;
-				if(clazz.isAnnotationPresent(AutoRegister.class) == false) continue; //Don't autoregister.
-				
-				try{
-					EventListener listener = clazz.newInstance();
-					Log.debug("Auto-Registering " + clazz.getSimpleName());
-					register(listener);
-				}
-				catch(Exception e){
-					Log.warning("Failed to register Generic Listener: " + clazz.getName());
-					e.printStackTrace();
-				}
-			}
-		}
+		
+		this.register(new SpawnManager());
+		this.register(new PrayerListener());
 	}
 	
 	/**

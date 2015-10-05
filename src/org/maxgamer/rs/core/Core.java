@@ -3,7 +3,6 @@ package org.maxgamer.rs.core;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Date;
@@ -91,7 +90,7 @@ public class Core {
 	 * where the class is stored. For example, AIModule should be able to access
 	 * a class from MusicModule using this ClassLoader.
 	 */
-	public static final DynamicClassLoader CLASS_LOADER = new DynamicClassLoader(Core.class.getClassLoader());
+	public static final ClassLoader CLASS_LOADER = ClassLoader.getSystemClassLoader();
 	
 	/**
 	 * Initializes the core of the server
@@ -102,13 +101,6 @@ public class Core {
 	 *         cache.
 	 */
 	public static void init(int threads, String[] args) throws Exception {
-		//Hack into the system classloader and set it to our DynamicClassLoader
-		Field scl = ClassLoader.class.getDeclaredField("scl"); // Get system class loader
-		scl.setAccessible(true); // Set accessible
-		scl.set(null, CLASS_LOADER); // Update it to your class loader
-		
-		Thread.currentThread().setContextClassLoader(CLASS_LOADER);
-		
 		getTimings(); //Force load timings
 		getWorldConfig(); //Force load worldCfg
 		

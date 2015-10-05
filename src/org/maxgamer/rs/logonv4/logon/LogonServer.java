@@ -84,7 +84,7 @@ public class LogonServer extends ServerHost<WorldHost> {
 		
 		LOGON = new LogonServer(config);
 		LOGON.start();
-		commands.load(new File("bin" + File.separator + "org" + File.separator + "maxgamer" + File.separator + "rs" + File.separator + "logonv4" + File.separator + "logon" + File.separator + "commands"));
+		commands.load();
 	}
 	
 	/**

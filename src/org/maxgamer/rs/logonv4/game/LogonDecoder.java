@@ -67,7 +67,7 @@ public class LogonDecoder extends OpcodeDecoder<LSIncomingPacket> {
 			api.worlds.remove(world);
 		}
 		else if (state == 1) {
-			assert w == null : "Adding a world, but it is not null";
+			//assert w == null : "Adding a world, but it is not null";
 			
 			w = new RemoteWorld();
 			//World is being added

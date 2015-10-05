@@ -67,24 +67,39 @@ public abstract class Action{
 	protected void tick(){
 		Core.getServer().getThread().assertThread();
 		if(fiber == null){
-			fiber = new Fiber<Void>(this.toString(), Core.getServer().getThread().getFiberScheduler()){
-				private static final long serialVersionUID = 1842342854418180882L;
-	
-				@Override
-				public Void run() throws SuspendExecution{
-					try{
-						Action.this.run();
+			try{
+				fiber = new Fiber<Void>(this.toString(), Core.getServer().getThread().getFiberScheduler()){
+					private static final long serialVersionUID = 1842342854418180882L;
+		
+					@Override
+					public Void run() throws SuspendExecution{
+						try{
+							Action.this.run();
+						}
+						catch(Throwable t){
+							Log.warning("There was an Exception thrown while running an Action. Details:");
+							Log.warning("Mob: " + Action.this.getOwner() + ", Action: " + Action.this);
+							t.printStackTrace();
+						}
+						//Notify the action queue this action has ended
+						getOwner().getActions().end(Action.this);
+						return null;
 					}
-					catch(Throwable t){
-						Log.warning("There was an Exception thrown while running an Action. Details:");
-						Log.warning("Mob: " + Action.this.getOwner() + ", Action: " + Action.this);
-						t.printStackTrace();
+				};
+			}
+			catch(IllegalArgumentException e){
+				if(e.getMessage().contains("instrumented")){
+					Log.warning("It appears that the class " + this + " has not been instrumented.");
+					Log.warning("The ClassLoader hierachy is:");
+					ClassLoader cl = this.getClass().getClassLoader();
+					StringBuilder sb = new StringBuilder(cl.getClass().getCanonicalName());
+					while(((cl = cl.getParent())) != null){
+						sb.append(" < " + cl.getClass().getCanonicalName());
 					}
-					//Notify the action queue this action has ended
-					getOwner().getActions().end(Action.this);
-					return null;
+					Log.warning(sb.toString());
 				}
-			};
+				throw e;
+			}
 			
 			//Fiber doesn't get executed right here! It is in the ServerThread list of things to run after this call
 			// - And right now, *THIS* is being executed, not the fiber!

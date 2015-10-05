@@ -47,24 +47,24 @@ public abstract class Attack {
 	
 	/**
 	 * Called once per attack
-	 * @return true if finished, false if not.
+	 * @return true if successful, false if not
 	 */
 	public boolean run(Mob target) {
 		AttackResult damage = new AttackResult();
 		
 		try {
 			if (this.prepare(target, damage) == false) {
-				return true; //Can't prepare, no attack.
+				return false; //Can't prepare, no attack.
 			}
 			
 			if (this.takeConsumables() == false) {
-				return true; //No consumables, no attack.
+				return false; //No consumables, no attack.
 			}
 		}
 		catch (Exception e) {
 			Log.warning("Exception processing Attack.prepare() and takeConsumables() for " + this + ", attacker " + attacker + ", target " + target);
 			e.printStackTrace();
-			return true;
+			return false;
 		}
 		
 		//Throw mob attack event here
@@ -78,7 +78,8 @@ public abstract class Attack {
 				damage.getDamages().remove(d);
 			}
 			else if(d != act.getDamage()){
-				//Our damage was changed during the event
+				//Our damage was changed during the event3
+				damage.remove(d);
 				damage.add(act.getDamage());
 			}
 		}

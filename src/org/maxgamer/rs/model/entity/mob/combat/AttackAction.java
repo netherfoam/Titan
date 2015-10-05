@@ -2,6 +2,7 @@ package org.maxgamer.rs.model.entity.mob.combat;
 
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.model.action.Action;
+import org.maxgamer.rs.model.action.CombatFollow;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.facing.Facing;
 
@@ -48,6 +49,19 @@ public class AttackAction extends Action {
 	public Attack getAttack() {
 		return attack;
 	}
+	
+	private boolean inRange() throws SuspendExecution{
+		int range = attack.getMaxDistance();
+		
+		if(range == 1 && getTarget().getLocation().isDiagonal(getOwner().getLocation())){
+			return true; //Allow diagonal combat
+		}
+		
+		if (getTarget().getLocation().near(getOwner().getLocation(), range) == false) {
+			return false; //Couldn't reach the target yet. Continue the CombatFollow.
+		}
+		return true;
+	}
 
 	@Override
 	protected void run() throws SuspendExecution {
@@ -59,14 +73,22 @@ public class AttackAction extends Action {
 				return;
 			}
 			
-			int range = attack.getMaxDistance();
-			if (getTarget().getLocation().near(getOwner().getLocation(), range) == false) {
+			//If we're still warming up, allow the mob to move closer if necessary
+			if(inRange() == false){
+				assert getOwner().getActions().after(this) instanceof CombatFollow : "AttackAction tried to yield to CombatFollow but instead tried to yield to " + getOwner().getActions().after(this);
 				this.yield(); //Assumably, yield to CombatFollow
 				wait(1);
-				continue; //Couldn't reach the target yet. Continue the CombatFollow.
+				continue;
 			}
 			
 			getOwner().setFacing(Facing.face(getTarget()));
+		}
+		
+		//Now we have to wait until we're close enough!
+		while(inRange() == false){
+			assert getOwner().getActions().after(this) instanceof CombatFollow : "AttackAction tried to yield to CombatFollow but instead tried to yield to " + getOwner().getActions().after(this);
+			this.yield(); //Assumably, yield to CombatFollow
+			wait(1);
 		}
 		
 		Mob target = getTarget();

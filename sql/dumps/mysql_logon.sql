@@ -25,6 +25,7 @@ CREATE TABLE `profiles` (
   `pass` varchar(150) NOT NULL,
   `lastIp` varchar(15) NOT NULL,
   `lastSeen` bigint(11) NOT NULL DEFAULT '0',
+  `rights` smallint(3) NOT NULL default '0',
   PRIMARY KEY (`user_clean`),
   UNIQUE KEY `user_clean` (`user_clean`) USING HASH,
   KEY `user` (`user`) USING BTREE,

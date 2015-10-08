@@ -1,6 +1,10 @@
 package org.maxgamer.rs.module;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 import org.maxgamer.rs.command.CommandManager;
 import org.maxgamer.rs.core.Core;
@@ -84,6 +88,43 @@ public abstract class Module {
 	
 	public final CommandManager getCommands(){
 		return getServer().getCommands();
+	}
+	
+	/**
+	 * Fetches the InputStream of a resource from this Module's .JAR file. If the file
+	 * is not located in the JAR file, then this method returns null
+	 * @param name the path and name of the file inside the jar, using "/" separators
+	 * @return the stream or null if not found
+	 */
+	public final InputStream getResource(String name){
+		return this.meta.getLoader().getResourceAsStream(name);
+	}
+	
+	/**
+	 * Saves the given resource from the JAR to the corresponding directory in the plugin's data folder.
+	 * Example, if the resource "path/to/resource.png" is saved, the result is modules/MODULE_NAME/path/
+	 * to/resource.png
+	 * 
+	 * @param name the name of the file to write
+	 * @throws IOException if the file is not found, or an error occurs writing to disk
+	 */
+	public final File saveResource(String name) throws IOException{
+		InputStream stream = getResource(name);
+		if(stream == null) throw new FileNotFoundException("File " + name + " not found in JAR");
+		
+		File dest = new File(getFolder(), name);
+		dest.getParentFile().mkdirs();
+		dest.createNewFile();
+		
+		FileOutputStream out = new FileOutputStream(dest);
+		byte[] buffer = new byte[Math.min(65536, stream.available())];
+		int n;
+		while((n = stream.read(buffer)) > 0){
+			out.write(buffer, 0, n);
+		}
+		out.close();
+		stream.close();
+		return dest;
 	}
 	
 	/**

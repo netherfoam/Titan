@@ -15,7 +15,6 @@ import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.logonv4.game.LogonConnection;
 import org.maxgamer.rs.model.entity.EntityList;
 import org.maxgamer.rs.model.entity.mob.npc.NPC;
-import org.maxgamer.rs.model.entity.mob.npc.SpawnManager;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;
 import org.maxgamer.rs.model.entity.mob.persona.PersonaList;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
@@ -233,9 +232,7 @@ public class Server {
 					Log.debug("Modules Loaded!");
 					
 					Server.this.logon.start();
-					if(Core.getWorldConfig().getBoolean("load.npcs", true)){
-						events.register(new SpawnManager());
-					}
+					
 					//SpawnManager.loadAll();
 					
 					//Autosave

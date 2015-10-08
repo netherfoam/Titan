@@ -1,0 +1,29 @@
+APIs:
+	Minigame:
+		- Implements EventListener
+		- One instance per game
+		- Many players per instance
+		- Player may be in more than one minigame at a time
+
+		| Persona
+		+ getMinigames(): Server.getMinigame(this);
+
+		| Minigame
+		+ getPlayers(): Persona[];
+		+ isPlaying(persona p);
+		+ join(Persona p);
+		+ leave(Persona p);
+		+ @EventHandlers
+
+
+		| Server
+		+ getMinigames();
+		+ getMinigame(Persona p);
+
+	Modules:
+		- Dependency system
+
+		| Module
+		+ getResource(String name): InputStream
+
+		

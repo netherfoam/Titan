@@ -15,11 +15,17 @@ public class RSBootstrap {
 		try {
 			Core.init(Runtime.getRuntime().availableProcessors() - 1, args);
 			
+			//Flag that prevents the logon server being started automatically
+			boolean gameOnly = false;
 			for (String s : args) {
-				if (s.equalsIgnoreCase("standalone")) {
-					LogonServer.init(Core.getServer().getCommands());
+				if (s.equalsIgnoreCase("game-only")) {
+					gameOnly = true;
 					break;
 				}
+			}
+			
+			if(gameOnly == false){
+				LogonServer.init(Core.getServer().getCommands());
 			}
 		}
 		catch (Exception e) {

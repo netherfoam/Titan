@@ -64,6 +64,7 @@ import org.maxgamer.rs.network.io.packet.player.ItemOnObjectHandler;
 import org.maxgamer.rs.network.io.packet.player.KeyHandler;
 import org.maxgamer.rs.network.io.packet.player.LoadHandler;
 import org.maxgamer.rs.network.io.packet.player.LocaleHandler;
+import org.maxgamer.rs.network.io.packet.player.MouseMoveHandler;
 import org.maxgamer.rs.network.io.packet.player.MoveHandler;
 import org.maxgamer.rs.network.io.packet.player.MusicRequestHandler;
 import org.maxgamer.rs.network.io.packet.player.NPCOptionsHandler;
@@ -121,6 +122,7 @@ public class Game637Protocol extends GameProtocol {
 		PACKET_MANAGER.setHandler(30, new CameraHandler());
 		PACKET_MANAGER.setHandler(29, new ClickHandler());
 		PACKET_MANAGER.setHandler(75, new LoadHandler());
+		PACKET_MANAGER.setHandler(MouseMoveHandler.OPCODE, new MouseMoveHandler());
 		
 		PlayerOptionsHandler popt = new PlayerOptionsHandler();
 		PACKET_MANAGER.setHandler(PlayerOptionsHandler.FIRST_OPTION, popt);

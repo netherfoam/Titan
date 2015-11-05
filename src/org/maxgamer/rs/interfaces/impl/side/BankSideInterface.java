@@ -2,7 +2,7 @@ package org.maxgamer.rs.interfaces.impl.side;
 
 import org.maxgamer.rs.interfaces.SettingsBuilder;
 import org.maxgamer.rs.interfaces.SideInterface;
-import org.maxgamer.rs.interfaces.impl.dialogue.IntRequestInterface;
+import org.maxgamer.rs.interfaces.impl.chat.IntRequestInterface;
 import org.maxgamer.rs.interfaces.impl.primary.BankInterface;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.item.ItemStack;
@@ -28,7 +28,8 @@ public class BankSideInterface extends SideInterface {
 	}
 	
 	public BankSideInterface(Player p) {
-		super(p, (short) 763, (short) (p.getSession().getScreenSettings().getDisplayMode() < 2 ? 197 : 84));
+		super(p, (short) (p.getSession().getScreenSettings().getDisplayMode() < 2 ? 197 : 84));
+		setChildId(763);
 	}
 	
 	@Override

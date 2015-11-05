@@ -21,7 +21,8 @@ public abstract class Pane extends Window {
 	 * @param childId The unique id for this interface, this is actually unique.
 	 */
 	public Pane(Player p, int childId) {
-		super(p, childId);
+		super(p);
+		setChildId(childId);
 	}
 	
 	/**

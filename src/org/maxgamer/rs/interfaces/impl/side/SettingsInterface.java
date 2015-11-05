@@ -9,7 +9,8 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 public class SettingsInterface extends SideInterface {
 	
 	public SettingsInterface(Player p) {
-		super(p, (short) 261, (short) 99);
+		super(p, (short) 99);
+		setChildId(261);
 		player.getProtocol().sendConfig(170, player.getConfig().getInt("mouse.buttons", 0));//Mouse buttons
 		player.getProtocol().sendConfig(427, player.getConfig().getBoolean("accept.aid", false) ? 0 : 1);//Accept aid
 		player.getProtocol().sendConfig(171, player.getConfig().getBoolean("chat.effects", true) ? 0 : 1);//Chat effects

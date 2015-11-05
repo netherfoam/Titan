@@ -11,7 +11,8 @@ public class QuestInterface extends Interface {
 	public QuestInterface(Player p) {
 		//190 for quests
 		
-		super(p, p.getWindow(), (short) 190, (short) (p.getSession().getScreenSettings().getDisplayMode() < 2 ? 205 : 90), true);
+		super(p, p.getWindow(), (short) (p.getSession().getScreenSettings().getDisplayMode() < 2 ? 205 : 90), true);
+		setChildId(190);
 	}
 	
 	@Override

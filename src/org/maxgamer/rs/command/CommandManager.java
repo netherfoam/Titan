@@ -67,7 +67,6 @@ import org.maxgamer.rs.command.commands.Title;
 import org.maxgamer.rs.command.commands.Tphere;
 import org.maxgamer.rs.command.commands.Vendor;
 import org.maxgamer.rs.command.commands.Whisper;
-import org.maxgamer.rs.command.commands.WorldMapBank;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.event.EventManager;
 import org.maxgamer.rs.events.server.CommandEvent;
@@ -161,7 +160,6 @@ public class CommandManager {
 		this.register("TPTo", new TPTo());
 		this.register("vendor", new Vendor());
 		this.register("whisper", new Whisper());
-		this.register("worldmapbank", new WorldMapBank());
 		
 		ConfigSection config = Core.getWorldConfig().getSection("commands", null);
 		if (config != null) {

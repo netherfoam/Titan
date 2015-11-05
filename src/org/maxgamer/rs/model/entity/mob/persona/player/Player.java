@@ -15,7 +15,7 @@ import org.maxgamer.rs.events.mob.persona.player.PlayerLogOutEvent;
 import org.maxgamer.rs.interfaces.Interface;
 import org.maxgamer.rs.interfaces.impl.PrayerOrbInterface;
 import org.maxgamer.rs.interfaces.impl.RunInterface;
-import org.maxgamer.rs.interfaces.impl.dialogue.ChatInterface;
+import org.maxgamer.rs.interfaces.impl.chat.ChatInterface;
 import org.maxgamer.rs.interfaces.impl.frame.GamePane;
 import org.maxgamer.rs.interfaces.impl.side.CombatStyles;
 import org.maxgamer.rs.interfaces.impl.side.EmotesInterface;
@@ -528,7 +528,12 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 		
 		if (this.gamepane != null) {
 			for (Interface iface : this.gamepane.getInterfaces()) {
-				if (iface.isVisible()) this.gamepane.close(iface); //May close other interfaces as well, which is why the check is necessary.
+				try{
+					if (iface.isVisible()) this.gamepane.close(iface); //May close other interfaces as well, which is why the check is necessary.
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
 			}
 		}
 		LinkedList<Client> list = new LinkedList<Client>();

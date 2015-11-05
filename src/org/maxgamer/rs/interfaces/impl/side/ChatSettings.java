@@ -9,7 +9,8 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 public class ChatSettings extends SideInterface {
 	
 	public ChatSettings(Player p) {
-		super(p, (short) (982), (short) 99);
+		super(p, (short) 99);
+		setChildId(982);
 	}
 	
 	@Override

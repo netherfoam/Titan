@@ -9,7 +9,8 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 public class RunInterface extends Interface {
 	
 	public RunInterface(Player p) {
-		super(p, p.getWindow(), (short) 750, (short) (p.getSession().getScreenSettings().getDisplayMode() < 2 ? 185 : 176), true);
+		super(p, p.getWindow(), (short) (p.getSession().getScreenSettings().getDisplayMode() < 2 ? 185 : 176), true);
+		setChildId(750);
 	}
 	
 	@Override

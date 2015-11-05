@@ -6,8 +6,8 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Player;
  * @author netherfoam
  */
 public abstract class SideInterface extends Interface {
-	public SideInterface(Player p, short childId, short childPos) {
-		super(p, p.getWindow(), childId, childPos, true);
+	public SideInterface(Player p, short childPos) {
+		super(p, p.getWindow(), childPos, true);
 	}
 	
 	@Override

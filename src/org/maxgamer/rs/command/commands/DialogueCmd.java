@@ -12,7 +12,11 @@ public class DialogueCmd implements PlayerCommand {
 	
 	@Override
 	public void execute(Player player, String[] args) throws Exception {
-		DialogueFork d = new DialogueFork(player, args);
+		DialogueFork d = new DialogueFork(player);
+		for(int i = 0; i < args.length; i++){
+			d.set(i, args[i]);
+		}
+		
 		player.getWindow().open(d);
 	}
 	

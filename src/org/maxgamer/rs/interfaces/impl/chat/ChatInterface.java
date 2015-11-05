@@ -1,4 +1,4 @@
-package org.maxgamer.rs.interfaces.impl.dialogue;
+package org.maxgamer.rs.interfaces.impl.chat;
 
 import org.maxgamer.rs.interfaces.Interface;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
@@ -10,7 +10,8 @@ public class ChatInterface extends Interface {
 	public static final short CHILD_ID = (short) 752;
 	
 	public ChatInterface(Player p) {
-		super(p, p.getWindow(), CHILD_ID, (short) (p.getSession().getScreenSettings().getDisplayMode() < 2 ? 192 : 69), true);
+		super(p, p.getWindow(), (short) (p.getSession().getScreenSettings().getDisplayMode() < 2 ? 192 : 69), true);
+		this.setChildId(CHILD_ID);
 	}
 	
 	@Override

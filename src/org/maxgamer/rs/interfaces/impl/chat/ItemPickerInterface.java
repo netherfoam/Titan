@@ -1,6 +1,7 @@
-package org.maxgamer.rs.interfaces.impl.dialogue;
+package org.maxgamer.rs.interfaces.impl.chat;
 
 import org.maxgamer.rs.interfaces.Interface;
+import org.maxgamer.rs.interfaces.impl.dialogue.DialogueInterface;
 import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.item.ItemStack;
@@ -13,7 +14,8 @@ public abstract class ItemPickerInterface extends DialogueInterface {
 		private int amount = maxAmount;
 		
 		public AmountSelectorInterface() {
-			super(ItemPickerInterface.this.player, ItemPickerInterface.this, (short) 916, (short) (ItemPickerInterface.this.player.getSession().getScreenSettings().getDisplayMode() < 2 ? -1 : 4), true);
+			super(ItemPickerInterface.this.player, ItemPickerInterface.this, (short) (ItemPickerInterface.this.player.getSession().getScreenSettings().getDisplayMode() < 2 ? -1 : 4), true);
+			setChildId(916);
 		}
 		
 		@Override

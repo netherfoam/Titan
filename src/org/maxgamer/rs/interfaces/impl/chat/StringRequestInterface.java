@@ -1,4 +1,4 @@
-package org.maxgamer.rs.interfaces.impl.dialogue;
+package org.maxgamer.rs.interfaces.impl.chat;
 
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 

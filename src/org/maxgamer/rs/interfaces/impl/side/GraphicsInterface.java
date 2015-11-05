@@ -9,7 +9,8 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 public class GraphicsInterface extends PrimaryInterface {
 	
 	public GraphicsInterface(Player p) {
-		super(p, (short) (742));
+		super(p);
+		setChildId(742);
 	}
 	
 	@Override

@@ -31,7 +31,8 @@ public class VendorSideInterface extends SideInterface {
 	private ContainerListener listener;
 	
 	public VendorSideInterface(Player p, VendorContainer vendor) {
-		super(p, (short) 621, (short) (p.getSession().getScreenSettings().getDisplayMode() < 2 ? 197 : 84));
+		super(p, (short) (p.getSession().getScreenSettings().getDisplayMode() < 2 ? 197 : 84));
+		setChildId(621);
 		this.vendor = vendor;
 	}
 	

@@ -41,7 +41,8 @@ public class EmotesInterface extends SideInterface {
 	public final static Animation GOBLIN_DANCE = new Animation(2128);
 	
 	public EmotesInterface(Player p) {
-		super(p, (short) 464, (short) 100);
+		super(p, (short) 100);
+		setChildId(464);
 		player.getProtocol().sendConfig(1085, 249852);//Zombie hand
 		player.getProtocol().sendConfig(465, -1);//Goblin bow and salute
 		player.getProtocol().sendConfig(802, -1);//Idea, stomp, flap, slap head

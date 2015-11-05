@@ -3,7 +3,7 @@ package org.maxgamer.rs.interfaces.impl.side;
 import org.maxgamer.rs.interfaces.SettingsBuilder;
 import org.maxgamer.rs.interfaces.SideInterface;
 import org.maxgamer.rs.interfaces.Window;
-import org.maxgamer.rs.interfaces.impl.dialogue.StringRequestInterface;
+import org.maxgamer.rs.interfaces.impl.chat.StringRequestInterface;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 
 /**
@@ -23,7 +23,8 @@ public class NotesInterface extends SideInterface {
 	
 	public NotesInterface(Player p) {
 		//super(p, (short) 34, (short) 101); //Alva
-		super(p, (short) 34, (short) (p.getSession().getScreenSettings().getDisplayMode() < 2 ? 217 : 102)); //Netherfoam - Changed childPos ids
+		super(p, (short) (p.getSession().getScreenSettings().getDisplayMode() < 2 ? 217 : 102)); //Netherfoam - Changed childPos ids
+		setChildId(34);
 		this.setAccessMask(SETTINGS.getValue(), 0, 29, 9);
 		player.getProtocol().unlockInterfaceComponent(34, 13, true);//Unlocks the actual Notes display
 		player.getProtocol().unlockInterfaceComponent(34, 3, true);//Unlocks the +add notes button

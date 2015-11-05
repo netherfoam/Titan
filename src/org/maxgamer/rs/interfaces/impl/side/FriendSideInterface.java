@@ -1,7 +1,7 @@
 package org.maxgamer.rs.interfaces.impl.side;
 
 import org.maxgamer.rs.interfaces.SideInterface;
-import org.maxgamer.rs.interfaces.impl.dialogue.StringInputInterface;
+import org.maxgamer.rs.interfaces.impl.chat.StringInputInterface;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 
 /**
@@ -14,7 +14,8 @@ public class FriendSideInterface extends SideInterface {
 	
 	public FriendSideInterface(Player p) {
 		//220 or 105 
-		super(p, (short) INTERFACE_ID, (short) (p.getSession().getScreenSettings().getDisplayMode() < 2 ? 211 : 96));
+		super(p, (short) (p.getSession().getScreenSettings().getDisplayMode() < 2 ? 211 : 96));
+		setChildId(INTERFACE_ID);
 	}
 	
 	@Override

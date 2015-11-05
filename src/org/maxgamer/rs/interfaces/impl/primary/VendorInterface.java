@@ -36,7 +36,8 @@ public class VendorInterface extends PrimaryInterface implements ContainerListen
 	private VendorSideInterface side;
 	
 	public VendorInterface(Player p, VendorContainer vendor) {
-		super(p, (short) 620);
+		super(p);
+		setChildId(620);
 		this.vendor = vendor;
 	}
 	

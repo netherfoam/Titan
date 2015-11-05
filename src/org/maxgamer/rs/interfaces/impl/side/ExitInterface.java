@@ -13,7 +13,8 @@ public class ExitInterface extends SideInterface {
 	
 	public ExitInterface(Player p) {
 		//220 or 105 
-		super(p, (short) 182, (short) (p.getSession().getScreenSettings().getDisplayMode() < 2 ? 220 : 105));
+		super(p, (short) (p.getSession().getScreenSettings().getDisplayMode() < 2 ? 220 : 105));
+		setChildId(182);
 	}
 	
 	@Override

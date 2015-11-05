@@ -9,7 +9,8 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 public class SoundInterface extends PrimaryInterface {
 	
 	public SoundInterface(Player p) {
-		super(p, (short) (743));
+		super(p);
+		setChildId(743);
 	}
 	
 	@Override

@@ -8,7 +8,8 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Player;
  */
 public class TasksInterface extends SideInterface {
 	public TasksInterface(Player p) {
-		super(p, (short) 1056, (short) (p.getSession().getScreenSettings().getDisplayMode() < 2 ? 203 : 88));
+		super(p, (short) (p.getSession().getScreenSettings().getDisplayMode() < 2 ? 203 : 88));
+		setChildId(1056);
 	}
 	
 	@Override

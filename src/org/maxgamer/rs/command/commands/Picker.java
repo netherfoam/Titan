@@ -3,7 +3,7 @@ package org.maxgamer.rs.command.commands;
 import java.io.IOException;
 
 import org.maxgamer.rs.command.PlayerCommand;
-import org.maxgamer.rs.interfaces.impl.dialogue.ItemPickerInterface;
+import org.maxgamer.rs.interfaces.impl.chat.ItemPickerInterface;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
 import org.maxgamer.rs.model.item.ItemStack;

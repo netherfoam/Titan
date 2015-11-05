@@ -8,7 +8,8 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Player;
  */
 public class SkillsInterface extends SideInterface {
 	public SkillsInterface(Player p) {
-		super(p, (short) 320, (short) (p.getSession().getScreenSettings().getDisplayMode() < 2 ? 204 : 89));
+		super(p, (short) (p.getSession().getScreenSettings().getDisplayMode() < 2 ? 204 : 89));
+		setChildId(320);
 	}
 	
 	@Override

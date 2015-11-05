@@ -7,9 +7,11 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Player;
  * @author netherfoam
  */
 public class PrayerOrbInterface extends Interface {
+	public static final int CHILD_ID = 749;
 	
 	public PrayerOrbInterface(Player p) {
-		super(p, p.getWindow(), (short) 749, (short) (p.getSession().getScreenSettings().getDisplayMode() < 2 ? 184 : 175), false);
+		super(p, p.getWindow(), (short) (p.getSession().getScreenSettings().getDisplayMode() < 2 ? 184 : 175), false);
+		this.setChildId(CHILD_ID);
 	}
 	
 	@Override

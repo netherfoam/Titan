@@ -19,7 +19,8 @@ public class TradeConfirmInterface extends PrimaryInterface implements Container
 	private boolean accept = false;
 	
 	public TradeConfirmInterface(Player p, Container mine, Container yours, Player partner) {
-		super(p, (short) 334);
+		super(p);
+		setChildId(334);
 		this.mine = mine;
 		this.yours = yours;
 		this.partner = partner;

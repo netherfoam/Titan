@@ -2,7 +2,7 @@ package org.maxgamer.rs.interfaces.impl.side;
 
 import org.maxgamer.rs.interfaces.SettingsBuilder;
 import org.maxgamer.rs.interfaces.SideInterface;
-import org.maxgamer.rs.interfaces.impl.dialogue.IntRequestInterface;
+import org.maxgamer.rs.interfaces.impl.chat.IntRequestInterface;
 import org.maxgamer.rs.interfaces.impl.primary.TradeInterface;
 import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
@@ -34,7 +34,8 @@ public class TradeSideInterface extends SideInterface {
 	private ContainerListener listener;
 	
 	public TradeSideInterface(Player p, Container mine, TradeInterface trade) {
-		super(p, (short) 336, (short) (p.getSession().getScreenSettings().getDisplayMode() < 2 ? 197 : 84));
+		super(p, (short) (p.getSession().getScreenSettings().getDisplayMode() < 2 ? 197 : 84));
+		setChildId(336);
 		if (mine == null) throw new NullPointerException("TradeSideInterface trade container may not be null");
 		this.mine = mine;
 		this.trade = trade;

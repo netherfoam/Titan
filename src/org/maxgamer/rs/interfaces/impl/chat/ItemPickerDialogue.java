@@ -1,7 +1,7 @@
 package org.maxgamer.rs.interfaces.impl.chat;
 
 import org.maxgamer.rs.interfaces.Interface;
-import org.maxgamer.rs.interfaces.impl.dialogue.DialogueInterface;
+import org.maxgamer.rs.interfaces.impl.dialogue.Dialogue;
 import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.item.ItemStack;
@@ -9,28 +9,27 @@ import org.maxgamer.rs.model.item.ItemStack;
 /**
  * @author netherfoam
  */
-public abstract class ItemPickerInterface extends DialogueInterface {
+public abstract class ItemPickerDialogue extends Dialogue {
 	private class AmountSelectorInterface extends Interface {
 		private int amount = maxAmount;
 		
 		public AmountSelectorInterface() {
-			super(ItemPickerInterface.this.player, ItemPickerInterface.this, (short) (ItemPickerInterface.this.player.getSession().getScreenSettings().getDisplayMode() < 2 ? -1 : 4), true);
+			super(ItemPickerDialogue.this.player, ItemPickerDialogue.this, (short) (ItemPickerDialogue.this.player.getSession().getScreenSettings().getDisplayMode() < 2 ? -1 : 4), true);
 			setChildId(916);
 		}
 		
 		@Override
 		public boolean isServerSidedClose() {
-			return ItemPickerInterface.this.isServerSidedClose();
+			return ItemPickerDialogue.this.isServerSidedClose();
 		}
 		
 		@Override
 		public boolean isMobile() {
-			return ItemPickerInterface.this.isMobile();
+			return ItemPickerDialogue.this.isMobile();
 		}
 		
 		@Override
 		public void onClick(int option, int buttonId, int slotId, int itemId) {
-			Log.debug("Click " + option + ", " + buttonId + ", " + slotId + ", " + itemId);
 			//btn=20 = amount--;
 			if (buttonId == 20) amount--;
 			//btn=19 = amount++;
@@ -72,8 +71,9 @@ public abstract class ItemPickerInterface extends DialogueInterface {
 	 * @param maxAmount the maximum amount they can select.
 	 * @param items the items they can choose from, maximum of 10 items.
 	 */
-	public ItemPickerInterface(Player p, int maxAmount, ItemStack... items) {
-		super(p, (short) 905);
+	public ItemPickerDialogue(Player p, int maxAmount, ItemStack... items) {
+		super(p);
+		setChildId(905);
 		if (items.length > 10) {
 			throw new IllegalArgumentException("Given " + items.length + " items, but protocol limits to a list of up to 10 items only.");
 		}

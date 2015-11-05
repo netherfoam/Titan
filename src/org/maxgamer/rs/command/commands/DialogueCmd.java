@@ -1,7 +1,7 @@
 package org.maxgamer.rs.command.commands;
 
 import org.maxgamer.rs.command.PlayerCommand;
-import org.maxgamer.rs.interfaces.impl.dialogue.DialogueFork;
+import org.maxgamer.rs.interfaces.impl.dialogue.SpeechDialogue;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
 
@@ -12,12 +12,11 @@ public class DialogueCmd implements PlayerCommand {
 	
 	@Override
 	public void execute(Player player, String[] args) throws Exception {
-		DialogueFork d = new DialogueFork(player);
-		for(int i = 0; i < args.length; i++){
-			d.set(i, args[i]);
-		}
-		
-		player.getWindow().open(d);
+		//Have a player or NPC speak
+		SpeechDialogue speech = new SpeechDialogue(player);
+		speech.setText("How much would would a Wood Chuck chuck, if a Wood Chuck could chuck wood?");
+		speech.setFace(SpeechDialogue.PLAYER_FACE, player.getName(), SpeechDialogue.BAD_ASS);
+		player.getWindow().open(speech);
 	}
 	
 	@Override

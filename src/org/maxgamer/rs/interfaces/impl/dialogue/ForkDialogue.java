@@ -5,11 +5,11 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 /**
  * @author netherfoam
  */
-public class DialogueFork extends DialogueInterface {
+public class ForkDialogue extends Dialogue {
 	private String[] options = new String[5];
 	
-	public DialogueFork(Player p) {
-		super(p, 0);
+	public ForkDialogue(Player p) {
+		super(p);
 	}
 	
 	public void set(int option, String text){

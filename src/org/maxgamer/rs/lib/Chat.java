@@ -1,5 +1,7 @@
 package org.maxgamer.rs.lib;
 
+import java.util.ArrayList;
+
 /**
  * @author netherfoam
  */
@@ -83,6 +85,37 @@ public class Chat {
 		return s;
 	}
 	
+	public static String[] lines(String text, int lineWidth){
+		String[] pieces = text.split("\\n");
+		ArrayList<String> list = new ArrayList<String>(pieces.length * 2);
+		
+		for(String s : pieces){
+			while(s.length() > lineWidth){
+				int pos = lineWidth - 1;
+				
+				while(isWhitespace(s.charAt(pos)) == false){
+					pos--;
+				}
+				
+				if(pos == 0){
+					//We couldn't split the line at all!
+					list.add(s.substring(0, lineWidth));
+					s = s.substring(lineWidth, s.length());
+				}
+				else{
+					//We managed to split at white space. Store the new string
+					//And cut the piece off the front
+					list.add(s.substring(0, pos));
+					s = s.substring(pos, s.length());
+				}
+			}
+			
+			list.add(s);
+		}
+		
+		return list.toArray(new String[list.size()]);
+	}
+	
 	private static boolean isLower(char c) {
 		return c >= 'a' && c <= 'z';
 	}
@@ -103,6 +136,14 @@ public class Chat {
 		if (isAlpha(c) || isNumeric(c)) {
 			return true;
 		}
+		return false;
+	}
+	
+	private static boolean isWhitespace(char c){
+		if(c == ' ') return true;
+		if(c == '\t') return true;
+		if(c == '\n') return true;
+		if(c == '\r') return true;
 		return false;
 	}
 }

@@ -1,49 +1,68 @@
 package org.maxgamer.rs.interfaces.impl.dialogue;
 
+import java.util.ArrayList;
+
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 
 /**
  * @author netherfoam
  */
-public class ForkDialogue extends Dialogue {
-	private String[] options = new String[5];
+public abstract class ForkDialogue extends Dialogue {
+	public static final int MAX_OPTIONS = 5;
+	private ArrayList<String> options = new ArrayList<String>();
 	
 	public ForkDialogue(Player p) {
 		super(p);
 	}
 	
-	public void set(int option, String text){
-		this.options[option] = text;
-		
-		//Calculate the correct interface ID for the given dialogue fork
-		int i = 0;
-		
-		for(int n = 0; n < options.length; n++){
-			if(options[n] == null) continue;
-			setString(2 + i, options[n]);
-			i++;
+	/**
+	 * Adds the given option number to this ForkDialogue
+	 * @param text the option to add, eg "option 1", "option 2"
+	 */
+	public void add(String text){
+		if(this.isVisible()){
+			throw new IllegalStateException("Interface cannot have options added after opening");
 		}
-		setChildId(225 + i * 2);
+		if(this.options.size() >= MAX_OPTIONS){
+			throw new IllegalStateException("Interface may only have up to 5 options available");
+		}
+		this.options.add(text);
+		
+		setChildId(225 + options.size() * 2);
+	}
+	
+	/**
+	 * Removes the given option from this ForkDialogue
+	 * @param text the option to remove
+	 */
+	public void remove(String text){
+		if(this.isVisible()){
+			throw new IllegalStateException("Interface cannot have options added after opening");
+		}
+		
+		this.options.remove(text);
+		setChildId(225 + options.size() * 2);
+	}
+	
+	/**
+	 * Fetches the option at the given position
+	 * @param pos the position
+	 * @return the option
+	 * @throws IndexOutOfBoundsException if the given position is not available
+	 */
+	public String get(int pos){
+		return options.get(pos);
 	}
 	
 	@Override
 	public void onOpen(){
-		int size = 0;
-		for(String s : options){
-			if(s == null) continue;
-			size++;
-		}
-		
-		if (size < 2 || size > 5) {
+		int size = this.options.size();
+		if (size < 2 || size > MAX_OPTIONS) {
 			throw new IllegalArgumentException("Options length must be between 2 and 5 inclusive. Given " + size + " options.");
 		}
 		
-		int i = 0;
-		
-		for(int n = 0; n < options.length; n++){
-			if(options[n] == null) continue;
-			setString(2 + i, options[n]);
-			i++;
+		for(int i = 0; i < options.size(); i++){
+			setString(2 + i, options.get(i));
 		}
 	}
 	
@@ -55,17 +74,12 @@ public class ForkDialogue extends Dialogue {
 	@Override
 	public final void onClick(int option, int buttonId, int slotId, int itemId) {
 		getPlayer().getWindow().close(this);
-		
-		int position = buttonId - 2;
-		for(int i = 0; position >= i; i++){
-			if(options[i] == null) position++;
-		}
-		
-		
-		onSelect(position); //TODO: Correct this to a number between 0-4
+		onSelect(buttonId - 2); 
 	}
 	
-	public final void onSelect(int option){
-		System.out.println("Clicked option " + options[option]);
-	}
+	/**
+	 * Invoked when this ForkDialogue is responded to by the player.
+	 * @param option the option the player clicked 
+	 */
+	public abstract void onSelect(int option);
 }

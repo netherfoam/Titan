@@ -2,7 +2,7 @@ package org.maxgamer.rs.interfaces.impl.dialogue;
 
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 
-public class SpeechDialogue extends ThoughtDialogue {
+public abstract class SpeechDialogue extends ThoughtDialogue {
 	private static final int BIG_FACE = 1;
 	private static final int SMALL_FACE = 2;
 	

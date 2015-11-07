@@ -3,7 +3,13 @@ package org.maxgamer.rs.interfaces.impl.dialogue;
 import org.maxgamer.rs.lib.Chat;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 
-public class ThoughtDialogue extends Dialogue {
+/**
+ * Class represents a 'thought' dialogue - when a message appears to a player in the chat box
+ * area and requires 'Click to Continue', but the interface contains no speaker entity.
+ * 
+ * @author Dirk Jamieson / Netherfoam
+ */
+public abstract class ThoughtDialogue extends Dialogue {
 	protected String[] text;
 	
 	public ThoughtDialogue(Player p) {
@@ -73,8 +79,5 @@ public class ThoughtDialogue extends Dialogue {
 	/**
 	 * Method that can be overridden to handle when the user clicks 'Continue'
 	 */
-	public void onContinue(){
-		//Method can be overridden
-	}
-	
+	public abstract void onContinue();
 }

@@ -16,8 +16,6 @@ public class Reload implements GenericCommand {
 		sender.sendMessage("Scripts reloaded.");
 		Core.getWorldConfig().reload();
 		sender.sendMessage("World config reloaded.");
-		Core.getServer().getCommands().load();
-		sender.sendMessage("Commands reloaded");
 		NPCGroup.reload();
 		sender.sendMessage("NPCGroups reloaded");
 		Core.getServer().getModules().unload();

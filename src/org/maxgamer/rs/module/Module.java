@@ -139,4 +139,8 @@ public abstract class Module {
 	public ModuleMeta getMeta() {
 		return meta;
 	}
+	
+	public ModuleLoader getLoader(){
+		return Core.getServer().getModules();
+	}
 }

@@ -1,8 +1,9 @@
 package org.maxgamer.rs.interfaces.impl.chat;
 
+import java.util.ArrayList;
+
 import org.maxgamer.rs.interfaces.Interface;
 import org.maxgamer.rs.interfaces.impl.dialogue.Dialogue;
-import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.item.ItemStack;
 
@@ -47,6 +48,19 @@ public abstract class ItemPickerDialogue extends Dialogue {
 	}
 	
 	/**
+	 * The global string ids which correspond to the name of the items. Eg, the
+	 * icon for one item could be displayed but the name of another could be
+	 * displayed.
+	 */
+	public static final int[] NAME_IDS = { 132, 133, 134, 135, 136, 137, 275, 316, 317, 318 };
+	
+	/**
+	 * the global int "BConfig" ids that correspond to the item ID, used for
+	 * icon of item.
+	 */
+	public static final int[] CONFIG_IDS = { 755, 756, 757, 758, 759, 760, 120, 185, 87, 90 };
+	
+	/**
 	 * The maximum amount they can select
 	 */
 	private int maxAmount = 28;
@@ -54,7 +68,7 @@ public abstract class ItemPickerDialogue extends Dialogue {
 	/**
 	 * The items they can select from
 	 */
-	private ItemStack[] items;
+	private ArrayList<ItemStack> items = new ArrayList<ItemStack>(10);
 	
 	/**
 	 * The sub interface used to control the amount they're selecting
@@ -71,33 +85,44 @@ public abstract class ItemPickerDialogue extends Dialogue {
 	 * @param maxAmount the maximum amount they can select.
 	 * @param items the items they can choose from, maximum of 10 items.
 	 */
-	public ItemPickerDialogue(Player p, int maxAmount, ItemStack... items) {
+	public ItemPickerDialogue(Player p, int maxAmount) {
 		super(p);
 		setChildId(905);
-		if (items.length > 10) {
-			throw new IllegalArgumentException("Given " + items.length + " items, but protocol limits to a list of up to 10 items only.");
-		}
 		if (maxAmount < 0) {
 			throw new IllegalArgumentException("MaxAmount must be >= 0");
 		}
 		
-		this.items = items;
 		this.maxAmount = maxAmount;
 		this.amount = new AmountSelectorInterface();
 	}
 	
 	/**
-	 * The global string ids which correspond to the name of the items. Eg, the
-	 * icon for one item could be displayed but the name of another could be
-	 * displayed.
+	 * Adds the given item as an option for this item picker dialogue
+	 * @param item the item to add as an option
 	 */
-	public static final int[] NAME_IDS = { 132, 133, 134, 135, 136, 137, 275, 316, 317, 318 };
+	public void add(ItemStack item){
+		if(items.size() >= NAME_IDS.length) throw new IllegalStateException("ItemPickerDialogue may only contain up to 10 items!");
+		items.add(item);
+		
+		if(this.isVisible()){
+			getPlayer().getProtocol().sendBConfig(CONFIG_IDS[items.size() - 1], item.getId());
+			getPlayer().getProtocol().sendGlobalString(NAME_IDS[items.size() - 1], item.getName());
+		}
+	}
 	
 	/**
-	 * the global int "BConfig" ids that correspond to the item ID, used for
-	 * icon of item.
+	 * Removes the given item as an option for this item picker dialogue
+	 * @param item the item to remove as an option
 	 */
-	public static final int[] CONFIG_IDS = { 755, 756, 757, 758, 759, 760, 120, 185, 87, 90 };
+	public void remove(ItemStack item){
+		items.remove(item);
+		
+		if(this.isVisible()){
+			getPlayer().getProtocol().sendBConfig(CONFIG_IDS[items.size() - 1], 0);
+			getPlayer().getProtocol().sendGlobalString(NAME_IDS[items.size() - 1], "");
+		}
+	}
+
 	
 	@Override
 	public void onOpen() {
@@ -107,9 +132,10 @@ public abstract class ItemPickerDialogue extends Dialogue {
 		
 		getPlayer().getProtocol().sendBConfig(754, 13); //Hmm?
 		
-		for (int i = 0; i < items.length; i++) {
-			getPlayer().getProtocol().sendBConfig(CONFIG_IDS[i], items[i].getId());
-			getPlayer().getProtocol().sendGlobalString(NAME_IDS[i], items[i].getName());
+		for (int i = 0; i < items.size(); i++) {
+			ItemStack item = items.get(i);
+			getPlayer().getProtocol().sendBConfig(CONFIG_IDS[i], item.getId());
+			getPlayer().getProtocol().sendGlobalString(NAME_IDS[i], item.getName());
 		}
 		
 		//Sets the maximum amount the user can select
@@ -144,7 +170,7 @@ public abstract class ItemPickerDialogue extends Dialogue {
 		//Option 2 buttonId = 16
 		ItemStack item;
 		try {
-			item = items[buttonId - 14];
+			item = items.get(buttonId - 14);
 		}
 		catch (ArrayIndexOutOfBoundsException e) {
 			getPlayer().getCheats().log(2, "Attempted to select an item which does not exist");

@@ -9,6 +9,7 @@ import java.util.Scanner;
 
 import org.maxgamer.rs.command.CommandManager;
 import org.maxgamer.rs.command.CommandSender;
+import org.maxgamer.rs.command.commands.Stop;
 import org.maxgamer.rs.lib.Files;
 import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.logonv4.LSOutgoingPacket;
@@ -84,7 +85,7 @@ public class LogonServer extends ServerHost<WorldHost> {
 		
 		LOGON = new LogonServer(config);
 		LOGON.start();
-		commands.load();
+		commands.register("stop", new Stop());
 	}
 	
 	/**

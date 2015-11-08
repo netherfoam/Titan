@@ -21,7 +21,7 @@ public class DeathAction extends Action {
 	
 	@Override
 	protected void run() throws SuspendExecution {
-		getOwner().getUpdateMask().setAnimation(anim, 50);
+		getOwner().animate(anim, 50);
 		
 		wait(anim == null ? 3 : anim.getDuration(true));
 		

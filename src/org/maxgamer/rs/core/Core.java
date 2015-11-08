@@ -109,14 +109,14 @@ public class Core {
 			if (arg.contains("=") == false) continue;
 			String[] parts = arg.split("=");
 			if (parts.length != 2) {
-				Log.info("Bad JVM argument given: " + arg);
+				Log.info("Bad program argument given: " + arg);
 				continue;
 			}
 			
-			worldCfg.set(parts[0], parts[1]);
+			getWorldConfig().set(parts[0], parts[1]);
 		}
 		
-		Log.init(LogLevel.valueOf(worldCfg.getString("log.level", LogLevel.INFO.toString())));
+		Log.init(LogLevel.valueOf(getWorldConfig().getString("log.level", LogLevel.INFO.toString())));
 		Log.info("-- Blaze Booting --");
 		Log.info("-- Server Booting at " + new Date().toString() + " --");
 		

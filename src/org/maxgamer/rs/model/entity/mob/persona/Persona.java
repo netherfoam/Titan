@@ -169,8 +169,6 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 	 */
 	private int runEnergy = 100;
 	
-	private int rights = Rights.USER;
-	
 	/**
 	 * Constructs a new Persona from the given profile. This will modify the
 	 * profile.
@@ -760,7 +758,6 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 		if (this.isLoaded()) {
 			//Health is loaded when start() is called. Thus if we save it
 			//before we load, we're saving the default health!
-			this.config.set("rights", this.getRights());
 			this.config.set("health", getHealth());
 			this.config.set("retaliate", isRetaliate());
 			this.config.set("spellbook", this.spellbook.getChildId());
@@ -773,8 +770,6 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 	@Override
 	public void deserialize(ConfigSection map) {
 		this.config = map;
-		
-		this.rights = map.getInt("rights", Rights.USER);
 		
 		// Any attachments which have been registered before we loaded our
 		// config will be loaded here.
@@ -792,6 +787,15 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 	 */
 	public String getName() {
 		return name;
+	}
+	
+	/**
+	 * The rights of this Persona. Zero representing a normal player, one
+	 * representing Player Mod and two representing an Admin.
+	 * @return the rights level of the persona.
+	 */
+	public int getRights() {
+		return Rights.USER;
 	}
 	
 	/**
@@ -866,15 +870,6 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 		return (getSpawnIndex() + 1) | 0x8000;
 	}
 	
-	/**
-	 * The rights of this Persona. Zero representing a normal player, one
-	 * representing Player Mod and two representing an Admin.
-	 * @return the rights level of the persona.
-	 */
-	public int getRights() {
-		return rights;
-	}
-	
 	@Override
 	public void restore() {
 		super.restore();
@@ -938,17 +933,6 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 		return 0;
 	}
 	
-	/**
-	 * Sets the rights for this persona to the given value
-	 * @param rights the rights for the persona
-	 */
-	public void setRights(int rights) {
-		if (rights < 0) {
-			throw new IllegalArgumentException("Rights must be >= 0");
-		}
-		this.rights = rights;
-	}
-	
 	@Override
 	public boolean isAttackable(Mob src) {
 		return true;
@@ -957,5 +941,10 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 	@Override
 	public void onUnload() {
 		
+	}
+	
+	@Override
+	public void onIdle(){
+		//Nothing.
 	}
 }

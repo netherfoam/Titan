@@ -54,6 +54,16 @@ import org.maxgamer.rs.structure.configs.ConfigSection;
  * @author netherfoam
  */
 public class Player extends Persona implements Client, CommandSender, YMLSerializable {
+	static RSFont font;
+	static {
+		try {
+			font = new RSFont(Core.getCache().getFile(IDX.FONTS, 495).getData());
+		}
+		catch (IOException e) {
+			throw new ExceptionInInitializerError(e);
+		}
+	}
+	
 	/**
 	 * The session belonging to this player, used for data transfer
 	 */
@@ -108,6 +118,8 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 	 * only an int, not a long!
 	 */
 	private int uuid = 0;
+
+	private int rights = Rights.USER;
 	
 	/**
 	 * Constructs a new Player but does not add them to the world. This does not
@@ -358,7 +370,7 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 		if (this.getTarget() == p) priority += 50; //Our target, heavy weighted.
 		if (p.getTarget() == this) priority += 25; //Targetting us, heavy weighted
 		if (this.getFriends().isFriend(p.getName())) priority += 50; //You're my friend
-		if (p.getRights() > Rights.USER) priority += 25; //You're an admin
+		if (p instanceof Player && ((Player) p).getRights() > Rights.USER) priority += 25; //You're an admin
 		
 		return priority;
 	}
@@ -382,16 +394,6 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 	 */
 	public Game637Protocol getProtocol() {
 		return (Game637Protocol) this.protocol;
-	}
-	
-	static RSFont font;
-	static {
-		try {
-			font = new RSFont(Core.getCache().getFile(IDX.FONTS, 495).getData());
-		}
-		catch (IOException e) {
-			throw new ExceptionInInitializerError(e);
-		}
 	}
 	
 	@Override
@@ -423,10 +425,26 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 		return this.protocol.getRevision();
 	}
 	
-	@Override
+	/**
+	 * Sets the rights for this persona to the given value
+	 * @param rights the rights for the persona
+	 */
 	public void setRights(int rights) {
-		super.setRights(rights);
-		//TODO: Notify the player 
+		if (rights < 0) {
+			throw new IllegalArgumentException("Rights must be >= 0");
+		}
+		this.rights = rights;
+		Core.getServer().getLogon().getAPI().updateRights(getName(), getRights());
+	}
+	
+	/**
+	 * The rights of this Persona. Zero representing a normal player, one
+	 * representing Player Mod and two representing an Admin.
+	 * @return the rights level of the persona.
+	 */
+	@Override
+	public int getRights() {
+		return rights;
 	}
 	
 	/**
@@ -567,7 +585,7 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 	@Override
 	public void setHealth(int hp) {
 		super.setHealth(hp);
-		getProtocol().sendConfig(1240, getHealth() << 1);
+		getProtocol().sendConfig(1240, Math.min(getHealth() << 1, Short.MAX_VALUE));
 	}
 	
 	/**

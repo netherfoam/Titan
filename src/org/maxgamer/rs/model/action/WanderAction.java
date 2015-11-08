@@ -80,39 +80,16 @@ public class WanderAction extends Action {
 	
 	@Override
 	protected void run() throws SuspendExecution {
-		//Notes:
-		// - If this method is called, then we have no walk in the actions queue.
-		// - Walking does not call yield(), it finishes though.
-		/*
-		if (pause > 0) {
-			//We're waiting before wandering again
-			pause--;
-			yield();
-			return false;
-		}
-		
-		StopWatch timer = Core.getTimings().start("npc-wander-pathing");
-		WalkAction walk = new WalkAction(getOwner(), doPath());
-		getOwner().getActions().insertBefore(this, walk);
-		timer.stop();
-		
-		//Time we wait *after* the walk we just queued.
-		pause = Erratic.nextInt(minWait, maxWait);
-		
-		return false;*/
-		int pause = Erratic.nextInt(minWait, maxWait);
 		while(true){
-			if(pause > 0) {
-				yield();
-				pause--;
-			}
-			else{
-				StopWatch timer = Core.getTimings().start("npc-wander-pathing");
-				WalkAction walk = new WalkAction(getOwner(), doPath());
+			int pause = Erratic.nextInt(minWait, maxWait);
+			wait(pause);
+			StopWatch timer = Core.getTimings().start("npc-wander-pathing");
+			WalkAction walk = new WalkAction(getOwner(), doPath());
+			timer.stop();
+			
+			if(this.getOwner().getActions().isQueued(this)){
 				getOwner().getActions().insertBefore(this, walk);
-				timer.stop();
 			}
-			wait(1);
 		}
 	}
 	

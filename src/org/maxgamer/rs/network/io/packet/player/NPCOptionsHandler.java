@@ -1,6 +1,7 @@
 package org.maxgamer.rs.network.io.packet.player;
 
 import java.util.Arrays;
+import java.util.HashSet;
 
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.events.mob.MobUseNPCEvent;
@@ -67,6 +68,19 @@ public class NPCOptionsHandler implements PacketProcessor<Player> {
 					//TODO DEBUG: Send the player the options they can click on the NPC
 					String[] options = new String[] { d.getInteraction(0), d.getInteraction(1), d.getInteraction(2), d.getInteraction(3), d.getInteraction(4) };
 					player.sendMessage("NPCID " + npcId + " Options: " + Arrays.toString(options) + ", Clicked " + option);
+					HashSet<NPC> nearby = player.getLocation().getNearby(NPC.class, 5);
+					NPC closest = null;
+					for(NPC npc : nearby){
+						if(closest == null || closest.getLocation().distanceSq(player.getLocation()) > npc.getLocation().distanceSq(player.getLocation())){
+							closest = npc;
+						}
+					}
+					if(closest != null){
+						player.sendMessage("Nearest: " + closest);
+						player.sendMessage("Actions: " + closest.getActions());
+						player.sendMessage("Actions.isQueued(): " + closest.getActions().isQueued());
+						player.sendMessage("Actions.isEmpty(): " + closest.getActions().isEmpty());
+					}
 				}
 				catch (Exception e) {
 					e.printStackTrace();

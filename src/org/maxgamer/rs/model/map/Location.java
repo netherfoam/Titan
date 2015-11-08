@@ -122,7 +122,7 @@ public class Location extends Position implements MBR {
 	 * @return the entities nearby not null.
 	 */
 	public <T extends MBR> HashSet<T> getNearby(Class<T> clazz, int radius, boolean allHeights) {
-		MBR q = new Cube(new int[] { this.x - radius, this.y - radius, this.z }, new int[] { radius * 2 + 1, radius * 2 + 1, allHeights ? 3 : 0 });
+		MBR q = new Cube(new int[] { this.x - radius, this.y - radius, allHeights ? 0 : this.z }, new int[] { radius * 2 + 1, radius * 2 + 1, allHeights ? 3 : 0 });
 		
 		HashSet<T> entities = getMap().getEntities(q, radius * radius + 4, clazz);
 		return entities;

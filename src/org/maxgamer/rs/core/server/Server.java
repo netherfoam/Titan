@@ -33,6 +33,7 @@ import org.maxgamer.rs.command.commands.InterfaceList;
 import org.maxgamer.rs.command.commands.InterfaceShow;
 import org.maxgamer.rs.command.commands.Item;
 import org.maxgamer.rs.command.commands.ItemScriptDump;
+import org.maxgamer.rs.command.commands.JSCommand;
 import org.maxgamer.rs.command.commands.Kick;
 import org.maxgamer.rs.command.commands.Kill;
 import org.maxgamer.rs.command.commands.LogonStatus;
@@ -444,6 +445,7 @@ public class Server {
 			commands.register("TPTo", new TPTo());
 			commands.register("vendor", new Vendor());
 			commands.register("whisper", new Whisper());
+			commands.register("js", new JSCommand());
 			
 			ConfigSection config = Core.getWorldConfig().getSection("commands", null);
 			if (config != null) {

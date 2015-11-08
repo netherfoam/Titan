@@ -78,10 +78,10 @@ public class LogonAPI {
 	protected HashMap<Integer, AuthRequest> authRequests = new HashMap<Integer, AuthRequest>();
 	protected HashMap<Integer, RemoteWorld> worlds = new HashMap<Integer, RemoteWorld>();
 	
-	private LogonConnection game;
+	private LogonConnection logon;
 	
-	public LogonAPI(LogonConnection game) {
-		this.game = game;
+	public LogonAPI(LogonConnection logon) {
+		this.logon = logon;
 	}
 	
 	public RemoteWorld getWorld(int id) {
@@ -110,7 +110,7 @@ public class LogonAPI {
 		out.writePJStr1(session.getIP().getAddress().getHostAddress());
 		Log.debug("Requesting auth for " + name);
 		try {
-			game.write(out);
+			logon.write(out);
 			return true;
 		}
 		catch (IOException e) {
@@ -129,7 +129,7 @@ public class LogonAPI {
 			out.write(s.charAt(i));
 		
 		try {
-			game.write(out);
+			logon.write(out);
 			return true;
 		}
 		catch (IOException e) {
@@ -150,11 +150,26 @@ public class LogonAPI {
 		}
 		
 		try {
-			game.write(out);
+			logon.write(out);
 			return true;
 		}
 		catch (IOException e) {
 			Log.debug("Failed to save - Logon connection is down");
+			return false;
+		}
+	}
+	
+	public boolean updateRights(String user, int rights){
+		LSOutgoingPacket out = new LSOutgoingPacket(5);
+		out.writePJStr1(user);
+		out.writeByte(rights);
+		
+		try {
+			logon.write(out);
+			return true;
+		}
+		catch (IOException e) {
+			Log.debug("Failed to update rights - Logon connection is down");
 			return false;
 		}
 	}

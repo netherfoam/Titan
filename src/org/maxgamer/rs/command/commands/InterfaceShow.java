@@ -1,6 +1,7 @@
 package org.maxgamer.rs.command.commands;
 
 import org.maxgamer.rs.command.PlayerCommand;
+import org.maxgamer.rs.interfaces.impl.chat.IntRequestInterface;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
 
@@ -9,7 +10,32 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
  */
 public class InterfaceShow implements PlayerCommand {
 	@Override
-	public void execute(Player p, String[] args) {
+	public void execute(final Player p, String[] args) {
+		if(args.length <= 0){
+			//We ask each question manually.
+			p.getWindow().open(new IntRequestInterface(p, "Parent ID (Eg 746 for resizable, 548 for not)") {
+				@Override
+				public void onInput(final long parentID) {
+					p.getWindow().open(new IntRequestInterface(p, "ChildID (Eg the type ID. 300 for smithing)") {
+						
+						@Override
+						public void onInput(final long childID) {
+							
+							p.getWindow().open(new IntRequestInterface(p, "ChildPos ID (Eg 9 for primary resizable, 18 for primary fixed)") {
+								
+								@Override
+								public void onInput(long childPos) {
+									p.getProtocol().sendInterface(true, (int) parentID, (int) childPos, (int) childID);
+								}
+							});
+						}
+					});
+				}
+			});
+			
+			return;
+		}
+		
 		if (args.length < 3) {
 			p.sendMessage("Arg0: ParentId");
 			p.sendMessage("Arg1: ChildId");

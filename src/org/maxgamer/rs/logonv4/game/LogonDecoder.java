@@ -29,7 +29,7 @@ public class LogonDecoder extends OpcodeDecoder<LSIncomingPacket> {
 		this.api = api;
 	}
 	
-	//TODO
+	//TODO - Document this
 	@Opcode(opcode = 1)
 	public void decodeClientStatus(LSIncomingPacket in) {
 		int state = in.readByte() & 0xFF;
@@ -84,13 +84,12 @@ public class LogonDecoder extends OpcodeDecoder<LSIncomingPacket> {
 		}
 	}
 	
-	//TODO
+	//TODO document
 	@Opcode(opcode = 3)
 	public void decodeSessionResponse(final LSIncomingPacket in) {
 		Core.submit(new Runnable() {
 			@Override
 			public void run() {
-				//???//
 				int sessionId = in.readInt();
 				Log.debug("Got response for session request for session# " + sessionId);
 				AuthResult result = AuthResult.get(in.readByte() & 0xFF);
@@ -104,6 +103,7 @@ public class LogonDecoder extends OpcodeDecoder<LSIncomingPacket> {
 				
 				String lastIp = null;
 				long lastSeen = -1;
+				int rights = 0;
 				
 				do {
 					if (result != AuthResult.SUCCESS) {
@@ -113,6 +113,7 @@ public class LogonDecoder extends OpcodeDecoder<LSIncomingPacket> {
 					ConfigSection config = new ConfigSection();
 					lastIp = in.readPJStr1();
 					lastSeen = in.readLong();
+					rights = in.readByte() & 0xFF;
 					
 					byte[] payload = new byte[in.readInt()];
 					in.read(payload);
@@ -130,6 +131,7 @@ public class LogonDecoder extends OpcodeDecoder<LSIncomingPacket> {
 						try {
 							player = new LobbyPlayer(session, req.name, req.clientUUID);
 							session.write(result.getCode());
+							//TODO: player.setRights()
 							
 							player.getProtocol().sendAuth(result, lastIp, lastSeen);
 							player.deserialize(config);
@@ -145,6 +147,7 @@ public class LogonDecoder extends OpcodeDecoder<LSIncomingPacket> {
 						Player player;
 						try {
 							player = new Player(req.name, session, req.clientUUID);
+							player.setRights(rights);
 							session.write(result.getCode());
 							
 							session.setHandler(new GamePacketHandler(session, player));

@@ -116,7 +116,7 @@ public class GameObjectHandler implements PacketProcessor<Player> {
 					return;
 				}
 
-				if (path.isEmpty() == false) {
+				if (!path.isEmpty()) {
 					// Given our pathfinding algorithm, it ignores the object.
 					// Thus the path leads into the corner of the object. So we
 					// delete the last step, if one is created.
@@ -126,7 +126,7 @@ public class GameObjectHandler implements PacketProcessor<Player> {
 				p.getActions().clear();
 
 				final MobUseObjectEvent e = new MobUseObjectEvent(p, g, option);
-				if (path.isEmpty() == false) {
+				if (!path.isEmpty()) {
 					p.setFacing(null);
 					WalkAction walk = new WalkAction(p, path) {
 						@Override
@@ -143,9 +143,8 @@ public class GameObjectHandler implements PacketProcessor<Player> {
 				} else {
 					p.setFacing(Facing.face(g));
 					e.call();
-					if (e.isCancelled()) {
+					if (e.isCancelled())
 						return;
-					}
 				}
 
 				return;

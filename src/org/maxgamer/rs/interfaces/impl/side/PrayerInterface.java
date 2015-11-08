@@ -17,7 +17,8 @@ public class PrayerInterface extends SideInterface {
 	}
 	
 	public PrayerInterface(Player p) {
-		super(p, (short) 271, (short) 93);
+		super(p, (short) 93);
+		setChildId(271);
 		//Allows the player to click 'Activate' on prayers
 		setAccessMask(INTERFACE_CONFIG.getValue(), 0, 29, 8);//Amask to enable prayer activating and deactivating
 		setAccessMask(INTERFACE_CONFIG.getValue(), 0, 29, 42);//AMask to enable selecting in the quick prayer editing interface

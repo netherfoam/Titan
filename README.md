@@ -27,7 +27,7 @@ for their format.
 -- MySQL --
 Install MySQL5 (Other versions may work fine)
 
-I am using Navicat, but if you wish to use another program feel free. They used to have a free MySQL version,
+I am using Navicat, but if you wish to use another program feel free (Ubuntu: "Emma", Mac/Windows: "MySQL workbench"). They used to have a free MySQL version,
 but it is no longer available unless you download it from an "alternative source". There are free alternatives,
 such as SQLYog and HeidiSQL.
 
@@ -68,9 +68,10 @@ to refer to 'melee hit formula' I would say 'formula.melee.hit'. Or formula.rang
 
 
 Go to Project_Root\config\ and rename:
-logon.sample.yml -> logon.yml
-world.sample.yml -> world.sample
-default_player.sample.yml -> default_player.yml
+logon.yml.dist -> logon.yml
+world.yml.dist -> world.sample
+default_player.yml.dist -> default_player.yml
+(This process will be done automatically if you start the server before hand, but will not have reasonable values for the database config!)
 
 Now you should edit logon.yml change:
 - pass to a new password, this is your logon password not your database password. If this is found out by someone, they can modify anyones profile in any manner they like. (Add items, corrupt it, reset it, change rights to admin, set skills to any level, set health, location, equipment) - Basically, make it a strong password!
@@ -91,11 +92,16 @@ Save, close.
 <pre>
 -- Compiling --
 The project is compiled in accordance with Java/JDK 7.  
-To compile it, either run the supplied files (.bat for windows, .sh for linux/mac)
-Otherwise, you could import the project into Eclipse or some other IDE.
+Yyou could import the project into Eclipse or some other IDE.
 If you wish to import it into Eclipse, you will need to add all .jar files from lib/ to your classpath, if
 you don't know how to do this I suggest googling your IDE name with 'classpath setup' to add the .jar files from
 Project_Root/lib/.
+
+The project comes with an ANT build.xml install file, so if you have ANT installed, you can compile it through
+the command line / terminal interface using:
+	$ ant clean (Removes bin/* classes, not always necessary)
+	$ ant compile (Builds bin/* classes)
+	$ ant jar (Builds titan.jar)
 </pre>
 
 <pre>
@@ -105,16 +111,29 @@ Two options:
     Simply run the program like:
       Open command line
       $ cd Project_Root/ (Or whatever location your project is in)
-      $ java -cp "lib/*;bin" -Xms768m org.maxgamer.rs.core.RSBootstrap standalone
+      If you're running from bin/ (Eg not a jar)
+      	$ java -cp "lib/*;bin/" -javaagent:lib/quasar-core.jar -Xms768m org.maxgamer.rs.core.RSBootstrap
+      Else
+      	$ java -jar Titan.jar -javaagent:lib/quasar-core.jar -Xms768m 
+      	
       Doing this with the argument 'standalone' will cause the program to start an internal logon server for itself.
+      
   - Game server + Logon server
       Open comamnd line
       $ cd Project_Root/ (Or whateverlocation your project is in)
-      $ java -cp "lib/*;bin" -Xms768m org.maxgamer.rs.core.RSBootstrap
+      
+      If you're running from bin/ (Eg not a jar)
+      	$ java -cp "lib/*;bin/" -javaagent:lib/quasar-core.jar -Xms768m org.maxgamer.rs.core.RSBootstrap game-only
+      Else
+      	$ java -javaagent:lib/quasar-core.jar -Xms768m -jar Titan.jar game-only
       
       Open comamnd line (A new one)
       $ cd Project_Root/ (Or whateverlocation your project is in)
-      $ java -cp "lib/*;bin" org.maxgamer.rs.logonv4.logon.LogonServer
+      
+      If you're running from bin/ (Eg not a jar)
+      	$ java -cp "lib/*;bin/" -javaagent:lib/quasar-core.jar -Xms768m org.maxgamer.rs.logonv4.logon.LogonServer
+      Else
+      	$ java -javaagent:lib/quasar-core.jar -Xms768m -cp "Titan.jar;lib/*" org.maxgamer.rs.logonv4.logon.LogonServer
       
       You should now see the logon server successfully connect to the game server and visa versa (You should have two
       command windows open)

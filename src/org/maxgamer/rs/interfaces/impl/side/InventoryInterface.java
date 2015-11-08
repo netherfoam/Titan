@@ -38,7 +38,8 @@ public class InventoryInterface extends SideInterface {
 	
 	public InventoryInterface(Player p) {
 		//206 (fixed) or  91 (full)
-		super(p, INTERFACE_ID, (short) (p.getSession().getScreenSettings().getDisplayMode() < 2 ? 206 : 91)); //Container ID is 93, but Interface ID is 149
+		super(p, (short) (p.getSession().getScreenSettings().getDisplayMode() < 2 ? 206 : 91)); //Container ID is 93, but Interface ID is 149
+		setChildId(INTERFACE_ID);
 	}
 	
 	@Override

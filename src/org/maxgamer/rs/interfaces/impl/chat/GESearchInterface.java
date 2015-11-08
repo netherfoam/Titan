@@ -1,4 +1,4 @@
-package org.maxgamer.rs.interfaces.impl.dialogue;
+package org.maxgamer.rs.interfaces.impl.chat;
 
 import org.maxgamer.rs.interfaces.Interface;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
@@ -16,7 +16,8 @@ public abstract class GESearchInterface extends Interface {
 		//for the fixed-screen size. It appears to work with both fixed and resizable game panes though. Normal
 		//dialogue interfaces use 13 or 7 for resizable or fixed screens, but this only uses 7. It is an abnormality
 		//because we open this interface with a script. This is why we extend Interface and not DialogueInterface.
-		super(p, p.getWindow().getInterface(ChatInterface.CHILD_ID), INTERFACE_ID, (short) 7, true);
+		super(p, p.getWindow().getInterface(ChatInterface.CHILD_ID), (short) 7, true);
+		setChildId(INTERFACE_ID);
 	}
 	
 	@Override

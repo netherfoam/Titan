@@ -9,7 +9,8 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 public class HouseOptionsInterface extends SideInterface {
 	
 	public HouseOptionsInterface(Player p) {
-		super(p, (short) (398), (short) 99);
+		super(p, (short) 99);
+		setChildId(398);
 	}
 	
 	@Override

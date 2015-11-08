@@ -20,7 +20,8 @@ import org.maxgamer.rs.model.skill.SkillType;
  */
 public class MagicInterface extends SideInterface {
 	public MagicInterface(Player p, short childId) {
-		super(p, childId, (short) (p.getSession().getScreenSettings().getDisplayMode() < 2 ? 209 : 94));
+		super(p, (short) (p.getSession().getScreenSettings().getDisplayMode() < 2 ? 209 : 94));
+		setChildId(childId);
 	}
 	
 	@Override

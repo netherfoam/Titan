@@ -6,8 +6,6 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Player;
  * @author netherfoam
  */
 public abstract class Interface extends Window {
-	/** Player who can access this interface */
-	protected final Player player;
 	
 	protected Window parent;
 	
@@ -16,23 +14,22 @@ public abstract class Interface extends Window {
 	 * (Example, some overlays like the wilderness overlay are actually
 	 * interfaces, and they ignore mouse clicks).
 	 */
-	protected final boolean clickable;
+	protected boolean clickable;
 	
 	/**
 	 * The position inside the parent this interface is to be placed in. This is
 	 * neither the parent nor the child interface ID, it is not an interface at
 	 * all. It has a unique ID for each position inside the parent.
 	 */
-	protected final short childPos;
+	protected short childPos;
 	
 	/**
 	 * Represents an interface for a single player.
 	 * @param p The player
 	 * @param childId The unique id for this interface, this is actually unique.
 	 */
-	public Interface(Player p, Window parent, short childId, short childPos, boolean clickable) {
-		super(p, childId);
-		this.player = p;
+	public Interface(Player p, Window parent, short childPos, boolean clickable) {
+		super(p);
 		this.parent = parent;
 		this.clickable = clickable;
 		this.childPos = childPos;

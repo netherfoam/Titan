@@ -8,20 +8,28 @@ import org.maxgamer.rs.network.io.packet.RSOutgoingPacket;
  * @author netherfoam
  */
 public abstract class Window {
+	/** Player who can access this interface */
 	protected final Player player;
-	protected final int interfaceId;
+	protected int interfaceId = -1;
 	
-	public Window(Player p, int interfaceId) {
+	public Window(Player p) {
 		if (p == null) {
 			throw new NullPointerException("Player may not be null");
 		}
 		
-		if (interfaceId < 0 || interfaceId > 0xFFFF) {
+		this.player = p;
+	}
+	
+	public void setChildId(int id){
+		if (id < 0 || id > 0xFFFF) {
 			throw new IllegalArgumentException("InterfaceId must be a short, and therebefore between 0 and " + (0xFFFF));
 		}
 		
-		this.player = p;
-		this.interfaceId = interfaceId;
+		if(this.isVisible()){
+			throw new IllegalStateException("Interface is already open and therefore should not have its type ID modified");
+		}
+		
+		this.interfaceId = id;
 	}
 	
 	public int getChildId() {

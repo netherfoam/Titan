@@ -16,7 +16,8 @@ public class BookInterface extends PrimaryInterface {
 	public static final short INTERFACE_ID = 960;
 	
 	public BookInterface(Player p) {
-		super(p, INTERFACE_ID);
+		super(p);
+		setChildId(INTERFACE_ID);
 	}
 	
 	@Override

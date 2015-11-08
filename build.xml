@@ -13,6 +13,12 @@
 		<mkdir dir="bin" />
 		<javac srcdir="src" destdir="bin" includeantruntime="false" classpathref="class.path">
 		</javac>
+		
+		<taskdef name="quasar" classname="co.paralleluniverse.fibers.instrument.InstrumentationTask" classpathref="class.path">
+		</taskdef>
+		<quasar>
+			<fileset dir="bin" />
+		</quasar>
 
 	</target>
 

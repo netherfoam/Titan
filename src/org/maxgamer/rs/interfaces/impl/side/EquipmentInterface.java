@@ -35,7 +35,8 @@ public class EquipmentInterface extends SideInterface {
 	
 	public EquipmentInterface(Player p) {
 		//207 or 92
-		super(p, (short) 387, (short) (p.getSession().getScreenSettings().getDisplayMode() < 2 ? 207 : 92)); //Container ID is 94, but Interface ID is 387
+		super(p, (short) (p.getSession().getScreenSettings().getDisplayMode() < 2 ? 207 : 92)); //Container ID is 94, but Interface ID is 387
+		setChildId(387);
 	}
 	
 	@Override

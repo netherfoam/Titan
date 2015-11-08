@@ -9,8 +9,8 @@ import java.util.HashSet;
 
 import org.maxgamer.rs.command.PlayerCommand;
 import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.interfaces.impl.dialogue.GESearchInterface;
-import org.maxgamer.rs.interfaces.impl.dialogue.IntRequestInterface;
+import org.maxgamer.rs.interfaces.impl.chat.GESearchInterface;
+import org.maxgamer.rs.interfaces.impl.chat.IntRequestInterface;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
 import org.maxgamer.rs.model.item.ItemStack;

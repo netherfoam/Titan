@@ -5,7 +5,6 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -17,6 +16,8 @@ import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.structure.configs.ConfigSection;
 import org.maxgamer.rs.structure.configs.FileConfig;
+
+import co.paralleluniverse.fibers.instrument.QuasarURLClassLoader;
 
 /**
  * @author netherfoam
@@ -94,7 +95,7 @@ public class ModuleLoader {
 			
 			//If the URL is already added, we want to unload all of the classes loaded from it. That is done in unload(),
 			//so we load the classes here, possibly again.
-			URLClassLoader cl = new URLClassLoader(new URL[] { f.toURI().toURL() }, Core.CLASS_LOADER);
+			QuasarURLClassLoader cl = new QuasarURLClassLoader(new URL[] { f.toURI().toURL() }, Core.CLASS_LOADER);
 			
 			ZipEntry e = jar.getEntry("module.yml");
 			if (e == null) {
@@ -144,6 +145,7 @@ public class ModuleLoader {
 				Log.severe("Error calling module load() on " + m.getName() + " (" + f.getName() + ").");
 				try {
 					m.unload();
+					m.getMeta().getLoader().close();
 				}
 				catch (Throwable t2) {
 					//Ignored, failed to unload.
@@ -238,6 +240,7 @@ public class ModuleLoader {
 			Module m = mit.next();
 			try {
 				m.unload();
+				m.getMeta().getLoader().close();
 			}
 			catch (Throwable t) {
 				t.printStackTrace();

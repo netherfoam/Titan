@@ -1,7 +1,7 @@
  -- Project Standards --
  
  Coding:
- 	- If statements are to be verbose:
+ 	- "IF" statements are to be verbose:
  	  if(coding) {
  	  	sleep();
  	  }

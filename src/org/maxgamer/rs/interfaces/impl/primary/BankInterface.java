@@ -4,7 +4,7 @@ import org.maxgamer.rs.interfaces.Interface;
 import org.maxgamer.rs.interfaces.PrimaryInterface;
 import org.maxgamer.rs.interfaces.SettingsBuilder;
 import org.maxgamer.rs.interfaces.Window;
-import org.maxgamer.rs.interfaces.impl.dialogue.IntRequestInterface;
+import org.maxgamer.rs.interfaces.impl.chat.IntRequestInterface;
 import org.maxgamer.rs.interfaces.impl.side.BankSideInterface;
 import org.maxgamer.rs.lib.Calc;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
@@ -42,7 +42,8 @@ public class BankInterface extends PrimaryInterface {
 	private BankSideInterface side;
 	
 	public BankInterface(Player p) {
-		super(p, INTERFACE_ID);
+		super(p);
+		setChildId(INTERFACE_ID);
 		this.side = new BankSideInterface(p);
 	}
 	

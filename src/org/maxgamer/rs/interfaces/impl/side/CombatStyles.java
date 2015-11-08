@@ -14,7 +14,8 @@ public class CombatStyles extends SideInterface {
 	public static final int BUTTON_LOGIN = 10;
 	
 	public CombatStyles(Player p) {
-		super(p, (short) 884, (short) (p.getSession().getScreenSettings().getDisplayMode() < 2 ? 202 : 87));
+		super(p, (short) (p.getSession().getScreenSettings().getDisplayMode() < 2 ? 202 : 87));
+		setChildId(884);
 	}
 	
 	@Override

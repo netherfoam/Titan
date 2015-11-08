@@ -64,6 +64,7 @@ import org.maxgamer.rs.network.io.packet.player.ItemOnObjectHandler;
 import org.maxgamer.rs.network.io.packet.player.KeyHandler;
 import org.maxgamer.rs.network.io.packet.player.LoadHandler;
 import org.maxgamer.rs.network.io.packet.player.LocaleHandler;
+import org.maxgamer.rs.network.io.packet.player.MouseMoveHandler;
 import org.maxgamer.rs.network.io.packet.player.MoveHandler;
 import org.maxgamer.rs.network.io.packet.player.MusicRequestHandler;
 import org.maxgamer.rs.network.io.packet.player.NPCOptionsHandler;
@@ -121,6 +122,7 @@ public class Game637Protocol extends GameProtocol {
 		PACKET_MANAGER.setHandler(30, new CameraHandler());
 		PACKET_MANAGER.setHandler(29, new ClickHandler());
 		PACKET_MANAGER.setHandler(75, new LoadHandler());
+		PACKET_MANAGER.setHandler(MouseMoveHandler.OPCODE, new MouseMoveHandler());
 		
 		PlayerOptionsHandler popt = new PlayerOptionsHandler();
 		PACKET_MANAGER.setHandler(PlayerOptionsHandler.FIRST_OPTION, popt);
@@ -1813,4 +1815,43 @@ public class Game637Protocol extends GameProtocol {
 		getPlayer().write(out);
 	}
 	
+	/**
+	 * Renders the player's head on an interface. Eg, for dialogues where the player speaks, this
+	 * method can be used to display the players head. This doesn't set the animation used.
+	 * @param ifaceId the interface id
+	 * @param componentId the child position id
+	 */
+	public void sendPlayerOnInterface(int ifaceId, int componentId){
+		RSOutgoingPacket out = new RSOutgoingPacket(54);
+		out.writeInt1(ifaceId << 16 | componentId);
+		getPlayer().write(out);
+	}
+	
+	/**
+	 * Renders the NPC's head on an interface. Eg, for dialogues where the NPC speaks, this
+	 * method can be used to display the NPC's head. This doesn't set the animation used.
+	 * @param ifaceId the interface id
+	 * @param componentId the child position id
+	 * @param npcId the ID of the NPC definition
+	 */
+	public void sendNPCOnInterface(int ifaceId, int componentId, int npcId){
+		RSOutgoingPacket out = new RSOutgoingPacket(71);
+		out.writeInt2(ifaceId << 16 | componentId);
+		out.writeLEShort(npcId);
+		getPlayer().write(out);
+	}
+	
+	/**
+	 * See also {@link #sendNPCOnInterface(int, int, int)} {@link #sendPlayerOnInterface(int, int)}
+	 * Animates the face sent
+	 * @param emoteId
+	 * @param ifaceId
+	 * @param componentId
+	 */
+	public void sendInterAnimation(int emoteId, int ifaceId, int componentId){
+		RSOutgoingPacket out = new RSOutgoingPacket(86);
+		out.writeInt1(ifaceId << 16 | componentId);
+		out.writeLEShortA(emoteId);
+		getPlayer().write(out);
+	}
 }

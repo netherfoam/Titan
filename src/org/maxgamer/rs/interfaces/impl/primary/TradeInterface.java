@@ -3,7 +3,7 @@ package org.maxgamer.rs.interfaces.impl.primary;
 import org.maxgamer.rs.interfaces.Interface;
 import org.maxgamer.rs.interfaces.PrimaryInterface;
 import org.maxgamer.rs.interfaces.SettingsBuilder;
-import org.maxgamer.rs.interfaces.impl.dialogue.IntRequestInterface;
+import org.maxgamer.rs.interfaces.impl.chat.IntRequestInterface;
 import org.maxgamer.rs.interfaces.impl.side.TradeSideInterface;
 import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
@@ -73,7 +73,8 @@ public class TradeInterface extends PrimaryInterface implements ContainerListene
 	private TradeSideInterface side;
 	
 	public TradeInterface(Player p, Container mine, Container yours, Player partner) {
-		super(p, (short) 335);
+		super(p);
+		setChildId(335);
 		if (mine == null) throw new NullPointerException();
 		if (yours == null) throw new NullPointerException();
 		if (partner == null) throw new NullPointerException();

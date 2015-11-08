@@ -26,4 +26,13 @@ APIs:
 		| Module
 		+ getResource(String name): InputStream
 
+	Dialogues:
+		- Dialogue tree system
+		
+		| Dialogue
+		+ previouscd () : Dialogue;
+		+ options() : Dialogue[];
+		+ option(int num) : Dialogue;
+		
+		
 		

@@ -1,7 +1,4 @@
 Release:
-	- Move musics.yml into MusicModule.jar
-	- Move map.jpg into MapModule.jar
-	
 	Release:
 		Archive files including
 			- cache/*

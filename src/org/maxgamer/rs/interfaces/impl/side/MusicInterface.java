@@ -8,7 +8,8 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Player;
  */
 public class MusicInterface extends SideInterface {
 	public MusicInterface(Player p) {
-		super(p, (short) 187, (short) (p.getSession().getScreenSettings().getDisplayMode() < 2 ? 216 : 101));
+		super(p, (short) (p.getSession().getScreenSettings().getDisplayMode() < 2 ? 216 : 101));
+		setChildId(187);
 	}
 	
 	@Override

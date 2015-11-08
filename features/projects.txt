@@ -1,0 +1,72 @@
+This contains projects that should be implementable by different people.
+
+-- Duel Arena --
+	So here are some things to consider building:
+	- Challenge interface ("Would you like to fight unstaked or staked against XXX")
+	- Staking / Rules interface (Armour off/prayer off/food off/etc)
+	- Inventory interface for staking ("Stake X Coins") [This is a different interface to the normal inventory, I think]
+	
+	- Challenge message ("XXX would like to challenge you") (This isn't the normal type of message, and is clickable) - Add to protocol
+	- Head icons (I'm not sure what's implemented, see MobModel and PlayerModel classes) for arrow pointing out target during fight
+	- Different areas for different types of fights (Obstacles/No movement/Normal)
+	- Dueling bank / chest handler for viewing bank
+	- Surgeon "heal me" implementation
+	
+-- Barrows --
+	Personally, Barrows was the pinnacle of when I enjoyed RS. Things barrows needs:
+	- Barrows set effects - Dharoks, Ahrims, Torags, Guthans, Karil's, Verac's
+	- Special effects for NPC's using "barrows" armour 
+	- "Dig" to teleport into crypts
+	- Prayer drainage effect
+	- Barrows brother kill-counter
+	- Door path calculation (This requires objects which are "private" to a player, not implemented yet!)
+	- Loot reward calculation
+	- Screen shake/Damage after looting
+	
+-- Special Attacks --
+	I haven't thought about this much.  See Persona#nextAttack() for where a "special" attack object
+	should be returned instead of a normal attack.
+	
+-- Lunar Magicks --
+	I quit before using lunar magic properly. This'll be similar to how Ancient magic and normal magic is
+	implemented.
+	
+-- Lobby buttons --
+	Players can't use the majority of lobby buttons! See Lobby637Protocol for where to add handlers for buttons etc.
+	Also possibly some implementation for clans stuff should go in the clans module
+	
+-- Area System --
+	We need an "area" system, but not like "regions".  For example, the Duel Arena is an "area", when
+	a player walks into it, we should apply some special conditions like adding the "challenge" option
+	to players.  The wilderness, "attack", pest control should prevent items being lost on death - etc.
+	
+	Area system idea:
+		AreaManager class
+			AreaManager(WorldMap map)
+			
+			+ add(Area area)
+			+ remove(Area area)
+			+ getAreas(MBR mbr) : ArrayList<Area>
+		Area class (implements MBR):
+			+ getWidth()
+			+ getLength()
+			+ getHeight()
+			+ size()
+			+ get(Class<? extends Entity> type)
+			
+	Then, the AreaManager class could subscribe to MobMoveEvents.  When a Mob moves out of / into an area,
+	the AreaManager would call an AreaEnterEvent or AreaLeaveEvent for modules to listen for.
+	
+	So a module might do something like this, in order to prevent players near lumbridge losing items on death:
+		Area area = new Area(3100, 3100, 3300, 3300, 4);
+		Core.getServer().getAreaManager(Core.getServer().getMap()).add(area);
+		
+		@EventHandler
+		public void onDeath(MobDeathEvent e){
+			Mob m = e.getMob();
+			if(m instanceof Player && m.getAreas().contains(area)){
+				e.setSafe(true);
+			}
+		}
+		
+			

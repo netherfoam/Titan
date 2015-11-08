@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.model.entity.mob.Animation;
 import org.maxgamer.rs.model.entity.mob.Mob;
 
 /**
@@ -58,6 +57,7 @@ public class DamageLog {
 		this.lastAttacker = m;
 		if (m != null) {
 			this.lastAttacked = Core.getServer().getTicks();
+			
 			if (getOwner().isRetaliate() && getOwner().getActions().hasUncancellable() == false && getOwner().getTarget() == null && m.isAttackable(getOwner()) && m.isHidden() == false && m.isDead() == false && m.getLocation().z == getOwner().getLocation().z) {
 				getOwner().getActions().clear(); //Cancel any actions previously given if possible
 				getOwner().setTarget(m);
@@ -109,7 +109,7 @@ public class DamageLog {
 		
 		int anim = getOwner().getCombatStats().getDefenceAnimation();
 		if (anim > 0 && getOwner().getUpdateMask().getAnimation() == null) {
-			getOwner().getUpdateMask().setAnimation(new Animation(anim), 5);
+			getOwner().animate(anim, 5);
 		}
 		
 		if (from != null) {

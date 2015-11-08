@@ -1854,4 +1854,18 @@ public class Game637Protocol extends GameProtocol {
 		out.writeLEShortA(emoteId);
 		getPlayer().write(out);
 	}
+	
+	public void sendItemOnInterface(int interfaceId, int childId, ItemStack item){
+		RSOutgoingPacket out = new RSOutgoingPacket(91);
+		if(item != null){
+			out.writeLEShortA(item.getId());
+			out.writeInt((int) Math.min(item.getAmount(), Integer.MAX_VALUE));
+		}
+		else{
+			out.writeLEShortA(0);
+			out.writeInt(0);
+		}
+		out.writeInt2(interfaceId << 16 | childId);
+		getPlayer().write(out);
+	}
 }

@@ -500,7 +500,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 			for (Action a : this.getActions().getList()) {
 				this.getActions().cancel(a); //Force cancel anything left
 			}
-			
+			setTarget(null);
 			this.getActions().queue(new DeathAction(this));
 		}
 		
@@ -614,6 +614,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 			throw new IllegalThreadException("Must be invoked in main thread");
 		}
 		
+		setTarget(null);
 		getDamage().reset();
 		restore();
 		if (isHidden()) show();

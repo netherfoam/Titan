@@ -12,7 +12,9 @@ Release:
 			- run.sh
 			- Titan.jar
 			- client.jar
-	
+			
+		- NPC's who wander are wandering too frequently
+		- My items disappeared on death?
 	
 Code Quality:
 	- Some item prices are displayed differently in general stores based on stock quantity. Why?
@@ -29,6 +31,11 @@ Code Quality:
 		- Constructors?
 	- Dialogue interfaces
 	- Search for all unused classes
+	
+Interfaces:
+	- Rename "ChildPos" to "ComponentID"
+	- Rename "ChildID/InterfaceID" to "InterfaceTypeID"
+	- Rename "ParentID" to "ParentTypeID"
 	
 Alva:
 	- Duel Arena Module
@@ -66,7 +73,6 @@ Features:
 		- Lunar
 	- Prayer
 		- Curses
-		- Special effects (Regen/stat restore/protect item/protect from ____/smite/retribution/redemption)
 	- Writing/Saving for cache API
 	- Areas
 	- Finish lobby

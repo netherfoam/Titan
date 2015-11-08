@@ -567,7 +567,7 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 	@Override
 	public void setHealth(int hp) {
 		super.setHealth(hp);
-		getProtocol().sendConfig(1240, getHealth() << 1);
+		getProtocol().sendConfig(1240, Math.min(getHealth() << 1, Short.MAX_VALUE));
 	}
 	
 	/**

@@ -7,6 +7,7 @@ import java.nio.ByteBuffer;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,14 +29,20 @@ import org.maxgamer.rs.structure.dbmodel.Mapping;
 public class ItemProto extends Definition {
 	/** cached item definitions for later use */
 	private static HashMap<Integer, ItemProto> definitions = new HashMap<Integer, ItemProto>(2000);
-	private static HashMap<String, Integer> names = new HashMap<String, Integer>();
+	private static HashMap<String, ArrayList<Integer>> names = new HashMap<String, ArrayList<Integer>>();
 	
-	public static ItemProto forName(String name){
-		Integer id = names.get(name);
-		if(id == null){
+	public static ItemProto[] forName(String name){
+		ArrayList<Integer> ids = names.get(name);
+		if(ids == null){
 			return null;
 		}
-		return getDefinition(id);
+		ItemProto[] protos = new ItemProto[ids.size()];
+		
+		for(int i = 0; i < ids.size(); i++){
+			protos[i] = ItemProto.getDefinition(ids.get(i));
+		}
+		
+		return protos;
 	}
 	
 	/**
@@ -86,7 +93,12 @@ public class ItemProto extends Definition {
 		PreparedStatement ps = con.prepareStatement("SELECT i.id, i.name FROM item_defs i WHERE noted = 0");
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
-			names.put(rs.getString("i.name"), rs.getInt("i.id"));
+			ArrayList<Integer> list = names.get(rs.getString("i.name"));
+			if(list == null){
+				list = new ArrayList<Integer>(1);
+				names.put(rs.getString("i.name"), list);
+			}
+			list.add(rs.getInt("i.id"));
 		}
 		rs.close();
 		ps.close();
@@ -206,7 +218,11 @@ public class ItemProto extends Definition {
 			int end = this.name.lastIndexOf('(');
 			String next = this.name.substring(0, end) + '(' + n + ')';
 			
-			return ItemProto.forName(next);
+			ItemProto[] options = ItemProto.forName(next);
+			for(ItemProto proto : options){
+				if(proto.isNoted() == this.isNoted()) return proto;
+			}
+			return null;
 		}
 		catch (Exception e) {
 			throw new RuntimeException(e);

@@ -50,7 +50,7 @@ public class GroundItemManager extends Tickable {
 			this.queue(1);
 		}
 		
-		for (Viewport view : item.getLocation().getNearby(Viewport.class, 0)) {
+		for (Viewport view : item.getLocation().getNearby(Viewport.class, 1, true)) {
 			if (item.isPublic() || item.getOwner() == view.getOwner()) {
 				view.getOwner().getProtocol().sendGroundItem(item.getLocation(), item.getItem());
 			}

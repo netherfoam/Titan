@@ -87,7 +87,9 @@ public class WanderAction extends Action {
 			WalkAction walk = new WalkAction(getOwner(), doPath());
 			timer.stop();
 			
-			getOwner().getActions().insertBefore(this, walk);
+			if(this.getOwner().getActions().isQueued(this)){
+				getOwner().getActions().insertBefore(this, walk);
+			}
 		}
 	}
 	

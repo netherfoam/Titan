@@ -14,10 +14,14 @@ Release:
 			- client.jar
 			
 		- My items disappeared on death?
+			- Are they being re-sent when I revisit the area?
 		- Map unloading
 			- Unload NPC's
 			- Unload areas
-	
+		- Cache changes must be written to disk or stored temporarily.
+		- Make ItemStack.cache<> a weak reference
+		- Enable RSA
+
 Code Quality:
 	- Some item prices are displayed differently in general stores based on stock quantity. Why?
 	- Hide Definition classes, only expose them to the instances of those definitons, and make those instances

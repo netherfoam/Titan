@@ -259,13 +259,6 @@ public class ActionQueue extends FastTickable {
 						cancel(p);
 					}
 				}
-				
-				if (queue.isEmpty()) {
-					//Core.getServer().getTicker().cancel(this);
-					if (this.isQueued()) {
-						this.cancel();
-					}
-				}
 			}
 		}
 		//Technically could be put in the queue again by onCancel() of w or any of the items it's paired with
@@ -285,13 +278,6 @@ public class ActionQueue extends FastTickable {
 				
 				if (w.isCancellable()) {
 					cancel(w);
-				}
-			}
-			if (queue.isEmpty()) {
-				//If the list of tasks is now empty, we must remove us from the queue
-				//Core.getServer().getTicker().cancel(this);
-				if (this.isQueued()) {
-					this.cancel();
 				}
 			}
 		}
@@ -318,6 +304,7 @@ public class ActionQueue extends FastTickable {
 			}
 			
 			if (queue.isEmpty()) {
+				getOwner().onIdle();
 				return;
 			}
 			
@@ -332,6 +319,7 @@ public class ActionQueue extends FastTickable {
 				Log.warning("Error ticking ActionQueue for Mob " + owner + ". Action: " + w);
 				e.printStackTrace();
 			}
+			
 			//We do not know if we will finish, so we queue again anyway.
 			this.queue();
 		}
@@ -348,9 +336,6 @@ public class ActionQueue extends FastTickable {
 	public void end(Action a){
 		synchronized(this){
 			this.queue.remove(a);
-			if(this.isEmpty() && this.isQueued()){
-				this.cancel();
-			}
 		}
 	}
 	
@@ -371,7 +356,6 @@ public class ActionQueue extends FastTickable {
 			//Yielder is requesting that we allow the next item in the queue to be ticked.
 			int index = queue.indexOf(yielder);
 			if (index == -1) return; //Cannot yield, since it is not queued
-			//throw new IllegalArgumentException("Action attempted to yield, when it was not queued and thus cannot yield.");
 			
 			Action w;
 			

@@ -260,6 +260,9 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 		
 		try {
 			this.onLoad();
+			if(this.getActions().isEmpty()){
+				this.onIdle();
+			}
 		}
 		catch (Exception e) {
 			Log.warning("Exception calling Mob.onLoad() for " + this);
@@ -283,6 +286,8 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 		
 		MobUnloadEvent ev = new MobUnloadEvent(this);
 		ev.call();
+		
+		this.getActions().cancel();
 		
 		try {
 			this.onUnload();
@@ -679,6 +684,16 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 * @return
 	 */
 	public abstract String getName();
+	
+	/**
+	 * Invoked when this Mob's ActionQueue has been emptied. This is only invoked
+	 * after the ActionQueue has become empty, and will not be invoked until
+	 * the ActionQueue receives another Action, and the action completes (or is
+	 * cancelled), and the action queue is then empty again.
+	 * 
+	 * This method is also invoked after the Mob is first loaded.
+	 */
+	public abstract void onIdle();
 	
 	public void sendMessage(String msg){
 		//Empty

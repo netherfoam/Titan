@@ -342,22 +342,21 @@ public class NPC extends Mob {
 	}
 	
 	@Override
-	public void onLoad() {
+	public void onIdle(){
 		//This automatically begins processing actions again by calling ActionQueue.queue()
 		if (this.getDefinition().canWalk()) {
-			this.getActions().queue(new WanderAction(this, this.getLocation(), 4, 10, 30));
+			getActions().queue(new WanderAction(NPC.this, getLocation(), 4, 10, 30));
 		}
 	}
 	
 	@Override
+	public void onLoad() {
+		
+	}
+	
+	@Override
 	public void onUnload() {
-		//Cancel processing actions
-		if (actionQueue.isEmpty() == false) {
-			//Core.getServer().getTicker().cancel(actionQueue);
-			if (actionQueue.isQueued()) {
-				actionQueue.cancel();
-			}
-		}
+		
 	}
 	
 	@Override

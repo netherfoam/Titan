@@ -85,7 +85,7 @@ public class AttackAction extends Action {
 		}
 		
 		//Now we have to wait until we're close enough!
-		while(inRange() == false){
+		while(getTarget() != null && inRange() == false){
 			assert getOwner().getActions().after(this) instanceof CombatFollow : "AttackAction tried to yield to CombatFollow but instead tried to yield to " + getOwner().getActions().after(this);
 			this.yield(); //Assumably, yield to CombatFollow
 			wait(1);

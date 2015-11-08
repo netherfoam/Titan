@@ -958,4 +958,9 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 	public void onUnload() {
 		
 	}
+	
+	@Override
+	public void onIdle(){
+		//Nothing.
+	}
 }

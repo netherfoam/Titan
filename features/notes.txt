@@ -13,8 +13,10 @@ Release:
 			- Titan.jar
 			- client.jar
 			
-		- NPC's who wander are wandering too frequently
 		- My items disappeared on death?
+		- Map unloading
+			- Unload NPC's
+			- Unload areas
 	
 Code Quality:
 	- Some item prices are displayed differently in general stores based on stock quantity. Why?

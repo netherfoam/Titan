@@ -4,6 +4,10 @@
 .recommenders/
 .settings
 *.log
+
+# Temporary files created by sublime-text
+*~
+
 Titan.jar
 
 data/cache.yml

@@ -1,6 +1,7 @@
 package org.maxgamer.rs.structure.configs;
 
 import java.io.InputStream;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.maxgamer.rs.structure.Util;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
@@ -477,6 +479,13 @@ public class ConfigSection implements Map<String, Object>{
 			}
 			else if(o instanceof Number){
 				return ((Number) o).doubleValue() != 0; //Nonzero values are true.
+			}
+			else if(o instanceof String){
+				String s = (String) o;
+				try{
+					return Util.parseBoolean(s);
+				}
+				catch(ParseException e){}
 			}
 			return (Boolean) o; //This will probably fail.
 		}

@@ -29,7 +29,7 @@ public class RequirementSerializer implements Serializer{
 			Entry<SkillType, Integer> e = it.next();
 			sb.append(e.getKey().getId() + ":" + e.getValue());
 			if(it.hasNext()){
-				sb.append(";");
+				sb.append(",");
 			}
 		}
 		
@@ -41,7 +41,7 @@ public class RequirementSerializer implements Serializer{
 		String serial = rs.getString("requirements");
 		if(serial == null) return null;
 		HashMap<SkillType, Integer> map = new HashMap<SkillType, Integer>(1);
-		for(String piece : serial.split(";")){
+		for(String piece : serial.split(",")){
 			if(piece.isEmpty()) continue;
 			
 			String[] ids = piece.split(":");

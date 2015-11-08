@@ -101,6 +101,7 @@ public class GameDecoder extends OpcodeDecoder<LSIncomingPacket> implements Hand
 		
 		out.writePJStr1(profile.getLastIP());
 		out.writeLong(profile.getLastSeen());
+		out.writeByte(profile.getRights());
 		out.writeInt(payload.length);
 		out.write(payload);
 		
@@ -170,6 +171,23 @@ public class GameDecoder extends OpcodeDecoder<LSIncomingPacket> implements Hand
 	@Opcode(opcode = 4)
 	public void decodePing(LSIncomingPacket in) {
 		//nothing
+	}
+	
+	@Opcode(opcode = 5)
+	public void decodeRightsChange(LSIncomingPacket in){
+		String name = in.readPJStr1();
+		int rights = in.readByte() & 0xFF;
+		
+		Profile profile = this.host.getPlayer(name);
+		profile.setRights(rights);
+		
+		try {
+			profile.update();
+		}
+		catch (SQLException e) {
+			Log.warning("Failed to save " + name + "'s player rights!");
+			e.printStackTrace();
+		}
 	}
 	
 	@Override

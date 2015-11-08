@@ -28,6 +28,7 @@ commands:
     # ::Instance can be called by using ::NewMap
     newmap: instance
     where: position
+    rights: rank
 
 # Time in milliseconds between sending "update masks" to players. Lower values will make the
 # server seem to respond faster (Eg when starting movement), but will require more bandwidth

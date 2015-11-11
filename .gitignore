@@ -19,3 +19,4 @@ crash/
 players/
 doc/
 *.class
+/bin/

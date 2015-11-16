@@ -17,6 +17,7 @@ import org.maxgamer.rs.model.entity.mob.combat.DamageLog;
 import org.maxgamer.rs.model.entity.mob.facing.Facing;
 import org.maxgamer.rs.model.item.inventory.Equipment;
 import org.maxgamer.rs.model.map.ClipMasks;
+import org.maxgamer.rs.model.map.GameObject;
 import org.maxgamer.rs.model.map.Location;
 import org.maxgamer.rs.model.map.Position;
 import org.maxgamer.rs.model.map.path.AStar;
@@ -120,6 +121,16 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 		else{
 			getActions().clear();
 		}
+	}
+	
+	//TODO: Document
+	public void face(Mob mob){
+		setFacing(Facing.face(mob));
+	}
+	
+	//TODO: Document
+	public void face(GameObject object){
+		setFacing(Facing.face(object));
 	}
 	
 	/**
@@ -408,6 +419,16 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	
 	/**
 	 * Animates the mob with the given animation and priority. This is a
+	 * shorthand method for accessing the update mask. This uses level 5
+	 * priority (eat/drink level)
+	 * @param emo the animation id
+	 */
+	public void animate(int emo){
+		animate(emo, 5);
+	}
+	
+	/**
+	 * Animates the mob with the given animation and priority. This is a
 	 * shorthand method for accessing the update mask. Standard levels
 	 * of priority are 5 for eat/drink, 10 for bury/pick, 50 for death,
 	 * 20 for attack, 5 for defence
@@ -510,6 +531,15 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 		}
 		
 		this.health = hp;
+	}
+	
+	/**
+	 * Heals this mob the given amount
+	 * @param hp the health to add to this mobs health
+	 * @return the amount of health gained
+	 */
+	public void heal(int hp){
+		heal(hp, 0);
 	}
 	
 	/**

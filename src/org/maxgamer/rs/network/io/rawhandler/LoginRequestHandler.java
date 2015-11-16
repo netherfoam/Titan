@@ -22,23 +22,29 @@ public class LoginRequestHandler extends RawHandler {
 	
 	static{
 		String priv = Core.getWorldConfig().getString("rsa.private-key");
-		if(priv.startsWith("0x") || priv.startsWith("0X")){
-			RSA_MODULUS = new BigInteger(priv, 16);
-		}
-		else{
-			RSA_MODULUS = new BigInteger(priv, 10);
-		}
-		
 		String exp = Core.getWorldConfig().getString("rsa.private-exponent");
-		if(priv.startsWith("0x") || priv.startsWith("0X")){
-			RSA_EXPONENT = new BigInteger(exp, 16);
+		
+		if(priv == null || exp == null){
+			Log.warning("world.yml >> rsa.private-key or rsa.private-exponent are null. Please correctly fill in the fields to use RSA.");
+			Log.warning("To silence this message, set their values to 0");
+			RSA_MODULUS = new BigInteger("0");
+			RSA_EXPONENT = new BigInteger("0");
 		}
 		else{
-			RSA_EXPONENT = new BigInteger(exp, 10);
+			if(priv.startsWith("0x") || priv.startsWith("0X")){
+				RSA_MODULUS = new BigInteger(priv, 16);
+			}
+			else{
+				RSA_MODULUS = new BigInteger(priv, 10);
+			}
+			
+			if(priv.startsWith("0x") || priv.startsWith("0X")){
+				RSA_EXPONENT = new BigInteger(exp, 16);
+			}
+			else{
+				RSA_EXPONENT = new BigInteger(exp, 10);
+			}
 		}
-		
-		System.out.println("Exponent: " + RSA_EXPONENT);
-		System.out.println("Modulus: " + RSA_MODULUS);
 	}
 	
 	public LoginRequestHandler(Session s) {

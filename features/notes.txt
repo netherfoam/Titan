@@ -19,6 +19,9 @@ Release:
 		- Cache changes must be written to disk or stored temporarily.
 		- Enable RSA
 		- Uptime in status updates
+		
+JSEngineModule:
+	- wait() functionality to wait a specific number of ticks
 
 Code Quality:
 	- Some item prices are displayed differently in general stores based on stock quantity. Why?

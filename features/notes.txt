@@ -17,7 +17,9 @@ Release:
 			- Unload NPC's
 			- Unload areas
 		- Cache changes must be written to disk or stored temporarily.
-		- Enable RSA
+		- Setup procedure when copying *.dist files
+			> Request from user 'database user', 'database pass', 'port', 'host', test connection.
+		- 
 		- Uptime in status updates
 		
 JSEngineModule:

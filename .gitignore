@@ -2,8 +2,10 @@
 .project
 .metadata/
 .recommenders/
+.externalToolBuilders/
 .settings
 *.log
+
 
 # Temporary files created by sublime-text
 *~

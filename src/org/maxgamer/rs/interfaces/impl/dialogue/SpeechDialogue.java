@@ -39,7 +39,7 @@ public abstract class SpeechDialogue extends ThoughtDialogue {
 	/**
 	 * The ID for the speaker's face.
 	 */
-	private int face = PLAYER_FACE;
+	private int face;
 	
 	/**
 	 * The emote that the speaker when talking
@@ -65,6 +65,8 @@ public abstract class SpeechDialogue extends ThoughtDialogue {
 	 */
 	public SpeechDialogue(Player p) {
 		super(p);
+		chatter = p.getName();
+		face = PLAYER_FACE;
 	}
 	
 	/**
@@ -76,7 +78,15 @@ public abstract class SpeechDialogue extends ThoughtDialogue {
 	public void setFace(int npcId, String chatter, int emote){
 		this.face = npcId;
 		this.emote = emote;
-		this.chatter = chatter;
+		
+		if(chatter == null && npcId == PLAYER_FACE){
+			chatter = getPlayer().getName();
+		}
+		else{
+			this.chatter = chatter;
+		}
+		
+		
 		setChildId();
 	}
 	
@@ -150,13 +160,5 @@ public abstract class SpeechDialogue extends ThoughtDialogue {
 		
 		//Animates the speakers head
 		getPlayer().getProtocol().sendInterAnimation(emote, this.getChildId(), component);
-	}
-	
-	@Override
-	public void onClick(int option, int buttonId, int slotId, int itemId) {
-		if(buttonId == 5 || buttonId == 6){
-			getPlayer().getWindow().close(this);
-			onContinue();
-		}
 	}
 }

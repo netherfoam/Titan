@@ -5,18 +5,11 @@ import java.util.HashSet;
 
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.events.mob.MobUseNPCEvent;
-import org.maxgamer.rs.interfaces.impl.dialogue.SpeechDialogue;
-import org.maxgamer.rs.model.action.WalkAction;
-import org.maxgamer.rs.model.entity.mob.facing.Facing;
 import org.maxgamer.rs.model.entity.mob.npc.NPC;
 import org.maxgamer.rs.model.entity.mob.npc.NPCDefinition;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
-import org.maxgamer.rs.model.map.path.AStar;
-import org.maxgamer.rs.model.map.path.Path;
 import org.maxgamer.rs.network.io.packet.PacketProcessor;
 import org.maxgamer.rs.network.io.packet.RSIncomingPacket;
-
-import co.paralleluniverse.fibers.SuspendExecution;
 
 /**
  * @author netherfoam
@@ -112,41 +105,10 @@ public class NPCOptionsHandler implements PacketProcessor<Player> {
 			return;
 		}
 
-		MobUseNPCEvent e = new MobUseNPCEvent(player, target, option);
-
-		if (e.getOption().equalsIgnoreCase("talk-to")) {
-			player.setFacing(Facing.face(target));
-			AStar finder = new AStar(20);
-			Path path = finder.findPath(player, target);
-			if (path.hasFailed())
-				return;
-
-			player.getActions().clear();
-
-			if (!path.isEmpty()) {
-				path.removeLast();
-				player.getActions().queue(new WalkAction(player, path) {
-					@Override
-					public void run() throws SuspendExecution {
-						super.run();
-						e.call();
-						e.getTarget().setFacing(Facing.face(player));
-
-						SpeechDialogue speech = new SpeechDialogue(player) {
-							@Override
-							public void onContinue() {}
-						};
-						speech.setText("Hello, " + player.getName() + ". Dialogue is currently under development.");
-						speech.setFace(e.getTarget().getId(), e.getTarget().getName(), SpeechDialogue.CALM_TALK);
-						player.getWindow().open(speech);
-
-						if (e.isCancelled())
-							return;
-					}
-				});
-			}
+		final MobUseNPCEvent e = new MobUseNPCEvent(player, target, option);
+		e.call();
+		if(e.isCancelled()){
 			return;
 		}
-
 	}
 }

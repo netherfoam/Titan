@@ -28,7 +28,7 @@ public class GameObjectHandler implements PacketProcessor<Player> {
 	public static final int EXAMINE = 48;
 
 	@Override
-	public void process(Player p, RSIncomingPacket in) throws Exception {
+	public void process(final Player p, RSIncomingPacket in) throws Exception {
 		int id;
 		int x;
 		int y;
@@ -100,7 +100,7 @@ public class GameObjectHandler implements PacketProcessor<Player> {
 		id = id & 0xFFFF; // Signed
 
 		Location l = new Location(p.getLocation().getMap(), x, y, p.getLocation().z);
-		for (GameObject g : l.getNearby(GameObject.class, 0)) {
+		for (final GameObject g : l.getNearby(GameObject.class, 0)) {
 			if (g.getId() == id && g.isHidden() == false) {
 				String s = g.getDefiniton().getOption(option); // Becomes
 																// zero-based

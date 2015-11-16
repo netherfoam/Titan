@@ -154,7 +154,7 @@ public abstract class SpeechDialogue extends ThoughtDialogue {
 	
 	@Override
 	public void onClick(int option, int buttonId, int slotId, int itemId) {
-		if(buttonId == 6){
+		if(buttonId == 5 || buttonId == 6){
 			getPlayer().getWindow().close(this);
 			onContinue();
 		}

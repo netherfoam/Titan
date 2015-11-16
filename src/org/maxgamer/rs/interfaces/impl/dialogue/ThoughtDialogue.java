@@ -70,7 +70,7 @@ public abstract class ThoughtDialogue extends Dialogue {
 	
 	@Override
 	public void onClick(int option, int buttonId, int slotId, int itemId) {
-		if(buttonId == 3){
+		if(buttonId == 3 || buttonId == 2){
 			getPlayer().getWindow().close(this);
 			onContinue();
 		}

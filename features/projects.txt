@@ -31,6 +31,12 @@ This contains projects that should be implementable by different people.
 	I quit before using lunar magic properly. This'll be similar to how Ancient magic and normal magic is
 	implemented.
 	
+-- Pest Control --
+	Would be awesome. Might want a Minigame API first though. And a better way of constructing dynamic maps,
+	since pest control needs to be "instanced".
+
+--  --
+	
 -- Lobby buttons --
 	Players can't use the majority of lobby buttons! See Lobby637Protocol for where to add handlers for buttons etc.
 	Also possibly some implementation for clans stuff should go in the clans module

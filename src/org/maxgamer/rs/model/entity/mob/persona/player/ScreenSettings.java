@@ -26,6 +26,23 @@ public class ScreenSettings {
 		return mode;
 	}
 	
+	/**
+	 * Returns true if the user has their screen mode set to a fixed size
+	 * @return true if the user has their screen mode set to a fixed size
+	 */
+	public boolean isFixedScreen(){
+		if(getDisplayMode() <= 1) return true;
+		return false;
+	}
+	
+	/**
+	 * Returns true if the user has their screen mode set to a variable / full screen size
+	 * @return true if the user has their screen mode set to a variable / full screen size
+	 */
+	public boolean isFullScreen(){
+		return !isFixedScreen();
+	}
+	
 	public int getWidth() {
 		return width;
 	}

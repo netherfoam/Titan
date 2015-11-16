@@ -1,6 +1,7 @@
 package org.maxgamer.rs.network.io.rawhandler;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
 
 import org.maxgamer.rs.cache.XTEAKey;
@@ -16,12 +17,36 @@ import org.maxgamer.rs.network.io.stream.RSByteBuffer;
  * @author netherfoam
  */
 public class LoginRequestHandler extends RawHandler {
+	private static BigInteger RSA_MODULUS;
+	private static BigInteger RSA_EXPONENT;
+	
+	static{
+		String priv = Core.getWorldConfig().getString("rsa.private-key");
+		if(priv.startsWith("0x") || priv.startsWith("0X")){
+			RSA_MODULUS = new BigInteger(priv, 16);
+		}
+		else{
+			RSA_MODULUS = new BigInteger(priv, 10);
+		}
+		
+		String exp = Core.getWorldConfig().getString("rsa.private-exponent");
+		if(priv.startsWith("0x") || priv.startsWith("0X")){
+			RSA_EXPONENT = new BigInteger(exp, 16);
+		}
+		else{
+			RSA_EXPONENT = new BigInteger(exp, 10);
+		}
+		
+		System.out.println("Exponent: " + RSA_EXPONENT);
+		System.out.println("Modulus: " + RSA_MODULUS);
+	}
+	
 	public LoginRequestHandler(Session s) {
 		super(s);
 	}
 	
 	@Override
-	public void handle(RSByteBuffer b) {
+	public void handle(RSByteBuffer buffer) {
 		if (Core.getServer().getLogon().isConnected() == false) {
 			try {
 				getSession().write(AuthResult.LOGIN_SERVER_OFFLINE.getCode());
@@ -31,7 +56,7 @@ public class LoginRequestHandler extends RawHandler {
 				getSession().close(true);
 			}
 		}
-		//JoinRequest request = JoinRequest.decode(getSession(), b);
+		
 		InputStreamWrapper in = null;
 		String name = null;
 		String pass = null;
@@ -39,38 +64,55 @@ public class LoginRequestHandler extends RawHandler {
 		boolean toLobby = false;
 		
 		try {
-			int opcode = b.readByte() & 0xFF;
+			int opcode = buffer.readByte() & 0xFF;
 			
 			//Length of data available. (~280 ish) - Packet size.
-			int len = b.readShort(); //Number of bytes remaining
-			int version = b.readInt(); //Client version
+			int packetLength = buffer.readShort(); //Number of bytes remaining
+			int version = buffer.readInt(); //Client version
 			getSession().setRevision(version);
 			
-			b.readShort(); //Possibly a size
-			int rsaHeader = b.readByte();
+			byte[] rsaPayload = new byte[(buffer.readShort() & 0xFFFF)];
+			buffer.read(rsaPayload);
+			
+			RSByteBuffer rsaEncrypted = new RSByteBuffer(ByteBuffer.wrap(new BigInteger(rsaPayload).modPow(RSA_EXPONENT, RSA_MODULUS).toByteArray()));
+			
+			int rsaHeader = rsaEncrypted.readByte();
 			if (rsaHeader != 10) {
-				Log.warning("Invalid RSA Header: " + rsaHeader + ", length: " + len + ", rev: " + version);
+				//We tried with our RSA key, but it appears the key didn't work.
+				//We try again without an RSA key, in case the client has it disabled.
+				rsaEncrypted = new RSByteBuffer(ByteBuffer.wrap(rsaPayload));
+				
+				rsaHeader = rsaEncrypted.readByte();
+				
+				if(rsaHeader != 10){
+					Log.warning("Invalid RSA Header: " + rsaHeader + ", length: " + packetLength);
+					Log.warning("This may indicate that the client is using a different RSA key, or the protocol handling is incorrect");
+					Log.warning("Dropping connection from " + getSession().getIP().getHostName());
+					getSession().close(false);
+					return;
+				}
 			}
 			
 			//Client seed?
 			int[] keys = new int[4];
 			for (int i = 0; i < keys.length; i++) {
-				keys[i] = b.readInt();
+				keys[i] = rsaEncrypted.readInt();
 			}
 			XTEAKey key = new XTEAKey(keys);
 			
-			b.readLong(); //Appears to be zero always
+			rsaEncrypted.readLong(); //Appears to be zero always
 			
-			pass = b.readPJStr1();
+			pass = rsaEncrypted.readPJStr1();
 			
-			//Client UID?
-			b.readLong(); // client key, appears to be 0 always
-			b.readInt(); // always 0
-			uuid = b.readInt(); // other client key, randomly generated every time client starts
+			//Client UUID
+			rsaEncrypted.readLong(); // client key, appears to be 0 always
+			rsaEncrypted.readInt(); // always 0
+			
+			uuid = rsaEncrypted.readInt(); // other client key, randomly generated every time client starts
 			
 			//The rest of the packet is encrypted
-			byte[] block = new byte[len - 48 - pass.length()];
-			b.read(block);
+			byte[] block = new byte[packetLength - rsaPayload.length - 6];
+			buffer.read(block);
 			
 			//Decrypt it
 			ByteBuffer bb = ByteBuffer.wrap(block);

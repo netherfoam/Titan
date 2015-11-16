@@ -1,5 +1,6 @@
 package org.maxgamer.rs.model.item;
 
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 
 import org.maxgamer.rs.model.item.weapon.Weapon;
@@ -10,7 +11,7 @@ import org.maxgamer.rs.structure.configs.ConfigSection;
  * @author netherfoam
  */
 public class ItemStack implements Comparable<ItemStack>, YMLSerializable {
-	private static HashMap<String, ItemStack> cache = new HashMap<String, ItemStack>();
+	private static HashMap<String, WeakReference<ItemStack>> cache = new HashMap<String, WeakReference<ItemStack>>();
 	/** The generic currency in the game */
 	public static final ItemStack COINS = ItemStack.create(995);
 	
@@ -54,12 +55,15 @@ public class ItemStack implements Comparable<ItemStack>, YMLSerializable {
 			return null;
 		}
 		
-		ItemStack cached = cache.get(id + "-" + amount + "-" + health);
-		if (cached == null) {
-			cached = new ItemStack(id, amount, health);
-			cache.put(id + "-" + amount + "-" + health, cached);
+		WeakReference<ItemStack> ref = cache.get(id + "-" + amount + "-" + health);
+		ItemStack item;
+		
+		if (ref == null || (item = ref.get()) == null) {
+			item = new ItemStack(id, amount, health);
+			ref = new WeakReference<ItemStack>(item);
+			cache.put(id + "-" + amount + "-" + health, ref);
 		}
-		return cached;
+		return item;
 	}
 	
 	/**
@@ -71,13 +75,17 @@ public class ItemStack implements Comparable<ItemStack>, YMLSerializable {
 	 * @return an itemstack representing the item with an amount of 0.
 	 */
 	public static ItemStack createEmpty(int id, int health) {
-		int amount = 0;
-		ItemStack cached = cache.get(id + "-" + amount + "-" + health);
-		if (cached == null) {
-			cached = new ItemStack(id, amount, health);
-			cache.put(id + "-" + amount + "-" + health, cached);
+		final int amount = 0;
+		
+		WeakReference<ItemStack> ref = cache.get(id + "-" + amount + "-" + health);
+		
+		ItemStack item;
+		if (ref == null || (item = ref.get()) == null) {
+			item = new ItemStack(id, amount, health);
+			ref = new WeakReference<ItemStack>(item);
+			cache.put(id + "-" + amount + "-" + health, ref);
 		}
-		return cached;
+		return item;
 	}
 	
 	public static ItemStack create(int id, long amount) {

@@ -13,14 +13,12 @@ Release:
 			- Titan.jar
 			- client.jar
 			
-		- My items disappeared on death?
-			- Are they being re-sent when I revisit the area?
 		- Map unloading
 			- Unload NPC's
 			- Unload areas
 		- Cache changes must be written to disk or stored temporarily.
-		- Make ItemStack.cache<> a weak reference
 		- Enable RSA
+		- Uptime in status updates
 
 Code Quality:
 	- Some item prices are displayed differently in general stores based on stock quantity. Why?

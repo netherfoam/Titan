@@ -81,7 +81,8 @@ public abstract class Window {
 	 */
 	public void setString(int componentId, String s) {
 		RSOutgoingPacket out = new RSOutgoingPacket(33);
-		out.writePJStr1(s);
+		
+		out.writePJStr1(String.valueOf(s)); //String.valueOf() turns null into 'null'
 		
 		out.writeLEShort(componentId);
 		out.writeLEShort(getChildId());

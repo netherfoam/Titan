@@ -9,7 +9,9 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Player;
  */
 public abstract class ForkDialogue extends Dialogue {
 	public static final int MAX_OPTIONS = 5;
+	
 	private ArrayList<String> options = new ArrayList<String>();
+	private String title;
 	
 	public ForkDialogue(Player p) {
 		super(p);
@@ -29,6 +31,26 @@ public abstract class ForkDialogue extends Dialogue {
 		this.options.add(text);
 		
 		setChildId(225 + options.size() * 2);
+	}
+	
+	/**
+	 * Sets the name of this fork dialogue. This appears at the top of the dialogue box.
+	 * @param title the name of this fork dialogue. This appears at the top of the dialogue box.
+	 */
+	public void setTitle(String title){
+		this.title = title;
+		
+		if(isVisible()){
+			//TODO: Send title to client (Beware of null title)
+		}
+	}
+	
+	/**
+	 * Returns the name of this fork dialogue. This appears at the top of the dialogue box.
+	 * @return the name of this fork dialogue. This appears at the top of the dialogue box.
+	 */
+	public String getTitle(){
+		return this.title;
 	}
 	
 	/**
@@ -64,6 +86,8 @@ public abstract class ForkDialogue extends Dialogue {
 		for(int i = 0; i < options.size(); i++){
 			setString(2 + i, options.get(i));
 		}
+		
+		//TODO: Send title to client (Beware of null title)
 	}
 	
 	@Override

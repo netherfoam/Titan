@@ -11,16 +11,16 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
  */
 @CmdName(names = { "bank" })
 public class BankCmd implements PlayerCommand {
-	
+
 	@Override
 	public void execute(Player p, String[] args) {
 		BankInterface interf = new BankInterface(p);
 		p.getWindow().open(interf);
 	}
-	
+
 	@Override
 	public int getRankRequired() {
 		return Rights.ADMIN;
 	}
-	
+
 }

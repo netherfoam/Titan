@@ -9,19 +9,33 @@ import org.maxgamer.rs.model.entity.mob.MobModel;
  * @author netherfoam
  */
 public class NPCModel extends MobModel {
-	private NPCDefinition def;
+	private int id;
+	
+	public NPCModel(int id){
+		this.id = id;
+	}
 	
 	public NPCModel(NPCDefinition def) {
-		if (def == null) throw new NullPointerException("NPC Definition may not be null");
-		this.def = def;
+		this(def.getId());
+		
 		this.setCombatLevel(def.getCombatLevel());
 	}
 	
 	@Override
 	protected void appendUpdate(OutputStreamWrapper out) throws IOException {
 		out.writeShort(-1); //Mob type or something?
-		out.writeShort(def.getId());
+		out.writeShort(id);
 		out.writeByte(0); //Unknown
+	}
+	
+	
+	public int getModelId() {
+		return id;
+	}
+	
+	public void getModelId(int id) {
+		this.id = id;
+		setChanged(true);
 	}
 	
 }

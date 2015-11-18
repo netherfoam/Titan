@@ -372,6 +372,16 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 	}
 	
 	/**
+	 * Sets the Model used by this Persona to the given Model. This also forces
+	 * the given model to be updated (model.setChanged()).
+	 * @param model the model
+	 */
+	public void setModel(MobModel model){
+		this.model = model;
+		this.model.setChanged(true);
+	}
+	
+	/**
 	 * The spell this player is currently autocasting. This spell may be null,
 	 * if they are not casting spells.
 	 * @return the spell to cast

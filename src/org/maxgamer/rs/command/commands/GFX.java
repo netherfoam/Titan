@@ -11,7 +11,7 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
  */
 @CmdName(names = { "graphics" })
 public class GFX implements PlayerCommand {
-	
+
 	@Override
 	public void execute(Player p, String[] args) {
 		if (args.length < 1) {
@@ -20,7 +20,7 @@ public class GFX implements PlayerCommand {
 		}
 		p.getUpdateMask().setGraphics(new Graphics(Integer.parseInt(args[0])));
 	}
-	
+
 	@Override
 	public int getRankRequired() {
 		return Rights.ADMIN;

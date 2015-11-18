@@ -5,6 +5,7 @@
 .externalToolBuilders/
 .settings
 *.log
+*titan-modules/
 
 
 # Temporary files created by sublime-text

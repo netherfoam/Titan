@@ -20,6 +20,17 @@ public class Erratic {
 		return r.nextInt(max);
 	}
 	
+	public static String nextString(int length){
+		String options = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+		char[] chars = new char[length];
+		
+		for(int i = 0; i < chars.length; i++){
+			chars[i] = options.charAt(r.nextInt(options.length()));
+		}
+		
+		return String.valueOf(chars);
+	}
+	
 	/**
 	 * Gets the next boolean but with a bias chance. If the given value is 1,
 	 * this will always return true. If the given value is 2, this will return

@@ -1,21 +1,18 @@
 package org.maxgamer.rs.lib.log;
 
-import java.io.PrintStream;
 
 /**
  * @author netherfoam
  */
 public class GenericLogger implements Logger {
 	private LogLevel level;
-	private PrintStream ps;
 	
-	public GenericLogger(LogLevel level, PrintStream ps) {
+	public GenericLogger(LogLevel level) {
 		this.level = level;
-		this.ps = ps;
 	}
 	
 	public void log(String s) {
-		ps.println(s);
+		System.out.println(s);
 	}
 	
 	@Override

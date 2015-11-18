@@ -187,6 +187,8 @@ public class Server {
 		//Immediately opens the port, but does not necessarily begin accepting/reading/writing
 		this.network = new RS2Server(config.getInt("port"), this);
 		
+		//TODO: ConfigSetup.logon() if file not found
+		//TODO: Copy the .dist file across automatically
 		FileConfig logon = new FileConfig(new File("config", "logon.yml"));
 		logon.reload();
 		//this.logon = new ServerLogonWatcher(logon);

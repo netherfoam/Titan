@@ -21,6 +21,7 @@ import org.maxgamer.rs.structure.sql.Database;
 import org.maxgamer.rs.structure.sql.Database.ConnectionException;
 import org.maxgamer.rs.structure.sql.MySQLC3P0Core;
 import org.maxgamer.rs.structure.sql.SQLiteCore;
+import org.maxgamer.rs.tools.ConfigSetup;
 
 /**
  * @author netherfoam
@@ -30,7 +31,7 @@ public class LogonServer extends ServerHost<WorldHost> {
 		final CommandManager cm = new CommandManager(null);
 		LogonServer.init(cm);
 		
-		final Thread reader = new Thread("Logon-Reader") {
+		final Thread reader = new Thread("Logon-Console") {
 			@Override
 			public void run() {
 				Scanner sc = new Scanner(System.in);
@@ -65,6 +66,9 @@ public class LogonServer extends ServerHost<WorldHost> {
 	
 	public static void init(CommandManager commands) throws IOException, ConnectionException {
 		File cfgFile = new File("config", "logon.yml");
+		
+		boolean isNew = false;
+		
 		if(cfgFile.exists() == false){
 			File dist = new File("config" + File.separatorChar + "logon.yml.dist");
 			if(dist.exists()){
@@ -78,10 +82,22 @@ public class LogonServer extends ServerHost<WorldHost> {
 			else{
 				Log.warning(dist + " does not exist. Can't copy server config to " + cfgFile + "!");
 			}
+			isNew = true;
 		}
 		
 		FileConfig config = new FileConfig(cfgFile);
 		config.reload();
+		
+		if(isNew){
+			ConfigSetup.logon(config);
+			try {
+				config.save();
+			}
+			catch (IOException e) {
+				e.printStackTrace();
+				Log.warning("Failed to save logon.yml file!");
+			}
+		}
 		
 		LOGON = new LogonServer(config);
 		LOGON.start();

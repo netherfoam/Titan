@@ -31,6 +31,7 @@ import org.maxgamer.rs.structure.sql.Database;
 import org.maxgamer.rs.structure.sql.MySQLC3P0Core;
 import org.maxgamer.rs.structure.sql.SQLiteCore;
 import org.maxgamer.rs.structure.timings.Timings;
+import org.maxgamer.rs.tools.ConfigSetup;
 
 /**
  * Represents the core, responsible for running the server. Should keep this
@@ -153,7 +154,6 @@ public class Core {
 		server = new Server(cfg); //Binds port port
 		scheduler = new Scheduler(server.getThread(), threadPool);
 		server.load();
-		console = new ConsoleSender();
 		
 		//This is run when we get CTRL + C as well
 		Runtime.getRuntime().addShutdownHook(new Thread("Shutdown Hook") {
@@ -283,6 +283,8 @@ public class Core {
 	 */
 	public synchronized static FileConfig getWorldConfig() {
 		if (worldCfg == null) {
+			boolean isNew = false;
+			
 			File cfgFile = new File("config" + File.separatorChar + "world.yml");
 			if(cfgFile.exists() == false){
 				File dist = new File("config" + File.separatorChar + "world.yml.dist");
@@ -297,6 +299,7 @@ public class Core {
 				else{
 					Log.warning(dist + " does not exist. Can't copy server config to " + cfgFile + "!");
 				}
+				isNew = true;
 			}
 			
 			worldCfg = new FileConfig(cfgFile);
@@ -307,6 +310,17 @@ public class Core {
 				Log.warning("Error parsing world.yml! Exiting...");
 				e.printStackTrace();
 				System.exit(3);
+			}
+			
+			if(isNew){
+				ConfigSetup.world(worldCfg);
+				try {
+					worldCfg.save();
+				}
+				catch (IOException e) {
+					e.printStackTrace();
+					Log.warning("Failed to save world.yml file!");
+				}
 			}
 		}
 		return worldCfg;
@@ -348,6 +362,10 @@ public class Core {
 	 * @return The console as a command sender.
 	 */
 	public static ConsoleSender getConsole() {
+		if(console == null){
+			console = new ConsoleSender();
+		}
+		
 		return console;
 	}
 	

@@ -3,6 +3,7 @@ package org.maxgamer.rs.lib.log;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintStream;
 
 import org.maxgamer.rs.lib.log.Logger.LogLevel;
@@ -38,13 +39,14 @@ public class Log {
 				
 				@Override
 				public void close() {
+					super.close();
 					file.close();
 				}
 			};
 			
 			System.setOut(ps);
 			System.setErr(ps);
-			log = new GenericLogger(level, ps);
+			log = new GenericLogger(level);
 		}
 		catch (IOException e) {
 			throw new RuntimeException("Failed to initialize log");

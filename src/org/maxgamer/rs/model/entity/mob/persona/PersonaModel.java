@@ -163,5 +163,6 @@ public class PersonaModel extends MobModel implements YMLSerializable {
 
 	public void setNpcModelId(int npcModelId) {
 		this.npcModelId = npcModelId;
+		setChanged(true);
 	}
 }

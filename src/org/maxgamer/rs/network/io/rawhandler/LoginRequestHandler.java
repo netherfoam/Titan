@@ -45,6 +45,13 @@ public class LoginRequestHandler extends RawHandler {
 				RSA_EXPONENT = new BigInteger(exp, 10);
 			}
 		}
+		
+		if(RSA_MODULUS.intValue() == 0){
+			RSA_MODULUS = null;
+		}
+		if(RSA_EXPONENT.intValue() == 0){
+			RSA_EXPONENT = null;
+		}
 	}
 	
 	public LoginRequestHandler(Session s) {
@@ -80,23 +87,29 @@ public class LoginRequestHandler extends RawHandler {
 			byte[] rsaPayload = new byte[(buffer.readShort() & 0xFFFF)];
 			buffer.read(rsaPayload);
 			
-			RSByteBuffer rsaEncrypted = new RSByteBuffer(ByteBuffer.wrap(new BigInteger(rsaPayload).modPow(RSA_EXPONENT, RSA_MODULUS).toByteArray()));
+			RSByteBuffer rsaEncrypted;
+			if(RSA_EXPONENT != null && RSA_MODULUS != null){
+				rsaEncrypted = new RSByteBuffer(ByteBuffer.wrap(new BigInteger(rsaPayload).modPow(RSA_EXPONENT, RSA_MODULUS).toByteArray()));
 			
-			int rsaHeader = rsaEncrypted.readByte();
-			if (rsaHeader != 10) {
-				//We tried with our RSA key, but it appears the key didn't work.
-				//We try again without an RSA key, in case the client has it disabled.
-				rsaEncrypted = new RSByteBuffer(ByteBuffer.wrap(rsaPayload));
-				
-				rsaHeader = rsaEncrypted.readByte();
-				
-				if(rsaHeader != 10){
-					Log.warning("Invalid RSA Header: " + rsaHeader + ", length: " + packetLength);
-					Log.warning("This may indicate that the client is using a different RSA key, or the protocol handling is incorrect");
-					Log.warning("Dropping connection from " + getSession().getIP().getHostName());
-					getSession().close(false);
-					return;
+				int rsaHeader = rsaEncrypted.readByte();
+				if (rsaHeader != 10) {
+					//We tried with our RSA key, but it appears the key didn't work.
+					//We try again without an RSA key, in case the client has it disabled.
+					rsaEncrypted = new RSByteBuffer(ByteBuffer.wrap(rsaPayload));
+					
+					rsaHeader = rsaEncrypted.readByte();
+					
+					if(rsaHeader != 10){
+						Log.warning("Invalid RSA Header: " + rsaHeader + ", length: " + packetLength);
+						Log.warning("This may indicate that the client is using a different RSA key, or the protocol handling is incorrect");
+						Log.warning("Dropping connection from " + getSession().getIP().getHostName());
+						getSession().close(false);
+						return;
+					}
 				}
+			}
+			else{
+				rsaEncrypted = new RSByteBuffer(ByteBuffer.wrap(rsaPayload));
 			}
 			
 			//Client seed?

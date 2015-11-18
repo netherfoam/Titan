@@ -19,11 +19,16 @@ Release:
 		- Cache changes must be written to disk or stored temporarily.
 		- Setup procedure when copying *.dist files
 			> Request from user 'database user', 'database pass', 'port', 'host', test connection.
-		- 
 		- Uptime in status updates
+		- Can fight NPC's while standing on top of them
+		- Add JS Scripts to JSEngine script module
+			> Add them to the JAR automatically
+			> Extract them from the JAR if file not found already
 		
 JSEngineModule:
 	- wait() functionality to wait a specific number of ticks
+	- Way of storing JS scripts in the module / module repository
+	- functional approach to scripting, like MaSH did, with procedural still optional
 
 Code Quality:
 	- Some item prices are displayed differently in general stores based on stock quantity. Why?

@@ -14,10 +14,41 @@ import co.paralleluniverse.fibers.SuspendExecution;
  * as combat or chopping an oak tree.
  * @author netherfoam
  */
-public abstract class Action{
+public abstract class Action {
+	/**
+	 * Waits for the given number of ticks. This may only be invoked from a
+	 * Fiber, otherwise an exception is thrown. A SuspendExecution is not an
+	 * exception, but a marker that the method may cause the current fiber to be
+	 * suspended. This method may be used without blocking the thread, but while
+	 * blocking the current Fiber. This is a neat way of writing events so that
+	 * they are cleaner and do not need non-local variables to track states or
+	 * to be ridden with callbacks.
+	 * @param ticks the number of ticks to wait before returning.
+	 * @throws SuspendExecution
+	 */
+	public static void wait(int ticks) throws SuspendExecution {
+		Core.getServer().getThread().assertThread();
+		
+		if (Fiber.isCurrentFiber() == false) {
+			throw new RuntimeException("wait() may only be invoked by a Fiber.");
+		}
+		while (ticks-- > 0) {
+			Fiber.park();
+		}
+	}
+	
 	/** The mob who is performing the action */
 	protected final Mob mob;
+	/**
+	 * The list of actions which are 'paired' to this one. If A is paired with
+	 * B, then B is paired with A. If A is cancelled, B should be cancelled and
+	 * visa versa. If A terminates, B should not be cancelled.
+	 */
 	protected LinkedList<Action> paired = new LinkedList<Action>();
+	
+	/**
+	 * The Fiber which runs this action
+	 */
 	private Fiber<Void> fiber;
 	
 	/**
@@ -39,44 +70,24 @@ public abstract class Action{
 	}
 	
 	/**
-	 * Waits for the given number of ticks. This may only be invoked from a Fiber, otherwise an exception
-	 * is thrown. A SuspendExecution is not an exception, but a marker that the method may cause
-	 * the current fiber to be suspended. This method may be used without blocking the thread, but
-	 * while blocking the current Fiber. This is a neat way of writing events so that they are cleaner and
-	 * do not need non-local variables to track states or to be ridden with callbacks.
-	 * @param ticks the number of ticks to wait before returning. 
-	 * @throws SuspendExecution
+	 * Called successively upon a tick when this action is able to be run. This
+	 * moves the internal fiber, either creating a new one if it is the first
+	 * time, or unparking an existing one if it is a sequential time. If the
+	 * action has finished, this will raise an exception.
 	 */
-	public static void wait(int ticks) throws SuspendExecution{
+	protected void tick() {
 		Core.getServer().getThread().assertThread();
-		
-		if(Fiber.isCurrentFiber() == false){
-			throw new RuntimeException("wait() may only be invoked by a Fiber.");
-		}
-		while(ticks-- > 0){
-			Fiber.park();
-		}
-	}
-	
-	/**
-	 * Called successively upon a tick when this action is able to be run.
-	 * This moves the internal fiber, either creating a new one if it is the first time,
-	 * or unparking an existing one if it is a sequential time. If the action has finished,
-	 * this will raise an exception.
-	 */
-	protected void tick(){
-		Core.getServer().getThread().assertThread();
-		if(fiber == null){
-			try{
-				fiber = new Fiber<Void>(this.toString(), Core.getServer().getThread().getFiberScheduler()){
+		if (fiber == null) {
+			try {
+				fiber = new Fiber<Void>(this.toString(), Core.getServer().getThread().getFiberScheduler()) {
 					private static final long serialVersionUID = 1842342854418180882L;
-		
+					
 					@Override
-					public Void run() throws SuspendExecution{
-						try{
+					public Void run() throws SuspendExecution {
+						try {
 							Action.this.run();
 						}
-						catch(Throwable t){
+						catch (Throwable t) {
 							Log.warning("There was an Exception thrown while running an Action. Details:");
 							Log.warning("Mob: " + Action.this.getOwner() + ", Action: " + Action.this);
 							t.printStackTrace();
@@ -87,13 +98,13 @@ public abstract class Action{
 					}
 				};
 			}
-			catch(IllegalArgumentException e){
-				if(e.getMessage().contains("instrumented")){
+			catch (IllegalArgumentException e) {
+				if (e.getMessage().contains("instrumented")) {
 					Log.warning("It appears that the class " + this + " has not been instrumented.");
 					Log.warning("The ClassLoader hierachy is:");
 					ClassLoader cl = this.getClass().getClassLoader();
 					StringBuilder sb = new StringBuilder(cl.getClass().getCanonicalName());
-					while(((cl = cl.getParent())) != null){
+					while (((cl = cl.getParent())) != null) {
 						sb.append(" < " + cl.getClass().getCanonicalName());
 					}
 					Log.warning(sb.toString());
@@ -105,8 +116,8 @@ public abstract class Action{
 			// - And right now, *THIS* is being executed, not the fiber!
 			fiber.start();
 		}
-		else{
-			if(fiber.isTerminated()){
+		else {
+			if (fiber.isTerminated()) {
 				return;
 				//throw new RuntimeException("Action's Fiber was terminated, but Action was requested to tick() anyway?");
 			}
@@ -177,4 +188,21 @@ public abstract class Action{
 		paired.add(a);
 		if (a.paired.contains(this) == false) a.paired.add(this);
 	}
+	
+	/**
+	 * Queues this action, the same as getOwner().getActions().queue(this)
+	 */
+	public void queue(){
+		getOwner().getActions().queue(this);
+	}
+	
+	/**
+	 * Returns true if this action is queued
+	 * @return true if this action is queued
+	 */
+	public boolean isQueued(){
+		return getOwner().getActions().isQueued(this);
+	}
+	
+	
 }

@@ -5,10 +5,12 @@ import java.util.Date;
 import org.maxgamer.rs.command.CommandSender;
 import org.maxgamer.rs.command.GenericCommand;
 import org.maxgamer.rs.core.Core;
+import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;
 import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
 import org.maxgamer.rs.model.skill.SkillType;
 import org.maxgamer.rs.network.Session;
+import org.maxgamer.rs.structure.Util;
 
 /**
  * @author netherfoam
@@ -39,7 +41,7 @@ public class Status implements GenericCommand {
 				total += p.getSkills().getLevel(t);
 			}
 		}
-		s.sendMessage("Total level of all players: " + total);
+		Log.info("Total level of all players: " + total + ", Uptime: " + Util.toDuration(System.currentTimeMillis() - Core.getServer().getStartTime()));
 	}
 	
 	@Override

@@ -39,6 +39,9 @@ public class CombatFollow extends Follow {
 	@Override
 	public boolean isSatisfied() {
 		int prefDistance = this.getAttack().getAttack().getMaxDistance();
+		if(prefDistance <= 0){
+			throw new RuntimeException("PrefDistance shouldn't be " + prefDistance);
+		}
 		
 		if(getOwner().getLocation().near(getTarget().getLocation(), prefDistance) == false){
 			return false;

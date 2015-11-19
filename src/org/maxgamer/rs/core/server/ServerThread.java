@@ -11,6 +11,7 @@ import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;
 import org.maxgamer.rs.model.skill.SkillType;
 import org.maxgamer.rs.network.Session;
+import org.maxgamer.rs.structure.Util;
 
 import co.paralleluniverse.fibers.FiberExecutorScheduler;
 import co.paralleluniverse.fibers.FiberScheduler;
@@ -161,7 +162,8 @@ public class ServerThread implements Executor {
 								total += p.getSkills().getLevel(t);
 							}
 						}
-						Log.info("Total level of all players: " + total);
+						
+						Log.info("Total level of all players: " + total + ", Uptime: " + Util.toDuration(System.currentTimeMillis() - getServer().getStartTime()));
 						lastPrint = System.currentTimeMillis();
 					}
 				}

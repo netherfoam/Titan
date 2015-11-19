@@ -98,36 +98,36 @@ public abstract class Follow extends Action {
 		getOwner().setFacing(Facing.face(getTarget()));
 		
 		while(isFollowing()){
+			if (getOwner().getLocation().equals(getTarget().getLocation())) {
+				//Whoops, we're ontop of our target!
+				Direction[] dirs = Directions.ALL;
+				int r = Erratic.nextInt(0, dirs.length - 1);
+				
+				//Finds a random walk direction to move in.
+				for (int i = 0; i < dirs.length; i++) {
+					Direction d = dirs[(i + r) % dirs.length];
+					if (d.conflict(getOwner().getLocation()) == 0) {
+						path = new Path();
+						path.addFirst(d);
+						getOwner().move(path);
+						break;
+					}
+				}
+				
+				//Stuck on spot but still retry
+				wait(1);
+				continue;
+			}
+			
 			if(isSatisfied() == false){
 				//The mob wants to get closer to their target!
-				
-				if (getOwner().getLocation().equals(getTarget().getLocation())) {
-					//Whoops, we're ontop of our target!
-					Direction[] dirs = Directions.ALL;
-					int r = Erratic.nextInt(0, dirs.length - 1);
+				if(path == null || path.isEmpty()){
+					//Plan a new path to the target
+					Location dest = getTarget().getLocation();
 					
-					//Finds a random walk direction to move in.
-					for (int i = 0; i < dirs.length; i++) {
-						Direction d = dirs[(i + r) % dirs.length];
-						if (d.conflict(getOwner().getLocation()) == 0) {
-							path = new Path();
-							path.addFirst(d);
-						}
-					}
-					
-					//Stuck on spot but still retry
-					wait(1);
-					continue;
-				}
-				else{
-					if(path == null || path.isEmpty()){
-						//Plan a new path to the target
-						Location dest = getTarget().getLocation();
-						
-						path = pathFinder.findPath(mob.getLocation(), dest, dest, mob.getSizeX(), mob.getSizeY());
-						if (path.hasFailed() == false && path.isEmpty() == false) {
-							path.removeLast();
-						}
+					path = pathFinder.findPath(mob.getLocation(), dest, dest, mob.getSizeX(), mob.getSizeY());
+					if (path.hasFailed() == false && path.isEmpty() == false) {
+						path.removeLast();
 					}
 				}
 				

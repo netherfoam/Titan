@@ -17,12 +17,9 @@ Release:
 			- Unload NPC's
 			- Unload areas
 		- Cache changes must be written to disk or stored temporarily.
-		- Uptime in status updates
-		- Can fight NPC's while standing on top of them
 		- Add JS Scripts to JSEngine script module
 			> Add them to the JAR automatically
 			> Extract them from the JAR if file not found already
-		- Add "isQueued()" and "cancel()" and "Queue()" to Action.java
 		
 JSEngineModule:
 	- wait() functionality to wait a specific number of ticks

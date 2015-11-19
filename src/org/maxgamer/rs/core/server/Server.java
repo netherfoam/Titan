@@ -169,6 +169,11 @@ public class Server {
 	private LogonConnection logon;
 	
 	private ConfigSection config;
+
+	/**
+	 * The epoch time in milliseconds that the server was constructed.
+	 */
+	private long started;
 	
 	/**
 	 * Creates a new server.
@@ -191,8 +196,13 @@ public class Server {
 		//TODO: Copy the .dist file across automatically
 		FileConfig logon = new FileConfig(new File("config", "logon.yml"));
 		logon.reload();
-		//this.logon = new ServerLogonWatcher(logon);
+		
 		this.logon = new LogonConnection(logon);
+		this.started = System.currentTimeMillis();
+	}
+	
+	public long getStartTime(){
+		return this.started;
 	}
 	
 	public String getRegion() {

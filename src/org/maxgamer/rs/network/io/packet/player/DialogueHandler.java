@@ -25,7 +25,6 @@ public class DialogueHandler implements PacketProcessor<Player> {
 		}
 		
 		Log.debug("Player clicked button. Opcode: " + in.getOpcode() + "(Option " + 0 + ")" + ", ChildId: " + interfaceId + ", buttonId: " + buttonId + ", slot: " + -1 + ", itemId: " + -1);
-		Log.debug("Interface: " + iface);
 		iface.onClick(0, buttonId, -1, -1);
 	}
 }

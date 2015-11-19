@@ -23,9 +23,13 @@ public class NPCModel extends MobModel {
 	
 	@Override
 	protected void appendUpdate(OutputStreamWrapper out) throws IOException {
-		out.writeShort(-1); //Mob type or something?
+		//out.writeShort(-1); //Mob type or something?
+		
+		out.writeByte(-1); //"index" must be -1 for NPC morph
+		out.writeByte(-1); //"value" must be -1 for NPC morph
+		
 		out.writeShort(id);
-		out.writeByte(0); //Unknown
+		out.writeByte(0); //Team
 	}
 	
 	

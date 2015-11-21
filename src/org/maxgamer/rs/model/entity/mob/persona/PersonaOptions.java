@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import org.maxgamer.rs.interfaces.impl.primary.TradeInterface;
 import org.maxgamer.rs.model.action.FriendFollow;
+import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.combat.DamageType;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.item.inventory.Container;
@@ -21,7 +22,7 @@ public class PersonaOptions {
 	 */
 	public static final PersonaOption FOLLOW = new PersonaOption("Follow") {
 		@Override
-		public void run(Persona clicker, Persona target) {
+		public void run(Mob clicker, Persona target) {
 			clicker.getActions().clear(); //End all actions which can be ended (Eg fighting, trading) except for ones that can't (Eg being stunned)
 			
 			FriendFollow f = new FriendFollow(clicker, target, 1, 12, new AStar(4));
@@ -34,7 +35,7 @@ public class PersonaOptions {
 	 */
 	public static final PersonaOption ATTACK = new PersonaOption("Attack") {
 		@Override
-		public void run(Persona clicker, Persona target) {
+		public void run(Mob clicker, Persona target) {
 			if (target.isDead() || target.isHidden()) return; //Can't attack dead/hidden players
 			clicker.setTarget(target);
 		}
@@ -42,7 +43,7 @@ public class PersonaOptions {
 	
 	public static final PersonaOption INSPECT = new PersonaOption("Inspect") {
 		@Override
-		public void run(Persona c, Persona t) {
+		public void run(Mob c, Persona t) {
 			if (c instanceof Player) {
 				Player p = (Player) c;
 				
@@ -60,7 +61,7 @@ public class PersonaOptions {
 	 */
 	public static final PersonaOption TRADE = new PersonaOption("Trade with") {
 		@Override
-		public void run(final Persona player, final Persona partner) {
+		public void run(final Mob player, final Persona partner) {
 			//TODO: Check trade request
 			if (player instanceof Player == false) {
 				//TODO: Surely there's a way to do this?
@@ -90,7 +91,7 @@ public class PersonaOptions {
 	 */
 	public static final PersonaOption CHALLENGE = new PersonaOption("Challenge") {
 		@Override
-		public void run(final Persona player, final Persona other) {
+		public void run(final Mob player, final Persona other) {
 			//TODO
 			/*
 			 * player.turnTo(other); if (!World.getWorld().doPath(new
@@ -121,7 +122,7 @@ public class PersonaOptions {
 	 */
 	public static final PersonaOption NULL = new PersonaOption("null") {
 		@Override
-		public void run(Persona clicker, Persona target) {
+		public void run(Mob clicker, Persona target) {
 		} //Best of luck clicking this one.
 		
 	};

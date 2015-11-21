@@ -6,10 +6,10 @@ import org.maxgamer.rs.model.entity.mob.npc.NPC;
 
 public class MobUseNPCEvent extends MobEvent implements Cancellable {
 	private NPC target;
-	private int option;
+	private String option;
 	private boolean cancel;
 	
-	public MobUseNPCEvent(Mob mob, NPC target, int option) {
+	public MobUseNPCEvent(Mob mob, NPC target, String option) {
 		super(mob);
 		
 		this.target = target;
@@ -20,12 +20,8 @@ public class MobUseNPCEvent extends MobEvent implements Cancellable {
 		return this.target;
 	}
 	
-	public int getOptionNumber(){
-		return this.option;
-	}
-	
 	public String getOption(){
-		return target.getDefinition().getInteraction(this.option);
+		return option;
 	}
 	
 	@Override

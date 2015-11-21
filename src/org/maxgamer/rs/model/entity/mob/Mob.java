@@ -2,8 +2,13 @@ package org.maxgamer.rs.model.entity.mob;
 
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.core.server.IllegalThreadException;
+import org.maxgamer.rs.events.mob.MobItemOnObjectEvent;
 import org.maxgamer.rs.events.mob.MobLoadEvent;
 import org.maxgamer.rs.events.mob.MobUnloadEvent;
+import org.maxgamer.rs.events.mob.MobUseGroundItemEvent;
+import org.maxgamer.rs.events.mob.MobUseItemEvent;
+import org.maxgamer.rs.events.mob.MobUseNPCEvent;
+import org.maxgamer.rs.events.mob.MobUseObjectEvent;
 import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.action.Action;
 import org.maxgamer.rs.model.action.ActionQueue;
@@ -15,6 +20,11 @@ import org.maxgamer.rs.model.entity.mob.combat.Attack;
 import org.maxgamer.rs.model.entity.mob.combat.AttackStyle;
 import org.maxgamer.rs.model.entity.mob.combat.DamageLog;
 import org.maxgamer.rs.model.entity.mob.facing.Facing;
+import org.maxgamer.rs.model.entity.mob.npc.NPC;
+import org.maxgamer.rs.model.entity.mob.persona.Persona;
+import org.maxgamer.rs.model.entity.mob.persona.PersonaOption;
+import org.maxgamer.rs.model.item.ItemStack;
+import org.maxgamer.rs.model.item.ground.GroundItemStack;
 import org.maxgamer.rs.model.item.inventory.Equipment;
 import org.maxgamer.rs.model.map.ClipMasks;
 import org.maxgamer.rs.model.map.GameObject;
@@ -24,6 +34,8 @@ import org.maxgamer.rs.model.map.path.AStar;
 import org.maxgamer.rs.model.map.path.Path;
 import org.maxgamer.rs.model.map.path.PathFinder;
 import org.maxgamer.rs.model.skill.SkillSet;
+
+import co.paralleluniverse.fibers.SuspendExecution;
 
 /**
  * Represents a Mob which has health, equipment, an action queue, an UpdateMask,
@@ -72,8 +84,8 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	private Facing facing;
 	
 	/**
-	 * The mob we are trying to kill. Not all of our attacks necessarily
-	 * have to involve this target.
+	 * The mob we are trying to kill. Not all of our attacks necessarily have to
+	 * involve this target.
 	 */
 	private Mob target;
 	
@@ -88,49 +100,65 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 		this.damage = new DamageLog(this);
 	}
 	
-	public Mob getTarget(){
-		if(this.target != null){
-			if(this.target.isDead()){
+	public Mob getTarget() {
+		if (this.target != null) {
+			if (this.target.isDead()) {
 				this.setTarget(null);
 			}
-			else if(this.target.isAttackable(this) == false){
+			else if (this.target.isAttackable(this) == false) {
 				this.setTarget(null);
 			}
-			else if(this.target.isVisible(this) == false){
+			else if (this.target.isVisible(this) == false) {
 				this.setTarget(null);
 			}
-			else if(this.target.getLocation().z != this.getLocation().z){
+			else if (this.target.getLocation().z != this.getLocation().z) {
 				this.setTarget(null);
 			}
-			else if(this.target.getLocation().near(this.getLocation(), 25) == false){
+			else if (this.target.getLocation().near(this.getLocation(), 25) == false) {
 				this.setTarget(null);
 			}
 		}
 		return this.target;
 	}
 	
-	public void setTarget(Mob target){
+	public void setTarget(Mob target) {
 		this.target = target;
 		
-		if(target != null){
+		if (target != null) {
 			getDamage().setLastTarget(target);
 			//New target is not null
 			getActions().clear();
 			getActions().queue(new CombatFollow(this, target, new AStar(10)));
 		}
-		else{
+		else {
 			getActions().clear();
 		}
 	}
 	
-	//TODO: Document
-	public void face(Mob mob){
+	/**
+	 * Sets this mob's facing target to the given position
+	 * @param pos the position to face
+	 */
+	public void face(Position pos) {
+		setFacing(Facing.face(pos));
+	}
+	
+	/**
+	 * Sets this mob's facing target to the given Mob. Players will actively
+	 * continue to face Mobs as the target moves.
+	 * @param mob the mob to face
+	 */
+	public void face(Mob mob) {
 		setFacing(Facing.face(mob));
 	}
 	
-	//TODO: Document
-	public void face(GameObject object){
-		setFacing(Facing.face(object));
+	/**
+	 * Sets this mob's facing target to the entity's center position.
+	 * @param entity the entity to face. If the entity moves, this will not
+	 *        update the facing.
+	 */
+	public void face(Entity entity) {
+		setFacing(Facing.face(entity));
 	}
 	
 	/**
@@ -271,7 +299,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 		
 		try {
 			this.onLoad();
-			if(this.getActions().isEmpty()){
+			if (this.getActions().isEmpty()) {
 				this.onIdle();
 			}
 		}
@@ -423,15 +451,15 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 * priority (eat/drink level)
 	 * @param emo the animation id
 	 */
-	public void animate(int emo){
+	public void animate(int emo) {
 		animate(emo, 5);
 	}
 	
 	/**
 	 * Animates the mob with the given animation and priority. This is a
-	 * shorthand method for accessing the update mask. Standard levels
-	 * of priority are 5 for eat/drink, 10 for bury/pick, 50 for death,
-	 * 20 for attack, 5 for defence
+	 * shorthand method for accessing the update mask. Standard levels of
+	 * priority are 5 for eat/drink, 10 for bury/pick, 50 for death, 20 for
+	 * attack, 5 for defence
 	 * @param emo the animation id
 	 * @param priority the priority of the animation. Higher priority animations
 	 *        will override lower ones.
@@ -442,14 +470,14 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	
 	/**
 	 * Animates the mob with the given animation and priority. This is a
-	 * shorthand method for accessing the update mask. Standard levels
-	 * of priority are 5 for eat/drink, 10 for bury/pick, 50 for death,
-	 * 20 for attack, 5 for defence
+	 * shorthand method for accessing the update mask. Standard levels of
+	 * priority are 5 for eat/drink, 10 for bury/pick, 50 for death, 20 for
+	 * attack, 5 for defence
 	 * @param anim the animation
 	 * @param priority the priority of the animation. Higher priority animations
 	 *        will override lower ones.
 	 */
-	public void animate(Animation anim, int priority){
+	public void animate(Animation anim, int priority) {
 		getUpdateMask().setAnimation(anim, priority);
 	}
 	
@@ -538,21 +566,22 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 * @param hp the health to add to this mobs health
 	 * @return the amount of health gained
 	 */
-	public void heal(int hp){
+	public void heal(int hp) {
 		heal(hp, 0);
 	}
 	
 	/**
-	 * Heals this mob the given amount, with a maximum overhealing factor. The over healing effect
-	 * allows the mob to temporarily exceed its maximum health.
+	 * Heals this mob the given amount, with a maximum overhealing factor. The
+	 * over healing effect allows the mob to temporarily exceed its maximum
+	 * health.
 	 * 
 	 * @param hp the health to add to this mobs health
 	 * @param overheal the maximum amount to surpass the mobs maximum health
 	 * 
 	 * @return the amount of health gained
 	 */
-	public int heal(int hp, int overheal){
-		if(hp < 0) throw new IllegalArgumentException("Requested to heal negative amount (" + hp + ")");
+	public int heal(int hp, int overheal) {
+		if (hp < 0) throw new IllegalArgumentException("Requested to heal negative amount (" + hp + ")");
 		int cur = getHealth();
 		this.setHealth(Math.min(this.getHealth() + hp, this.getMaxHealth() + overheal));
 		return getHealth() - cur;
@@ -584,13 +613,13 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	}
 	
 	/**
-	 * Determines if this mob is visible to the given mob. This method should be overridden
-	 * if the mob can become invisible.
+	 * Determines if this mob is visible to the given mob. This method should be
+	 * overridden if the mob can become invisible.
 	 * @param to
 	 * @return
 	 */
-	public boolean isVisible(Mob to){
-		if(isDestroyed()){
+	public boolean isVisible(Mob to) {
+		if (isDestroyed()) {
 			return false;
 		}
 		
@@ -716,16 +745,148 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	public abstract String getName();
 	
 	/**
-	 * Invoked when this Mob's ActionQueue has been emptied. This is only invoked
-	 * after the ActionQueue has become empty, and will not be invoked until
-	 * the ActionQueue receives another Action, and the action completes (or is
-	 * cancelled), and the action queue is then empty again.
+	 * Invoked when this Mob's ActionQueue has been emptied. This is only
+	 * invoked after the ActionQueue has become empty, and will not be invoked
+	 * until the ActionQueue receives another Action, and the action completes
+	 * (or is cancelled), and the action queue is then empty again.
 	 * 
 	 * This method is also invoked after the Mob is first loaded.
 	 */
 	public abstract void onIdle();
 	
-	public void sendMessage(String msg){
+	public void sendMessage(String msg) {
 		//Empty
+	}
+	
+	public void use(ItemStack item, int slot, String option) {
+		MobUseItemEvent e = new MobUseItemEvent(this, item, option, slot);
+		e.call();
+		if(e.isCancelled()){
+			return;
+		}
+	}
+	
+	public void use(final GameObject g, final String option) {
+		AStar finder = new AStar(20);
+		Path path = finder.findPath(this.getLocation(), g.getLocation(), g.getLocation().add(g.getSizeX() - 1, g.getSizeY() - 1), this.getSizeX(), this.getSizeY(), g);
+		
+		if (path.hasFailed()) {
+			return;
+		}
+		
+		if (!path.isEmpty()) {
+			// Given our pathfinding algorithm, it ignores the object.
+			// Thus the path leads into the corner of the object. So we
+			// delete the last step, if one is created.
+			path.removeLast();
+		}
+		
+		this.getActions().clear();
+		
+		final MobUseObjectEvent e = new MobUseObjectEvent(this, g, option);
+		if (!path.isEmpty()) {
+			this.setFacing(null);
+			WalkAction walk = new WalkAction(this, path) {
+				@Override
+				public void run() throws SuspendExecution {
+					super.run();
+					face(g);
+					e.call();
+					if (e.isCancelled()) {
+						return;
+					}
+				}
+			};
+			this.getActions().queue(walk);
+		}
+		else {
+			this.face(g);
+			e.call();
+			if (e.isCancelled()) return;
+		}
+	}
+	
+	public void use(Persona player, PersonaOption option) {
+		option.run(this, player);
+	}
+	
+	public void use(NPC npc, String option) {
+		final MobUseNPCEvent e = new MobUseNPCEvent(this, npc, option);
+		e.call();
+		if(e.isCancelled()){
+			return;
+		}
+	}
+	
+	public void use(ItemStack item, GameObject object) {
+		AStar finder = new AStar(20);
+		Path path = finder.findPath(this.getLocation(), object.getLocation(), object.getLocation().add(object.getSizeX() - 1, object.getSizeY() - 1), this.getSizeX(), this.getSizeY(), object);
+		
+		if (path.hasFailed()) {
+			return;
+		}
+		
+		if (path.isEmpty() == false) {
+			//Given our pathfinding algorithm, it ignores the object. Thus the path leads into the corner of the object. So we delete the last step, if one is created.
+			path.removeLast();
+		}
+		
+		this.getActions().clear();
+		
+		final MobItemOnObjectEvent e = new MobItemOnObjectEvent(this, object, item);
+		if (path.isEmpty() == false) {
+			WalkAction walk = new WalkAction(this, path){
+				@Override
+				public void run() throws SuspendExecution{
+					super.run();
+					e.call();
+					if(e.isCancelled()){
+						return;
+					}
+				}
+			};
+			this.getActions().queue(walk);
+		}
+		else {
+			e.call();
+			if(e.isCancelled()){
+				return;
+			}
+		}
+	}
+	
+	public void use(ItemStack item, ItemStack target) {
+		throw new RuntimeException("Not implemented");
+	}
+	
+	public void use(ItemStack item, NPC target) {
+		throw new RuntimeException("Not implemented");
+	}
+	
+	public void use(final GroundItemStack item, String option){
+		this.getActions().clear();
+		AStar finder = new AStar(10);
+		Path path = finder.findPath(this.getLocation(), item.getLocation(), item.getLocation(), this.getSizeX(), this.getSizeY());
+		
+		final MobUseGroundItemEvent e = new MobUseGroundItemEvent(this, item, option);
+		if (path.isEmpty() == false) {
+			WalkAction walk = new WalkAction(this, path){
+				@Override
+				public void run() throws SuspendExecution{
+					super.run();
+					e.call();
+					if(e.isCancelled()){
+						return;
+					}
+				}
+			};
+			this.getActions().queue(walk);
+		}
+		else {
+			e.call();
+			if(e.isCancelled()){
+				return;
+			}
+		}
 	}
 }

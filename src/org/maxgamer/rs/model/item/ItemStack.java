@@ -251,4 +251,12 @@ public class ItemStack implements Comparable<ItemStack>, YMLSerializable {
 	public boolean isNoted() {
 		return getDefinition().isNoted();
 	}
+	
+	public boolean hasOption(String name){
+		for(String s : getDefinition().getInventoryOptions()){
+			if(s == null) continue;
+			if(name.equals(s)) return true;
+		}
+		return false;
+	}
 }

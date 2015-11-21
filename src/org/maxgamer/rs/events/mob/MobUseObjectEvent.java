@@ -6,10 +6,10 @@ import org.maxgamer.rs.model.map.GameObject;
 
 public class MobUseObjectEvent extends MobEvent implements Cancellable {
 	private GameObject target;
-	private int option;
+	private String option;
 	private boolean cancel;
 	
-	public MobUseObjectEvent(Mob mob, GameObject target, int option) {
+	public MobUseObjectEvent(Mob mob, GameObject target, String option) {
 		super(mob);
 		
 		this.target = target;
@@ -20,12 +20,8 @@ public class MobUseObjectEvent extends MobEvent implements Cancellable {
 		return this.target;
 	}
 	
-	public int getOptionNumber(){
-		return this.option;
-	}
-	
 	public String getOption(){
-		return target.getDefiniton().getOption(this.option);
+		return this.option;
 	}
 	
 	@Override

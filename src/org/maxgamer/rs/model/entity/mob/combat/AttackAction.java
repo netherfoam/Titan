@@ -4,7 +4,6 @@ import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.model.action.Action;
 import org.maxgamer.rs.model.action.CombatFollow;
 import org.maxgamer.rs.model.entity.mob.Mob;
-import org.maxgamer.rs.model.entity.mob.facing.Facing;
 
 import co.paralleluniverse.fibers.SuspendExecution;
 
@@ -81,7 +80,7 @@ public class AttackAction extends Action {
 				continue;
 			}
 			
-			getOwner().setFacing(Facing.face(getTarget()));
+			getOwner().face(getTarget());
 		}
 		
 		//Now we have to wait until we're close enough!

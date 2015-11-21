@@ -1,6 +1,7 @@
 package org.maxgamer.rs.command.commands;
 
 import org.maxgamer.rs.command.PlayerCommand;
+import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;
 import org.maxgamer.rs.model.entity.mob.persona.PersonaOption;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
@@ -12,7 +13,7 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
 public class Kill implements PlayerCommand {
 	public static final PersonaOption KILL = new PersonaOption("Kill") {
 		@Override
-		public void run(Persona clicker, Persona target) {
+		public void run(Mob clicker, Persona target) {
 			target.setHealth(0);
 			if (target instanceof Player) {
 				((Player) target).sendMessage(clicker + " has killed you");

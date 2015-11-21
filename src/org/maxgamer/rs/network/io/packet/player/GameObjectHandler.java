@@ -1,20 +1,13 @@
 package org.maxgamer.rs.network.io.packet.player;
 
 import org.maxgamer.rs.definition.GameObjectProto;
-import org.maxgamer.rs.events.mob.MobUseObjectEvent;
 import org.maxgamer.rs.lib.log.Log;
-import org.maxgamer.rs.model.action.WalkAction;
-import org.maxgamer.rs.model.entity.mob.facing.Facing;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
 import org.maxgamer.rs.model.map.GameObject;
 import org.maxgamer.rs.model.map.Location;
-import org.maxgamer.rs.model.map.path.AStar;
-import org.maxgamer.rs.model.map.path.Path;
 import org.maxgamer.rs.network.io.packet.PacketProcessor;
 import org.maxgamer.rs.network.io.packet.RSIncomingPacket;
-
-import co.paralleluniverse.fibers.SuspendExecution;
 
 /**
  * @author netherfoam
@@ -109,44 +102,7 @@ public class GameObjectHandler implements PacketProcessor<Player> {
 					return;
 				}
 
-				AStar finder = new AStar(20);
-				Path path = finder.findPath(p.getLocation(), g.getLocation(), g.getLocation().add(g.getSizeX() - 1, g.getSizeY() - 1), p.getSizeX(), p.getSizeY(), g);
-
-				if (path.hasFailed()) {
-					return;
-				}
-
-				if (!path.isEmpty()) {
-					// Given our pathfinding algorithm, it ignores the object.
-					// Thus the path leads into the corner of the object. So we
-					// delete the last step, if one is created.
-					path.removeLast();
-				}
-
-				p.getActions().clear();
-
-				final MobUseObjectEvent e = new MobUseObjectEvent(p, g, option);
-				if (!path.isEmpty()) {
-					p.setFacing(null);
-					WalkAction walk = new WalkAction(p, path) {
-						@Override
-						public void run() throws SuspendExecution {
-							super.run();
-							p.setFacing(Facing.face(g));
-							e.call();
-							if (e.isCancelled()) {
-								return;
-							}
-						}
-					};
-					p.getActions().queue(walk);
-				} else {
-					p.setFacing(Facing.face(g));
-					e.call();
-					if (e.isCancelled())
-						return;
-				}
-
+				p.use(g, s);
 				return;
 			}
 		}

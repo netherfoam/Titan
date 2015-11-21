@@ -2,8 +2,10 @@ package org.maxgamer.rs.model.map;
 
 import java.util.HashSet;
 
+import org.maxgamer.rs.model.entity.Entity;
 import org.maxgamer.rs.model.map.path.Direction;
 import org.maxgamer.rs.model.map.path.Directions;
+import org.maxgamer.rs.structure.Filter;
 import org.maxgamer.rs.structure.areagrid.Cube;
 import org.maxgamer.rs.structure.areagrid.MBR;
 import org.maxgamer.rs.structure.configs.ConfigSection;
@@ -239,5 +241,49 @@ public class Location extends Position implements MBR {
 		//this may cause lots of hash collisions.
 		//But, as a rule of thumb, we don't.
 		return ((z << 30) | (x << 15) | (y)) + map.hashCode();
+	}
+	
+	/**
+	 * Finds the closest Entity of the given type to this location. 
+	 * @param <T> the entity type to search for (Eg GameObject.class)
+	 * @param type the type of entity  
+	 * @param radius the radius to search 
+	 * @param filter the filter for accepting / declining objects
+	 * @return the closest object that was accepted by the filter
+	 */
+	public <T extends Entity> T getClosest(Class<T> type, int radius, Filter<T> filter){
+		T closest = null;
+		int distSq = 0;
+		
+		for(T object : getNearby(type, radius)){
+			/* Ask if the object is valid to the filter */
+			if(filter.accept(object) == false) continue;
+			
+			if(closest == null || distSq > object.getLocation().distanceSq(this)){
+				closest = object;
+				distSq = object.getLocation().distanceSq(this);
+			}
+		}
+		return closest;
+	}
+	
+	/**
+	 * Finds the closest Entity of the given type to this location. 
+	 * @param <T> the entity type to search for (Eg GameObject.class)
+	 * @param type the type of entity  
+	 * @param radius the radius to search 
+	 * @return the closest object of the given type
+	 */
+	public <T extends Entity> T getClosest(Class<T> type, int radius){
+		T closest = null;
+		int distSq = 0;
+		
+		for(T object : getNearby(type, radius)){
+			if(closest == null || distSq > object.getLocation().distanceSq(this)){
+				closest = object;
+				distSq = object.getLocation().distanceSq(this);
+			}
+		}
+		return closest;
 	}
 }

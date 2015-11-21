@@ -431,6 +431,15 @@ public class ActionQueue extends FastTickable {
 		}
 	}
 	
+	public boolean isQueued(Class<? extends Action> type){
+		synchronized(queue){
+			for(Action a : queue){
+				if(type.isInstance(a)) return true;
+			}
+		}
+		return false;
+	}
+	
 	public int size() {
 		return this.queue.size();
 	}

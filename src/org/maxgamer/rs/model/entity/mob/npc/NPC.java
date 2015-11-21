@@ -387,4 +387,8 @@ public class NPC extends Mob {
 	public String getName() {
 		return getDefinition().getName();
 	}
+	
+	public String getOption(int index){
+		return getDefinition().getOption(index);
+	}
 }

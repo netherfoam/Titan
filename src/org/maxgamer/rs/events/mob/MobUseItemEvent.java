@@ -6,12 +6,12 @@ import org.maxgamer.rs.model.item.ItemStack;
 
 public class MobUseItemEvent extends MobEvent implements Cancellable {
 	private ItemStack item;
-	private int option;
+	private String option;
 	private int slot;
 	
 	private boolean cancel;
 	
-	public MobUseItemEvent(Mob mob, ItemStack item, int option, int slot) {
+	public MobUseItemEvent(Mob mob, ItemStack item, String option, int slot) {
 		super(mob);
 		
 		this.item = item;
@@ -20,13 +20,16 @@ public class MobUseItemEvent extends MobEvent implements Cancellable {
 	}
 	
 	public String getOption(){
-		return this.getItem().getInventoryOption(this.option);
+		return option;
 	}
 	
 	public ItemStack getItem(){
 		return this.item;
 	}
 	
+	/**
+	 * The slot. This may be -1 if unknown
+	 */
 	public int getSlot(){
 		return this.slot;
 	}

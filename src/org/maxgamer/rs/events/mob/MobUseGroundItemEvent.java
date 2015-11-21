@@ -6,11 +6,11 @@ import org.maxgamer.rs.model.item.ground.GroundItemStack;
 
 public class MobUseGroundItemEvent extends MobEvent implements Cancellable {
 	private GroundItemStack item;
-	private int option;
+	private String option;
 	
 	private boolean cancel;
 	
-	public MobUseGroundItemEvent(Mob mob, GroundItemStack item, int option) {
+	public MobUseGroundItemEvent(Mob mob, GroundItemStack item, String option) {
 		super(mob);
 		
 		this.item = item;
@@ -18,7 +18,7 @@ public class MobUseGroundItemEvent extends MobEvent implements Cancellable {
 	}
 	
 	public String getOption(){
-		return this.getItem().getItem().getGroundOption(this.option);
+		return option;
 	}
 	
 	public GroundItemStack getItem(){

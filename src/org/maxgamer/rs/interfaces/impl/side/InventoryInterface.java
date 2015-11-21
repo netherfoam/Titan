@@ -2,7 +2,6 @@ package org.maxgamer.rs.interfaces.impl.side;
 
 import java.util.Arrays;
 
-import org.maxgamer.rs.events.mob.MobUseItemEvent;
 import org.maxgamer.rs.interfaces.SettingsBuilder;
 import org.maxgamer.rs.interfaces.SideInterface;
 import org.maxgamer.rs.interfaces.Window;
@@ -146,11 +145,7 @@ public class InventoryInterface extends SideInterface {
 			return;
 		}
 		
-		MobUseItemEvent e = new MobUseItemEvent(getPlayer(), item, option, slot);
-		e.call();
-		if(e.isCancelled()){
-			return;
-		}
+		player.use(item, slot, s);
 	}
 	
 	@Override

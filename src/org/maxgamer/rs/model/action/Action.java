@@ -204,5 +204,12 @@ public abstract class Action {
 		return getOwner().getActions().isQueued(this);
 	}
 	
+	/**
+	 * Cancels this action.  This is a convenience method for getOwner().getActions().cancel(this)
+	 */
+	public void cancel() {
+		getOwner().getActions().cancel(this);
+	}
+	
 	
 }

@@ -52,7 +52,6 @@ public class Equipment extends Container {
 				bonus[i] += item.getWeapon().getBonus(i);
 			}
 		}
-		
 	}
 	
 	public void set(WieldType type, ItemStack item) {

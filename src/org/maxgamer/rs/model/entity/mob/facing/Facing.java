@@ -1,7 +1,7 @@
 package org.maxgamer.rs.model.entity.mob.facing;
 
+import org.maxgamer.rs.model.entity.Entity;
 import org.maxgamer.rs.model.entity.mob.Mob;
-import org.maxgamer.rs.model.map.GameObject;
 import org.maxgamer.rs.model.map.Position;
 
 /**
@@ -13,9 +13,9 @@ public abstract class Facing {
 		return new MobFacing(m);
 	}
 	
-	public static Facing face(GameObject g) {
-		if (g == null) return null;
-		return face(g.getCenter());
+	public static Facing face(Entity e) {
+		if (e == null) return null;
+		return face(e.getCenter());
 	}
 	
 	public static Facing face(Position p) {

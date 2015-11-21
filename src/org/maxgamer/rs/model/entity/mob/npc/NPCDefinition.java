@@ -916,7 +916,7 @@ public class NPCDefinition extends Definition {
 	 *         slot.
 	 * @throws IndexOutOfBoundsException if the slot is out of bounds.
 	 */
-	public String getInteraction(int slot) {
+	public String getOption(int slot) {
 		if (slot < 0 || slot >= options.length) {
 			throw new IndexOutOfBoundsException();
 		}

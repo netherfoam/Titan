@@ -1,5 +1,7 @@
 package org.maxgamer.rs.model.entity.mob.persona;
 
+import org.maxgamer.rs.model.entity.mob.Mob;
+
 /**
  * Represents an option that may be clicked when a player is right clicked.
  * @author netherfoam
@@ -33,7 +35,7 @@ public abstract class PersonaOption {
 	 * @param clicker The player who clicked the option
 	 * @param target The player who was selected when the option was clicked.
 	 */
-	public abstract void run(Persona clicker, Persona target);
+	public abstract void run(Mob clicker, Persona target);
 	
 	@Override
 	public String toString() {

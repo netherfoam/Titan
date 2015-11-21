@@ -3,7 +3,6 @@ package org.maxgamer.rs.lib.log;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintStream;
 
 import org.maxgamer.rs.lib.log.Logger.LogLevel;

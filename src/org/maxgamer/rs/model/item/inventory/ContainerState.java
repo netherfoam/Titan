@@ -43,13 +43,16 @@ public class ContainerState extends Container {
 	 * Applies all changes made by this container state to the container, and
 	 * clears the internal set of updates.
 	 */
-	public synchronized void apply() {
+	public synchronized boolean apply() {
+		boolean change = false;
 		for (int i = 0; i < updates.length; i++) {
 			if (updates[i]) {
 				c.set(i, items[i]);
 				updates[i] = false;
+				change = true;
 			}
 		}
+		return change;
 	}
 	
 	@Override

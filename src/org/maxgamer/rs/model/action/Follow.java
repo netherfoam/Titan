@@ -5,7 +5,6 @@ import java.lang.ref.WeakReference;
 import org.maxgamer.rs.lib.Erratic;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.MovementUpdate;
-import org.maxgamer.rs.model.entity.mob.facing.Facing;
 import org.maxgamer.rs.model.map.Location;
 import org.maxgamer.rs.model.map.path.AStar;
 import org.maxgamer.rs.model.map.path.Direction;
@@ -95,7 +94,7 @@ public abstract class Follow extends Action {
 		MovementUpdate m = mob.getUpdateMask().getMovement();
 		Path path = null;
 		
-		getOwner().setFacing(Facing.face(getTarget()));
+		getOwner().face(getTarget());
 		
 		while(isFollowing()){
 			if (getOwner().getLocation().equals(getTarget().getLocation())) {
@@ -151,8 +150,10 @@ public abstract class Follow extends Action {
 	
 	@Override
 	protected void onCancel() {
-		//No longer stalking them.
-		getOwner().setFacing(null);
+		//No longer stalking them. Preserve facing though
+		if(getOwner().getFacing() != null){
+			getOwner().face(getOwner().getFacing().getPosition());
+		}
 	}
 	
 	@Override

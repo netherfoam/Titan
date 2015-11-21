@@ -1,18 +1,12 @@
 package org.maxgamer.rs.network.io.packet.player;
 
-import org.maxgamer.rs.events.mob.MobUseGroundItemEvent;
-import org.maxgamer.rs.model.action.WalkAction;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.item.ItemProto;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.item.ground.GroundItemStack;
 import org.maxgamer.rs.model.map.Location;
-import org.maxgamer.rs.model.map.path.AStar;
-import org.maxgamer.rs.model.map.path.Path;
 import org.maxgamer.rs.network.io.packet.PacketProcessor;
 import org.maxgamer.rs.network.io.packet.RSIncomingPacket;
-
-import co.paralleluniverse.fibers.SuspendExecution;
 
 /**
  * @author netherfoam
@@ -110,29 +104,6 @@ public class GroundItemOptionsHandler implements PacketProcessor<Player> {
 			return;
 		}
 		
-		player.getActions().clear();
-		AStar finder = new AStar(10);
-		Path path = finder.findPath(player.getLocation(), target.getLocation(), target.getLocation(), player.getSizeX(), player.getSizeY());
-		
-		final MobUseGroundItemEvent e = new MobUseGroundItemEvent(player, target, option);
-		if (path.isEmpty() == false) {
-			WalkAction walk = new WalkAction(player, path){
-				@Override
-				public void run() throws SuspendExecution{
-					super.run();
-					e.call();
-					if(e.isCancelled()){
-						return;
-					}
-				}
-			};
-			player.getActions().queue(walk);
-		}
-		else {
-			e.call();
-			if(e.isCancelled()){
-				return;
-			}
-		}
+		player.use(target, name);
 	}
 }

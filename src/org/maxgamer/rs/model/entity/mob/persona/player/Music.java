@@ -49,7 +49,16 @@ public class Music implements YMLSerializable {
 		totalPos++;
 	}
 
+	/**
+	 * Plays a specific song for the specified {@code musicId}.
+	 * 
+	 * @param musicId the id of the song to be played
+	 */
 	public void playMusic(int musicId) {
+		if (!unlockedTracks[musicId]) {
+			p.getCheats().log(1, p.getName() + " attempted to play an unlocked music track.");
+			return;
+		}
 		p.getProtocol().playMusic(100, 50, musicId);
 	}
 
@@ -76,11 +85,12 @@ public class Music implements YMLSerializable {
 
 	@Override
 	public ConfigSection serialize() {
+		//TODO save
 		return null;
 	}
 
 	@Override
 	public void deserialize(ConfigSection map) {
-
+		//TODO load
 	}
 }

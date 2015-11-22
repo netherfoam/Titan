@@ -6,7 +6,7 @@ package org.maxgamer.rs.model.item;
  * 
  * @author Albert Beaupre
  */
-public class ProbabilityItemStack {
+public class ProbabilityItemStack extends ItemStack {
 
 	protected final ItemStack item;
 	protected final float probability; // 0.0 - 1.0
@@ -21,8 +21,17 @@ public class ProbabilityItemStack {
 	 *            the probability of obtaining the item
 	 */
 	public ProbabilityItemStack(ItemStack item, float probability) {
+		super(item.getId(), item.getAmount(), item.getHealth());
 		this.item = item;
 		this.probability = probability;
+	}
+	
+	public ProbabilityItemStack(int id, float probability) {
+		this(ItemStack.create(id), probability);
+	}
+	
+	public ProbabilityItemStack(int id, int amount, float probability) {
+		this(ItemStack.create(id, amount), probability);
 	}
 
 	/**

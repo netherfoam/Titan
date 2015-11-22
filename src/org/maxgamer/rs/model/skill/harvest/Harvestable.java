@@ -2,6 +2,7 @@ package org.maxgamer.rs.model.skill.harvest;
 
 import org.maxgamer.rs.core.tick.Tickable;
 import org.maxgamer.rs.lib.Erratic;
+import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.item.ItemStack;
@@ -190,16 +191,16 @@ public class Harvestable {
 	}
 
 	/**
-	 * Returns true if the given persona has the requirements for harvesting
+	 * Returns true if the given mob has the requirements for harvesting
 	 * this resource. Note that this doesn't check tools, but skills and (if
 	 * overridden) things like quests.
 	 * 
 	 * @param p
-	 *            the persona attempting to harvest this object
-	 * @return true if the persona can harvest it (ignoring tools) false if they
+	 *            the mob attempting to harvest this object
+	 * @return true if the mob can harvest it (ignoring tools) false if they
 	 *         cannot.
 	 */
-	public boolean hasRequirements(Persona p) {
+	public boolean hasRequirements(Mob p) {
 		if (p == null) {
 			throw new NullPointerException();
 		}

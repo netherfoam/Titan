@@ -3,6 +3,7 @@ package org.maxgamer.rs.interfaces.impl.side;
 import java.util.HashMap;
 
 import org.maxgamer.rs.interfaces.SideInterface;
+import org.maxgamer.rs.interfaces.impl.primary.ItemsOnDeathInterface;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.item.WieldType;
@@ -32,10 +33,12 @@ public class EquipmentInterface extends SideInterface {
 	}
 	
 	private ContainerListener listener;
+	private ItemsOnDeathInterface iodInterface;
 	
 	public EquipmentInterface(Player p) {
 		//207 or 92
 		super(p, (short) (p.getSession().getScreenSettings().getDisplayMode() < 2 ? 207 : 92)); //Container ID is 94, but Interface ID is 387
+		this.iodInterface = new ItemsOnDeathInterface(player);
 		setChildId(387);
 	}
 	
@@ -79,8 +82,12 @@ public class EquipmentInterface extends SideInterface {
 		
 		//Slot is invalid for the equipment interface, it is sent by the client as 65535 (-1)
 		//Client instead sends button ID based on the slot they clicked.
+		if (buttonId == 45) { //Items on death
+			player.getWindow().open(iodInterface);
+			return;
+		}
 		
-		if (BUTTON_TO_SLOT.containsKey(buttonId)) {
+ 		if (BUTTON_TO_SLOT.containsKey(buttonId)) {
 			WieldType type = BUTTON_TO_SLOT.get(buttonId);
 			
 			ItemStack item = getPlayer().getEquipment().get(type);

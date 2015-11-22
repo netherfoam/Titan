@@ -65,6 +65,10 @@ public abstract class Pane extends Window {
 		
 		iface.onOpen();
 		player.getProtocol().sendInterface(iface.isServerSidedClose(), iface.getParent().getChildId(), iface.childPos, iface.getChildId());
+		
+		if (!iface.isMobile()) {
+			player.getActions().clear(); //clears actions if the interface is not mobile
+		}
 	}
 	
 	/**

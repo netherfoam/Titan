@@ -220,6 +220,7 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 		// to the player safely without interfering with the login procedure.
 		register("friends", this.friends);
 		register("notes", this.notes);
+		register("music", this.music);
 
 		getPersonaOptions().add(PersonaOptions.ATTACK, true);
 		getPersonaOptions().add(PersonaOptions.FOLLOW, false);

@@ -35,7 +35,7 @@ Easiest:
 		if you're unsure, just set it to '1'. Once logging the cheat, the method should
 		return without performing the request.
 
-	Emotes System:
+	Emotes System: [DONE]
 		This task is very similar to above. See 
 		org.maxgamer.rs.interfaces.impl.side.EmotesInterface#onClick()
 

@@ -1,5 +1,8 @@
 package org.maxgamer.rs.model.entity.mob.persona.player;
 
+import java.util.Map.Entry;
+
+import org.maxgamer.rs.cache.format.ClientScriptSettings;
 import org.maxgamer.rs.structure.YMLSerializable;
 import org.maxgamer.rs.structure.configs.ConfigSection;
 
@@ -11,13 +14,13 @@ public class Music implements YMLSerializable {
 	/**
 	 * The maximum amount of music that can be unlocked by a player.
 	 */
-	public static final int MAX_MUSIC = 762;
+	public static final int MAX_MUSIC = 962;
 
 	private final boolean[] unlockedTracks; // The flags to check if the player has unlocked a certain track
 	private final Player p; // The player who uses this music
 
 	private boolean selectivePlaying; // The music is being played by selection
-	private int currentTrackPlaying;
+	private int currentTrackPlaying; // The music id of the current track being played
 
 	/**
 	 * Constructs a new {@code Music} from the specified {@link Player} {@code p}.
@@ -62,9 +65,9 @@ public class Music implements YMLSerializable {
 			p.getCheats().log(1, p.getName() + " attempted to play an unlocked music track.");
 			return;
 		}
-		p.getProtocol().playMusic(100, 50, musicId);
 		setSelectivePlaying(selective);
 		currentTrackPlaying = musicId;
+		p.getProtocol().playMusic(100, 50, musicId);
 	}
 
 	/**
@@ -84,7 +87,7 @@ public class Music implements YMLSerializable {
 	 */
 	public void unlockMusicTrack(int musicId) {
 		if (!unlockedTracks[musicId]) {
-			String musicName = null; // TODO get client script by musicId
+			String musicName = ClientScriptSettings.getSettings(1345).getStringValue(musicId);
 			p.sendMessage("<col=ff0000>You have unlocked a new music track: " + (musicName == null ? "UNKNOWN TRACK (" + musicId + ")" : musicName) + ".");
 		}
 		unlockedTracks[musicId] = true;
@@ -96,13 +99,20 @@ public class Music implements YMLSerializable {
 
 	@Override
 	public ConfigSection serialize() {
-		// TODO save
-		return null;
+		ConfigSection s = new ConfigSection();
+		for (int i = 0; i < unlockedTracks.length; i++)
+			s.put("" + i, unlockedTracks[i]);
+		return s;
 	}
 
 	@Override
 	public void deserialize(ConfigSection map) {
-		// TODO load
+		for (Entry<String, Object> e : map.entrySet()) {
+			int musicId = Integer.parseInt(e.getKey().trim());
+			boolean unlocked = Boolean.parseBoolean("" + e.getValue());
+			unlockedTracks[musicId] = unlocked;
+		}
+		refreshMusicConfiguration();
 	}
 
 	public boolean isSelectivePlaying() {

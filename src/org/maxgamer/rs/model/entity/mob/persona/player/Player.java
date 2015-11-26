@@ -24,7 +24,6 @@ import org.maxgamer.rs.interfaces.impl.side.FriendSideInterface;
 import org.maxgamer.rs.interfaces.impl.side.IgnoresSideInterface;
 import org.maxgamer.rs.interfaces.impl.side.InventoryInterface;
 import org.maxgamer.rs.interfaces.impl.side.MagicInterface;
-import org.maxgamer.rs.interfaces.impl.side.MusicInterface;
 import org.maxgamer.rs.interfaces.impl.side.NotesInterface;
 import org.maxgamer.rs.interfaces.impl.side.PrayerInterface;
 import org.maxgamer.rs.interfaces.impl.side.QuestInterface;
@@ -176,6 +175,7 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 		this.personaOptions = new PlayerOptions(this);
 		this.friends = new FriendsList(this);
 		this.notes = new Notes(this);
+		this.music = new Music(this);
 
 		try {
 			// Attempt to get the view distance from the config.
@@ -242,7 +242,6 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 		getWindow().open(new QuestInterface(this));
 		getWindow().open(new SkillsInterface(this));
 		getWindow().open(new TasksInterface(this));
-		getWindow().open(new MusicInterface(this));
 
 		this.getProtocol().sendConfig(281, 1000); // Removes tutorial island
 													// limitations

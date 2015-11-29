@@ -100,6 +100,25 @@ public class ActionQueue extends FastTickable {
 	}
 	
 	/**
+	 * Cancels all actions which an instance of or a subclass of the given type.
+	 * @param type the type to cancel, eg WalkAction
+	 * @return the number of cancelled actions or 0 if none were cancelled.
+	 */
+	public int cancel(Class<? extends Action> type){
+		int n = queue.size();
+		synchronized(queue){
+			for(int i = 0; i < queue.size(); i++){
+				if(type.isInstance(queue.get(i))){
+					cancel(queue.get(i));
+					i--;
+				}
+			}
+			
+			return n - queue.size();
+		}
+	}
+	
+	/**
 	 * Inserts the given action before the given marker action. Eg if you wish
 	 * to insert a follow before a combat action.
 	 * @param marker the action to look for

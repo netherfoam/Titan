@@ -176,7 +176,9 @@ public class JavaScriptFiber {
 	 * JavaScriptFiber's calls. This throws {@link ContinuationPending}.
 	 */
 	public void pause() throws ContinuationPending {
-		if(isFinished()) return;
+		if(isFinished()){
+			return;
+		}
 		
 		Context context = Context.enter();
 		try {

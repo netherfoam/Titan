@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
+import org.maxgamer.rs.model.action.WalkAction;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 
 /**
@@ -67,7 +68,7 @@ public abstract class Pane extends Window {
 		player.getProtocol().sendInterface(iface.isServerSidedClose(), iface.getParent().getChildId(), iface.childPos, iface.getChildId());
 		
 		if (!iface.isMobile()) {
-			player.getActions().clear(); //clears actions if the interface is not mobile
+			player.getActions().cancel(WalkAction.class); //Prevent walking
 		}
 	}
 	

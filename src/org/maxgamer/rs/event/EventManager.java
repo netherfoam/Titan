@@ -6,6 +6,7 @@ import java.util.LinkedList;
 
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.model.entity.mob.npc.SpawnManager;
+import org.maxgamer.rs.model.javascript.dialogue.TalkToListener;
 import org.maxgamer.rs.model.skill.prayer.PrayerListener;
 
 public class EventManager {
@@ -18,6 +19,7 @@ public class EventManager {
 			this.register(new SpawnManager());
 		}
 		this.register(new PrayerListener());
+		this.register(new TalkToListener());
 	}
 	
 	/**

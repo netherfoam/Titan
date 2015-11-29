@@ -50,7 +50,7 @@ public class ItemOnObjectHandler implements PacketProcessor<Player> {
 		
 		for(GameObject g : l.getNearby(GameObject.class, 0)){
 			if(g.getId() == objectId){
-				if(g.getName() == null){
+				if(g.getName() == null || g.getName().equals("null")){
 					player.getCheats().log(10, "Player attempted to use an item on an object which has no name.");
 					return;
 				}

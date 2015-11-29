@@ -1726,6 +1726,34 @@ public class Game637Protocol extends GameProtocol {
 		getPlayer().write(out);
 	}
 	
+	public void setItem(int iface, boolean split, Container c) {
+		RSOutgoingPacket out = new RSOutgoingPacket(57);
+		
+		out.writeShort(iface);
+		out.writeByte(split ? 1 : 0);
+		
+		for (int i = 0; i < c.getSize(); i++) {
+			out.writeSmart(i);
+			ItemStack item = c.get(i);
+			if (item == null) {
+				out.writeShort(0); // Client represents NULL as 0
+			}
+			else {
+				out.writeShort(item.getId() + 1); // Client IDs are offset by +1
+				int n = (int) Math.min(item.getAmount(), Integer.MAX_VALUE);
+				if (n >= 0xFF) {
+					out.writeByte(0xFF);
+					out.writeInt(n);
+				}
+				else {
+					out.writeByte(n);
+				}
+			}
+		}
+		
+		getPlayer().write(out);
+	}
+	
 	public void setItem(int iface, boolean split, ItemStack item, int slot) {
 		RSOutgoingPacket out = new RSOutgoingPacket(57);
 		

@@ -1,0 +1,110 @@
+Easiest:
+
+	Music System:
+		You'll need to finish implementing the MusicInterface class. See
+		org.maxgamer.rs.interfaces.impl.side.MusicInterface#onClick()
+
+		That's where you'll need to implement handling when a player tries
+		to play a song.  When you click a button in-game, the server will
+		print debug information (Who clicked what button).  Use those button
+		ID's to select which song to play.
+
+		Consider this code for sending a player music (You SHOULD place this
+		in Game637Protocol.java instead as like playMusic(volume, fadeSpeed, trackId){}
+			RSOutgoingPacket out = new RSOutgoingPacket(73); //73 = Opcode
+			out.writeByteC(5); //Volume, I think it's from 0 to 255, and not 0 to 100
+			out.writeByteC(50); //Fade in speed
+			//The track ID. These are stored on the client in LEShort form,
+			//but the network protocol reads this as a Short.  Don't be fooled,
+			//it's a LEShort.
+			out.writeLEShort(ma.getTrack()); //Track ID of song in cache
+			p.write(out); //writes the player the packet
+
+		When the player logs in, they're currently given a MusicInterface
+		automatically, so once you fill in the #onClick() method in MusicInterface,
+		you should see immediate results.
+
+		If the player attempts to do something they aren't allowed to, don't
+		forget to do player.getCheats().log(a_severity_value, "A message describing 
+		the cheat/hack/violation");.  This won't kick the player (yet). In future, if a player
+		violates things too frequently, they will be kicked and admins notified. For now,
+		it just prints to the console the player tried to "cheat". The severity value 
+		ranges from 1 (say, something that can happen in legitimate clients with lag) to
+		20 (say, the player tries to interact with the bank interface when it's nowhere 
+		near them! That could be dangerous!).  There's no strict guideline on this, so
+		if you're unsure, just set it to '1'. Once logging the cheat, the method should
+		return without performing the request.
+
+	Emotes System: [DONE]
+		This task is very similar to above. See 
+		org.maxgamer.rs.interfaces.impl.side.EmotesInterface#onClick()
+
+		When a player clicks a button in the emotes interface, onClick() will be called.
+		You should handle the option appropriately (different interface components clicked
+		will result in different button/option ID's being requested).
+
+		Use this.getPlayer().animate().  The animations are listed in the EmotesInterface
+		class.
+
+Moderate difficulty:
+	ItemsOnDeathInterface
+		Create your own ItemsOnDeathInterface class. This class should extend PrimaryInterface. 
+		Place it in org.maxgamer.rs.interfaces.impl.primary.ItemsOnDeathInterface.java 
+
+		You will need to get the ID of the interface, you can get this by searching 
+		an old dementhium source. There will be two ID's for it that you need: one for full-
+		screen, and one for fixed-size.  Note that the ID ISN'T 18 or 9 (That's a "position" 
+		inside the primary game window - the position of the primary interface.)  The ID isn't 
+		548 or 746 either, they are the ID's of the primary game window (One is fixed-screen, 
+		one is full-screen mode).
+
+		ItemsOnDeathInterface my_interface = new ItemsOnDeathInterface(player);
+		To open an interface, you should do player.getWindow().open(my_interface);
+
+		To close an interface, do
+		player.getWindow().close(my_interface);
+
+		Note: Do NOT call my_interface.onOpen() manually, that will result in odd behaviour... 
+		It won't actually open the interface
+
+		For an example interface, see org.maxgamer.rs.interfaces.impl.primary.BankInterface.
+
+		I think the items on death interface uses a container, I'm not sure of the container's 
+		ID though.  Probably something around 90-100. This Container is a client-side representation 
+		of a "inventory" (like a bank, or equipment, or inventory, or shop contents).
+
+		If you find the ID of the container, you can set items in it. 
+		Eg, player.getProtocol().setItem(container_id, slot_id, item);
+
+Hard difficulty:
+	Summoning
+		This'll be tough. You'll need event listeners for when things happen to pets,
+		you'll need players to receive tokens when a NPC dies (MobDeathEvent, see mob.getDamage().getKiller()). 
+		You'll need probably a handful of summoning interfaces. You'll need to spawn NPC's in 
+		game (new NPC(npc_type_id).setLocation(player.getLocation().add(0, 1)). You'll need 
+		familiars to follow players (Use the action queue, see FollowAction). Also consider using 
+		Mob#onIdle() - You would have to extend the NPC class (That's how I'd recommend doing it). 
+		You'll need to check the summoned familiar isn't too far
+		from the owner. You'll need your familiar to do checks on its master (Perhaps use MobDamageEvent, 
+		if the damaged mob is the player, send the familiar after
+		the target)
+
+	Duel Arena
+		This might be a bit easier than summoning. You'll need a challenge interface (Eg would you like 
+		staked vs unstaked duel?). You'll need a rules/stakes/armor interface (Eg no helms, prayer 
+		off, staking 100k coins vs a whip).  You'll need listeners to prevent players losing their 
+		items on death, or equipping banned armors, or activating prayers, or teleporting out(!) / eating
+
+		You'll need the 'you won ____ ' and 'you lost' interfaces. Adding items to inventories after 
+		death.  If the players inventory is full, consider using
+		player.getLostAndFound().add(item), which will:
+			- Place the item in their inventory or,
+			- Place the item in their bank or,
+			- Wait until their inventory or bank has space
+
+		This prevents players losing items of value due to no space.
+
+
+
+
+

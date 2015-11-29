@@ -26,6 +26,7 @@ public class WeightedPicker<T extends Weighted> {
 	 * @param options The predefined set of Weighted objects which can be
 	 *        selected.
 	 */
+	@SafeVarargs
 	public WeightedPicker(T... options){
 		this();
 		for(T w : options){

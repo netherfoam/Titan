@@ -101,7 +101,7 @@ public class Chat {
 			while (s.length() > lineWidth) {
 				int pos = lineWidth - 1;
 
-				while (isWhitespace(s.charAt(pos)) == false) {
+				while (isWhitespace(s.charAt(pos)) == false && pos > 0) {
 					pos--;
 				}
 

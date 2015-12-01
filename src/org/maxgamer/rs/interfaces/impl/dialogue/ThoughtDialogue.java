@@ -10,6 +10,8 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Player;
  * @author Dirk Jamieson / Netherfoam
  */
 public abstract class ThoughtDialogue extends Dialogue {
+	public static final int MAX_LINES = 5;
+	
 	protected String[] text;
 	
 	public ThoughtDialogue(Player p) {
@@ -40,7 +42,7 @@ public abstract class ThoughtDialogue extends Dialogue {
 	 * @throws IllegalArgumentException if 1 < lines.length or lines.length > 5
 	 */
 	public void setLines(String... lines){
-		if(lines.length < 1 || lines.length > 5){
+		if(lines.length < 1 || lines.length > MAX_LINES){
 			throw new IllegalArgumentException("Given " + lines.length + " lines but must display 1-5 lines!");
 		}
 		

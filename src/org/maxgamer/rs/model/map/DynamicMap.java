@@ -7,7 +7,6 @@ import org.maxgamer.rs.cache.EncryptedException;
 import org.maxgamer.rs.cache.MapCache;
 import org.maxgamer.rs.cache.format.Landscape;
 import org.maxgamer.rs.events.world.ChunkLoadEvent;
-import org.maxgamer.rs.lib.log.Log;
 
 /**
  * @author netherfoam
@@ -22,7 +21,7 @@ public class DynamicMap extends WorldMap {
 	 * @param world the chunk data to load.
 	 * @throws EncryptedException
 	 */
-	public DynamicMap(String name, Chunk[][][] world) throws EncryptedException {
+	public DynamicMap(String name, Chunk[][][] world) throws EncryptedException { /* TODO: Is EncryptedException still necessary ? */
 		super(name, world.length << WorldMap.CHUNK_BITS, world[0].length << WorldMap.CHUNK_BITS);
 		
 		for (int cx = 0; cx < world.length; cx++) {
@@ -47,15 +46,10 @@ public class DynamicMap extends WorldMap {
 						int yOffset = (cy & ~0x7) << 3; // Real region Y
 						
 						Landscape l = Landscape.parse(map, objects);
-						//TODO
-						//l.apply(this, xOffset, yOffset, c.get, localYOffset, localXMax, localYMax);
 						c.setLoaded(true);
 						
-						//TODO: There appears to be something still wrong with this, I think my xOffset and yOffset parameters
-						//are incorrect.
 						int localChunkX = (c.getCacheX() & 0x7);
 						int localChunkY = (c.getCacheY() & 0x7);
-						Log.debug("Offset: " + (z - c.getCacheZ()) + " ( cz: " + c.getCacheZ() + ", z: " + z);
 						l.apply(this, xOffset - (localChunkX << 3) + (cx << 3), yOffset - (localChunkY << 3) + (cy << 3), localChunkX << 3, localChunkY << 3, (localChunkX << 3) + 8, (localChunkY << 3) + 8, z - c.getCacheZ(), c.getCacheZ(), c.getCacheZ());
 					}
 					catch (IOException e) {

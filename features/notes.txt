@@ -25,6 +25,14 @@ Events:
 	- consume() method in Consumable interface
 	- @EventHandler(consumer = false)
 	- Return consumption status in Mob.use(.., ..)
+
+Bugs:
+	- Teleporting rapidly can cause the player to become invisible 
+	  Teleports can be short distance. Rapid. Probably an issue with
+	  how updates are handled.
+	
+Areas:
+	- Create an Areas API.  AreaLeaveEvent, AreaEnterEvent
 	
 AIModule:
 	

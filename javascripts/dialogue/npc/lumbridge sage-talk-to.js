@@ -6,7 +6,7 @@ chat(npc, "There is nothing you need to do my friend! I am the Doomsayer, althou
 chat(player, "Danger Tutor?");
 chat(npc, "Yes! I roam the world sensing danger.");
 chat(player, "If I find a dangerous area, then I put up warning signs that will tell you what is so dangerous about that area.");
-chat(npc, "If you see the signs often enough, then you can turn them off; by that time you likely know what the area has in store for you.");
+chat(npc, "If you see the signs often enough, then you can turn them off; by that time you likely know what the area has in");
 chat(player, "But what if I want to see the warnings again?");
 chat(npc, "That's why I'm waiting here!");
 chat(npc, "If you want to see the warning messages again, I can turn them back on for you.");

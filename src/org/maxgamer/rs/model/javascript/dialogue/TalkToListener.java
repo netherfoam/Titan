@@ -19,9 +19,9 @@ import co.paralleluniverse.fibers.SuspendExecution;
 
 public class TalkToListener implements EventListener {
 	
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGHEST, consumer=true, skipIfCancelled=true)
 	public void onTalkTo(final MobUseNPCEvent e) throws IOException{
-		if(e.isCancelled() || e.getMob() instanceof Player == false) return; //We only do this for players
+		if(e.getMob() instanceof Player == false) return; //We only do this for players
 		if(e.getOption().equalsIgnoreCase("Talk-to") == false) return; //Only handle 'talk-to' option
 
 		final FriendFollow follow = new FriendFollow(e.getMob(), e.getTarget(), 1, 10, new AStar(5)){
@@ -96,5 +96,6 @@ public class TalkToListener implements EventListener {
 		
 		e.getMob().getActions().queue(follow);
 		e.getMob().getActions().insertAfter(follow, talkAction);
+		e.consume();
 	}
 }

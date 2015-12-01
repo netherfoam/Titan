@@ -129,7 +129,7 @@ public class SpawnManager implements EventListener {
 	
 	private HashSet<Integer> loaded = new HashSet<Integer>(2048);
 	
-	@EventHandler(priority = EventPriority.LOW)
+	@EventHandler(priority = EventPriority.LOW, consumer=false, skipIfCancelled = true)
 	public void onLoad(ChunkLoadEvent e) {
 		//We assume that the ground will be loaded if the Z value is loaded. 
 		//Safe to assume, for now.

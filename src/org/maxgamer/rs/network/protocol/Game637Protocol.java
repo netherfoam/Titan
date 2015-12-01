@@ -1393,8 +1393,7 @@ public class Game637Protocol extends GameProtocol {
 			return true;
 		}
 		
-		return false; // Map sent previously, same map, player is within view
-						// distance. All fine!
+		return false; // Map sent previously, same map, player is within view distance. All fine!
 	}
 	
 	/**
@@ -1561,20 +1560,23 @@ public class Game637Protocol extends GameProtocol {
 			
 			out.finishBitAccess();
 			for (int regionId : regionids) {
-				int fileId;
-				try {
-					fileId = Core.getCache().getFileId(IDX.LANDSCAPES, "l" + (regionId >> 8) + "_" + (regionId & 0xFF));
+				int[] keys = null;
+				if(regionId != 0){
+					int fileId;
+					try {
+						fileId = Core.getCache().getFileId(IDX.LANDSCAPES, "l" + (regionId >> 8) + "_" + (regionId & 0xFF));
+					}
+					catch (FileNotFoundException ex) {
+						throw new RuntimeException("RegionID: " + regionId + " becomes x" + (regionId >> 8) + " and y" + (regionId & 0xFF), ex);
+					}
+					XTEAKey xtea = Core.getCache().getXTEA().getKey(IDX.LANDSCAPES, fileId);
+					if(xtea != null){
+						keys = xtea.getKeys();
+					}
 				}
-				catch (FileNotFoundException e1) {
-					throw new RuntimeException(e1);
-				}
-				XTEAKey xtea = Core.getCache().getXTEA().getKey(IDX.LANDSCAPES, fileId);
-				int[] keys;
-				if (xtea == null) {
+				
+				if (keys == null) {
 					keys = new int[] { 0, 0, 0, 0 };
-				}
-				else {
-					keys = xtea.getKeys();
 				}
 				
 				for (int i = 0; i < 4; i++) {

@@ -1,8 +1,8 @@
 package org.maxgamer.rs.model.action;
 
-import org.maxgamer.rs.events.mob.MobDeathEvent;
 import org.maxgamer.rs.model.entity.mob.Animation;
 import org.maxgamer.rs.model.entity.mob.Mob;
+import org.maxgamer.rs.model.events.mob.MobDeathEvent;
 
 import co.paralleluniverse.fibers.SuspendExecution;
 

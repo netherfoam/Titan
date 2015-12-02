@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import org.maxgamer.rs.core.tick.Tickable;
-import org.maxgamer.rs.events.mob.persona.PrayerToggleEvent;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
+import org.maxgamer.rs.model.events.mob.persona.PrayerToggleEvent;
 import org.maxgamer.rs.model.skill.SkillType;
 import org.maxgamer.rs.structure.YMLSerializable;
 import org.maxgamer.rs.structure.configs.ConfigSection;

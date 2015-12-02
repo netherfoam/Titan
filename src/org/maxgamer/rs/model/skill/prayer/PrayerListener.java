@@ -4,11 +4,11 @@ import org.maxgamer.rs.event.AutoRegister;
 import org.maxgamer.rs.event.EventHandler;
 import org.maxgamer.rs.event.EventListener;
 import org.maxgamer.rs.event.EventPriority;
-import org.maxgamer.rs.events.mob.MobAttackEvent;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.combat.Damage;
 import org.maxgamer.rs.model.entity.mob.combat.DamageType;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;
+import org.maxgamer.rs.model.events.mob.MobAttackEvent;
 
 /**
  * Listener class that handles prayer on-attack effects, like protect and deflect prayers.

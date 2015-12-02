@@ -16,7 +16,7 @@ public class Music implements YMLSerializable {
 	 */
 	public static final int MAX_MUSIC = 962;
 
-	private final boolean[] unlockedTracks; // The flags to check if the player has unlocked a certain track
+	private boolean[] unlockedTracks = new boolean[MAX_MUSIC]; // The flags to check if the player has unlocked a certain track
 	private final Player p; // The player who uses this music
 
 	private boolean selectivePlaying; // The music is being played by selection
@@ -30,7 +30,6 @@ public class Music implements YMLSerializable {
 	 */
 	public Music(Player p) {
 		this.p = p;
-		this.unlockedTracks = new boolean[MAX_MUSIC];
 	}
 
 	/**
@@ -100,8 +99,9 @@ public class Music implements YMLSerializable {
 	@Override
 	public ConfigSection serialize() {
 		ConfigSection s = new ConfigSection();
-		for (int i = 0; i < unlockedTracks.length; i++)
+		for (int i = 0; i < unlockedTracks.length; i++) {
 			s.put("" + i, unlockedTracks[i]);
+		}
 		return s;
 	}
 

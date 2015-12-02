@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.events.session.SessionCloseEvent;
 import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.entity.mob.persona.player.ScreenSettings;
+import org.maxgamer.rs.model.events.session.SessionCloseEvent;
 import org.maxgamer.rs.network.io.packet.RSOutgoingPacket;
 import org.maxgamer.rs.network.io.rawhandler.RawConnectionHandler;
 import org.maxgamer.rs.network.io.rawhandler.RawHandler;

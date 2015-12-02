@@ -3,12 +3,12 @@ package org.maxgamer.rs.model.entity.mob.combat;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import org.maxgamer.rs.events.mob.MobAttackEvent;
 import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.entity.mob.Animation;
 import org.maxgamer.rs.model.entity.mob.Graphics;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;
+import org.maxgamer.rs.model.events.mob.MobAttackEvent;
 import org.maxgamer.rs.model.skill.SkillType;
 
 /**

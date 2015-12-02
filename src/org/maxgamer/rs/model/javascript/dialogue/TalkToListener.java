@@ -6,7 +6,7 @@ import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.event.EventHandler;
 import org.maxgamer.rs.event.EventListener;
 import org.maxgamer.rs.event.EventPriority;
-import org.maxgamer.rs.events.mob.MobUseNPCEvent;
+import org.maxgamer.rs.model.events.mob.MobUseNPCEvent;
 import org.maxgamer.rs.interfaces.impl.dialogue.ThoughtDialogue;
 import org.maxgamer.rs.model.action.Action;
 import org.maxgamer.rs.model.action.FriendFollow;

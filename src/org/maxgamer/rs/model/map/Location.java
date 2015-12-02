@@ -2,6 +2,7 @@ package org.maxgamer.rs.model.map;
 
 import java.util.HashSet;
 
+import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.model.entity.Entity;
 import org.maxgamer.rs.model.map.path.Direction;
 import org.maxgamer.rs.model.map.path.Directions;
@@ -52,6 +53,10 @@ public class Location extends Position implements MBR {
 		if (z < 0 || z > 3) {
 			throw new IllegalArgumentException("Heights must be in the range of 0-3 inclusive. Given Z: " + z);
 		}
+	}
+	
+	public Location(int x, int y, int z) {
+		this(Core.getServer().getMap(), x, y, z);
 	}
 	
 	/**

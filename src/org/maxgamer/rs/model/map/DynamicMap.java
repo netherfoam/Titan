@@ -7,7 +7,7 @@ import java.nio.ByteBuffer;
 import org.maxgamer.rs.cache.EncryptedException;
 import org.maxgamer.rs.cache.MapCache;
 import org.maxgamer.rs.cache.format.Landscape;
-import org.maxgamer.rs.events.world.ChunkLoadEvent;
+import org.maxgamer.rs.model.events.world.ChunkLoadEvent;
 
 /**
  * @author netherfoam

@@ -9,11 +9,11 @@ import java.nio.BufferUnderflowException;
 
 import org.maxgamer.rs.cache.RSInputStream;
 import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.events.server.LogonConnectEvent;
-import org.maxgamer.rs.events.server.LogonDisconnectEvent;
 import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.logonv4.LSIncomingPacket;
 import org.maxgamer.rs.logonv4.LSOutgoingPacket;
+import org.maxgamer.rs.model.events.server.LogonConnectEvent;
+import org.maxgamer.rs.model.events.server.LogonDisconnectEvent;
 import org.maxgamer.rs.network.io.stream.RSOutputStream;
 import org.maxgamer.rs.structure.configs.ConfigSection;
 

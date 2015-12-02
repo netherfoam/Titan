@@ -10,12 +10,16 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
  */
 @CmdName(names = { "location" })
 public class Position implements PlayerCommand {
-	
+
 	@Override
 	public void execute(Player p, String[] args) {
-		p.sendMessage("Location: " + p.getLocation());
+		int rx = p.getLocation().getRegionX();
+		int ry = p.getLocation().getRegionY();
+		int cx = p.getLocation().getChunkX();
+		int cy = p.getLocation().getChunkY();
+		p.sendMessage("Location: " + p.getLocation() + ", Region: (" + rx + ", " + ry + ")" + ", Chunck: (" + cx + ", " + cy + ")");
 	}
-	
+
 	@Override
 	public int getRankRequired() {
 		return Rights.ADMIN;

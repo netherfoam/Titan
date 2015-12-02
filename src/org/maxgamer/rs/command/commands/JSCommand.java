@@ -17,11 +17,11 @@ import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.event.EventHandler;
 import org.maxgamer.rs.event.EventListener;
 import org.maxgamer.rs.event.EventPriority;
-import org.maxgamer.rs.events.mob.persona.PersonaChatEvent;
 import org.maxgamer.rs.interfaces.Interface;
 import org.maxgamer.rs.interfaces.impl.primary.BookInterface;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
+import org.maxgamer.rs.model.events.mob.persona.PersonaChatEvent;
 
 /**
  * @author netherfoam

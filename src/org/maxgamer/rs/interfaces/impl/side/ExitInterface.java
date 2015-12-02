@@ -1,8 +1,8 @@
 package org.maxgamer.rs.interfaces.impl.side;
 
-import org.maxgamer.rs.events.mob.persona.player.PlayerLogOutEvent;
 import org.maxgamer.rs.interfaces.SideInterface;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
+import org.maxgamer.rs.model.events.mob.persona.player.PlayerLogOutEvent;
 
 /**
  * @author netherfoam

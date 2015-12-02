@@ -89,14 +89,13 @@ public class GameObjectHandler implements PacketProcessor<Player> {
 			return;
 		}
 
-		Log.debug("X: " + x + ", Y: " + y);
+		Log.debug("ID: " + id + ", X: " + x + ", Y: " + y);
 		id = id & 0xFFFF; // Signed
 
 		Location l = new Location(p.getLocation().getMap(), x, y, p.getLocation().z);
 		for (final GameObject g : l.getNearby(GameObject.class, 0)) {
 			if (g.getId() == id && g.isHidden() == false) {
-				String s = g.getDefiniton().getOption(option); // Becomes
-																// zero-based
+				String s = g.getDefiniton().getOption(option); // Becomes zero-based
 				if (s == null) {
 					p.getCheats().log(10, "Player attempted to use a NULL option on a gameobject. Gameobject: " + g + ", option: " + option + "/5");
 					return;

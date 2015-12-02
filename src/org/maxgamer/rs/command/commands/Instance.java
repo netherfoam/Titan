@@ -12,14 +12,12 @@ import org.maxgamer.rs.model.map.Location;
  * @author netherfoam
  */
 public class Instance implements PlayerCommand {
-	
+
 	@Override
 	public void execute(Player p, String[] args) {
 		/*
-		 * Chunk[][] chunks = new Chunk[][]{ //{new Chunk(434, 399), new
-		 * Chunk(434, 400), new Chunk(434, 401)}, {new Chunk(435, 399, 0), new
-		 * Chunk(435, 400, 0), new Chunk(435, 401, 0)}, {new Chunk(436, 399, 0),
-		 * new Chunk(436, 400, 0), new Chunk(436, 401, 0)}, //TOPLEFT is
+		 * Chunk[][] chunks = new Chunk[][]{ //{new Chunk(434, 399), new Chunk(434, 400), new Chunk(434, 401)}, {new Chunk(435, 399, 0), new
+		 * Chunk(435, 400, 0), new Chunk(435, 401, 0)}, {new Chunk(436, 399, 0), new Chunk(436, 400, 0), new Chunk(436, 401, 0)}, //TOPLEFT is
 		 * SOUTHWEST //TOPRIGHT is NORTHWEST };
 		 */
 		Chunk[][][] chunks = new Chunk[3][3][2]; // [X][Y][Z]
@@ -46,7 +44,7 @@ public class Instance implements PlayerCommand {
 		p.teleport(l);
 		p.sendMessage("Teleported to generated area");
 	}
-	
+
 	@Override
 	public int getRankRequired() {
 		return Rights.ADMIN;

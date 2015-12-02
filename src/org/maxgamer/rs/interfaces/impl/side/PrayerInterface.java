@@ -1,9 +1,9 @@
 package org.maxgamer.rs.interfaces.impl.side;
 
-import org.maxgamer.rs.events.mob.persona.PrayerToggleEvent;
 import org.maxgamer.rs.interfaces.SettingsBuilder;
 import org.maxgamer.rs.interfaces.SideInterface;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
+import org.maxgamer.rs.model.events.mob.persona.PrayerToggleEvent;
 import org.maxgamer.rs.model.skill.prayer.PrayerType;
 
 /**

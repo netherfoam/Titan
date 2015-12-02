@@ -1,9 +1,9 @@
 package org.maxgamer.rs.network.io.packet.player;
 
-import org.maxgamer.rs.events.mob.persona.player.WindowClickEvent;
 import org.maxgamer.rs.interfaces.Window;
 import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
+import org.maxgamer.rs.model.events.mob.persona.player.WindowClickEvent;
 import org.maxgamer.rs.network.io.packet.PacketProcessor;
 import org.maxgamer.rs.network.io.packet.RSIncomingPacket;
 

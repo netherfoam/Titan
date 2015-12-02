@@ -93,7 +93,24 @@ public class Chat {
 		return s;
 	}
 
+	/**
+	 * Splits the given text into lines based on the number of characters per line given.  This method accounts for any newline
+	 * characters given. If a word can be kept whole, it is kept whole, and the space is replaced with a newline. If a word is
+	 * longer than the given lineWidth, then the word is split at the lineWidth's position.  The process is repeated until all
+	 * text has been split into lines of length under the given width.
+	 * @param text the text to split
+	 * @param lineWidth the maximum number of characters per line
+	 * @return the lines extracted.
+	 */
 	public static String[] lines(String text, int lineWidth) {
+		if(text == null){
+			throw new NullPointerException("Text may not be null!");
+		}
+		
+		if(lineWidth <= 0){
+			throw new IllegalArgumentException("Line width must be > 0");
+		}
+		
 		String[] pieces = text.split("\\n");
 		ArrayList<String> list = new ArrayList<String>(pieces.length * 2);
 

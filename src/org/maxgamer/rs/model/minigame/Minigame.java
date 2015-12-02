@@ -22,7 +22,7 @@ public abstract class Minigame extends Tickable implements EventListener {
 	 *            the maximum amount of players allowed in this minigame
 	 */
 	public Minigame(int maxPlayerSize) {
-		this.players = new HashSet<>(maxPlayerSize);
+		this.players = new HashSet<Persona>(maxPlayerSize);
 	}
 	
 	protected abstract void begin();

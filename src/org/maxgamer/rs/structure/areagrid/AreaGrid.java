@@ -115,17 +115,21 @@ public class AreaGrid<T extends MBR> {
 	public HashSet<T> get(MBR query, int guess) {
 		this.validate(query);
 		
-		int X = (query.getMin(0)) >> this.bits;
-		int Y = (query.getMin(1)) >> this.bits;
+		int X = (Math.max(query.getMin(0), 0)) >> this.bits;
+		int Y = (Math.max(query.getMin(1), 0)) >> this.bits;
 		
 		//We want to reuse the bits that were dropped off from above, and add them here.
 		int dx = ((query.getMin(0) & ((1 << this.bits) - 1)) + (query.getDimension(0)) >> this.bits);
 		int dy = ((query.getMin(1) & ((1 << this.bits) - 1)) + (query.getDimension(1)) >> this.bits);
 		
+		dx = Math.min(this.grid.length - X, dx);
+		
 		HashSet<T> objects = new HashSet<T>(guess);
 		
 		//We must put it in each grid that it overlaps with.
 		for (int xOffset = 0; xOffset <= dx; xOffset++) {
+			dy = Math.min(this.grid[X + xOffset].length - Y, dy);
+			
 			for (int yOffset = 0; yOffset <= dy; yOffset++) {
 				Grid g = this.grid[X + xOffset][Y + yOffset];
 				if (g != null) {
@@ -170,17 +174,21 @@ public class AreaGrid<T extends MBR> {
 		if(clazz == null) throw new NullPointerException("Class may not be null");
 		this.validate(query);
 		
-		int X = (query.getMin(0)) >> this.bits;
-		int Y = (query.getMin(1)) >> this.bits;
+		int X = (Math.max(query.getMin(0), 0)) >> this.bits;
+		int Y = (Math.max(query.getMin(1), 0)) >> this.bits;
 		
 		//We want to reuse the bits that were dropped off from above, and add them here.
 		int dx = ((query.getMin(0) & ((1 << this.bits) - 1)) + (query.getDimension(0)) >> this.bits);
 		int dy = ((query.getMin(1) & ((1 << this.bits) - 1)) + (query.getDimension(1)) >> this.bits);
 		
+		dx = Math.min(this.grid.length - X - 1, dx);
+		
 		HashSet<U> objects = new HashSet<U>(guess);
 		
 		//We must put it in each grid that it overlaps with.
 		for (int xOffset = 0; xOffset <= dx; xOffset++) {
+			dy = Math.min(this.grid[X + xOffset].length - Y - 1, dy);
+			
 			for (int yOffset = 0; yOffset <= dy; yOffset++) {
 				Grid g;
 				try {
@@ -228,14 +236,18 @@ public class AreaGrid<T extends MBR> {
 	public void put(T m) {
 		this.validate(m);
 		
-		int X = (m.getMin(0)) >> this.bits;
-		int Y = (m.getMin(1)) >> this.bits;
+		int X = (Math.max(m.getMin(0), 0)) >> this.bits;
+		int Y = (Math.max(m.getMin(1), 0)) >> this.bits;
 		
 		int dx = (m.getDimension(0)) >> this.bits;
 		int dy = (m.getDimension(1)) >> this.bits;
 		
+		dx = Math.min(this.grid.length - X - 1, dx);
+		
 		//We must put it in each grid that it overlaps with.
 		for (int xOffset = 0; xOffset <= dx; xOffset++) {
+			dy = Math.min(this.grid[X + xOffset].length - Y - 1, dy);
+			
 			for (int yOffset = 0; yOffset <= dy; yOffset++) {
 				Grid g = this.grid[X + xOffset][Y + yOffset];
 				if (g == null) {
@@ -257,14 +269,18 @@ public class AreaGrid<T extends MBR> {
 	public void remove(T m) {
 		this.validate(m);
 		
-		int X = (m.getMin(0)) >> this.bits;
-		int Y = (m.getMin(1)) >> this.bits;
+		int X = (Math.max(m.getMin(0), 0)) >> this.bits;
+		int Y = (Math.max(m.getMin(1), 0)) >> this.bits;
 		
 		int dx = (m.getDimension(0)) >> this.bits;
 		int dy = (m.getDimension(1)) >> this.bits;
 		
+		dx = Math.min(this.grid.length - X - 1, dx);
+		
 		//We must put it in each grid that it overlaps with.
 		for (int xOffset = 0; xOffset <= dx; xOffset++) {
+			dy = Math.min(this.grid[X + xOffset].length - Y - 1, dy);
+			
 			for (int yOffset = 0; yOffset <= dy; yOffset++) {
 				Grid g = this.grid[X + xOffset][Y + yOffset];
 				if (g == null) {

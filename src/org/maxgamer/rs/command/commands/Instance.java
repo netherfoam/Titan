@@ -31,7 +31,7 @@ public class Instance implements PlayerCommand {
 		
 		//Second level test
 		chunks[1][1][1] = new Chunk(239, 634, 1);*/
-		
+		/*
 		MapBuilder builder = new MapBuilder();
 		for(int i = 434; i <= 436; i++){
 			for(int j = 399; j <= 401; j++){
@@ -39,7 +39,15 @@ public class Instance implements PlayerCommand {
 				builder.set(i - 434, j - 399, 0, c);
 			}
 		}
-		builder.set(1, 1, 1, new Chunk(239, 634, 1));
+		builder.set(1, 1, 1, new Chunk(239, 634, 1));*/
+		
+		MapBuilder builder = new MapBuilder();
+		for(int i = 320; i <= 330; i++){
+			for(int j = 320; j <= 330; j++){
+				Chunk c = new Chunk(i, j, 0);
+				builder.set(i - 320, j - 320, 0, c);
+			}
+		}
 		
 		DynamicMap map;
 		try {

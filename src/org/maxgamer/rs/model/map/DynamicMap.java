@@ -1,5 +1,6 @@
 package org.maxgamer.rs.model.map;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
@@ -51,6 +52,10 @@ public class DynamicMap extends WorldMap {
 						int localChunkX = (c.getCacheX() & 0x7);
 						int localChunkY = (c.getCacheY() & 0x7);
 						l.apply(this, xOffset - (localChunkX << 3) + (cx << 3), yOffset - (localChunkY << 3) + (cy << 3), localChunkX << 3, localChunkY << 3, (localChunkX << 3) + 8, (localChunkY << 3) + 8, z - c.getCacheZ(), c.getCacheZ(), c.getCacheZ());
+					}
+					catch(FileNotFoundException e){
+						//That map literally doesn't exist.
+						continue;
 					}
 					catch (IOException e) {
 						throw new EncryptedException("Map " + rx + "_" + ry + " failed: file is encrypted", e);

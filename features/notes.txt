@@ -22,9 +22,7 @@ Release:
 			> Extract them from the JAR if file not found already
 			
 Events:
-	- consume() method in Consumable interface
-	- @EventHandler(consumer = false)
-	- Return consumption status in Mob.use(.., ..)
+	- Should consumer=true|false be the default?
 
 Bugs:
 	- Teleporting rapidly can cause the player to become invisible 

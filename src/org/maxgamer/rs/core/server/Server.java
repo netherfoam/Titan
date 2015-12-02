@@ -81,6 +81,7 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Viewport;
 import org.maxgamer.rs.model.events.server.ServerShutdownEvent;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.item.ground.GroundItemManager;
+import org.maxgamer.rs.model.javascript.dialogue.DialogueManager;
 import org.maxgamer.rs.model.lobby.Lobby;
 import org.maxgamer.rs.model.map.Location;
 import org.maxgamer.rs.model.map.StandardMap;
@@ -169,6 +170,8 @@ public class Server {
 	private LogonConnection logon;
 	
 	private ConfigSection config;
+	
+	private DialogueManager dialogue;
 
 	/**
 	 * The epoch time in milliseconds that the server was constructed.
@@ -225,6 +228,17 @@ public class Server {
 		int id = logon.getWorldId();
 		if (id == -1) throw new IllegalStateException("Server not yet initialized.");
 		return id;
+	}
+	
+	/**
+	 * The dialogue manager for this server.
+	 * @return The dialogue manager for this server.
+	 */
+	public synchronized DialogueManager getDialogue(){
+		if(this.dialogue == null){
+			this.dialogue = new DialogueManager();
+		}
+		return this.dialogue;
 	}
 	
 	/**

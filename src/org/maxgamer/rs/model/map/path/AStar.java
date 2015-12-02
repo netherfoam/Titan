@@ -174,6 +174,10 @@ public class AStar implements PathFinder {
 	public Path findPath(Mob m, Entity to) {
 		return findPath(m.getLocation(), to.getLocation(), to.getLocation().add(to.getSizeX() - 1, to.getSizeY() - 1), to.getSizeX(), to.getSizeY());
 	}
+	
+	public Path findPath(Mob m, GameObject to) {
+		return findPath(m.getLocation(), to.getLocation(), to.getLocation().add(to.getSizeX() - 1, to.getSizeY() - 1), to.getSizeX(), to.getSizeY(), to);
+	}
 
 	public Path findPath(Location start, Position min, Position max, int xSize, int ySize, GameObject... ignores) {
 		NodeMap map = createMap(start, min, max, this.buffer);

@@ -82,6 +82,8 @@ public class GroundItemOptionsHandler implements PacketProcessor<Player> {
 		
 		Location l = new Location(player.getLocation().getMap(), x, y, player.getLocation().z);
 		for (GroundItemStack near : l.getNearby(GroundItemStack.class, 0)) {
+			if(near.isDestroyed()) continue;
+			
 			ItemStack stack = near.getItem();
 			if (stack.getId() == itemId) {
 				//Correct ID.

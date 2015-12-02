@@ -57,7 +57,7 @@ public class JSCommand implements PlayerCommand, EventListener {
 		return Rights.ADMIN;
 	}
 	
-	@EventHandler(priority = EventPriority.LOW)
+	@EventHandler(priority = EventPriority.LOW, consumer=true)
 	public void onChat(PersonaChatEvent e) {
 		if (e.getMob() instanceof Player == false) {
 			return;
@@ -73,6 +73,7 @@ public class JSCommand implements PlayerCommand, EventListener {
 		if (p.isReady()) {
 			p.run();
 		}
+		e.consume();
 	}
 	
 	public class Program extends BookInterface {

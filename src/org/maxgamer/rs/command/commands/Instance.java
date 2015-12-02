@@ -7,6 +7,7 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
 import org.maxgamer.rs.model.map.Chunk;
 import org.maxgamer.rs.model.map.DynamicMap;
 import org.maxgamer.rs.model.map.Location;
+import org.maxgamer.rs.model.map.MapBuilder;
 
 /**
  * @author netherfoam
@@ -20,7 +21,7 @@ public class Instance implements PlayerCommand {
 		 * Chunk(435, 400, 0), new Chunk(435, 401, 0)}, {new Chunk(436, 399, 0), new Chunk(436, 400, 0), new Chunk(436, 401, 0)}, //TOPLEFT is
 		 * SOUTHWEST //TOPRIGHT is NORTHWEST };
 		 */
-		Chunk[][][] chunks = new Chunk[3][3][2]; // [X][Y][Z]
+		/*Chunk[][][] chunks = new Chunk[3][3][2]; // [X][Y][Z]
 		for (int i = 434; i <= 436; i++) {
 			for (int j = 399; j <= 401; j++) {
 				Chunk c = new Chunk(i, j, 0);
@@ -29,11 +30,20 @@ public class Instance implements PlayerCommand {
 		}
 		
 		//Second level test
-		chunks[1][1][1] = new Chunk(239, 634, 1);
+		chunks[1][1][1] = new Chunk(239, 634, 1);*/
+		
+		MapBuilder builder = new MapBuilder();
+		for(int i = 434; i <= 436; i++){
+			for(int j = 399; j <= 401; j++){
+				Chunk c = new Chunk(i, j, 0);
+				builder.set(i - 434, j - 399, 0, c);
+			}
+		}
+		builder.set(1, 1, 1, new Chunk(239, 634, 1));
 		
 		DynamicMap map;
 		try {
-			map = new DynamicMap("Test", chunks);
+			map = builder.create(p.getName() + "-instance");
 		}
 		catch (EncryptedException e) {
 			e.printStackTrace();

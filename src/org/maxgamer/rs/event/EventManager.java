@@ -6,6 +6,7 @@ import java.util.LinkedList;
 
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.model.entity.mob.npc.SpawnManager;
+import org.maxgamer.rs.model.javascript.dialogue.TalkToListener;
 import org.maxgamer.rs.model.skill.prayer.PrayerListener;
 
 public class EventManager {
@@ -18,6 +19,7 @@ public class EventManager {
 			this.register(new SpawnManager());
 		}
 		this.register(new PrayerListener());
+		this.register(new TalkToListener());
 	}
 	
 	/**
@@ -138,6 +140,8 @@ public class EventManager {
 			throw new NullPointerException("Event may not be null!");
 		}
 		
+		boolean cancellable = event instanceof Cancellable;
+		
 		for (EventPriority priority : EventPriority.values()) {
 			LinkedList<HandlerExecutor> list = listeners.get(priority);
 			if (list == null) {
@@ -145,6 +149,16 @@ public class EventManager {
 			}
 			
 			for(HandlerExecutor h : list){
+				if(event.isConsumed() && h.isConsumer()){
+					/* Skip consumers when the event is already consumed or the event is cancelled */
+					continue;
+				}
+				
+				if(cancellable && h.isSkipIfCancelled() && ((Cancellable) event).isCancelled()){
+					/* Skip event handlers which don't want cancelled events */
+					continue;
+				}
+				
 				if(h.getMethod().getParameterTypes()[0].isInstance(event) == false) {
 					continue;
 				}

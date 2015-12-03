@@ -48,6 +48,14 @@ public class RSOutputStream {
 	}
 	
 	/**
+	 * The total number of bytes written so far
+	 * @return The total number of bytes written so far
+	 */
+	public int length(){
+		return out.size();
+	}
+	
+	/**
 	 * All data currently written to this stream as a byte array. The byte array
 	 * will have the length equal to the number of bytes written.
 	 * @return all data written to this stream

@@ -191,6 +191,32 @@ public abstract class MobModel implements YMLSerializable {
 	}
 	
 	/**
+	 * Sets the name of this MobModel
+	 */
+	public void setName(String name){
+		this.name = name;
+		this.setChanged(true);
+	}
+	
+	/**
+	 * Toggles combat colouring on this model's right click menu.
+	 * @param color true for color (green-yellow-red) or false for white
+	 */
+	public void setCombatColoured(boolean color){
+		this.combatColour = color;
+		this.setChanged(true);
+	}
+	
+	/**
+	 * Toggles the skull above this model's head
+	 * @param skulled true to enable the skull
+	 */
+	public void setSkulled(boolean skulled){
+		this.skulled = skulled;
+		this.setChanged(true);
+	}
+	
+	/**
 	 * Sets the title for this mob. No change is made if the given title is the
 	 * same as the current title.
 	 * 

@@ -29,6 +29,9 @@ public class PersonaModel extends MobModel implements YMLSerializable {
 	public PersonaModel(Persona p) {
 		if (p == null) throw new NullPointerException("Persona may not be null");
 		this.p = p;
+		this.setCombatColoured(true);
+		this.setSkulled(false);
+		this.setName(p.getName());
 	}
 	
 	public byte[] getLook() {

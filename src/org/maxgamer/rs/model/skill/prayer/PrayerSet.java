@@ -304,6 +304,7 @@ public class PrayerSet implements YMLSerializable {
 				this.usingQuickPrayers = false;
 			}
 		}
+		p.getModel().setPrayerIcon(getPrayerHeadIcon());
 	}
 	
 	/**

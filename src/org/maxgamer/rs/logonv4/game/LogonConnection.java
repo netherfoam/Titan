@@ -228,6 +228,11 @@ public class LogonConnection {
 		if (out == null || !this.isRunning()) {
 			throw new IOException("Logon Server is not connected!");
 		}
+		
+		if(out.length() > 0xFFFF){
+			throw new IOException("Cannot write a LSOutgoingPacket of length " + out.length() + ", max is " + 0xFFFF);
+		}
+		
 		synchronized (this.out) {
 			this.out.write(out.toByteArray());
 		}

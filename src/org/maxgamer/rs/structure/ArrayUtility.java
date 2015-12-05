@@ -2,7 +2,6 @@ package org.maxgamer.rs.structure;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Random;
 import java.util.function.Predicate;
 
@@ -196,7 +195,8 @@ public final class ArrayUtility {
 	 * @return the shuffled array
 	 */
 	public static <T> void shuffle(T[] a) {
-		Collections.shuffle(Arrays.asList(a));
+		for (int i = 0; i < a.length; i++)
+			swap(i, r.nextInt(a.length), a);	
 	}
 
 	/**
@@ -882,15 +882,7 @@ public final class ArrayUtility {
 	 * @return the array with the removed element
 	 */
 	public static <T> T[] removeElement(T[] a, T element) {
-		@SuppressWarnings("unchecked")
-		T[] b = (T[]) Array.newInstance(a[0].getClass(), a.length - 1);
-		for (int index = 0; index < a.length; index++) {
-			if (a[index] == element) {
-				removeIndex(a, index);
-				break;
-			}
-		}
-		return b;
+		return removeIndex(a, ArrayUtility.indexOf(element, a));
 	}
 
 	/**
@@ -903,14 +895,7 @@ public final class ArrayUtility {
 	 * @return the array with the removed element
 	 */
 	public static boolean[] removeElement(boolean[] a, boolean element) {
-		boolean[] b = new boolean[a.length - 1];
-		for (int index = 0; index < a.length; index++) {
-			if (a[index] == element) {
-				removeIndex(a, index);
-				break;
-			}
-		}
-		return b;
+		return removeIndex(a, ArrayUtility.indexOf(element, a));
 	}
 
 	/**
@@ -923,14 +908,7 @@ public final class ArrayUtility {
 	 * @return the array with the removed element
 	 */
 	public static byte[] removeElement(byte[] a, byte element) {
-		byte[] b = new byte[a.length - 1];
-		for (int index = 0; index < a.length; index++) {
-			if (a[index] == element) {
-				removeIndex(a, index);
-				break;
-			}
-		}
-		return b;
+		return removeIndex(a, ArrayUtility.indexOf(element, a));
 	}
 
 	/**
@@ -943,14 +921,7 @@ public final class ArrayUtility {
 	 * @return the array with the removed element
 	 */
 	public static char[] removeElement(char[] a, char element) {
-		char[] b = new char[a.length - 1];
-		for (int index = 0; index < a.length; index++) {
-			if (a[index] == element) {
-				removeIndex(a, index);
-				break;
-			}
-		}
-		return b;
+		return removeIndex(a, ArrayUtility.indexOf(element, a));
 	}
 
 	/**
@@ -963,14 +934,7 @@ public final class ArrayUtility {
 	 * @return the array with the removed element
 	 */
 	public static float[] removeElement(float[] a, float element) {
-		float[] b = new float[a.length - 1];
-		for (int index = 0; index < a.length; index++) {
-			if (a[index] == element) {
-				removeIndex(a, index);
-				break;
-			}
-		}
-		return b;
+		return removeIndex(a, ArrayUtility.indexOf(element, a));
 	}
 
 	/**
@@ -983,14 +947,7 @@ public final class ArrayUtility {
 	 * @return the array with the removed element
 	 */
 	public static double[] removeElement(double[] a, double element) {
-		double[] b = new double[a.length - 1];
-		for (int index = 0; index < a.length; index++) {
-			if (a[index] == element) {
-				removeIndex(a, index);
-				break;
-			}
-		}
-		return b;
+		return removeIndex(a, ArrayUtility.indexOf(element, a));
 	}
 
 	/**
@@ -1003,14 +960,7 @@ public final class ArrayUtility {
 	 * @return the array with the removed element
 	 */
 	public static long[] removeElement(long[] a, long element) {
-		long[] b = new long[a.length - 1];
-		for (int index = 0; index < a.length; index++) {
-			if (a[index] == element) {
-				removeIndex(a, index);
-				break;
-			}
-		}
-		return b;
+		return removeIndex(a, ArrayUtility.indexOf(element, a));
 	}
 
 	/**
@@ -1023,14 +973,7 @@ public final class ArrayUtility {
 	 * @return the array with the removed element
 	 */
 	public static short[] removeElement(short[] a, short element) {
-		short[] b = new short[a.length - 1];
-		for (int index = 0; index < a.length; index++) {
-			if (a[index] == element) {
-				removeIndex(a, index);
-				break;
-			}
-		}
-		return b;
+		return removeIndex(a, ArrayUtility.indexOf(element, a));
 	}
 
 	/**
@@ -1043,14 +986,7 @@ public final class ArrayUtility {
 	 * @return the array with the removed element
 	 */
 	public static int[] removeElement(int[] a, int element) {
-		int[] b = new int[a.length - 1];
-		for (int index = 0; index < a.length; index++) {
-			if (a[index] == element) {
-				removeIndex(a, index);
-				break;
-			}
-		}
-		return b;
+		return removeIndex(a, ArrayUtility.indexOf(element, a));
 	}
 
 	/**

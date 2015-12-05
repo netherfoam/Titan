@@ -142,6 +142,5 @@ Two options:
 <pre>
 -- Connection --
 Download a client and connect to localhost. The servers port is available in the config file in world.yml under
-world.port: xxxx where the default is 43594. The cache will download automatically. The server does not handle clients
-with RSA enabled, currently (though it is planned to handle both enabled and disabled RSA clients seamlessly later)
+world.port: xxxx where the default is 43594. The cache will download automatically. The server does handle clients with RSA enabled (if using the correct keys/tokens obviously). Also if RSA is disabled the server will work. 
 </pre>

@@ -1,60 +1,111 @@
 package org.maxgamer.rs.model.minigame;
 
+import static org.maxgamer.rs.model.minigame.MiniGameRule.*;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 
 import org.maxgamer.rs.core.tick.Tickable;
 import org.maxgamer.rs.event.EventListener;
+import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;
+import org.maxgamer.rs.model.map.MapBuilder;
 
 /**
- * 
+ * TODO finish this implementation
  * @author Albert Beaupre
- * @author netherfoam
  */
-public abstract class Minigame extends Tickable implements EventListener {
+public abstract class MiniGame extends Tickable implements EventListener {
 
-	private HashSet<Persona> players; // A list of players playing in this minigame
+	private final HashSet<Persona> players; // The set of players in this minigame
+	private final ArrayList<Mob> mobs; // The list of mobs in this minigame
+	private final boolean[] rules;
+
+	// TODO log terminated minigames for economy reasons
+	private boolean terminated; // The flag to check if this minigame was terminated
 
 	/**
-	 * Constructs a new {@code Minigame} for the specified {@code maxPlayerSize}.
-	 * 
-	 * @param maxPlayerSize
-	 *            the maximum amount of players allowed in this minigame
+	 * The {@code MapBuilder} assigned to this {@code MiniGame}.
 	 */
-	public Minigame(int maxPlayerSize) {
-		this.players = new HashSet<Persona>(maxPlayerSize);
+	protected MapBuilder mapBuilder;
+
+	/**
+	 * Constructs a new {@code MiniGame} with empty arguments.
+	 */
+	public MiniGame() {
+		this.mobs = new ArrayList<Mob>();
+		this.players = new HashSet<Persona>();
+		this.rules = new boolean[values().length];
+		this.setMapBuilder(new MapBuilder());
 	}
-	
-	protected abstract void begin();
-	protected abstract void end();
-	protected abstract boolean join(Persona p);
-	protected abstract boolean leave(Persona p, boolean force);
 
 	/**
-	 * Starts this {@code Minigame}.
+	 * This method is executed when this {@code MiniGame} has started.
+	 * 
+	 * @see #start()
 	 */
-	public final void start() {
+	protected abstract void begin();
+
+	/**
+	 * This method is executed when this {@code MiniGame} has stopped.
+	 * 
+	 * @see #stop()
+	 */
+	protected abstract void end();
+
+	/**
+	 * This method is executed when the specified {@code player} joins this {@code MiniGame}.
+	 * 
+	 * @param player
+	 *            the player to join this minigame
+	 * @return true if the player joined successfully
+	 */
+	protected abstract boolean join(Persona player);
+
+	/**
+	 * This method is executed when the specified {@code player} leaves this {@code MiniGame}.
+	 * 
+	 * @param player
+	 *            the player to lave this minigame
+	 * @param force
+	 *            the flag to check if the player is being forced to leave
+	 * @return true if the player left successfully
+	 */
+	protected abstract boolean leave(Persona player, boolean force);
+
+	/**
+	 * Starts this {@code MiniGame}.
+	 */
+	public void start() {
 		// setup minigame - can be overridden, normal method will heal/restore/teleport
 		for (Persona person : players) {
 			if (!join(person)) {
-				
+
 			}
 		}
 		begin();
-		queue(0);
+		queue(1);
 	}
 
 	/**
 	 * Stops this {@code Minigame}.
 	 */
-	public final void stop() {
+	public void stop() {
 		// clean up - normal method will heal/restore/teleport
 		for (Persona p : players) {
-			if (leave(p, false))
-				players.remove(p);
+			if (leave(p, false)) {
+
+			}
 		}
 		end();
 		cancel();
+	}
+
+	public void terminate() {
+		terminated = true;
+		stop();
 	}
 
 	/**
@@ -72,6 +123,8 @@ public abstract class Minigame extends Tickable implements EventListener {
 	 * Returns {@code true} if this {@code Minigame} is running.
 	 * 
 	 * @return true if running; return false otherwise
+	 * 
+	 * @see #isQueued()
 	 */
 	public boolean isRunning() {
 		return super.isQueued();
@@ -97,6 +150,55 @@ public abstract class Minigame extends Tickable implements EventListener {
 	 */
 	public boolean removePlayer(Persona persona) {
 		return players.remove(persona);
+	}
+
+	/**
+	 * Returns the {@code MapBuilder} assigned to this {@code MiniGame}.
+	 * 
+	 * @return the map builder assigned
+	 */
+	public MapBuilder getMapBuilder() {
+		return mapBuilder;
+	}
+
+	/**
+	 * Assigns the {@code MapBuilder} of this {@code MiniGame} to the specified {@code mapBuilder}.
+	 * 
+	 * @param mapBuilder
+	 *            the map builder to assign to this minigame
+	 */
+	public void setMapBuilder(MapBuilder mapBuilder) {
+		this.mapBuilder = mapBuilder;
+	}
+
+	/**
+	 * Returns a {@code Collection} of {@code Persona} in this {@code MiniGame}.
+	 * 
+	 * @return the players
+	 */
+	public Collection<Persona> getPlayers() {
+		return Collections.unmodifiableCollection(players);
+	}
+
+	/**
+	 * Returns a {@code Collection} of {@code Mob} in this {@code MiniGame}.
+	 * 
+	 * @return the mobs
+	 */
+	public Collection<Mob> getMobs() {
+		return Collections.unmodifiableCollection(mobs);
+	}
+
+	public boolean isTerminated() {
+		return terminated;
+	}
+
+	public void setRule(MiniGameRule rule, boolean set) {
+		rules[rule.ordinal()] = set;
+	}
+
+	public boolean[] getRules() {
+		return rules;
 	}
 
 }

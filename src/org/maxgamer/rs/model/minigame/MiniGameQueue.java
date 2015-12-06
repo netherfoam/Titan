@@ -1,13 +1,13 @@
 package org.maxgamer.rs.model.minigame;
 
 import java.util.Collection;
-import java.util.function.Predicate;
 
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.core.tick.Tickable;
 import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;
 import org.maxgamer.rs.structure.ArrayUtility;
+import org.maxgamer.rs.structure.Filter;
 
 /**
  * This class handles a {@code Collection} of queued players for a {@code MiniGame}.
@@ -62,9 +62,9 @@ public abstract class MiniGameQueue extends Tickable {
 					}
 				}
 				players.clear();
-				gamesRunning = ArrayUtility.filter(ArrayUtility.addElement(gamesRunning, game), new Predicate<MiniGame>() {
+				gamesRunning = ArrayUtility.filter(ArrayUtility.addElement(gamesRunning, game), new Filter<MiniGame>() {
 					@Override
-					public boolean test(MiniGame t) {
+					public boolean accept(MiniGame t) {
 						return t == null || !t.isRunning() || t.isTerminated();
 					}
 				});

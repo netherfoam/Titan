@@ -3,7 +3,6 @@ package org.maxgamer.rs.structure;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Random;
-import java.util.function.Predicate;
 
 /**
  * @author Albert Beaupre
@@ -28,16 +27,10 @@ public final class ArrayUtility {
 	public static double[] range(double start, double end, double increment) {
 		double[] a = new double[(int) (Math.abs(start - end) / increment)];
 		int index = 0;
-		if (start < end) {
-			for (double i = start; i <= end; i += (increment < 0 ? -increment : increment)) {
-				a = Arrays.copyOf(a, index + 1);
-				a[index++] = i;
-			}
-		} else {
-			for (double i = start; i >= end; i += (increment < 0 ? increment : -increment)) {
-				a = Arrays.copyOf(a, index + 1);
-				a[index++] = i;
-			}
+		double j = start < end ? (increment < 0 ? -increment : increment) : (increment < 0 ? increment : -increment);
+		for (double i = start; start < end ? i <= end : i >= end; i += j) {
+			a = Arrays.copyOf(a, index + 1);
+			a[index++] = i;
 		}
 		return a;
 	}
@@ -57,16 +50,10 @@ public final class ArrayUtility {
 	public static int[] range(int start, int end, int increment) {
 		int[] a = new int[Math.abs(start - end) / increment];
 		int index = 0;
-		if (start < end) {
-			for (int i = start; i <= end; i += (increment < 0 ? -increment : increment)) {
-				a = Arrays.copyOf(a, index + 1);
-				a[index++] = i;
-			}
-		} else {
-			for (int i = start; i >= end; i += (increment < 0 ? increment : -increment)) {
-				a = Arrays.copyOf(a, index + 1);
-				a[index++] = i;
-			}
+		int j = start < end ? (increment < 0 ? -increment : increment) : (increment < 0 ? increment : -increment);
+		for (int i = start; start < end ? i <= end : i >= end; i += j) {
+			a = Arrays.copyOf(a, index + 1);
+			a[index++] = i;
 		}
 		return a;
 	}
@@ -86,16 +73,10 @@ public final class ArrayUtility {
 	public static float[] range(float start, float end, float increment) {
 		float[] a = new float[(int) (Math.abs(start - end) / increment)];
 		int index = 0;
-		if (start < end) {
-			for (float i = start; i <= end; i += (increment < 0 ? -increment : increment)) {
-				a = Arrays.copyOf(a, index + 1);
-				a[index++] = i;
-			}
-		} else {
-			for (float i = start; i >= end; i += (increment < 0 ? increment : -increment)) {
-				a = Arrays.copyOf(a, index + 1);
-				a[index++] = i;
-			}
+		float j = start < end ? (increment < 0 ? -increment : increment) : (increment < 0 ? increment : -increment);
+		for (float i = start; start < end ? i <= end : i >= end; i += j) {
+			a = Arrays.copyOf(a, index + 1);
+			a[index++] = i;
 		}
 		return a;
 	}
@@ -115,16 +96,10 @@ public final class ArrayUtility {
 	public static short[] range(short start, short end, short increment) {
 		short[] a = new short[Math.abs(start - end) / increment];
 		int index = 0;
-		if (start < end) {
-			for (short i = start; i <= end; i += (increment < 0 ? -increment : increment)) {
-				a = Arrays.copyOf(a, index + 1);
-				a[index++] = i;
-			}
-		} else {
-			for (short i = start; i >= end; i += (increment < 0 ? increment : -increment)) {
-				a = Arrays.copyOf(a, index + 1);
-				a[index++] = i;
-			}
+		short j = (short) (start < end ? (increment < 0 ? -increment : increment) : (increment < 0 ? increment : -increment));
+		for (short i = start; start < end ? i <= end : i >= end; i += j) {
+			a = Arrays.copyOf(a, index + 1);
+			a[index++] = i;
 		}
 		return a;
 	}
@@ -144,16 +119,10 @@ public final class ArrayUtility {
 	public static long[] range(long start, long end, long increment) {
 		long[] a = new long[(int) (Math.abs(start - end) / increment)];
 		int index = 0;
-		if (start < end) {
-			for (long i = start; i <= end; i += (increment < 0 ? -increment : increment)) {
-				a = Arrays.copyOf(a, index + 1);
-				a[index++] = i;
-			}
-		} else {
-			for (long i = start; i >= end; i += (increment < 0 ? increment : -increment)) {
-				a = Arrays.copyOf(a, index + 1);
-				a[index++] = i;
-			}
+		long j = start < end ? (increment < 0 ? -increment : increment) : (increment < 0 ? increment : -increment);
+		for (long i = start; start < end ? i <= end : i >= end; i += j) {
+			a = Arrays.copyOf(a, index + 1);
+			a[index++] = i;
 		}
 		return a;
 	}
@@ -173,16 +142,10 @@ public final class ArrayUtility {
 	public static byte[] range(byte start, byte end, byte increment) {
 		byte[] a = new byte[Math.abs(start - end) / increment];
 		int index = 0;
-		if (start < end) {
-			for (byte i = start; i <= end; i += (increment < 0 ? -increment : increment)) {
-				a = Arrays.copyOf(a, index + 1);
-				a[index++] = i;
-			}
-		} else {
-			for (byte i = start; i >= end; i += (increment < 0 ? increment : -increment)) {
-				a = Arrays.copyOf(a, index + 1);
-				a[index++] = i;
-			}
+		byte j = (byte) (start < end ? (increment < 0 ? -increment : increment) : (increment < 0 ? increment : -increment));
+		for (byte i = start; start < end ? i <= end : i >= end; i += j) {
+			a = Arrays.copyOf(a, index + 1);
+			a[index++] = i;
 		}
 		return a;
 	}
@@ -196,7 +159,7 @@ public final class ArrayUtility {
 	 */
 	public static <T> void shuffle(T[] a) {
 		for (int i = 0; i < a.length; i++)
-			swap(i, r.nextInt(a.length), a);	
+			swap(i, r.nextInt(a.length), a);
 	}
 
 	/**
@@ -1521,11 +1484,11 @@ public final class ArrayUtility {
 	 *            the predicate to use for filtering
 	 * @return the filtered array
 	 */
-	public static <T> T[] filter(T[] a, Predicate<T> predicate) {
+	public static <T> T[] filter(T[] a, Filter<T> predicate) {
 		@SuppressWarnings("unchecked")
 		T[] arr = (T[]) Array.newInstance(a[0].getClass(), 0);
 		for (T t : a)
-			if (predicate.test(t))
+			if (predicate.accept(t))
 				arr = addElement(arr, t);
 		return arr;
 	}
@@ -1539,10 +1502,10 @@ public final class ArrayUtility {
 	 *            the predicate to use for filtering
 	 * @return the filtered array
 	 */
-	public static int[] filter(int[] a, Predicate<Integer> filter) {
+	public static int[] filter(int[] a, Filter<Integer> filter) {
 		int[] arr = new int[0];
 		for (int t : a)
-			if (filter.test(t))
+			if (filter.accept(t))
 				arr = addElement(arr, t);
 		return arr;
 	}
@@ -1556,10 +1519,10 @@ public final class ArrayUtility {
 	 *            the predicate to use for filtering
 	 * @return the filtered array
 	 */
-	public static short[] filter(short[] a, Predicate<Short> filter) {
+	public static short[] filter(short[] a, Filter<Short> filter) {
 		short[] arr = new short[0];
 		for (short t : a)
-			if (filter.test(t))
+			if (filter.accept(t))
 				arr = addElement(arr, t);
 		return arr;
 	}
@@ -1573,10 +1536,10 @@ public final class ArrayUtility {
 	 *            the predicate to use for filtering
 	 * @return the filtered array
 	 */
-	public static long[] filter(long[] a, Predicate<Long> filter) {
+	public static long[] filter(long[] a, Filter<Long> filter) {
 		long[] arr = new long[0];
 		for (long t : a)
-			if (filter.test(t))
+			if (filter.accept(t))
 				arr = addElement(arr, t);
 		return arr;
 	}
@@ -1590,10 +1553,10 @@ public final class ArrayUtility {
 	 *            the predicate to use for filtering
 	 * @return the filtered array
 	 */
-	public static byte[] filter(byte[] a, Predicate<Byte> filter) {
+	public static byte[] filter(byte[] a, Filter<Byte> filter) {
 		byte[] arr = new byte[0];
 		for (byte t : a)
-			if (filter.test(t))
+			if (filter.accept(t))
 				arr = addElement(arr, t);
 		return arr;
 	}
@@ -1607,10 +1570,10 @@ public final class ArrayUtility {
 	 *            the predicate to use for filtering
 	 * @return the filtered array
 	 */
-	public static float[] filter(float[] a, Predicate<Float> filter) {
+	public static float[] filter(float[] a, Filter<Float> filter) {
 		float[] arr = new float[0];
 		for (float t : a)
-			if (filter.test(t))
+			if (filter.accept(t))
 				arr = addElement(arr, t);
 		return arr;
 	}
@@ -1624,10 +1587,10 @@ public final class ArrayUtility {
 	 *            the predicate to use for filtering
 	 * @return the filtered array
 	 */
-	public static double[] filter(double[] a, Predicate<Double> filter) {
+	public static double[] filter(double[] a, Filter<Double> filter) {
 		double[] arr = new double[0];
 		for (double t : a)
-			if (filter.test(t))
+			if (filter.accept(t))
 				arr = addElement(arr, t);
 		return arr;
 	}
@@ -1641,10 +1604,10 @@ public final class ArrayUtility {
 	 *            the predicate to use for filtering
 	 * @return the filtered array
 	 */
-	public static char[] filter(char[] a, Predicate<Character> filter) {
+	public static char[] filter(char[] a, Filter<Character> filter) {
 		char[] arr = new char[0];
 		for (char t : a)
-			if (filter.test(t))
+			if (filter.accept(t))
 				arr = addElement(arr, t);
 		return arr;
 	}
@@ -1658,10 +1621,10 @@ public final class ArrayUtility {
 	 *            the predicate to use for filtering
 	 * @return the filtered array
 	 */
-	public static boolean[] filter(boolean[] a, Predicate<Boolean> filter) {
+	public static boolean[] filter(boolean[] a, Filter<Boolean> filter) {
 		boolean[] arr = new boolean[0];
 		for (boolean t : a)
-			if (filter.test(t))
+			if (filter.accept(t))
 				arr = addElement(arr, t);
 		return arr;
 	}

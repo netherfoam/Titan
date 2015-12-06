@@ -1,6 +1,5 @@
 package org.maxgamer.rs.model.minigame;
 
-import static org.maxgamer.rs.model.minigame.MiniGameRule.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,6 +14,7 @@ import org.maxgamer.rs.model.map.MapBuilder;
 
 /**
  * TODO finish this implementation
+ * 
  * @author Albert Beaupre
  */
 public abstract class MiniGame extends Tickable implements EventListener {
@@ -37,7 +37,7 @@ public abstract class MiniGame extends Tickable implements EventListener {
 	public MiniGame() {
 		this.mobs = new ArrayList<Mob>();
 		this.players = new HashSet<Persona>();
-		this.rules = new boolean[values().length];
+		this.rules = new boolean[MiniGameRule.values().length];
 		this.setMapBuilder(new MapBuilder());
 	}
 

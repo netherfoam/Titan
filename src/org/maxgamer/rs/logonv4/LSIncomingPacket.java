@@ -14,10 +14,9 @@ import org.maxgamer.rs.network.io.stream.RSInputBuffer;
  * @author netherfoam
  */
 public class LSIncomingPacket extends RSInputBuffer implements ByteReader {
-	
 	public static LSIncomingPacket parse(RSInputBuffer b) throws BufferUnderflowException, IndexOutOfBoundsException {
 		int opcode = b.readByte() & 0xFF;
-		int length = b.readShort();
+		int length = b.readShort() & 0xFFFF;
 		
 		LSIncomingPacket p = new LSIncomingPacket(opcode, b, length);
 		return p;
@@ -32,7 +31,7 @@ public class LSIncomingPacket extends RSInputBuffer implements ByteReader {
 		int l2 = in.read();
 		if (l2 == -1) throw new BufferUnderflowException();
 		
-		int length = (l1 << 8) | l2;
+		int length = ((l1 << 8) | l2) & 0xFFFF;
 		
 		ByteBuffer bb = ByteBuffer.allocate(length);
 		while (bb.hasRemaining()) {
@@ -41,7 +40,8 @@ public class LSIncomingPacket extends RSInputBuffer implements ByteReader {
 			bb.put((byte) v);
 		}
 		bb.flip();
-		return new LSIncomingPacket(opcode, bb, length);
+		LSIncomingPacket packet = new LSIncomingPacket(opcode, bb, length);
+		return packet;
 	}
 	
 	//Value 0-255

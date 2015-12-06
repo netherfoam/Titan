@@ -488,21 +488,8 @@ public class Game637Protocol extends GameProtocol {
 		// We're done.
 		out.writeBits(1, 0);
 		out.finishBitAccess();
-		
-		if (change || System.currentTimeMillis() - lastPlayerUpdate > 1800) { // must
-																				// send
-																				// at
-																				// least
-																				// 1
-																				// update
-																				// every
-																				// 3
-																				// ticks,
-																				// just
-																				// to
-																				// keep
-																				// client
-																				// alive.
+		// must send at least 1 update every 3 ticks just to keep client alive
+		if (change || System.currentTimeMillis() - lastPlayerUpdate > 1800) { 
 			lastPlayerUpdate = System.currentTimeMillis();
 			// Other players were updated in the update block. They go after the
 			// client's player.
@@ -849,20 +836,21 @@ public class Game637Protocol extends GameProtocol {
 			buffer.writeLEShortA(g.getId());
 			buffer.writeInt2(g.getDelay());
 			buffer.writeByte(g.getHeight());
-			// Log.debug("GFX Update");
 		}
 		
 		if (mu.getMovement().hasTeleported()) {
 			mask |= MASK_TELEPORTED;
-			// I'm not sure what exactly this is symbolizing to the client
-			// The client already knows we're teleporting, so what else does
-			// this
-			// say?
-			buffer.writeByteC(1);
-			// Log.debug("Teleport Update");
+			
+			//The value '1' here causes the palyer to teleport without movement.
+			//Other values cause the player to walk, unless the distance is further than
+			//a single step away, in which case, they are teleported. This is
+			//probably a "resync" of player coordinates.  Values other than '1'
+			//will case the player to face their previous location.
+			
+			buffer.writeByteC(1); 
 		}
 		
-		if (mu.hasFacingChanged() || isNew) {
+		if (mu.hasFacingChanged() || isNew) { 
 			Facing fm = p.getFacing();
 			if (fm == null) {
 				mask |= MASK_FACEPOS;
@@ -902,9 +890,8 @@ public class Game637Protocol extends GameProtocol {
 			for (Entry<Mob, ArrayList<Damage>> e : hits.entrySet()) {
 				for (Damage d : e.getValue()) {
 					if (d.getType() == DamageType.MISS && this.p != e.getKey() && this.p != d.getTarget()) {
-						continue; // Don't send hits which are 0's and not
-									// involved with this player (waste of
-									// bandwidth)
+						// Don't send hits which are 0's and not involved with this player (waste of bandwidth)
+						continue; 
 					}
 					size++;
 					if (size >= 255) {
@@ -926,9 +913,8 @@ public class Game637Protocol extends GameProtocol {
 					}
 					
 					if (d.getType() == DamageType.MISS && this.p != dealer && this.p != d.getTarget()) {
-						continue; // Don't send hits which are 0's and not
-									// involved with this player (waste of
-									// bandwidth)
+						// Don't send hits which are 0's and not involved with this player (waste of bandwidth)
+						continue; 
 					}
 					// Something about damage soaking?
 					// if(m != null){ out.writeSmart(0x7FFF); }
@@ -947,8 +933,6 @@ public class Game637Protocol extends GameProtocol {
 					
 				}
 			}
-			
-			// Log.debug("Damage update");
 		}
 		
 		if (mu.getAnimation() != null) {
@@ -962,7 +946,6 @@ public class Game637Protocol extends GameProtocol {
 				buffer.writeLEShortA(a.getId());
 			}
 			buffer.writeByteC(a.getDelay());
-			// Log.debug("ANim update");
 		}
 		
 		if (p.getModel().hasChanged() || isNew) {
@@ -972,17 +955,14 @@ public class Game637Protocol extends GameProtocol {
 			byte[] data = model.getUpdateData();
 			buffer.writeByteA(data.length);
 			buffer.write(data);
-			// Log.debug("model update, " + p.getModel().hasChanged() + ", " +
-			// forceModelUpdate);
 		}
 		
 		if (mu.getSay() != null) {
 			mask |= 0x8000;
 			buffer.writePJStr1(mu.getSay());
-			// Log.debug("Say update");
 		}
 		
-		if (mu.getMovement().hasChanged()) {
+		if (mu.getMovement().hasChanged() && !mu.getMovement().hasTeleported()) {
 			mask |= MASK_MOVE;
 			
 			MovementUpdate m = p.getUpdateMask().getMovement();
@@ -992,7 +972,6 @@ public class Game637Protocol extends GameProtocol {
 			else {
 				buffer.writeByteA(1); // Walk
 			}
-			// Log.debug("Move update");
 		}
 		
 		// This works very similar to how you'd imagine a 3-byte smart value

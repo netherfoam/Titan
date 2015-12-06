@@ -1,5 +1,7 @@
 package org.maxgamer.rs.logonv4;
 
+import net.openrs.util.ByteBufferUtils;
+
 import org.maxgamer.rs.io.ByteWriter;
 import org.maxgamer.rs.network.io.stream.RSOutputStream;
 
@@ -37,5 +39,10 @@ public class LSOutgoingPacket extends RSOutputStream implements ByteWriter {
 		for (int i = 0; i < payload.length; i++)
 			data[i + 1 + 2] = payload[i];
 		return data;
+	}
+	
+	@Override
+	public String toString(){
+		return getClass().getSimpleName() + "(Op=" + this.opcode + ", size=" + this.length() + ", checksum=" + ByteBufferUtils.fingerprint(this.getPayload()) + ")";
 	}
 }

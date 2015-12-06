@@ -17,24 +17,13 @@ Release:
 			- Unload NPC's
 			- Unload areas
 		- Cache changes must be written to disk or stored temporarily.
-		- Add JS Scripts to JSEngine script module
-			> Add them to the JAR automatically
-			> Extract them from the JAR if file not found already
-			
+	
 Events:
 	- Should consumer=true|false be the default?
-
-Bugs:
-	- Teleporting rapidly can cause the player to become invisible 
-	  Teleports can be short distance. Rapid. Probably an issue with
-	  how updates are handled.
 	
 Areas:
 	- Create an Areas API.  AreaLeaveEvent, AreaEnterEvent
 	
-AIModule:
-	
-		
 JSEngineModule:
 	- wait() functionality to wait a specific number of ticks
 	- Way of storing JS scripts in the module / module repository

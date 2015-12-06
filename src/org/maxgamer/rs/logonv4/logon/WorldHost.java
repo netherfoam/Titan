@@ -139,6 +139,10 @@ public class WorldHost extends ServerSession {
 	}
 	
 	public void write(LSOutgoingPacket out) {
+		if(out.length() > 0xFFFF){
+			throw new RuntimeException("Cannot write a LSOutgoingPacket of length " + out.length() + ", max is " + 0xFFFF);
+		}
+		
 		this.write(ByteBuffer.wrap(out.toByteArray()));
 	}
 	

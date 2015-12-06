@@ -1,6 +1,8 @@
 package net.openrs.util;
 
 import java.nio.ByteBuffer;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.zip.CRC32;
 import java.util.zip.Checksum;
@@ -23,6 +25,35 @@ public final class ByteBufferUtils {
 		'\u2019', '\u201C', '\u201D', '\u2022', '\u2013', '\u2014',
 		'\u02DC', '\u2122', '\u0161', '\u203A', '\u0153', '\0', '\u017E',
 		'\u0178' };
+	
+	/**
+	 * Performs a MD5 hash on the given bytes and converts the resultant hash into a 32 digit long hex number,
+	 * prefied with 0x.
+	 * @param data the data to fingerprint
+	 * @return a (hopefully) unique identifer for the given data.
+	 */
+	public static String fingerprint(byte[] data){
+		MessageDigest md5;
+		
+		try {
+			md5 = MessageDigest.getInstance("MD5");
+		}
+		catch (NoSuchAlgorithmException e) {
+			throw new RuntimeException("MD5 MessageDigest not found!", e);
+		}
+		
+		byte[] result = md5.digest(data);
+		StringBuilder builder = new StringBuilder(2 + result.length * 2);
+		builder.append("0x");
+		for (int i = 0; i < result.length; i++) {
+			String hex = Integer.toHexString(result[i] & 0xFF).toUpperCase();
+			if (hex.length() == 1){
+				hex = "0" + hex;
+			}
+			builder.append(hex);
+		}
+		return builder.toString();
+	}
 
 	/**
 	 * Gets a null-terminated string from the specified buffer, using a

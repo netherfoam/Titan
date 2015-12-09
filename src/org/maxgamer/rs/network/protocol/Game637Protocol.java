@@ -573,7 +573,7 @@ public class Game637Protocol extends GameProtocol {
 		
 		// A NPC has to be within this cube to be added to the player. This is a
 		// limitation of the protocol.
-		MBR npcViewDistance = new Cube(new int[] { playerLoc.x - 31, playerLoc.y - 31, playerLoc.z }, new int[] { 63, 63, 0 });
+		MBR npcViewDistance = new Cube(new int[] { playerLoc.x - 15, playerLoc.y - 15, playerLoc.z }, new int[] { 31, 31, 0 });
 		
 		// Adding new NPCs
 		// for (NPC n : viewport.getCenter().getMap().getEntities(visibleArea,

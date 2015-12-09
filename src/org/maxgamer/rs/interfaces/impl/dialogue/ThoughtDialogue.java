@@ -1,7 +1,5 @@
 package org.maxgamer.rs.interfaces.impl.dialogue;
 
-import java.util.Arrays;
-
 import org.maxgamer.rs.lib.Chat;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 
@@ -53,8 +51,6 @@ public abstract class ThoughtDialogue extends Dialogue {
 				throw new NullPointerException("Line at pos " + i + " is null!");
 			}
 		}
-		
-		System.out.println("Set lines to\n" + Arrays.toString(lines));
 		
 		this.text = lines;
 		

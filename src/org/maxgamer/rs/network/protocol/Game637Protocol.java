@@ -76,7 +76,6 @@ import org.maxgamer.rs.network.io.packet.player.UnknownHandler;
 import org.maxgamer.rs.network.io.packet.player.WorldMapHandler;
 import org.maxgamer.rs.network.io.stream.RSOutputStream;
 import org.maxgamer.rs.structure.areagrid.Cube;
-import org.maxgamer.rs.structure.areagrid.MBR;
 import org.maxgamer.rs.structure.areagrid.MBRUtil;
 
 /**
@@ -571,10 +570,6 @@ public class Game637Protocol extends GameProtocol {
 			change = true;
 		}
 		
-		// A NPC has to be within this cube to be added to the player. This is a
-		// limitation of the protocol.
-		MBR npcViewDistance = new Cube(new int[] { playerLoc.x - 15, playerLoc.y - 15, playerLoc.z }, new int[] { 31, 31, 0 });
-		
 		// Adding new NPCs
 		// for (NPC n : viewport.getCenter().getMap().getEntities(visibleArea,
 		// 40, NPC.class)) {
@@ -585,14 +580,14 @@ public class Game637Protocol extends GameProtocol {
 				continue;
 			}
 			
-			if(MBRUtil.isOverlap(n.getLocation(), npcViewDistance) == false){
-				// Too far
-				continue;
-			}
-			
 			// NPC's are added relative to the player's location
 			int x = n.getLocation().x - getPlayer().getLocation().x;
 			int y = n.getLocation().y - getPlayer().getLocation().y;
+			
+			if (x > 15 || x < -15 || y > 15 || y < -15) {
+				// Too far, this is a protocol limitation
+				continue;
+			}
 			
 			out.writeBits(15, n.getClientIndex());
 			out.writeBits(14, n.getDefinition().getId());

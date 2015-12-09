@@ -332,6 +332,10 @@ public class ConfigSection implements Map<String, Object>{
 			last = (Map<String, Object>) q;
 		}
 		
+		if(last == null){
+			return null;
+		}
+		
 		Object o = last.get(parts[parts.length - 1]); 
 		
 		if(o instanceof Map){

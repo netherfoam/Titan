@@ -1,18 +1,21 @@
 package org.maxgamer.rs.command.commands;
 
+import java.util.HashMap;
+
 import org.maxgamer.rs.cache.EncryptedException;
 import org.maxgamer.rs.command.PlayerCommand;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
 import org.maxgamer.rs.model.map.Chunk;
-import org.maxgamer.rs.model.map.DynamicMap;
 import org.maxgamer.rs.model.map.Location;
 import org.maxgamer.rs.model.map.MapBuilder;
+import org.maxgamer.rs.model.map.WorldMap;
 
 /**
  * @author netherfoam
  */
 public class Instance implements PlayerCommand {
+	private HashMap<Player, WorldMap> instances = new HashMap<Player, WorldMap>();
 
 	@Override
 	public void execute(Player p, String[] args) {
@@ -31,31 +34,30 @@ public class Instance implements PlayerCommand {
 		
 		//Second level test
 		chunks[1][1][1] = new Chunk(239, 634, 1);*/
-		/*
-		MapBuilder builder = new MapBuilder();
-		for(int i = 434; i <= 436; i++){
-			for(int j = 399; j <= 401; j++){
-				Chunk c = new Chunk(i, j, 0);
-				builder.set(i - 434, j - 399, 0, c);
-			}
-		}
-		builder.set(1, 1, 1, new Chunk(239, 634, 1));*/
 		
-		MapBuilder builder = new MapBuilder();
-		for(int i = 320; i <= 330; i++){
-			for(int j = 320; j <= 330; j++){
-				Chunk c = new Chunk(i, j, 0);
-				builder.set(i - 320, j - 320, 0, c);
-			}
-		}
+		WorldMap map = instances.get(p);
+		if(map == null){
 		
-		DynamicMap map;
-		try {
-			map = builder.create(p.getName() + "-instance");
+			MapBuilder builder = new MapBuilder();
+			for(int i = 434; i <= 436; i++){
+				for(int j = 399; j <= 401; j++){
+					Chunk c = new Chunk(i, j, 0);
+					builder.set(i - 434, j - 399, 0, c);
+				}
+			}
+			
+			try {
+				map = builder.create(p.getName() + "-instance");
+			}
+			catch (EncryptedException e) {
+				e.printStackTrace();
+				return;
+			}
+			instances.put(p, map);
+			p.sendMessage("Generated a new instance...");
 		}
-		catch (EncryptedException e) {
-			e.printStackTrace();
-			return;
+		else{
+			p.sendMessage("Re-using your last instance...");
 		}
 		
 		Location l = new Location(map, 12, 12, 0);

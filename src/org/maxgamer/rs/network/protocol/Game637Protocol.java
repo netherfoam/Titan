@@ -356,7 +356,7 @@ public class Game637Protocol extends GameProtocol {
 		
 		boolean change = false;
 		final Location playerLoc = getPlayer().getLocation();
-		MBR visibleArea = viewport; // A MBR that overlaps with all entities
+		Viewport visibleArea = viewport; // A MBR that overlaps with all entities
 									// that the player can see with their view
 									// distance.
 		
@@ -530,8 +530,8 @@ public class Game637Protocol extends GameProtocol {
 		while (nit.hasNext()) {
 			NPC n = nit.next();
 			
-			if (n.isHidden() || n.getLocation().z != getPlayer().getLocation().z || MBRUtil.isOverlap(visibleArea, n.getLocation()) == false || n.getUpdateMask().isTeleporting() || sortedNPCList.indexOf(n) >= MAX_LOCAL_NPCS) {
-				change = true;
+			if (n.getMap() != viewport.getMap() || n.isHidden() || n.getLocation().z != getPlayer().getLocation().z || MBRUtil.isOverlap(visibleArea, n.getLocation()) == false || n.getUpdateMask().isTeleporting() || sortedNPCList.indexOf(n) >= MAX_LOCAL_NPCS) {
+				change = true; 
 				// The NPC is not visible to the player anymore.
 				out.writeBits(1, 1);
 				out.writeBits(2, 3);
@@ -573,7 +573,7 @@ public class Game637Protocol extends GameProtocol {
 		
 		// A NPC has to be within this cube to be added to the player. This is a
 		// limitation of the protocol.
-		visibleArea = new Cube(new int[] { playerLoc.x - 31, playerLoc.y - 31, playerLoc.z }, new int[] { 63, 63, 0 });
+		MBR npcViewDistance = new Cube(new int[] { playerLoc.x - 31, playerLoc.y - 31, playerLoc.z }, new int[] { 63, 63, 0 });
 		
 		// Adding new NPCs
 		// for (NPC n : viewport.getCenter().getMap().getEntities(visibleArea,
@@ -585,14 +585,14 @@ public class Game637Protocol extends GameProtocol {
 				continue;
 			}
 			
-			// NPC's are added relative to the player's location
-			int x = n.getLocation().x - getPlayer().getLocation().x;
-			int y = n.getLocation().y - getPlayer().getLocation().y;
-			
-			if (x > 15 || x < -15 || y > 15 || y < -15) {
+			if(MBRUtil.isOverlap(n.getLocation(), npcViewDistance) == false){
 				// Too far
 				continue;
 			}
+			
+			// NPC's are added relative to the player's location
+			int x = n.getLocation().x - getPlayer().getLocation().x;
+			int y = n.getLocation().y - getPlayer().getLocation().y;
 			
 			out.writeBits(15, n.getClientIndex());
 			out.writeBits(14, n.getDefinition().getId());
@@ -1411,11 +1411,6 @@ public class Game637Protocol extends GameProtocol {
 			this.viewport.getCenter().getMap().remove(this.viewport);
 		}
 		
-		// TODO: If this Viewport is constructed while the player is near the
-		// edge of the map,
-		// then it will overlap the edge of the map and thus not fit in the
-		// WorldMap. This will
-		// cause errors.
 		// Construct the new Viewport
 		this.viewport = new Viewport(getPlayer());
 		// Add the new Viewport to the map

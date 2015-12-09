@@ -1,9 +1,9 @@
 package org.maxgamer.rs.command.commands;
 
 import org.maxgamer.rs.command.PlayerCommand;
+import org.maxgamer.rs.model.entity.Entity;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
-import org.maxgamer.rs.model.map.GameObject;
 
 /**
  * @author netherfoam
@@ -24,7 +24,7 @@ public class Nearby implements PlayerCommand {
 			return;
 		}
 		
-		for (GameObject g : player.getLocation().getNearby(GameObject.class, radius)) {
+		for (Entity g : player.getLocation().getNearby(Entity.class, radius)) {
 			player.sendMessage("Near: " + g.toString() + " Dist: " + String.format("%.1f", Math.sqrt(g.getLocation().distanceSq(player.getLocation()))));
 		}
 	}

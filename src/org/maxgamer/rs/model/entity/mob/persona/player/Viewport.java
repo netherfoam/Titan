@@ -1,6 +1,7 @@
 package org.maxgamer.rs.model.entity.mob.persona.player;
 
 import org.maxgamer.rs.model.map.Location;
+import org.maxgamer.rs.model.map.WorldMap;
 import org.maxgamer.rs.structure.areagrid.Cube;
 import org.maxgamer.rs.structure.areagrid.MBR;
 import org.maxgamer.rs.structure.areagrid.MBRUtil;
@@ -27,6 +28,10 @@ public class Viewport implements MBR {
 		this.center = owner.getLocation();
 		this.distance = owner.getViewDistance();
 		this.cube = this.distance.getArea(owner.getLocation());
+	}
+	
+	public WorldMap getMap(){
+		return center.map;
 	}
 	
 	public Location getCenter() {

@@ -41,7 +41,7 @@ public class ConfigSetup {
 			config.set("database.pass", p.getString());
 			
 			p.print("Database name [titan]: ");
-			config.set("database.name", p.getString(Pattern.compile("[A-Za-z0-9_]{1,}"), "titan"));
+			config.set("database.database", p.getString(Pattern.compile("[A-Za-z0-9_]{1,}"), "titan"));
 			
 			p.print("Database port [3306]: ");
 			config.set("database.port", p.getInt(3306));
@@ -91,7 +91,7 @@ public class ConfigSetup {
 			config.set("database.pass", p.getString());
 			
 			p.print("Database name [titan]: ");
-			config.set("database.name", p.getString(Pattern.compile("[A-Za-z0-9_]{1,}"), "titan"));
+			config.set("database.database", p.getString(Pattern.compile("[A-Za-z0-9_]{1,}"), "titan"));
 			
 			p.print("Database port [3306]: ");
 			config.set("database.port", p.getInt(3306));

@@ -28,7 +28,7 @@ public class SpawnNPC implements PlayerCommand {
 			for (int i = 0; i < spawns; i++) {
 				NPC n = new NPC(Integer.parseInt(args[0]), p.getLocation());
 				n.setSpawn(p.getLocation());
-				p.sendMessage("Spawned NPC " + args[0] + ": " + n.getDefinition().getName() + " temporarily.");
+				p.sendMessage("Spawned NPC " + args[0] + ": " + n.getDefinition().getName() + " temporarily at " + n.getLocation());
 			}
 		}
 		catch (WorldFullException e) {

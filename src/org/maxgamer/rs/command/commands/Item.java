@@ -9,8 +9,6 @@ import java.util.HashSet;
 
 import org.maxgamer.rs.command.PlayerCommand;
 import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.interfaces.impl.chat.GESearchInterface;
-import org.maxgamer.rs.interfaces.impl.chat.IntRequestInterface;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
 import org.maxgamer.rs.model.item.ItemStack;
@@ -24,31 +22,31 @@ public class Item implements PlayerCommand {
 	private TrieSet names = new TrieSet();
 	private HashMap<String, Integer> items = new HashMap<String, Integer>(20000);
 	private boolean ready = false;
-	
+
 	public Item() {
 		Core.submit(new Runnable() {
 			@Override
 			public void run() {
 				try {
 					Connection con = Core.getWorldDatabase().getConnection();
-					PreparedStatement ps = con.prepareStatement("SELECT id, name FROM item_defs group by name order by id"); //Group by name means no duplicate names.
+					PreparedStatement ps = con.prepareStatement("SELECT id, name FROM item_defs group by name order by id"); // Group by name means no
+																																// duplicate names.
 					ResultSet rs = ps.executeQuery();
-					
+
 					while (rs.next()) {
 						String name = rs.getString("name");
 						if (name.equals("null")) {
 							continue;
 						}
 						name = name.toLowerCase().replaceAll("[^0-9A-Za-z]", "");
-						
+
 						int id = rs.getInt("id");
-						
+
 						names.add(name);
 						items.put(name, id);
 					}
-					items.put("coins", 995); //Fix for duplicate items called coins
-				}
-				catch (SQLException e) {
+					items.put("coins", 995); // Fix for duplicate items called coins
+				} catch (SQLException e) {
 					e.printStackTrace();
 				}
 				synchronized (Item.this) {
@@ -57,7 +55,7 @@ public class Item implements PlayerCommand {
 			}
 		}, true);
 	}
-	
+
 	@Override
 	public void execute(Player sender, String[] args) {
 		synchronized (this) {
@@ -66,34 +64,13 @@ public class Item implements PlayerCommand {
 				return;
 			}
 		}
-		
+
 		if (args.length <= 0) {
-			sender.getWindow().open(new GESearchInterface(sender) {
-				
-				@Override
-				public void onSelect(final ItemStack type) {
-					getPlayer().getWindow().open(new IntRequestInterface(getPlayer(), "How many " + type.getName() + " would you like?") {
-						
-						@Override
-						public void onInput(long value) {
-							ItemStack item = type.setAmount(value);
-							if (item == null) return; //Null if value <= 0
-							
-							try {
-								getPlayer().getInventory().add(item);
-							}
-							catch (ContainerException e) {
-								getPlayer().sendMessage("Not enough room in your inventory.");
-							}
-						}
-					});
-				}
-			});
 			return;
 		}
-		
+
 		int amount = 1;
-		
+
 		if (args.length >= 2) {
 			try {
 				int multiplier = 1;
@@ -111,21 +88,19 @@ public class Item implements PlayerCommand {
 					multiplier = 1000000000;
 				}
 				amount = Integer.parseInt(args[1]) * multiplier;
-			}
-			catch (NumberFormatException e) {
+			} catch (NumberFormatException e) {
 				sender.sendMessage("Invalid amount: " + args[1]);
 				return;
 			}
 		}
-		
+
 		ItemStack stack;
 		try {
 			stack = ItemStack.create(Integer.parseInt(args[0]), amount);
-		}
-		catch (NumberFormatException e) {
+		} catch (NumberFormatException e) {
 			if (args[0].endsWith("?")) {
 				int i = 0;
-				
+
 				HashSet<String> matches = names.matches(args[0].substring(0, args[0].length() - 1));
 				if (matches.isEmpty()) {
 					sender.sendMessage("No matches for: " + args[0]);
@@ -135,47 +110,45 @@ public class Item implements PlayerCommand {
 				for (String s : matches) {
 					sender.sendMessage(++i + ". " + s);
 				}
-				
+
 				return;
-			}
-			else if (args[0].endsWith("*")) {
-				String partial = args[0].substring(0, args[0].length() - 1); //Strip * from the end
-				
+			} else if (args[0].endsWith("*")) {
+				String partial = args[0].substring(0, args[0].length() - 1); // Strip * from the end
+
 				for (String s : names.matches(partial)) {
-					String[] strs = args.clone(); //Copies all args directly
-					strs[0] = s; //The item name match.
+					String[] strs = args.clone(); // Copies all args directly
+					strs[0] = s; // The item name match.
 					execute(sender, strs);
 				}
 				return;
 			}
-			
+
 			args[0] = names.nearestKey(args[0].toLowerCase());
 			if (args[0] == null) {
 				sender.sendMessage("Item not found.");
 				return;
 			}
-			
+
 			int id = items.get(args[0]);
-			
+
 			stack = ItemStack.create(id, amount);
 		}
-		
+
 		if (args.length > 2 && args[2].equalsIgnoreCase("noted")) {
 			stack = stack.getNoted();
 		}
-		
+
 		try {
 			sender.getInventory().add(stack);
 			sender.sendMessage("Received " + stack.getDefinition().getName() + "(" + stack.getId() + ") " + " x" + amount);
-		}
-		catch (ContainerException e) {
+		} catch (ContainerException e) {
 			sender.sendMessage("Not enough room.");
 		}
 	}
-	
+
 	@Override
 	public int getRankRequired() {
 		return Rights.ADMIN;
 	}
-	
+
 }

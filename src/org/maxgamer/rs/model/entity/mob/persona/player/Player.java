@@ -195,10 +195,10 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 
 		ConfigSection config = getConfig().getSection("location");
 		try {
-			this.setLocation(Location.deserialize(config, Core.getServer().getMap(), PLAYER_SPAWN));
+			this.setLocation(Location.deserialize(config, Core.getServer().getMap(), DEFAULT_PLAYER_SPAWN));
 		} catch (RuntimeException e) {
 			// Map didn't seem to load.
-			this.setLocation(PLAYER_SPAWN);
+			this.setLocation(DEFAULT_PLAYER_SPAWN);
 		}
 
 		this.getProtocol().sendMap();

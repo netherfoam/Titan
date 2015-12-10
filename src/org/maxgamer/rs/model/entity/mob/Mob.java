@@ -77,11 +77,13 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 */
 	private boolean retaliate = true;
 	
+	
 	private int unrootTick;
 	private int rootImmunityTick;
 	private boolean isLoaded;
 	private Faction faction = Factions.NONE;
 	private Facing facing;
+	private Location nextSpawn;
 	
 	/**
 	 * The mob we are trying to kill. Not all of our attacks necessarily have to
@@ -682,6 +684,9 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 		getDamage().reset();
 		restore();
 		if (isHidden()) show();
+		
+		if (nextSpawn != null)
+			teleport(nextSpawn);
 	}
 	
 	/**
@@ -888,5 +893,13 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 				return;
 			}
 		}
+	}
+
+	public Location getNextSpawn() {
+		return nextSpawn;
+	}
+
+	public void setNextSpawn(Location nextSpawn) {
+		this.nextSpawn = nextSpawn;
 	}
 }

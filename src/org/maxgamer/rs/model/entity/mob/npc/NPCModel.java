@@ -37,7 +37,7 @@ public class NPCModel extends MobModel {
 		return id;
 	}
 	
-	public void getModelId(int id) {
+	public void setModelId(int id) {
 		this.id = id;
 		setChanged(true);
 	}

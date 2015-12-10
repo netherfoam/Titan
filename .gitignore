@@ -6,6 +6,7 @@
 .settings
 *.log
 *titan-modules/
+*titan-client/
 
 
 # Temporary files created by sublime-text

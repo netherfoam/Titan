@@ -90,6 +90,10 @@ public abstract class Window {
 		getPlayer().write(out);
 	}
 	
+	public void setComponentVisible(int componentId, boolean visible) {
+		getPlayer().getProtocol().unlockInterfaceComponent(interfaceId, componentId, visible);
+	}
+	
 	public abstract void onOpen();
 	
 	public abstract void onClose();

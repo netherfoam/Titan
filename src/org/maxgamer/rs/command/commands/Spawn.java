@@ -14,7 +14,7 @@ public class Spawn implements PlayerCommand {
 	
 	@Override
 	public void execute(Player player, String[] args) throws Exception {
-		player.teleport(Persona.PLAYER_SPAWN);
+		player.teleport(Persona.DEFAULT_PLAYER_SPAWN);
 		player.sendMessage("Teleported to Spawn");
 	}
 	

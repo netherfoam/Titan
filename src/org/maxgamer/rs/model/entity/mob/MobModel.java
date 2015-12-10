@@ -138,7 +138,6 @@ public abstract class MobModel implements YMLSerializable {
 			// Do the update.
 			ByteArrayOutputStream data = new ByteArrayOutputStream(96);
 			OutputStreamWrapper out = new OutputStreamWrapper(data);
-			
 			try {
 				int hash = isMale() ? 0 : 1;
 				// 0x2 is "hasDisplayName"

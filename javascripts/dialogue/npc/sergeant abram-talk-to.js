@@ -1,3 +1,5 @@
+importClass(org.maxgamer.rs.interfaces.impl.dialogue.SpeechDialogue);
+
 chat(player, "Good day.");
 chat(npc, "To you too! I'm sorry but I'm guarding the castle. I'm not allowed to talk.");
 chat(player, "Nonsense, you're the Sergeant!");

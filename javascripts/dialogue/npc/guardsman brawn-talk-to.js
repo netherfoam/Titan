@@ -1,8 +1,6 @@
 importClass(org.maxgamer.rs.interfaces.impl.dialogue.SpeechDialogue);
-
-chat(player, "Hello hello!", SpeechDialogue.LAUGH_EXCITED);
-chat(npc, "Well met, adventurer!", SpeechDialogue.LAUGH_EXCITED);
-
+chat(player, "Hello there.");
+chat(npc, "Good day.");
 var opt = option(["Tell me about the Lumbridge Guardsmen.", "What is there to do around here?", "Tell me about Lumbridge.", "What are you guarding?", "Bye."]);
 
 if (opt == 0){

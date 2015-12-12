@@ -41,11 +41,18 @@ public class Instance implements PlayerCommand {
 		}
 		builder.set(1, 1, 1, new Chunk(239, 634, 1));*/
 		
-		MapBuilder builder = new MapBuilder();
+		/*MapBuilder builder = new MapBuilder();
 		for(int i = 327; i <= 335; i++){
 			for(int j = 320; j <= 327; j++){
 				Chunk c = new Chunk(i, j, 0);
 				builder.set(i - 327, j - 320, 0, c);
+			}
+		}*/
+		
+		MapBuilder builder = new MapBuilder();
+		for(int i = 328; i <= 335; i++){
+			for(int j = 319; j <= 328; j++){
+				builder.set(i - 328, j - 319, 0, new Chunk(i, j, 0));
 			}
 		}
 		

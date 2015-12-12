@@ -17,7 +17,7 @@ public class Position implements PlayerCommand {
 		int ry = p.getLocation().getRegionY();
 		int cx = p.getLocation().getChunkX();
 		int cy = p.getLocation().getChunkY();
-		p.sendMessage("Location: " + p.getLocation() + ", Region: (" + rx + ", " + ry + ")" + ", Chunck: (" + cx + ", " + cy + ")");
+		p.sendMessage("Location: " + p.getLocation() + ", Region: (" + rx + ", " + ry + ")" + ", Chunk: (" + cx + ", " + cy + ")");
 	}
 
 	@Override

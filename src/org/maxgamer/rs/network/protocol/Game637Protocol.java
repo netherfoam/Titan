@@ -1403,18 +1403,9 @@ public class Game637Protocol extends GameProtocol {
 			int chunkX = l.x >> 3;
 			int chunkY = l.y >> 3;
 
-			int mapHash = getPlayer().getViewDistance().getTileSize() >> 4; // Bitshift
-																			// right
-																			// by
-																			// 3,
-																			// then
-																			// divide
-																			// by
-																			// 2
-																			// (equals
-																			// bitshift
-																			// right
-																			// 4)
+			/* Bitshift right by 3, then dividing by two equals bitshift right by 4 */
+			int mapHash = getPlayer().getViewDistance().getTileSize() >> 4; 
+			
 			for (int regionX = (chunkX - mapHash) >> 3; regionX <= (chunkX + mapHash) >> 3; regionX++) {
 				for (int regionY = (chunkY - mapHash) >> 3; regionY <= (chunkY + mapHash) >> 3; regionY++) {
 					if (map.getChunk(regionX << 3, regionY << 3, 0) == null) {
@@ -1447,6 +1438,7 @@ public class Game637Protocol extends GameProtocol {
 				}
 			}
 		} else if (m instanceof DynamicMap) {
+			this.localNpcs.clear();
 			out.writeByteA(1); // Loading type
 			out.writeByteA(getPlayer().getViewDistance().getId());
 
@@ -1457,18 +1449,9 @@ public class Game637Protocol extends GameProtocol {
 			out.writeByteA(1); // Force reload
 
 			out.startBitAccess();
-			int mapHash = getPlayer().getViewDistance().getTileSize() >> 4; // Bitshift
-																			// right
-																			// by
-																			// 3,
-																			// then
-																			// divide
-																			// by
-																			// 2
-																			// (equals
-																			// bitshift
-																			// right
-																			// 4)
+			/* Bitshift right by 3, then dividing by two equals bitshift right by 4 */
+			int mapHash = getPlayer().getViewDistance().getTileSize() >> 4;
+			
 			ArrayList<Integer> regionids = new ArrayList<Integer>();
 
 			for (int z = 0; z < 4; z++) {
@@ -1480,15 +1463,10 @@ public class Game637Protocol extends GameProtocol {
 						} else {
 							int rotation = 0;
 							out.writeBits(1, 1);
-							out.writeBits(2, c.getCacheZ()); // Was 'z'
-							out.writeBits(10, c.getCacheX()); // I have no idea
-																// why this is
-																// 10 and not
-																// 11.
-							out.writeBits(11, c.getCacheY()); // Maybe x can
-																// only go up to
-																// 8191 for
-																// dynamic maps?
+							out.writeBits(2, c.getCacheZ()); 
+							/* It appears X can only go up to 8191 inclusive for DynamicMaps */
+							out.writeBits(10, c.getCacheX()); 
+							out.writeBits(11, c.getCacheY()); 
 							out.writeBits(2, rotation);
 							out.writeBits(1, 0);
 
@@ -1508,12 +1486,12 @@ public class Game637Protocol extends GameProtocol {
 					int fileId;
 					try {
 						fileId = Core.getCache().getFileId(IDX.LANDSCAPES, "l" + (regionId >> 8) + "_" + (regionId & 0xFF));
+						XTEAKey xtea = Core.getCache().getXTEA().getKey(IDX.LANDSCAPES, fileId);
+						if (xtea != null) {
+							keys = xtea.getKeys();
+						}
 					} catch (FileNotFoundException ex) {
-						throw new RuntimeException("RegionID: " + regionId + " becomes x" + (regionId >> 8) + " and y" + (regionId & 0xFF), ex);
-					}
-					XTEAKey xtea = Core.getCache().getXTEA().getKey(IDX.LANDSCAPES, fileId);
-					if (xtea != null) {
-						keys = xtea.getKeys();
+						/* There are no objects here. We send an empty XTEA key */
 					}
 				}
 

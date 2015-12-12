@@ -345,4 +345,15 @@ public class ReferenceTable{
 		
 		return true;
 	}
+	
+	@Override
+	public int hashCode(){
+		int total = 0;
+		
+		total += this.version << 24;
+		total += this.idx << 20;
+		total += this.format << 19;
+		total += this.references.size() << 10;
+		return total;
+	}
 }

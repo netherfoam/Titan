@@ -3,6 +3,7 @@ package org.maxgamer.rs.model.action;
 import org.maxgamer.rs.model.entity.mob.Animation;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.events.mob.MobDeathEvent;
+import org.maxgamer.rs.model.map.Location;
 
 import co.paralleluniverse.fibers.SuspendExecution;
 
@@ -31,6 +32,14 @@ public class DeathAction extends Action {
 		getOwner().hide();
 		
 		wait(getOwner().getRespawnTicks());
+		
+		/* Teleport the mob back to their spawn, if one exists */
+		Location spawn = e.getSpawn();
+		if(spawn != null){
+			/* A mob could potentially have no spawn point defined */
+			getOwner().teleport(e.getSpawn());
+		}
+		
 		getOwner().respawn();
 	}
 	

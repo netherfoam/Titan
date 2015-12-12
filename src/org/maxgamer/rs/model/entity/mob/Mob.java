@@ -16,6 +16,7 @@ import org.maxgamer.rs.model.entity.mob.facing.Facing;
 import org.maxgamer.rs.model.entity.mob.npc.NPC;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;
 import org.maxgamer.rs.model.entity.mob.persona.PersonaOption;
+import org.maxgamer.rs.model.events.mob.MobDeathEvent;
 import org.maxgamer.rs.model.events.mob.MobItemOnObjectEvent;
 import org.maxgamer.rs.model.events.mob.MobLoadEvent;
 import org.maxgamer.rs.model.events.mob.MobUnloadEvent;
@@ -83,7 +84,6 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	private boolean isLoaded;
 	private Faction faction = Factions.NONE;
 	private Facing facing;
-	private Location nextSpawn;
 	
 	/**
 	 * The mob we are trying to kill. Not all of our attacks necessarily have to
@@ -598,6 +598,13 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	public abstract int getMaxHealth();
 	
 	/**
+	 * The location that this NPC should be teleported to before being respawned. Event
+	 * handlers may change this location when a Mob dies through {@link MobDeathEvent#setSpawn(Location)}
+	 * @return The location that this NPC should be teleported to before being respawned.
+	 */
+	public abstract Location getSpawn();
+	
+	/**
 	 * The equipment that this mob is currently wielding, such as Rune Scimitar,
 	 * Dharok's Platebody or Amulet of Glory
 	 * @return the equipment this mob is wielding
@@ -684,9 +691,6 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 		getDamage().reset();
 		restore();
 		if (isHidden()) show();
-		
-		if (nextSpawn != null)
-			teleport(nextSpawn);
 	}
 	
 	/**
@@ -893,13 +897,5 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 				return;
 			}
 		}
-	}
-
-	public Location getNextSpawn() {
-		return nextSpawn;
-	}
-
-	public void setNextSpawn(Location nextSpawn) {
-		this.nextSpawn = nextSpawn;
 	}
 }

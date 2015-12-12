@@ -918,12 +918,6 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 	}
 
 	@Override
-	public void respawn() {
-		super.respawn();
-		teleport(getNextSpawn() == null ? DEFAULT_PLAYER_SPAWN : getNextSpawn());
-	}
-
-	@Override
 	public int getRespawnTicks() {
 		// Immediately respawn players.
 		return 0;
@@ -942,5 +936,10 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 	@Override
 	public void onIdle() {
 		// Nothing.
+	}
+	
+	@Override
+	public Location getSpawn(){
+		return DEFAULT_PLAYER_SPAWN;
 	}
 }

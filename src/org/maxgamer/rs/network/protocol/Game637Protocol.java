@@ -53,6 +53,7 @@ import org.maxgamer.rs.network.io.packet.player.ClickHandler;
 import org.maxgamer.rs.network.io.packet.player.ClientFocusHandler;
 import org.maxgamer.rs.network.io.packet.player.DialogueHandler;
 import org.maxgamer.rs.network.io.packet.player.GameObjectHandler;
+import org.maxgamer.rs.network.io.packet.player.GrandExchangeHandler;
 import org.maxgamer.rs.network.io.packet.player.GroundItemOptionsHandler;
 import org.maxgamer.rs.network.io.packet.player.HeartbeatHandler;
 import org.maxgamer.rs.network.io.packet.player.InputHandler;
@@ -186,6 +187,7 @@ public class Game637Protocol extends GameProtocol {
 		PACKET_MANAGER.setHandler(WorldMapHandler.OPCODE, new WorldMapHandler());
 
 		PACKET_MANAGER.setHandler(ItemOnObjectHandler.OPCODE, new ItemOnObjectHandler());
+		PACKET_MANAGER.setHandler(GrandExchangeHandler.OPCODE, new GrandExchangeHandler());
 	}
 
 	/** An array of players who are within view distance of this player */

@@ -10,7 +10,7 @@ function chat(speaker, message, emote){
 }
 
 function option(options, title){
-	title = title || "";
+	title = title || "Select an option";
 	DialogueUtil.option(fiber, player, options, title);
 }
 

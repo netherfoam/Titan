@@ -29,13 +29,13 @@ public class Bonus {
 	public static final int DEF_SUMMON = 10;
 	
 	/** Improves damage for melee */
-	public static final int POW_STRENGTH = 11;
+	public static final int POW_STRENGTH = 14;
 	/** Improves damage for range */
 	public static final int POW_RANGE = 12;
 	/** Improves prayer drain rate */
 	public static final int PRAYER = 13;
 	/** Improves damage for magic */
-	public static final int POW_MAGIC = 14;
+	public static final int POW_MAGIC = 11;
 	
 	public static final int COUNT = 15;
 	

@@ -13,8 +13,9 @@ import org.maxgamer.rs.event.EventListener;
 import org.maxgamer.rs.event.EventPriority;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;
-import org.maxgamer.rs.model.events.mob.persona.PersonaDeathEvent;
+import org.maxgamer.rs.model.events.mob.persona.player.PlayerLogOutEvent;
 import org.maxgamer.rs.model.map.MapBuilder;
+import org.maxgamer.rs.model.map.WorldMap;
 
 /**
  * TODO finish this implementation
@@ -35,6 +36,18 @@ public abstract class MiniGame extends Tickable implements EventListener {
 	 * The {@code MapBuilder} assigned to this {@code MiniGame}.
 	 */
 	protected MapBuilder mapBuilder;
+	
+	private WorldMap associatedMap;
+
+	/**
+	 * @author Albert Beaupre
+	 */
+	public enum MiniGameCause {
+		LOG_OUT,
+		MINI_GAME_END,
+		MINI_GAME_START,
+		NOT_PLAYING
+	}
 
 	/**
 	 * Constructs a new {@code MiniGame} with empty arguments.
@@ -46,11 +59,9 @@ public abstract class MiniGame extends Tickable implements EventListener {
 		this.setMapBuilder(new MapBuilder());
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onDeath(PersonaDeathEvent event) {
-		if (ruleSet(MiniGameRule.SAFE_ON_DEATH) && players.contains(event.getMob())) {
-			event.setSafe(true);
-		}
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void onLogout(PlayerLogOutEvent event) {
+		leave(event.getMob(), true, MiniGameCause.LOG_OUT);
 	}
 
 	/**
@@ -72,9 +83,11 @@ public abstract class MiniGame extends Tickable implements EventListener {
 	 * 
 	 * @param player
 	 *            the player to join this minigame
+	 * @param joinCause
+	 *            the cause type that caused the player to join
 	 * @return true if the player joined successfully
 	 */
-	protected abstract boolean join(Persona player);
+	protected abstract boolean join(Persona player, MiniGameCause joinCause);
 
 	/**
 	 * This method is executed when the specified {@code player} leaves this {@code MiniGame}.
@@ -83,9 +96,11 @@ public abstract class MiniGame extends Tickable implements EventListener {
 	 *            the player to lave this minigame
 	 * @param force
 	 *            the flag to check if the player is being forced to leave
+	 * @param leaveCause
+	 *            the cause type that caused the player to leave
 	 * @return true if the player left successfully
 	 */
-	protected abstract boolean leave(Persona player, boolean force);
+	protected abstract boolean leave(Persona player, boolean force, MiniGameCause leaveCause);
 
 	/**
 	 * This method is executed every game tick.
@@ -100,7 +115,7 @@ public abstract class MiniGame extends Tickable implements EventListener {
 		begin();
 		timeRunning = System.currentTimeMillis();
 		for (Persona person : players) {
-			if (!join(person)) {
+			if (!join(person, MiniGameCause.MINI_GAME_START)) {
 
 			}
 		}
@@ -114,11 +129,17 @@ public abstract class MiniGame extends Tickable implements EventListener {
 		// clean up - normal method will heal/restore/teleport
 		end();
 		for (Persona p : players) {
-			if (leave(p, false)) {
+			if (leave(p, false, MiniGameCause.MINI_GAME_END)) {
 				removePlayer(p);
 			}
 		}
 		cancel();
+		for (Iterator<Mob> it = mobs.iterator(); it.hasNext();) {
+			Mob mob = it.next();
+			mob.hide();
+			mob.destroy();
+			it.remove();
+		}
 	}
 
 	public void terminate() {
@@ -136,7 +157,7 @@ public abstract class MiniGame extends Tickable implements EventListener {
 			}
 
 			if (!isPlaying(p)) {
-				leave(p, true);
+				leave(p, true, MiniGameCause.NOT_PLAYING);
 				removePlayer(p);
 			}
 		}
@@ -169,13 +190,13 @@ public abstract class MiniGame extends Tickable implements EventListener {
 	}
 
 	/**
-	 * <b>Adds</b> the specified {@code m} to this {@code MiniGame}.
+	 * <b>Adds</b> the specified {@code mobArray} to this {@code MiniGame}.
 	 * 
-	 * @param m
-	 *            the mobs to add
+	 * @param mobArray
+	 *            the array of mobs to add
 	 */
-	public void addMob(Mob... m) {
-		for (Mob mob : m) {
+	public void addMob(Mob... mobArray) {
+		for (Mob mob : mobArray) {
 			mobs.add(mob);
 			mob.respawn();
 		}
@@ -188,9 +209,9 @@ public abstract class MiniGame extends Tickable implements EventListener {
 	 *            the mob to remove
 	 */
 	public void removeMob(Mob mob) {
-		mobs.remove(mob);
 		mob.hide();
 		mob.destroy();
+		mobs.remove(mob);
 	}
 
 	/**
@@ -268,6 +289,14 @@ public abstract class MiniGame extends Tickable implements EventListener {
 
 	public long getTimeRunning(TimeUnit unit) {
 		return unit.convert(System.currentTimeMillis() - timeRunning, TimeUnit.MILLISECONDS);
+	}
+
+	public WorldMap getAssociatedMap() {
+		return associatedMap;
+	}
+
+	public void setAssociatedMap(WorldMap associatedMap) {
+		this.associatedMap = associatedMap;
 	}
 
 }

@@ -520,7 +520,10 @@ public class Game637Protocol extends GameProtocol {
 
 		while (nit.hasNext()) {
 			NPC n = nit.next();
-
+			if (n == null || n.isDestroyed()) {
+				nit.remove();
+				continue;
+			}
 			if (n.isHidden() || n.getLocation().z != getPlayer().getLocation().z || MBRUtil.isOverlap(visibleArea, n.getLocation()) == false || n.getUpdateMask().isTeleporting() || sortedNPCList.indexOf(n) >= MAX_LOCAL_NPCS) {
 				change = true;
 				// The NPC is not visible to the player anymore.

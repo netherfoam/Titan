@@ -21,7 +21,7 @@ if (opt == 0) {
 	chat(player, "Thanks for the advice.");
 } else if (opt == 2) {
 	chat(player, "What is that cape you're wearing?");
-	chat(npc, "Ah, this a Skellcape of Defence. I have mastered the art of defence and wear it proudly to show others.");
+	chat(npc, "Ah, this a Skillcape of Defence. I have mastered the art of defence and wear it proudly to show others.");
 	chat(player, "Hmm, interesting.");
 	if (player.getSkills().getLevel(SkillType.DEFENCE, false) < 99) {
 		chat(npc, "Come back to me when you have mastered the fine art of defence and we will talk again.");

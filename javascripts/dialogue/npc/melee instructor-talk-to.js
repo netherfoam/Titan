@@ -7,8 +7,7 @@ chat(npc, "Good day.");
 var opt = option(["Who are you?", "What is this place?", "What is that cape you're wearing?", "What's happening in Lumbridge?"], "What would you like to talk about?");
 if (opt == 0) {
 	chat(player, "Who are you?");
-	chat(npc, "My name is Harlan, a master of defence! I help Lady Deathknell at the acadamy, although I take more of background role nowadays.");
-	
+	chat(npc, "My name is Harlan, a master of defence! I help out at the acadamy, although I take more of background role nowadays.");
 } else if (opt == 1) {
 	chat(player, "What is this place?");
 	chat(npc, "This is the Combat Academy. This is a safe place for intrepid adventurers - like yourself - to improve your combat skills.");

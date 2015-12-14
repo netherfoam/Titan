@@ -16,6 +16,6 @@ if (opt == 0) {
 	npc.face(player);
 	npc.graphics(343);
 	npc.animate(1818);
-	//TODO: Action.wait(5);
+	wait(3);
 	player.teleport(new Location(Core.getServer().getMap(), 2911, 4832, 0));
 }

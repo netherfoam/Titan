@@ -31,13 +31,12 @@ public abstract class MiniGame extends Tickable implements EventListener {
 	// TODO log terminated minigames for economy reasons
 	private boolean terminated; // The flag to check if this minigame was terminated
 	private long timeRunning;
+	private WorldMap associatedMap;
 
 	/**
 	 * The {@code MapBuilder} assigned to this {@code MiniGame}.
 	 */
 	protected MapBuilder mapBuilder;
-	
-	private WorldMap associatedMap;
 
 	/**
 	 * @author Albert Beaupre
@@ -46,7 +45,8 @@ public abstract class MiniGame extends Tickable implements EventListener {
 		LOG_OUT,
 		MINI_GAME_END,
 		MINI_GAME_START,
-		NOT_PLAYING
+		NOT_PLAYING,
+		FORFEIT
 	}
 
 	/**
@@ -101,6 +101,16 @@ public abstract class MiniGame extends Tickable implements EventListener {
 	 * @return true if the player left successfully
 	 */
 	protected abstract boolean leave(Persona player, boolean force, MiniGameCause leaveCause);
+
+	/**
+	 * This method executes the method {@link #leave(Persona, boolean, MiniGameCause)} with a
+	 * default {@code MiniGameCause} of NULL.
+	 * 
+	 * @see #leave(Persona, boolean, MiniGameCause)
+	 */
+	protected boolean leave(Persona player, boolean force) {
+		return leave(player, force, MiniGameCause.FORFEIT);
+	}
 
 	/**
 	 * This method is executed every game tick.
@@ -271,6 +281,9 @@ public abstract class MiniGame extends Tickable implements EventListener {
 		return Collections.unmodifiableCollection(mobs);
 	}
 
+	/**
+	 * @return true if this minigame was terminated
+	 */
 	public boolean isTerminated() {
 		return terminated;
 	}

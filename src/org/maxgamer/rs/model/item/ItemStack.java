@@ -138,8 +138,7 @@ public class ItemStack implements Comparable<ItemStack>, YMLSerializable {
 		}
 		else {
 			ItemStack item = ItemStack.create(this.getId() - 1, this.getAmount(), this.getHealth());
-			if (item.getName() != null && item.getName().equals(this.getName())) return item;
-			return this;
+			return item;
 		}
 	}
 	

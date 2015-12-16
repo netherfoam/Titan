@@ -143,8 +143,9 @@ public abstract class ServerHost<T extends ServerSession> implements Runnable {
 				this.selector = selector;
 			}
 			catch (BindException e) {
-				Log.debug("Failed to bind socket. Is there another server running on port " + port + "?");
-				throw e;
+				e.printStackTrace();
+				Log.severe("Failed to bind socket. Is there another server running on port " + port + "?");
+				System.exit(3);
 			}
 			while (selector.isOpen()) {
 				try {

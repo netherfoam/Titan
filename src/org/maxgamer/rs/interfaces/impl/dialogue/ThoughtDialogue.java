@@ -54,8 +54,6 @@ public abstract class ThoughtDialogue extends Dialogue {
 			}
 		}
 		
-		System.out.println("Set lines to\n" + Arrays.toString(lines));
-		
 		this.text = lines;
 		
 		//Raises an exception on failure.

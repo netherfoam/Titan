@@ -18,7 +18,8 @@ data/cache.yml
 modules/*
 cache/*
 bin/*
-config/*.yml
+config/world.yml
+config/logon.yml
 crash/
 players/
 doc/

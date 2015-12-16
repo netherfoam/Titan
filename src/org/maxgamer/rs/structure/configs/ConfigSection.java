@@ -45,6 +45,10 @@ public class ConfigSection implements Map<String, Object>{
 		options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
 		Yaml parser = new Yaml(options);
 		map = (Map<String, Object>) parser.load(string);
+		
+		if(map == null){
+			map = new HashMap<String, Object>();
+		}
 	}
 	
 	/**
@@ -58,6 +62,10 @@ public class ConfigSection implements Map<String, Object>{
 		options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
 		Yaml parser = new Yaml(options);
 		map = (Map<String, Object>) parser.load(in);
+		
+		if(map == null){
+			map = new HashMap<String, Object>();
+		}
 	}
 	
 	/**
@@ -331,6 +339,8 @@ public class ConfigSection implements Map<String, Object>{
 			}
 			last = (Map<String, Object>) q;
 		}
+		
+		if(last == null) return null;
 		
 		Object o = last.get(parts[parts.length - 1]); 
 		

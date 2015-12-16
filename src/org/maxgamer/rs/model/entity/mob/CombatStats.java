@@ -67,6 +67,7 @@ public abstract class CombatStats {
 			parser.addVariable("skill_level_" + skill.getName().toLowerCase(), getOwner().getSkills().getLevel(type, true));
 		}
 		parser.addVariable("equip_bonus", 0); //Default to 0
+		parser.addVariable("effective_str", 0); //Default to 0
 		
 		//TOOD: Optimise this by caching the formula
 		String formula = Core.getWorldConfig().getString(key, null);
@@ -122,6 +123,10 @@ public abstract class CombatStats {
 		JEP parser = getJep("formula.melee.power", SkillType.STRENGTH);
 		parser.addVariable("equip_bonus", getOwner().getEquipment().getBonus(Bonus.POW_STRENGTH));
 		
+		int strengthLevel = getOwner().getSkills().getLevel(SkillType.STRENGTH, true);
+		double prayerModifier = owner instanceof Persona ? ((Persona) owner).getPrayer().getMultiplier(SkillType.STRENGTH) : 1D;
+
+		parser.addVariable("effective_str", (strengthLevel * prayerModifier) + 8.0);
 		return (int) parser.getValue();
 	}
 	
@@ -132,7 +137,6 @@ public abstract class CombatStats {
 	public int getRangePower() {
 		JEP parser = getJep("formula.range.power", SkillType.RANGE);
 		parser.addVariable("equip_bonus", getOwner().getEquipment().getBonus(Bonus.POW_RANGE));
-		
 		return (int) parser.getValue();
 	}
 	

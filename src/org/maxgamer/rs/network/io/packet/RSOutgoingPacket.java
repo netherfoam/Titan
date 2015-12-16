@@ -18,10 +18,13 @@ public class RSOutgoingPacket extends RSOutputStream implements ByteWriter {
 	
 	private int opcode;
 	
+	static {
+		PACKET_SIZES[113] = -2; //TODO just replace the packet size in the array
+	}
+	
 	public RSOutgoingPacket(int opcode) {
 		//If opcode >= 0 && packet size is defined then use packet size as default size, else 16 default
 		super(opcode >= 0 && PACKET_SIZES[opcode] >= 0 ? PACKET_SIZES[opcode] : 16);
-		
 		this.opcode = opcode;
 	}
 	

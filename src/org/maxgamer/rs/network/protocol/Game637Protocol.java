@@ -520,7 +520,11 @@ public class Game637Protocol extends GameProtocol {
 
 		while (nit.hasNext()) {
 			NPC n = nit.next();
-
+			if (n == null || n.isDestroyed()) {
+				change = true;
+				nit.remove();
+				continue;
+			}
 			if (n.isHidden() || n.getLocation().z != getPlayer().getLocation().z || MBRUtil.isOverlap(visibleArea, n.getLocation()) == false || n.getUpdateMask().isTeleporting() || sortedNPCList.indexOf(n) >= MAX_LOCAL_NPCS) {
 				change = true;
 				// The NPC is not visible to the player anymore.
@@ -1617,6 +1621,29 @@ public class Game637Protocol extends GameProtocol {
 		out.writeInt2((interfaceId << 16) | childId);
 		out.writeByteC(unlocked ? 0 : 1);
 		getPlayer().write(out);
+	}
+	
+
+	public void sendContainer(int type, boolean split, Container c) {
+		RSOutgoingPacket bldr = new RSOutgoingPacket(113);
+		bldr.writeShort(type);
+		bldr.writeByte((split ? 1 : 0));
+		bldr.writeShort(c.getSize());
+		for (int i = 0; i < c.getSize(); i++) {
+			ItemStack item = c.get(i);
+			int id, amt;
+			if (item == null) {
+				id = -1;
+				amt = 0;
+			} else {
+				id = item.getId();
+				amt = (int) item.getAmount();
+			}
+			bldr.writeShortA(id + 1);
+			bldr.writeByteC(amt > 254 ? 0xff : amt);
+			if (amt > 0xfe)
+				bldr.writeInt1(amt);
+		}
 	}
 
 	public void setItem(int iface, boolean split, Container c, int... slots) {

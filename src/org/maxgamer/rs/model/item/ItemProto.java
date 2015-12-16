@@ -189,6 +189,8 @@ public class ItemProto extends Definition {
 	private int highAlchemy;
 	@Mapping
 	private double weight;
+	
+	private boolean stackable;
 /*	@Mapping
 	private boolean noted;*/
 	@Mapping(serializer = RequirementSerializer.class)
@@ -376,7 +378,7 @@ public class ItemProto extends Definition {
 				;
 				break;
 			case 11:
-				/* stackable = 1; */
+				stackable = true;
 				break;
 			case 12:
 				/* value = */buffer.getInt();
@@ -620,5 +622,9 @@ public class ItemProto extends Definition {
 		result.append("}");
 		
 		return result.toString();
+	}
+	
+	public boolean isStackable() {
+		return stackable;
 	}
 }

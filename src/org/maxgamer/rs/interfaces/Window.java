@@ -58,7 +58,6 @@ public abstract class Window {
 	 *        frequently 0.
 	 */
 	public void setAccessMask(int flags, int offset, int length, int componentId) {
-		if (offset < 0) throw new IllegalArgumentException("Offset must be >= 0, given " + offset);
 		if (offset > 0xFFFF) throw new IllegalArgumentException("Length must be <= " + 0xFFFF + ", given " + length);
 		if (length < 0) throw new IllegalArgumentException("length must be >= 0, given " + length);
 		if (length > 0xFFFF) throw new IllegalArgumentException("Length must be <= " + 0xFFFF + ", given " + length);

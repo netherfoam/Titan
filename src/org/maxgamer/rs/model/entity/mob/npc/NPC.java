@@ -349,6 +349,12 @@ public class NPC extends Mob {
 
 	@Override
 	public void onIdle() {
+		if (this.getDefinition().isAggressive()) {
+			Persona target = this.getLocation().getClosest(Persona.class, 16);
+			if (target != null && target.isAttackable(this))
+				this.setTarget(target);
+			return;
+		}
 		// This automatically begins processing actions again by calling ActionQueue.queue()
 		if (this.getDefinition().canWalk()) {
 			getActions().queue(new WanderAction(NPC.this, getLocation(), 4, 10, 30));

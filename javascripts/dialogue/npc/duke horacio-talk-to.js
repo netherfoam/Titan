@@ -16,7 +16,7 @@ if (opt == 0) {
 		if (player.getInventory().isFull() == true) {
 			player.sendMessage("Not enough space!");
 		} else {
-			player.getInventory().add(ItemStack.create(1540, 1));//Error:  Cannot convert Anti-dragon shield(1540) x1 to java.lang.Integer (javascripts\dialogue\npc\duke horacio-talk-to.js#19)
+			player.getInventory().add(1, ItemStack.create(1540, 1));//Error:  Cannot convert Anti-dragon shield(1540) x1 to java.lang.Integer (javascripts\dialogue\npc\duke horacio-talk-to.js#19)
 			receivedShieldThisSession = true;
 		}
 	} else {
@@ -27,7 +27,7 @@ if (opt == 0) {
 		if (player.getInventory().isFull() == true) {
 			player.sendMessage("Not enough space!");
 		} else {
-			player.getInventory().add(ItemStack.create(1540, 1));
+			player.getInventory().add(1, ItemStack.create(1540, 1));
 		}
 	}
 } else if (opt == 1) {
@@ -45,7 +45,7 @@ if (opt == 0) {
 		if (player.getInventory().isFull() == true) {
 			player.sendMessage("Not enough space!");
 		} else {
-			player.getInventory().add(ItemStack.create(1438, 1));
+			player.getInventory().add(1, ItemStack.create(1438, 1));
 		}
 	} else if (opt == 1) {
 		chat(player, "Not right now.");

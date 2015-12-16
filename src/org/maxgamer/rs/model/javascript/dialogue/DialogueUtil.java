@@ -41,6 +41,7 @@ public class DialogueUtil {
 		for(String s : options){
 			fork.add(s);
 		}
+		fork.setTitle(title);
 		
 		recipient.getWindow().open(fork);
 		fiber.pause();

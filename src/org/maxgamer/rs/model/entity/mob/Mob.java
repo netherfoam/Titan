@@ -301,13 +301,21 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 		
 		try {
 			this.onLoad();
-			if (this.getActions().isEmpty()) {
-				this.onIdle();
-			}
 		}
 		catch (Exception e) {
-			Log.warning("Exception calling Mob.onLoad() for " + this);
+			isLoaded = false;
+			Log.severe("Exception calling Mob.onLoad() for " + this);
 			e.printStackTrace();
+			return;
+		}
+		
+		if (this.getActions().isEmpty()) {
+			try{
+				this.onIdle();
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
 		}
 		
 		MobLoadEvent ev = new MobLoadEvent(this);
@@ -334,8 +342,10 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 			this.onUnload();
 		}
 		catch (Exception e) {
-			Log.warning("Exception calling Mob.onUnload() for " + this);
+			isLoaded = true;
+			Log.severe("Exception calling Mob.onUnload() for " + this);
 			e.printStackTrace();
+			return;
 		}
 	}
 	

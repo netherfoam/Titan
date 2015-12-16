@@ -105,6 +105,11 @@ public class ModuleLoader {
 			InputStream in = jar.getInputStream(e);
 			ConfigSection cfg = new ConfigSection(in);
 			
+			String name = cfg.getString("name");
+			if(name == null){
+				throw new IOException(f.getName() + ": JAR module.yml must contain a valid field 'name' to load..");
+			}
+			
 			in.close();
 			String str = cfg.getString("class");
 			if (str == null) {

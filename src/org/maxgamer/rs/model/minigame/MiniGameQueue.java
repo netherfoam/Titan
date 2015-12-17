@@ -7,7 +7,6 @@ import org.maxgamer.rs.core.tick.Tickable;
 import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;
 import org.maxgamer.rs.structure.ArrayUtility;
-import org.maxgamer.rs.structure.Filter;
 
 /**
  * This class handles a {@code Collection} of queued players for a {@code MiniGame}.
@@ -31,7 +30,7 @@ public abstract class MiniGameQueue extends Tickable {
 	 * @return true if the queue is ready
 	 */
 	public abstract boolean isReady();
-	
+
 	/**
 	 * Resets this {@code MiniGameQueue}.
 	 */
@@ -52,6 +51,13 @@ public abstract class MiniGameQueue extends Tickable {
 	@Override
 	public final void tick() {
 		MiniGame game = null;
+		for (int i = 0; i < gamesRunning.length; i++) {
+			MiniGame minigame = gamesRunning[i];
+			if (minigame == null || !!minigame.isRunning() || minigame.isTerminated()) {
+				gamesRunning = ArrayUtility.removeIndex(gamesRunning, i);
+				continue;
+			}
+		}
 		try {
 			if (isReady()) {
 				game = initiateMiniGame();
@@ -62,12 +68,7 @@ public abstract class MiniGameQueue extends Tickable {
 					}
 				}
 				players.clear();
-				gamesRunning = ArrayUtility.filter(ArrayUtility.addElement(gamesRunning, game), new Filter<MiniGame>() {
-					@Override
-					public boolean accept(MiniGame t) {
-						return t == null || !t.isRunning() || t.isTerminated();
-					}
-				});
+				gamesRunning = ArrayUtility.addElement(gamesRunning, game);
 				Core.getServer().getEvents().register(game);
 				game.start();
 				resetQueue();

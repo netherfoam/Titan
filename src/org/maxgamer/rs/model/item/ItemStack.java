@@ -133,6 +133,8 @@ public class ItemStack implements Comparable<ItemStack>, YMLSerializable {
 	}
 	
 	public ItemStack getUnnoted() {
+		if (!getDefinition().isNoted())
+			return this;
 		if (this.getId() == 10828) {
 			return ItemStack.create(10843, this.getAmount(), this.getHealth());
 		}

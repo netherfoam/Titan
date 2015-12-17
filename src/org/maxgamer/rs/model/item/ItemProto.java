@@ -625,6 +625,6 @@ public class ItemProto extends Definition {
 	}
 	
 	public boolean isStackable() {
-		return stackable;
+		return this.isNoted() || stackable;
 	}
 }

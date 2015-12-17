@@ -525,7 +525,7 @@ public class Game637Protocol extends GameProtocol {
 				nit.remove();
 				continue;
 			}
-			if (n.isHidden() || n.getLocation().z != getPlayer().getLocation().z || MBRUtil.isOverlap(visibleArea, n.getLocation()) == false || n.getUpdateMask().isTeleporting() || sortedNPCList.indexOf(n) >= MAX_LOCAL_NPCS) {
+			if (n.getLocation() == null || n.isHidden() || n.getLocation().z != getPlayer().getLocation().z || MBRUtil.isOverlap(visibleArea, n.getLocation()) == false || n.getUpdateMask().isTeleporting() || sortedNPCList.indexOf(n) >= MAX_LOCAL_NPCS) {
 				change = true;
 				// The NPC is not visible to the player anymore.
 				out.writeBits(1, 1);

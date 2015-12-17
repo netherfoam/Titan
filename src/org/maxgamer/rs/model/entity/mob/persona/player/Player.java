@@ -200,7 +200,7 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 			// Map didn't seem to load.
 			this.setLocation(DEFAULT_PLAYER_SPAWN);
 		}
-
+		
 		this.getProtocol().sendMap();
 
 		this.gamepane = new GamePane(this);

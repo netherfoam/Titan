@@ -1,7 +1,5 @@
 package org.maxgamer.rs.interfaces.impl.dialogue;
 
-import java.util.Arrays;
-
 import org.maxgamer.rs.lib.Chat;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 

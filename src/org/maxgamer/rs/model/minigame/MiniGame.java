@@ -179,12 +179,8 @@ public abstract class MiniGame extends Tickable implements EventListener {
 			}
 		}
 		cancel();
-		for (Iterator<Mob> it = mobs.iterator(); it.hasNext();) {
-			Mob mob = it.next();
-			mob.hide();
-			mob.destroy();
-			it.remove();
-		}
+		for (Mob mob : mobs)
+			removeMob(mob);
 		if (associatedMap != null)
 			associatedMap = null;
 	}

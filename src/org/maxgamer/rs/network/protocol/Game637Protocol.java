@@ -84,7 +84,8 @@ import org.maxgamer.rs.structure.areagrid.MBRUtil;
  */
 public class Game637Protocol extends GameProtocol {
 	/**
-	 * The maximum number of players we show to a player at once. After this number is reached, we should begin trimming out players who are not key
+	 * The maximum number of players we show to a player at once. After this
+	 * number is reached, we should begin trimming out players who are not key
 	 * or are further away.
 	 */
 	public static final int MAX_LOCAL_PLAYERS = 70;
@@ -191,13 +192,20 @@ public class Game637Protocol extends GameProtocol {
 	}
 
 	/** An array of players who are within view distance of this player */
-	private ArrayList<Persona> localPlayers = new ArrayList<Persona>(); // TODO: This can be made a HashSet
+	private ArrayList<Persona> localPlayers = new ArrayList<Persona>(); // TODO:
+																		// This
+																		// can
+																		// be
+																		// made
+																		// a
+																		// HashSet
 
 	/** An array of NPCs who are within view distance of this player */
 	private ArrayList<NPC> localNpcs = new ArrayList<NPC>(); // TODO: Limit this
 
 	/**
-	 * The last viewport we sent the player. Not null if the player has been sent the initial map login data
+	 * The last viewport we sent the player. Not null if the player has been
+	 * sent the initial map login data
 	 */
 	private Viewport viewport;
 
@@ -215,7 +223,8 @@ public class Game637Protocol extends GameProtocol {
 	}
 
 	/**
-	 * Returns true if the given Persona has been made visible to the user and is currently still accessible. Use this check when they client states
+	 * Returns true if the given Persona has been made visible to the user and
+	 * is currently still accessible. Use this check when they client states
 	 * they are interacting with a Persona.
 	 * 
 	 * @param p
@@ -227,7 +236,8 @@ public class Game637Protocol extends GameProtocol {
 	}
 
 	/**
-	 * Returns true if the given NPC has been made visible to the user and is currently still accessible. Use this check when they client states they
+	 * Returns true if the given NPC has been made visible to the user and is
+	 * currently still accessible. Use this check when they client states they
 	 * are interacting with an NPC.
 	 * 
 	 * @param n
@@ -242,15 +252,19 @@ public class Game637Protocol extends GameProtocol {
 	 * Requests the client invoke the given client script.
 	 * 
 	 * @param script
-	 *            the script ID to invoke. This will be decoded the first time this scriptId is used and cached.
+	 *            the script ID to invoke. This will be decoded the first time
+	 *            this scriptId is used and cached.
 	 * @param params
-	 *            the parameters the client is to invoke the script with. These must be strings or numbers. May be null if no args.
+	 *            the parameters the client is to invoke the script with. These
+	 *            must be strings or numbers. May be null if no args.
 	 * @throws NullPointerException
 	 *             if the given script is null
 	 * @throws IllegalArgumentException
-	 *             If the script rejects the arguments (See {@link CS2#isValidInvokation(Object...)})
+	 *             If the script rejects the arguments (See
+	 *             {@link CS2#isValidInvokation(Object...)})
 	 * @throws RuntimeException
-	 *             if there is an IOException while getting the script data for the first time.
+	 *             if there is an IOException while getting the script data for
+	 *             the first time.
 	 */
 	public void invoke(int script, Object... params) {
 		CS2 cs2 = scripts.get(script);
@@ -273,14 +287,18 @@ public class Game637Protocol extends GameProtocol {
 	 * Requests the client invoke the given client script.
 	 * 
 	 * @param script
-	 *            the script to invoke. Decode this from the cache in IDX 12 (IDX.INTERFACE_SCRIPTS). Each cache file is its own CS2 script.
-	 *            (CS2.decode(cache.getFile(IDX.INTERFACE_SCRIPTS, scriptId)))
+	 *            the script to invoke. Decode this from the cache in IDX 12
+	 *            (IDX.INTERFACE_SCRIPTS). Each cache file is its own CS2
+	 *            script. (CS2.decode(cache.getFile(IDX.INTERFACE_SCRIPTS,
+	 *            scriptId)))
 	 * @param params
-	 *            the parameters the client is to invoke the script with. These must be strings or numbers. May be null if no args.
+	 *            the parameters the client is to invoke the script with. These
+	 *            must be strings or numbers. May be null if no args.
 	 * @throws NullPointerException
 	 *             if the given script is null
 	 * @throws IllegalArgumentException
-	 *             If the script rejects the arguments (See {@link CS2#isValidInvokation(Object...)})
+	 *             If the script rejects the arguments (See
+	 *             {@link CS2#isValidInvokation(Object...)})
 	 */
 	private void invoke(CS2 script, Object... params) {
 		if (params == null)
@@ -335,12 +353,53 @@ public class Game637Protocol extends GameProtocol {
 		getPlayer().write(out);
 	}
 
+	public void invokeBlankScript(int id) {
+		RSOutgoingPacket out = new RSOutgoingPacket(98);
+		out.writeShort(0);
+		out.writePJStr1("");
+		out.writeInt(id);
+		getPlayer().write(out);
+	}
+
+	public void invokeScript(int id, Object... params) {
+		if (params == null)
+			params = new Object[0]; // No-args
+
+		RSOutgoingPacket out = new RSOutgoingPacket(16);
+
+		// Write the types backwards
+		for (int i = 0; i < params.length; i++) {
+			if (params[params.length - 1 - i] instanceof String) {
+				out.write((byte) 's');
+			} else {
+				out.write((byte) 'i');
+			}
+		}
+		out.write((byte) 0); // Null terminator
+
+		// Write the parameters forwards.
+		for (int i = 0; i < params.length; i++) {
+			Object arg = params[i];
+			if (arg instanceof String) {
+				out.writePJStr1((String) arg);
+			} else {
+				out.writeInt(((Number) arg).intValue());
+			}
+		}
+
+		out.writeInt(id);
+
+		getPlayer().write(out);
+	}
+
 	private long lastPlayerUpdate = System.currentTimeMillis();
 
 	/**
-	 * Sends the player the required updates after a tick. If necessary, this will also update the player's map. This method sends all nearby players
-	 * and their mask changes to the player, allowing them to see movement, animations, teleports and more. This method does not call the reset method
-	 * on any masks.
+	 * Sends the player the required updates after a tick. If necessary, this
+	 * will also update the player's map. This method sends all nearby players
+	 * and their mask changes to the player, allowing them to see movement,
+	 * animations, teleports and more. This method does not call the reset
+	 * method on any masks.
 	 */
 	public void sendUpdates() {
 		boolean firstUpdate = viewport == null;
@@ -395,7 +454,8 @@ public class Game637Protocol extends GameProtocol {
 		}
 
 		/*
-		 * Now we loop through all players which must be sent to the player, or updated, or removed.
+		 * Now we loop through all players which must be sent to the player, or
+		 * updated, or removed.
 		 */
 		pit = localPlayers.iterator();
 		while (pit.hasNext()) {
@@ -627,7 +687,8 @@ public class Game637Protocol extends GameProtocol {
 		UpdateMask um = npc.getUpdateMask();
 
 		/*
-		 * Order is: ForceMovement Hits Graphics MobFacing SwitchID Animation FacePosition ForceText
+		 * Order is: ForceMovement Hits Graphics MobFacing SwitchID Animation
+		 * FacePosition ForceText
 		 */
 
 		// "ForceMovement" is 0x2000 and refers to..? Moving the NPC?
@@ -717,8 +778,10 @@ public class Game637Protocol extends GameProtocol {
 		}
 
 		/*
-		 * if (fm.hasFacePositionChanged() && fm.getFaceMob() == 0) { mask |= 0x40; Position face = fm.getTarget(); if (face != null) {
-		 * block.writeLEShortA(face.x * 2); block.writeLEShortA(face.y * 2); } else { block.writeLEShortA(0); block.writeLEShortA(0); } }
+		 * if (fm.hasFacePositionChanged() && fm.getFaceMob() == 0) { mask |=
+		 * 0x40; Position face = fm.getTarget(); if (face != null) {
+		 * block.writeLEShortA(face.x * 2); block.writeLEShortA(face.y * 2); }
+		 * else { block.writeLEShortA(0); block.writeLEShortA(0); } }
 		 */
 
 		if (um.hasFacingChanged()) {
@@ -823,8 +886,10 @@ public class Game637Protocol extends GameProtocol {
 		if (mu.getMovement().hasTeleported()) {
 			mask |= MASK_TELEPORTED;
 
-			// The value '1' here causes the palyer to teleport without movement.
-			// Other values cause the player to walk, unless the distance is further than
+			// The value '1' here causes the palyer to teleport without
+			// movement.
+			// Other values cause the player to walk, unless the distance is
+			// further than
 			// a single step away, in which case, they are teleported. This is
 			// probably a "resync" of player coordinates. Values other than '1'
 			// will case the player to face their previous location.
@@ -869,7 +934,8 @@ public class Game637Protocol extends GameProtocol {
 			for (Entry<Mob, ArrayList<Damage>> e : hits.entrySet()) {
 				for (Damage d : e.getValue()) {
 					if (d.getType() == DamageType.MISS && this.p != e.getKey() && this.p != d.getTarget()) {
-						// Don't send hits which are 0's and not involved with this player (waste of bandwidth)
+						// Don't send hits which are 0's and not involved with
+						// this player (waste of bandwidth)
 						continue;
 					}
 					size++;
@@ -891,7 +957,8 @@ public class Game637Protocol extends GameProtocol {
 					}
 
 					if (d.getType() == DamageType.MISS && this.p != dealer && this.p != d.getTarget()) {
-						// Don't send hits which are 0's and not involved with this player (waste of bandwidth)
+						// Don't send hits which are 0's and not involved with
+						// this player (waste of bandwidth)
 						continue;
 					}
 					// Something about damage soaking?
@@ -1024,13 +1091,16 @@ public class Game637Protocol extends GameProtocol {
 	}
 
 	/**
-	 * This packet must be sent before sending things like ground item or gameobject updates. It presumably prepares the client to update a chunk of
-	 * their map. A chunk is an 8x8 area. The Z plane (Height) is used by this method.
+	 * This packet must be sent before sending things like ground item or
+	 * gameobject updates. It presumably prepares the client to update a chunk
+	 * of their map. A chunk is an 8x8 area. The Z plane (Height) is used by
+	 * this method.
 	 * 
 	 * @param tile
 	 *            the tile which is inside the chunk we want to update.
 	 * @throws IllegalArgumentException
-	 *             if the given tile is not contained by the player's last {@link Viewport} update.
+	 *             if the given tile is not contained by the player's last
+	 *             {@link Viewport} update.
 	 */
 	public void chunkUpdate(Location tile) {
 		if (MBRUtil.isOverlap(viewport, tile) == false) {
@@ -1061,7 +1131,8 @@ public class Game637Protocol extends GameProtocol {
 	 * @param type
 	 *            the message type
 	 * @param userFrom
-	 *            the user it was from, eg 'netherfoam sent trade request' or null for none
+	 *            the user it was from, eg 'netherfoam sent trade request' or
+	 *            null for none
 	 * @param text
 	 *            the message 'sent trade request'
 	 */
@@ -1349,12 +1420,14 @@ public class Game637Protocol extends GameProtocol {
 			return true;
 		}
 
-		return false; // Map sent previously, same map, player is within view distance. All fine!
+		return false; // Map sent previously, same map, player is within view
+						// distance. All fine!
 	}
 
 	/**
-	 * Forcefully sends an update to the player. Use isMapUpdateRequired() to check whether the player actually needs the map. This worlds for
-	 * standard and dynamic maps.
+	 * Forcefully sends an update to the player. Use isMapUpdateRequired() to
+	 * check whether the player actually needs the map. This worlds for standard
+	 * and dynamic maps.
 	 */
 	public void sendMap() {
 		PlayerMapUpdateEvent e = new PlayerMapUpdateEvent(getPlayer(), viewport == null);
@@ -1409,9 +1482,12 @@ public class Game637Protocol extends GameProtocol {
 			int chunkX = l.x >> 3;
 			int chunkY = l.y >> 3;
 
-			/* Bitshift right by 3, then dividing by two equals bitshift right by 4 */
-			int mapHash = getPlayer().getViewDistance().getTileSize() >> 4; 
-			
+			/*
+			 * Bitshift right by 3, then dividing by two equals bitshift right
+			 * by 4
+			 */
+			int mapHash = getPlayer().getViewDistance().getTileSize() >> 4;
+
 			for (int regionX = (chunkX - mapHash) >> 3; regionX <= (chunkX + mapHash) >> 3; regionX++) {
 				for (int regionY = (chunkY - mapHash) >> 3; regionY <= (chunkY + mapHash) >> 3; regionY++) {
 					if (map.getChunk(regionX << 3, regionY << 3, 0) == null) {
@@ -1455,9 +1531,12 @@ public class Game637Protocol extends GameProtocol {
 			out.writeByteA(1); // Force reload
 
 			out.startBitAccess();
-			/* Bitshift right by 3, then dividing by two equals bitshift right by 4 */
+			/*
+			 * Bitshift right by 3, then dividing by two equals bitshift right
+			 * by 4
+			 */
 			int mapHash = getPlayer().getViewDistance().getTileSize() >> 4;
-			
+
 			ArrayList<Integer> regionids = new ArrayList<Integer>();
 
 			for (int z = 0; z < 4; z++) {
@@ -1469,10 +1548,13 @@ public class Game637Protocol extends GameProtocol {
 						} else {
 							int rotation = 0;
 							out.writeBits(1, 1);
-							out.writeBits(2, c.getCacheZ()); 
-							/* It appears X can only go up to 8191 inclusive for DynamicMaps */
-							out.writeBits(10, c.getCacheX()); 
-							out.writeBits(11, c.getCacheY()); 
+							out.writeBits(2, c.getCacheZ());
+							/*
+							 * It appears X can only go up to 8191 inclusive for
+							 * DynamicMaps
+							 */
+							out.writeBits(10, c.getCacheX());
+							out.writeBits(11, c.getCacheY());
 							out.writeBits(2, rotation);
 							out.writeBits(1, 0);
 
@@ -1540,7 +1622,8 @@ public class Game637Protocol extends GameProtocol {
 	}
 
 	/**
-	 * Appends the login data to a map packet. This should only be sent once per login.
+	 * Appends the login data to a map packet. This should only be sent once per
+	 * login.
 	 * 
 	 * @param out
 	 *            the map packet we're building to
@@ -1622,7 +1705,6 @@ public class Game637Protocol extends GameProtocol {
 		out.writeByteC(unlocked ? 0 : 1);
 		getPlayer().write(out);
 	}
-	
 
 	public void sendContainer(int type, boolean split, Container c) {
 		RSOutgoingPacket bldr = new RSOutgoingPacket(113);
@@ -1924,7 +2006,8 @@ public class Game637Protocol extends GameProtocol {
 	}
 
 	/**
-	 * Renders the player's head on an interface. Eg, for dialogues where the player speaks, this method can be used to display the players head. This
+	 * Renders the player's head on an interface. Eg, for dialogues where the
+	 * player speaks, this method can be used to display the players head. This
 	 * doesn't set the animation used.
 	 * 
 	 * @param ifaceId
@@ -1939,7 +2022,8 @@ public class Game637Protocol extends GameProtocol {
 	}
 
 	/**
-	 * Renders the NPC's head on an interface. Eg, for dialogues where the NPC speaks, this method can be used to display the NPC's head. This doesn't
+	 * Renders the NPC's head on an interface. Eg, for dialogues where the NPC
+	 * speaks, this method can be used to display the NPC's head. This doesn't
 	 * set the animation used.
 	 * 
 	 * @param ifaceId
@@ -1957,7 +2041,8 @@ public class Game637Protocol extends GameProtocol {
 	}
 
 	/**
-	 * See also {@link #sendNPCOnInterface(int, int, int)} {@link #sendPlayerOnInterface(int, int)} Animates the face sent
+	 * See also {@link #sendNPCOnInterface(int, int, int)}
+	 * {@link #sendPlayerOnInterface(int, int)} Animates the face sent
 	 * 
 	 * @param emoteId
 	 * @param ifaceId

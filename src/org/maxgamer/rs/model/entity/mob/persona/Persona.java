@@ -639,6 +639,11 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 		}
 		return false;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public <Y extends YMLSerializable> Y getAttachment(String key, Class<Y> cast) {
+		return (Y) attachments.get(key);
+	}
 
 	/**
 	 * Called after the Persona has been sent initial packets.

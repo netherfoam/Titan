@@ -7,13 +7,15 @@ import java.util.Random;
 /**
  * @author Albert Beaupre
  */
+@SuppressWarnings("unchecked")
 public final class ArrayUtility {
 
 	/** A pseudorandom number generator **/
 	private static Random r = new Random();
 
 	/**
-	 * Creates an array starting from the specified {@code start} argument and ending at the {@code end} argument incrementing at the specified
+	 * Creates an array starting from the specified {@code start} argument and
+	 * ending at the {@code end} argument incrementing at the specified
 	 * {@code increment} argument.
 	 * 
 	 * @param start
@@ -22,7 +24,8 @@ public final class ArrayUtility {
 	 *            the ending value
 	 * @param increment
 	 *            the value to increment by
-	 * @return an array filled with the values ranging from start to end by the increment value
+	 * @return an array filled with the values ranging from start to end by the
+	 *         increment value
 	 */
 	public static double[] range(double start, double end, double increment) {
 		double[] a = new double[(int) (Math.abs(start - end) / increment)];
@@ -36,7 +39,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Creates an array starting from the specified {@code start} argument and ending at the {@code end} argument incrementing at the specified
+	 * Creates an array starting from the specified {@code start} argument and
+	 * ending at the {@code end} argument incrementing at the specified
 	 * {@code increment} argument.
 	 * 
 	 * @param start
@@ -45,7 +49,8 @@ public final class ArrayUtility {
 	 *            the ending value
 	 * @param increment
 	 *            the value to increment by
-	 * @return an array filled with the values ranging from start to end by the increment value
+	 * @return an array filled with the values ranging from start to end by the
+	 *         increment value
 	 */
 	public static int[] range(int start, int end, int increment) {
 		int[] a = new int[Math.abs(start - end) / increment];
@@ -59,7 +64,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Creates an array starting from the specified {@code start} argument and ending at the {@code end} argument incrementing at the specified
+	 * Creates an array starting from the specified {@code start} argument and
+	 * ending at the {@code end} argument incrementing at the specified
 	 * {@code increment} argument.
 	 * 
 	 * @param start
@@ -68,7 +74,8 @@ public final class ArrayUtility {
 	 *            the ending value
 	 * @param increment
 	 *            the value to increment by
-	 * @return an array filled with the values ranging from start to end by the increment value
+	 * @return an array filled with the values ranging from start to end by the
+	 *         increment value
 	 */
 	public static float[] range(float start, float end, float increment) {
 		float[] a = new float[(int) (Math.abs(start - end) / increment)];
@@ -82,7 +89,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Creates an array starting from the specified {@code start} argument and ending at the {@code end} argument incrementing at the specified
+	 * Creates an array starting from the specified {@code start} argument and
+	 * ending at the {@code end} argument incrementing at the specified
 	 * {@code increment} argument.
 	 * 
 	 * @param start
@@ -91,7 +99,8 @@ public final class ArrayUtility {
 	 *            the ending value
 	 * @param increment
 	 *            the value to increment by
-	 * @return an array filled with the values ranging from start to end by the increment value
+	 * @return an array filled with the values ranging from start to end by the
+	 *         increment value
 	 */
 	public static short[] range(short start, short end, short increment) {
 		short[] a = new short[Math.abs(start - end) / increment];
@@ -105,7 +114,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Creates an array starting from the specified {@code start} argument and ending at the {@code end} argument incrementing at the specified
+	 * Creates an array starting from the specified {@code start} argument and
+	 * ending at the {@code end} argument incrementing at the specified
 	 * {@code increment} argument.
 	 * 
 	 * @param start
@@ -114,7 +124,8 @@ public final class ArrayUtility {
 	 *            the ending value
 	 * @param increment
 	 *            the value to increment by
-	 * @return an array filled with the values ranging from start to end by the increment value
+	 * @return an array filled with the values ranging from start to end by the
+	 *         increment value
 	 */
 	public static long[] range(long start, long end, long increment) {
 		long[] a = new long[(int) (Math.abs(start - end) / increment)];
@@ -128,7 +139,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Creates an array starting from the specified {@code start} argument and ending at the {@code end} argument incrementing at the specified
+	 * Creates an array starting from the specified {@code start} argument and
+	 * ending at the {@code end} argument incrementing at the specified
 	 * {@code increment} argument.
 	 * 
 	 * @param start
@@ -137,7 +149,8 @@ public final class ArrayUtility {
 	 *            the ending value
 	 * @param increment
 	 *            the value to increment by
-	 * @return an array filled with the values ranging from start to end by the increment value
+	 * @return an array filled with the values ranging from start to end by the
+	 *         increment value
 	 */
 	public static byte[] range(byte start, byte end, byte increment) {
 		byte[] a = new byte[Math.abs(start - end) / increment];
@@ -259,7 +272,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Swaps the specified indicies {@code i} and {@code j} in the specified array.
+	 * Swaps the specified indicies {@code i} and {@code j} in the specified
+	 * array.
 	 * 
 	 * @param i
 	 *            the first index to swap
@@ -275,7 +289,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Swaps the specified indicies {@code i} and {@code j} in the specified array.
+	 * Swaps the specified indicies {@code i} and {@code j} in the specified
+	 * array.
 	 * 
 	 * @param i
 	 *            the first index to swap
@@ -291,7 +306,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Swaps the specified indicies {@code i} and {@code j} in the specified array.
+	 * Swaps the specified indicies {@code i} and {@code j} in the specified
+	 * array.
 	 * 
 	 * @param i
 	 *            the first index to swap
@@ -307,7 +323,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Swaps the specified indicies {@code i} and {@code j} in the specified array.
+	 * Swaps the specified indicies {@code i} and {@code j} in the specified
+	 * array.
 	 * 
 	 * @param i
 	 *            the first index to swap
@@ -323,7 +340,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Swaps the specified indicies {@code i} and {@code j} in the specified array.
+	 * Swaps the specified indicies {@code i} and {@code j} in the specified
+	 * array.
 	 * 
 	 * @param i
 	 *            the first index to swap
@@ -339,7 +357,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Swaps the specified indicies {@code i} and {@code j} in the specified array.
+	 * Swaps the specified indicies {@code i} and {@code j} in the specified
+	 * array.
 	 * 
 	 * @param i
 	 *            the first index to swap
@@ -355,7 +374,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Swaps the specified indicies {@code i} and {@code j} in the specified array.
+	 * Swaps the specified indicies {@code i} and {@code j} in the specified
+	 * array.
 	 * 
 	 * @param i
 	 *            the first index to swap
@@ -371,7 +391,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Swaps the specified indicies {@code i} and {@code j} in the specified array.
+	 * Swaps the specified indicies {@code i} and {@code j} in the specified
+	 * array.
 	 * 
 	 * @param i
 	 *            the first index to swap
@@ -387,7 +408,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Swaps the specified indicies {@code i} and {@code j} in the specified array.
+	 * Swaps the specified indicies {@code i} and {@code j} in the specified
+	 * array.
 	 * 
 	 * @param i
 	 *            the first index to swap
@@ -403,13 +425,15 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Returns true if the specified {@code Array} contains the specified {@code type}; false is returned otherwise.
+	 * Returns true if the specified {@code Array} contains the specified
+	 * {@code type}; false is returned otherwise.
 	 * 
 	 * @param a
 	 *            the array to search
 	 * @param t
 	 *            the object to check
-	 * @return true if the array contains the specified type; return false otherwise
+	 * @return true if the array contains the specified type; return false
+	 *         otherwise
 	 */
 	public static <T> boolean contains(T t, T[] a) {
 		for (Object o : a)
@@ -419,13 +443,15 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Returns true if the specified {@code Array} contains the specified {@code type}; false is returned otherwise.
+	 * Returns true if the specified {@code Array} contains the specified
+	 * {@code type}; false is returned otherwise.
 	 * 
 	 * @param a
 	 *            the array to search
 	 * @param t
 	 *            the object to check
-	 * @return true if the array contains the specified type; return false otherwise
+	 * @return true if the array contains the specified type; return false
+	 *         otherwise
 	 */
 	public static boolean contains(int t, int[] a) {
 		for (int o : a)
@@ -435,13 +461,15 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Returns true if the specified {@code Array} contains the specified {@code type}; false is returned otherwise.
+	 * Returns true if the specified {@code Array} contains the specified
+	 * {@code type}; false is returned otherwise.
 	 * 
 	 * @param a
 	 *            the array to search
 	 * @param t
 	 *            the object to check
-	 * @return true if the array contains the specified type; return false otherwise
+	 * @return true if the array contains the specified type; return false
+	 *         otherwise
 	 */
 	public static boolean contains(short t, short[] a) {
 		for (short o : a)
@@ -451,13 +479,15 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Returns true if the specified {@code Array} contains the specified {@code type}; false is returned otherwise.
+	 * Returns true if the specified {@code Array} contains the specified
+	 * {@code type}; false is returned otherwise.
 	 * 
 	 * @param a
 	 *            the array to search
 	 * @param t
 	 *            the object to check
-	 * @return true if the array contains the specified type; return false otherwise
+	 * @return true if the array contains the specified type; return false
+	 *         otherwise
 	 */
 	public static boolean contains(double t, double[] a) {
 		for (double o : a)
@@ -467,13 +497,15 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Returns true if the specified {@code Array} contains the specified {@code type}; false is returned otherwise.
+	 * Returns true if the specified {@code Array} contains the specified
+	 * {@code type}; false is returned otherwise.
 	 * 
 	 * @param a
 	 *            the array to search
 	 * @param t
 	 *            the object to check
-	 * @return true if the array contains the specified type; return false otherwise
+	 * @return true if the array contains the specified type; return false
+	 *         otherwise
 	 */
 	public static boolean contains(float t, float[] a) {
 		for (float o : a)
@@ -483,13 +515,15 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Returns true if the specified {@code Array} contains the specified {@code type}; false is returned otherwise.
+	 * Returns true if the specified {@code Array} contains the specified
+	 * {@code type}; false is returned otherwise.
 	 * 
 	 * @param a
 	 *            the array to search
 	 * @param t
 	 *            the object to check
-	 * @return true if the array contains the specified type; return false otherwise
+	 * @return true if the array contains the specified type; return false
+	 *         otherwise
 	 */
 	public static boolean contains(byte t, byte[] a) {
 		for (byte o : a)
@@ -499,13 +533,15 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Returns true if the specified {@code Array} contains the specified {@code type}; false is returned otherwise.
+	 * Returns true if the specified {@code Array} contains the specified
+	 * {@code type}; false is returned otherwise.
 	 * 
 	 * @param a
 	 *            the array to search
 	 * @param t
 	 *            the object to check
-	 * @return true if the array contains the specified type; return false otherwise
+	 * @return true if the array contains the specified type; return false
+	 *         otherwise
 	 */
 	public static boolean contains(char t, char[] a) {
 		for (char o : a)
@@ -515,13 +551,15 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Returns true if the specified {@code Array} contains the specified {@code type}; false is returned otherwise.
+	 * Returns true if the specified {@code Array} contains the specified
+	 * {@code type}; false is returned otherwise.
 	 * 
 	 * @param a
 	 *            the array to search
 	 * @param t
 	 *            the object to check
-	 * @return true if the array contains the specified type; return false otherwise
+	 * @return true if the array contains the specified type; return false
+	 *         otherwise
 	 */
 	public static boolean contains(long t, long[] a) {
 		for (long o : a)
@@ -531,13 +569,15 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Returns true if the specified {@code Array} contains the specified {@code type}; false is returned otherwise.
+	 * Returns true if the specified {@code Array} contains the specified
+	 * {@code type}; false is returned otherwise.
 	 * 
 	 * @param a
 	 *            the array to search
 	 * @param t
 	 *            the object to check
-	 * @return true if the array contains the specified type; return false otherwise
+	 * @return true if the array contains the specified type; return false
+	 *         otherwise
 	 */
 	public static boolean contains(boolean t, boolean[] a) {
 		for (boolean o : a)
@@ -547,7 +587,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Returns the index of the specified {@code o} argument within the specified {@code a} Array. If there is no index, -1 is returned instead.
+	 * Returns the index of the specified {@code o} argument within the
+	 * specified {@code a} Array. If there is no index, -1 is returned instead.
 	 * 
 	 * @param o
 	 *            the value to search for
@@ -557,13 +598,14 @@ public final class ArrayUtility {
 	 */
 	public static <T> int indexOf(T o, T[] a) {
 		for (int i = 0; i < a.length; i++)
-			if (o.equals(a[i]))
+			if (o == a)
 				return i;
 		return -1;
 	}
 
 	/**
-	 * Returns the index of the specified {@code o} argument within the specified {@code a} Array. If there is no index, -1 is returned instead.
+	 * Returns the index of the specified {@code o} argument within the
+	 * specified {@code a} Array. If there is no index, -1 is returned instead.
 	 * 
 	 * @param o
 	 *            the value to search for
@@ -579,7 +621,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Returns the index of the specified {@code o} argument within the specified {@code a} Array. If there is no index, -1 is returned instead.
+	 * Returns the index of the specified {@code o} argument within the
+	 * specified {@code a} Array. If there is no index, -1 is returned instead.
 	 * 
 	 * @param o
 	 *            the value to search for
@@ -595,7 +638,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Returns the index of the specified {@code o} argument within the specified {@code a} Array. If there is no index, -1 is returned instead.
+	 * Returns the index of the specified {@code o} argument within the
+	 * specified {@code a} Array. If there is no index, -1 is returned instead.
 	 * 
 	 * @param o
 	 *            the value to search for
@@ -611,7 +655,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Returns the index of the specified {@code o} argument within the specified {@code a} Array. If there is no index, -1 is returned instead.
+	 * Returns the index of the specified {@code o} argument within the
+	 * specified {@code a} Array. If there is no index, -1 is returned instead.
 	 * 
 	 * @param o
 	 *            the value to search for
@@ -627,7 +672,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Returns the index of the specified {@code o} argument within the specified {@code a} Array. If there is no index, -1 is returned instead.
+	 * Returns the index of the specified {@code o} argument within the
+	 * specified {@code a} Array. If there is no index, -1 is returned instead.
 	 * 
 	 * @param o
 	 *            the value to search for
@@ -643,7 +689,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Returns the index of the specified {@code o} argument within the specified {@code a} Array. If there is no index, -1 is returned instead.
+	 * Returns the index of the specified {@code o} argument within the
+	 * specified {@code a} Array. If there is no index, -1 is returned instead.
 	 * 
 	 * @param o
 	 *            the value to search for
@@ -659,7 +706,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Returns the index of the specified {@code o} argument within the specified {@code a} Array. If there is no index, -1 is returned instead.
+	 * Returns the index of the specified {@code o} argument within the
+	 * specified {@code a} Array. If there is no index, -1 is returned instead.
 	 * 
 	 * @param o
 	 *            the value to search for
@@ -675,7 +723,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Returns the index of the specified {@code o} argument within the specified {@code a} Array. If there is no index, -1 is returned instead.
+	 * Returns the index of the specified {@code o} argument within the
+	 * specified {@code a} Array. If there is no index, -1 is returned instead.
 	 * 
 	 * @param o
 	 *            the value to search for
@@ -691,7 +740,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Returns the {@code Array} with the specified {@code index} removed from the specified {@code a}.
+	 * Returns the {@code Array} with the specified {@code index} removed from
+	 * the specified {@code a}.
 	 * 
 	 * @param a
 	 *            the array to remove the index from
@@ -700,7 +750,6 @@ public final class ArrayUtility {
 	 * @return the array with the removed index
 	 */
 	public static <T> T[] removeIndex(T[] a, int index) {
-		@SuppressWarnings("unchecked")
 		T[] n = (T[]) Array.newInstance(a[0].getClass(), a.length - 1);
 		System.arraycopy(a, 0, n, 0, index);
 		System.arraycopy(a, index + 1, n, index, a.length - index - 1);
@@ -708,7 +757,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Returns the {@code Array} with the specified {@code index} removed from the specified {@code a}.
+	 * Returns the {@code Array} with the specified {@code index} removed from
+	 * the specified {@code a}.
 	 * 
 	 * @param a
 	 *            the array to remove the index from
@@ -724,7 +774,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Returns the {@code Array} with the specified {@code index} removed from the specified {@code a}.
+	 * Returns the {@code Array} with the specified {@code index} removed from
+	 * the specified {@code a}.
 	 * 
 	 * @param a
 	 *            the array to remove the index from
@@ -740,7 +791,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Returns the {@code Array} with the specified {@code index} removed from the specified {@code a}.
+	 * Returns the {@code Array} with the specified {@code index} removed from
+	 * the specified {@code a}.
 	 * 
 	 * @param a
 	 *            the array to remove the index from
@@ -756,7 +808,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Returns the {@code Array} with the specified {@code index} removed from the specified {@code a}.
+	 * Returns the {@code Array} with the specified {@code index} removed from
+	 * the specified {@code a}.
 	 * 
 	 * @param a
 	 *            the array to remove the index from
@@ -772,7 +825,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Returns the {@code Array} with the specified {@code index} removed from the specified {@code a}.
+	 * Returns the {@code Array} with the specified {@code index} removed from
+	 * the specified {@code a}.
 	 * 
 	 * @param a
 	 *            the array to remove the index from
@@ -788,7 +842,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Returns the {@code Array} with the specified {@code index} removed from the specified {@code a}.
+	 * Returns the {@code Array} with the specified {@code index} removed from
+	 * the specified {@code a}.
 	 * 
 	 * @param a
 	 *            the array to remove the index from
@@ -804,7 +859,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Returns the {@code Array} with the specified {@code index} removed from the specified {@code a}.
+	 * Returns the {@code Array} with the specified {@code index} removed from
+	 * the specified {@code a}.
 	 * 
 	 * @param a
 	 *            the array to remove the index from
@@ -820,7 +876,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Returns the {@code Array} with the specified {@code index} removed from the specified {@code a}.
+	 * Returns the {@code Array} with the specified {@code index} removed from
+	 * the specified {@code a}.
 	 * 
 	 * @param a
 	 *            the array to remove the index from
@@ -836,7 +893,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Returns the {@code Array} with the specified {@code element} removed from the specified {@code a}.
+	 * Returns the {@code Array} with the specified {@code element} removed from
+	 * the specified {@code a}.
 	 * 
 	 * @param a
 	 *            the array to remove the element from
@@ -849,7 +907,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Returns the {@code Array} with the specified {@code element} removed from the specified {@code a}.
+	 * Returns the {@code Array} with the specified {@code element} removed from
+	 * the specified {@code a}.
 	 * 
 	 * @param a
 	 *            the array to remove the element from
@@ -862,7 +921,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Returns the {@code Array} with the specified {@code element} removed from the specified {@code a}.
+	 * Returns the {@code Array} with the specified {@code element} removed from
+	 * the specified {@code a}.
 	 * 
 	 * @param a
 	 *            the array to remove the element from
@@ -875,7 +935,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Returns the {@code Array} with the specified {@code element} removed from the specified {@code a}.
+	 * Returns the {@code Array} with the specified {@code element} removed from
+	 * the specified {@code a}.
 	 * 
 	 * @param a
 	 *            the array to remove the element from
@@ -888,7 +949,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Returns the {@code Array} with the specified {@code element} removed from the specified {@code a}.
+	 * Returns the {@code Array} with the specified {@code element} removed from
+	 * the specified {@code a}.
 	 * 
 	 * @param a
 	 *            the array to remove the element from
@@ -901,7 +963,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Returns the {@code Array} with the specified {@code element} removed from the specified {@code a}.
+	 * Returns the {@code Array} with the specified {@code element} removed from
+	 * the specified {@code a}.
 	 * 
 	 * @param a
 	 *            the array to remove the element from
@@ -914,7 +977,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Returns the {@code Array} with the specified {@code element} removed from the specified {@code a}.
+	 * Returns the {@code Array} with the specified {@code element} removed from
+	 * the specified {@code a}.
 	 * 
 	 * @param a
 	 *            the array to remove the element from
@@ -927,7 +991,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Returns the {@code Array} with the specified {@code element} removed from the specified {@code a}.
+	 * Returns the {@code Array} with the specified {@code element} removed from
+	 * the specified {@code a}.
 	 * 
 	 * @param a
 	 *            the array to remove the element from
@@ -940,7 +1005,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Returns the {@code Array} with the specified {@code element} removed from the specified {@code a}.
+	 * Returns the {@code Array} with the specified {@code element} removed from
+	 * the specified {@code a}.
 	 * 
 	 * @param a
 	 *            the array to remove the element from
@@ -953,7 +1019,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Returns the {@code Array} with the specified {@code element} inserted at the end of the specified {@code a}
+	 * Returns the {@code Array} with the specified {@code element} inserted at
+	 * the end of the specified {@code a}
 	 * 
 	 * @param a
 	 *            the array to add the element to
@@ -961,14 +1028,16 @@ public final class ArrayUtility {
 	 *            the element to add
 	 * @return the array with the added element
 	 */
-	public static <T> T[] addElement(T[] a, T element) {
-		T[] b = Arrays.copyOf(a, a.length + 1);
-		b[b.length - 1] = element;
+	public static <T> T[] addElement(T[] a, T... element) {
+		T[] b = Arrays.copyOf(a, a.length + element.length);
+		for (int i = element.length - 1; i >= 0; i--)
+			b[b.length - (i + 1)] = element[i];
 		return b;
 	}
 
 	/**
-	 * Returns the {@code Array} with the specified {@code element} inserted at the end of the specified {@code a}
+	 * Returns the {@code Array} with the specified {@code element} inserted at
+	 * the end of the specified {@code a}
 	 * 
 	 * @param a
 	 *            the array to add the element to
@@ -976,14 +1045,16 @@ public final class ArrayUtility {
 	 *            the element to add
 	 * @return the array with the added element
 	 */
-	public static int[] addElement(int[] a, int element) {
-		int[] b = Arrays.copyOf(a, a.length + 1);
-		b[b.length - 1] = element;
+	public static int[] addElement(int[] a, int... element) {
+		int[] b = Arrays.copyOf(a, a.length + element.length);
+		for (int i = element.length - 1; i >= 0; i--)
+			b[b.length - (i + 1)] = element[i];
 		return b;
 	}
 
 	/**
-	 * Returns the {@code Array} with the specified {@code element} inserted at the end of the specified {@code a}
+	 * Returns the {@code Array} with the specified {@code element} inserted at
+	 * the end of the specified {@code a}
 	 * 
 	 * @param a
 	 *            the array to add the element to
@@ -991,14 +1062,16 @@ public final class ArrayUtility {
 	 *            the element to add
 	 * @return the array with the added element
 	 */
-	public static short[] addElement(short[] a, short element) {
-		short[] b = Arrays.copyOf(a, a.length + 1);
-		b[b.length - 1] = element;
+	public static short[] addElement(short[] a, short... element) {
+		short[] b = Arrays.copyOf(a, a.length + element.length);
+		for (int i = element.length - 1; i >= 0; i--)
+			b[b.length - (i + 1)] = element[i];
 		return b;
 	}
 
 	/**
-	 * Returns the {@code Array} with the specified {@code element} inserted at the end of the specified {@code a}
+	 * Returns the {@code Array} with the specified {@code element} inserted at
+	 * the end of the specified {@code a}
 	 * 
 	 * @param a
 	 *            the array to add the element to
@@ -1006,14 +1079,16 @@ public final class ArrayUtility {
 	 *            the element to add
 	 * @return the array with the added element
 	 */
-	public static long[] addElement(long[] a, long element) {
-		long[] b = Arrays.copyOf(a, a.length + 1);
-		b[b.length - 1] = element;
+	public static long[] addElement(long[] a, long... element) {
+		long[] b = Arrays.copyOf(a, a.length + element.length);
+		for (int i = element.length - 1; i >= 0; i--)
+			b[b.length - (i + 1)] = element[i];
 		return b;
 	}
 
 	/**
-	 * Returns the {@code Array} with the specified {@code element} inserted at the end of the specified {@code a}
+	 * Returns the {@code Array} with the specified {@code element} inserted at
+	 * the end of the specified {@code a}
 	 * 
 	 * @param a
 	 *            the array to add the element to
@@ -1021,14 +1096,16 @@ public final class ArrayUtility {
 	 *            the element to add
 	 * @return the array with the added element
 	 */
-	public static float[] addElement(float[] a, float element) {
-		float[] b = Arrays.copyOf(a, a.length + 1);
-		b[b.length - 1] = element;
+	public static float[] addElement(float[] a, float... element) {
+		float[] b = Arrays.copyOf(a, a.length + element.length);
+		for (int i = element.length - 1; i >= 0; i--)
+			b[b.length - (i + 1)] = element[i];
 		return b;
 	}
 
 	/**
-	 * Returns the {@code Array} with the specified {@code element} inserted at the end of the specified {@code a}
+	 * Returns the {@code Array} with the specified {@code element} inserted at
+	 * the end of the specified {@code a}
 	 * 
 	 * @param a
 	 *            the array to add the element to
@@ -1036,14 +1113,16 @@ public final class ArrayUtility {
 	 *            the element to add
 	 * @return the array with the added element
 	 */
-	public static double[] addElement(double[] a, double element) {
-		double[] b = Arrays.copyOf(a, a.length + 1);
-		b[b.length - 1] = element;
+	public static double[] addElement(double[] a, double... element) {
+		double[] b = Arrays.copyOf(a, a.length + element.length);
+		for (int i = element.length - 1; i >= 0; i--)
+			b[b.length - (i + 1)] = element[i];
 		return b;
 	}
 
 	/**
-	 * Returns the {@code Array} with the specified {@code element} inserted at the end of the specified {@code a}
+	 * Returns the {@code Array} with the specified {@code element} inserted at
+	 * the end of the specified {@code a}
 	 * 
 	 * @param a
 	 *            the array to add the element to
@@ -1051,14 +1130,16 @@ public final class ArrayUtility {
 	 *            the element to add
 	 * @return the array with the added element
 	 */
-	public static byte[] addElement(byte[] a, byte element) {
-		byte[] b = Arrays.copyOf(a, a.length + 1);
-		b[b.length - 1] = element;
+	public static byte[] addElement(byte[] a, byte... element) {
+		byte[] b = Arrays.copyOf(a, a.length + element.length);
+		for (int i = element.length - 1; i >= 0; i--)
+			b[b.length - (i + 1)] = element[i];
 		return b;
 	}
 
 	/**
-	 * Returns the {@code Array} with the specified {@code element} inserted at the end of the specified {@code a}
+	 * Returns the {@code Array} with the specified {@code element} inserted at
+	 * the end of the specified {@code a}
 	 * 
 	 * @param a
 	 *            the array to add the element to
@@ -1066,14 +1147,16 @@ public final class ArrayUtility {
 	 *            the element to add
 	 * @return the array with the added element
 	 */
-	public static char[] addElement(char[] a, char element) {
-		char[] b = Arrays.copyOf(a, a.length + 1);
-		b[b.length - 1] = element;
+	public static char[] addElement(char[] a, char... element) {
+		char[] b = Arrays.copyOf(a, a.length + element.length);
+		for (int i = element.length - 1; i >= 0; i--)
+			b[b.length - (i + 1)] = element[i];
 		return b;
 	}
 
 	/**
-	 * Returns the {@code Array} with the specified {@code element} inserted at the end of the specified {@code a}
+	 * Returns the {@code Array} with the specified {@code element} inserted at
+	 * the end of the specified {@code a}
 	 * 
 	 * @param a
 	 *            the array to add the element to
@@ -1081,14 +1164,16 @@ public final class ArrayUtility {
 	 *            the element to add
 	 * @return the array with the added element
 	 */
-	public static boolean[] addElement(boolean[] a, boolean element) {
-		boolean[] b = Arrays.copyOf(a, a.length + 1);
-		b[b.length - 1] = element;
+	public static boolean[] addElement(boolean[] a, boolean... element) {
+		boolean[] b = Arrays.copyOf(a, a.length + element.length);
+		for (int i = element.length - 1; i >= 0; i--)
+			b[b.length - (i + 1)] = element[i];
 		return b;
 	}
 
 	/**
-	 * Returns the {@code Array} with the specified {@code element} inserted at the specified {@code index} of the specified {@code a}.
+	 * Returns the {@code Array} with the specified {@code element} inserted at
+	 * the specified {@code index} of the specified {@code a}.
 	 * 
 	 * @param a
 	 *            the array to insert the element to
@@ -1106,7 +1191,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Returns the {@code Array} with the specified {@code element} inserted at the specified {@code index} of the specified {@code a}.
+	 * Returns the {@code Array} with the specified {@code element} inserted at
+	 * the specified {@code index} of the specified {@code a}.
 	 * 
 	 * @param a
 	 *            the array to insert the element to
@@ -1124,7 +1210,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Returns the {@code Array} with the specified {@code element} inserted at the specified {@code index} of the specified {@code a}.
+	 * Returns the {@code Array} with the specified {@code element} inserted at
+	 * the specified {@code index} of the specified {@code a}.
 	 * 
 	 * @param a
 	 *            the array to insert the element to
@@ -1142,7 +1229,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Returns the {@code Array} with the specified {@code element} inserted at the specified {@code index} of the specified {@code a}.
+	 * Returns the {@code Array} with the specified {@code element} inserted at
+	 * the specified {@code index} of the specified {@code a}.
 	 * 
 	 * @param a
 	 *            the array to insert the element to
@@ -1160,7 +1248,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Returns the {@code Array} with the specified {@code element} inserted at the specified {@code index} of the specified {@code a}.
+	 * Returns the {@code Array} with the specified {@code element} inserted at
+	 * the specified {@code index} of the specified {@code a}.
 	 * 
 	 * @param a
 	 *            the array to insert the element to
@@ -1178,7 +1267,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Returns the {@code Array} with the specified {@code element} inserted at the specified {@code index} of the specified {@code a}.
+	 * Returns the {@code Array} with the specified {@code element} inserted at
+	 * the specified {@code index} of the specified {@code a}.
 	 * 
 	 * @param a
 	 *            the array to insert the element to
@@ -1196,7 +1286,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Returns the {@code Array} with the specified {@code element} inserted at the specified {@code index} of the specified {@code a}.
+	 * Returns the {@code Array} with the specified {@code element} inserted at
+	 * the specified {@code index} of the specified {@code a}.
 	 * 
 	 * @param a
 	 *            the array to insert the element to
@@ -1214,7 +1305,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Returns the {@code Array} with the specified {@code element} inserted at the specified {@code index} of the specified {@code a}.
+	 * Returns the {@code Array} with the specified {@code element} inserted at
+	 * the specified {@code index} of the specified {@code a}.
 	 * 
 	 * @param a
 	 *            the array to insert the element to
@@ -1232,7 +1324,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Returns the {@code Array} with the specified {@code element} inserted at the specified {@code index} of the specified {@code a}.
+	 * Returns the {@code Array} with the specified {@code element} inserted at
+	 * the specified {@code index} of the specified {@code a}.
 	 * 
 	 * @param a
 	 *            the array to insert the element to
@@ -1253,7 +1346,8 @@ public final class ArrayUtility {
 	 * Returns a pseudorandom element from the specified {@code a}.
 	 * 
 	 * @param a
-	 *            the array to retrieve the pseudorandomly retrieved element from
+	 *            the array to retrieve the pseudorandomly retrieved element
+	 *            from
 	 * @return the pseudorandomly retrieved element
 	 */
 	public static <T> T randomElement(T[] a) {
@@ -1264,7 +1358,8 @@ public final class ArrayUtility {
 	 * Returns a pseudorandom element from the specified {@code a}.
 	 * 
 	 * @param a
-	 *            the array to retrieve the pseudorandomly retrieved element from
+	 *            the array to retrieve the pseudorandomly retrieved element
+	 *            from
 	 * @return the pseudorandomly retrieved element
 	 */
 	public static int randomElement(int[] a) {
@@ -1275,7 +1370,8 @@ public final class ArrayUtility {
 	 * Returns a pseudorandom element from the specified {@code a}.
 	 * 
 	 * @param a
-	 *            the array to retrieve the pseudorandomly retrieved element from
+	 *            the array to retrieve the pseudorandomly retrieved element
+	 *            from
 	 * @return the pseudorandomly retrieved element
 	 */
 	public static short randomElement(short[] a) {
@@ -1286,7 +1382,8 @@ public final class ArrayUtility {
 	 * Returns a pseudorandom element from the specified {@code a}.
 	 * 
 	 * @param a
-	 *            the array to retrieve the pseudorandomly retrieved element from
+	 *            the array to retrieve the pseudorandomly retrieved element
+	 *            from
 	 * @return the pseudorandomly retrieved element
 	 */
 	public static long randomElement(long[] a) {
@@ -1297,7 +1394,8 @@ public final class ArrayUtility {
 	 * Returns a pseudorandom element from the specified {@code a}.
 	 * 
 	 * @param a
-	 *            the array to retrieve the pseudorandomly retrieved element from
+	 *            the array to retrieve the pseudorandomly retrieved element
+	 *            from
 	 * @return the pseudorandomly retrieved element
 	 */
 	public static byte randomElement(byte[] a) {
@@ -1308,7 +1406,8 @@ public final class ArrayUtility {
 	 * Returns a pseudorandom element from the specified {@code a}.
 	 * 
 	 * @param a
-	 *            the array to retrieve the pseudorandomly retrieved element from
+	 *            the array to retrieve the pseudorandomly retrieved element
+	 *            from
 	 * @return the pseudorandomly retrieved element
 	 */
 	public static float randomElement(float[] a) {
@@ -1319,7 +1418,8 @@ public final class ArrayUtility {
 	 * Returns a pseudorandom element from the specified {@code a}.
 	 * 
 	 * @param a
-	 *            the array to retrieve the pseudorandomly retrieved element from
+	 *            the array to retrieve the pseudorandomly retrieved element
+	 *            from
 	 * @return the pseudorandomly retrieved element
 	 */
 	public static double randomElement(double[] a) {
@@ -1330,7 +1430,8 @@ public final class ArrayUtility {
 	 * Returns a pseudorandom element from the specified {@code a}.
 	 * 
 	 * @param a
-	 *            the array to retrieve the pseudorandomly retrieved element from
+	 *            the array to retrieve the pseudorandomly retrieved element
+	 *            from
 	 * @return the pseudorandomly retrieved element
 	 */
 	public static char randomElement(char[] a) {
@@ -1341,7 +1442,8 @@ public final class ArrayUtility {
 	 * Returns a pseudorandom element from the specified {@code a}.
 	 * 
 	 * @param a
-	 *            the array to retrieve the pseudorandomly retrieved element from
+	 *            the array to retrieve the pseudorandomly retrieved element
+	 *            from
 	 * @return the pseudorandomly retrieved element
 	 */
 	public static boolean randomElement(boolean[] a) {
@@ -1356,7 +1458,6 @@ public final class ArrayUtility {
 	 * @return the reversed array
 	 */
 	public static <T> T[] reverse(T[] a) {
-		@SuppressWarnings("unchecked")
 		T[] reverse = (T[]) Array.newInstance(a[0].getClass(), a.length);
 		for (int i = a.length - 1; i >= 0; i--)
 			reverse[i] = a[a.length - 1 - i];
@@ -1476,7 +1577,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Filters the specified {@code a} using the specified {@code predicate} for filtering.
+	 * Filters the specified {@code a} using the specified {@code predicate} for
+	 * filtering.
 	 * 
 	 * @param a
 	 *            the array to filter
@@ -1485,7 +1587,6 @@ public final class ArrayUtility {
 	 * @return the filtered array
 	 */
 	public static <T> T[] filter(T[] a, Filter<T> predicate) {
-		@SuppressWarnings("unchecked")
 		T[] arr = (T[]) Array.newInstance(a[0].getClass(), 0);
 		for (T t : a)
 			if (predicate.accept(t))
@@ -1494,7 +1595,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Filters the specified {@code a} using the specified {@code predicate} for filtering.
+	 * Filters the specified {@code a} using the specified {@code predicate} for
+	 * filtering.
 	 * 
 	 * @param a
 	 *            the array to filter
@@ -1511,7 +1613,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Filters the specified {@code a} using the specified {@code predicate} for filtering.
+	 * Filters the specified {@code a} using the specified {@code predicate} for
+	 * filtering.
 	 * 
 	 * @param a
 	 *            the array to filter
@@ -1528,7 +1631,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Filters the specified {@code a} using the specified {@code predicate} for filtering.
+	 * Filters the specified {@code a} using the specified {@code predicate} for
+	 * filtering.
 	 * 
 	 * @param a
 	 *            the array to filter
@@ -1545,7 +1649,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Filters the specified {@code a} using the specified {@code predicate} for filtering.
+	 * Filters the specified {@code a} using the specified {@code predicate} for
+	 * filtering.
 	 * 
 	 * @param a
 	 *            the array to filter
@@ -1562,7 +1667,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Filters the specified {@code a} using the specified {@code predicate} for filtering.
+	 * Filters the specified {@code a} using the specified {@code predicate} for
+	 * filtering.
 	 * 
 	 * @param a
 	 *            the array to filter
@@ -1579,7 +1685,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Filters the specified {@code a} using the specified {@code predicate} for filtering.
+	 * Filters the specified {@code a} using the specified {@code predicate} for
+	 * filtering.
 	 * 
 	 * @param a
 	 *            the array to filter
@@ -1596,7 +1703,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Filters the specified {@code a} using the specified {@code predicate} for filtering.
+	 * Filters the specified {@code a} using the specified {@code predicate} for
+	 * filtering.
 	 * 
 	 * @param a
 	 *            the array to filter
@@ -1613,7 +1721,8 @@ public final class ArrayUtility {
 	}
 
 	/**
-	 * Filters the specified {@code a} using the specified {@code predicate} for filtering.
+	 * Filters the specified {@code a} using the specified {@code predicate} for
+	 * filtering.
 	 * 
 	 * @param a
 	 *            the array to filter

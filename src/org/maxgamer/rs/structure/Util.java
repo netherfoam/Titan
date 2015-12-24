@@ -277,4 +277,8 @@ public class Util {
 		}
 		return sb.toString();
 	}
+	
+	public static String formatNumber(double number) {
+		return String.format("%,.0f", number);
+	}
 }

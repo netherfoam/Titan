@@ -191,8 +191,8 @@ public class Harvestable {
 	}
 
 	/**
-	 * Returns true if the given mob has the requirements for harvesting
-	 * this resource. Note that this doesn't check tools, but skills and (if
+	 * Returns true if the given mob has the requirements for harvesting this
+	 * resource. Note that this doesn't check tools, but skills and (if
 	 * overridden) things like quests.
 	 * 
 	 * @param p
@@ -270,8 +270,12 @@ public class Harvestable {
 	 * 
 	 * @return the harvest time for a harvestable object
 	 */
-	public int getHarvestTime() {
-		return Erratic.nextInt(minTime, maxTime);
+	public int getHarvestTime(Persona p, HarvestTool tool) {
+		int A = p.getSkills().getLevel(this.skill, true);
+		double B = tool.getLevel() / (double) A;
+		double C = level / (double) tool.getLevel();
+		double D = level / (double) A;
+		return (int) Math.max(1, (Erratic.nextInt(minTime, maxTime) * ((B + C + D) / tool.getEfficiency())));
 	}
 
 	/**

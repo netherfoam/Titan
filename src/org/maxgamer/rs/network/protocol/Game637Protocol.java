@@ -60,7 +60,6 @@ import org.maxgamer.rs.network.io.packet.player.InputHandler;
 import org.maxgamer.rs.network.io.packet.player.InterfaceComponentOnInterfaceComponentHandler;
 import org.maxgamer.rs.network.io.packet.player.InterfaceHandler;
 import org.maxgamer.rs.network.io.packet.player.ItemMoveHandler;
-import org.maxgamer.rs.network.io.packet.player.ItemOnItemHandler;
 import org.maxgamer.rs.network.io.packet.player.ItemOnObjectHandler;
 import org.maxgamer.rs.network.io.packet.player.KeyHandler;
 import org.maxgamer.rs.network.io.packet.player.LoadHandler;
@@ -190,7 +189,6 @@ public class Game637Protocol extends GameProtocol {
 
 		PACKET_MANAGER.setHandler(ItemOnObjectHandler.OPCODE, new ItemOnObjectHandler());
 		PACKET_MANAGER.setHandler(GrandExchangeHandler.OPCODE, new GrandExchangeHandler());
-		PACKET_MANAGER.setHandler(ItemOnItemHandler.OPCODE, new ItemOnItemHandler());
 	}
 
 	/** An array of players who are within view distance of this player */
@@ -423,7 +421,9 @@ public class Game637Protocol extends GameProtocol {
 			}
 		});
 
-		sorted.addAll(playerLoc.getMap().getEntities(MBRUtil.getOverlap(visibleArea, new Cube(new int[] { playerLoc.x - PLAYER_UPDATE_RADIUS, playerLoc.y - PLAYER_UPDATE_RADIUS, playerLoc.z }, new int[] { playerLoc.x + PLAYER_UPDATE_RADIUS, playerLoc.y + PLAYER_UPDATE_RADIUS, 1 })), 100, Persona.class));
+		sorted.addAll(playerLoc.getMap().getEntities(MBRUtil.getOverlap(visibleArea, new Cube(new int[] {
+				playerLoc.x - PLAYER_UPDATE_RADIUS, playerLoc.y - PLAYER_UPDATE_RADIUS, playerLoc.z }, new int[] {
+				playerLoc.x + PLAYER_UPDATE_RADIUS, playerLoc.y + PLAYER_UPDATE_RADIUS, 1 })), 100, Persona.class));
 		ArrayList<Persona> nearby = new ArrayList<Persona>(sorted);
 		nearby.remove(getPlayer()); // Don't send updates about ourself here.
 
@@ -627,7 +627,8 @@ public class Game637Protocol extends GameProtocol {
 
 		// A NPC has to be within this cube to be added to the player. This is a
 		// limitation of the protocol.
-		visibleArea = new Cube(new int[] { playerLoc.x - 31, playerLoc.y - 31, playerLoc.z }, new int[] { 63, 63, 0 });
+		visibleArea = new Cube(new int[] { playerLoc.x - 31, playerLoc.y - 31, playerLoc.z }, new int[] {
+				63, 63, 0 });
 
 		// Adding new NPCs
 		// for (NPC n : viewport.getCenter().getMap().getEntities(visibleArea,

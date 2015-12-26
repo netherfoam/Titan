@@ -20,8 +20,23 @@ public abstract class AbstractArea extends Area implements EventListener {
 	 * 
 	 * @author Albert Beaupre
 	 */
+	public enum AreaState {
+		ENTER, LEAVE
+	}
+
 	public enum AreaChangeState {
-		ENTER_WORLD, LEAVE_WORLD, TELEPORT_ENTER, TELEPORT_LEAVE, WALK_ENTER, WALK_LEAVE
+		TELEPORT_ENTER(AreaState.ENTER), TELEPORT_LEAVE(AreaState.LEAVE), WALK_ENTER(AreaState.ENTER), WALK_LEAVE(AreaState.LEAVE), WORLD_ENTER(AreaState.ENTER), WORLD_LEAVE(AreaState.LEAVE);
+
+		private final AreaState parentingState;
+
+		private AreaChangeState(AreaState parentingState) {
+			this.parentingState = parentingState;
+		}
+
+		public AreaState getParentingState() {
+			return parentingState;
+		}
+
 	}
 
 	/**
@@ -57,27 +72,31 @@ public abstract class AbstractArea extends Area implements EventListener {
 			return;
 		Mob m = event.getMob();
 		Position p = event.getDestination();
-		if (contains(m) && !contains(p))
+		if (contains(m) && !contains(p)) {
 			onChange(m, AreaChangeState.WALK_LEAVE);
-		if (!contains(m) && contains(p))
+		}
+		if (!contains(m) && contains(p)) {
 			onChange(m, AreaChangeState.WALK_ENTER);
+		}
 	}
 
 	@EventHandler()
 	public void enterWorld(PlayerEnterWorldEvent event) {
 		if (event.getMob() == null)
 			return;
-		if (contains(event.getMob()))
-			onChange(event.getMob(), AreaChangeState.ENTER_WORLD);
+		if (contains(event.getMob())) {
+			onChange(event.getMob(), AreaChangeState.WORLD_ENTER);
+		}
 	}
 
 	@EventHandler()
 	public void mapUpdate(PlayerMapUpdateEvent event) {
 		if (event.getMob() == null || event.isInitialUpdate())
 			return;
-		if (contains(event.getMob()))
+		if (contains(event.getMob())) {
 			onChange(event.getMob(), AreaChangeState.TELEPORT_ENTER);
-		else
+		} else {
 			onChange(event.getMob(), AreaChangeState.TELEPORT_LEAVE);
+		}
 	}
 }

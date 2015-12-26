@@ -29,6 +29,7 @@ import org.maxgamer.rs.model.entity.mob.persona.player.FriendsList;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
 import org.maxgamer.rs.model.events.mob.MobMoveEvent;
+import org.maxgamer.rs.model.events.mob.MobPreTeleportEvent;
 import org.maxgamer.rs.model.events.mob.persona.PersonaChatEvent;
 import org.maxgamer.rs.model.events.mob.persona.PersonaDeathEvent;
 import org.maxgamer.rs.model.events.mob.persona.PersonaStartEvent;
@@ -54,21 +55,26 @@ import org.maxgamer.rs.structure.YMLSerializable;
 import org.maxgamer.rs.structure.configs.ConfigSection;
 
 /**
- * Represents a dummy player which does not do anything. This dummy player has an account, stored the same way player accounts are. It takes up a spot
- * in the player list, eg max is 2000 or so. It has a set of skills, charactermodel, config, username, password, etc. It simply does not do anything
- * by itself, and can be extended to create players which are not actually players, but bots or characters which are as highly customizable as players
- * themselves.
+ * Represents a dummy player which does not do anything. This dummy player has
+ * an account, stored the same way player accounts are. It takes up a spot in
+ * the player list, eg max is 2000 or so. It has a set of skills,
+ * charactermodel, config, username, password, etc. It simply does not do
+ * anything by itself, and can be extended to create players which are not
+ * actually players, but bots or characters which are as highly customizable as
+ * players themselves.
  * 
  * @author netherfoam
  */
 public abstract class Persona extends Mob implements YMLSerializable, InventoryHolder {
 	/**
-	 * The default location that players will spawn at. This is configurable in the world config.
+	 * The default location that players will spawn at. This is configurable in
+	 * the world config.
 	 */
 	public static final Location DEFAULT_PLAYER_SPAWN = Location.deserialize(Core.getServer().getConfig().getSection("spawn"), Core.getServer().getMap(), new Location(Core.getServer().getMap(), 3221, 3220, 0));
 
 	/**
-	 * The unique ID for this Persona. This varies from 0 to 2046. When sending the ID to clients, +1 should be added, as a 0 ID represents a null
+	 * The unique ID for this Persona. This varies from 0 to 2046. When sending
+	 * the ID to clients, +1 should be added, as a 0 ID represents a null
 	 * Persona on the client.
 	 */
 	protected short id;
@@ -79,7 +85,8 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 	protected String name;
 
 	/**
-	 * true if this mob is running, false if it is not. A running entity can move 2 squares, a walking can move 1, per tick
+	 * true if this mob is running, false if it is not. A running entity can
+	 * move 2 squares, a walking can move 1, per tick
 	 */
 	protected boolean run = false;
 
@@ -99,12 +106,14 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 	protected BankContainer bank;
 
 	/**
-	 * The persona's items which have been lost and should be returned whenever possible
+	 * The persona's items which have been lost and should be returned whenever
+	 * possible
 	 */
 	protected LostAndFound lost;
 
 	/**
-	 * The model which is used by this persona, to store graphical model details such as hair colour, gender and clothing.
+	 * The model which is used by this persona, to store graphical model details
+	 * such as hair colour, gender and clothing.
 	 */
 	protected MobModel model;
 
@@ -114,12 +123,14 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 	protected FriendsList friends;
 
 	/**
-	 * The right-click options available on all surrounding players to this Persona.
+	 * The right-click options available on all surrounding players to this
+	 * Persona.
 	 */
 	protected PersonaOptions personaOptions;
 
 	/**
-	 * A map of <Key, Serializable> which are attached to this persona. These are written on save() and are loaded in the load() call.
+	 * A map of <Key, Serializable> which are attached to this persona. These
+	 * are written on save() and are loaded in the load() call.
 	 */
 	protected HashMap<String, YMLSerializable> attachments = new HashMap<String, YMLSerializable>();
 	/**
@@ -143,13 +154,15 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 	private PrayerSet prayer;
 
 	/**
-	 * A currently queued attack, such as a Special Attack or a Magic Spell. This can be overwritten if another attack is queued, or cancelled
+	 * A currently queued attack, such as a Special Attack or a Magic Spell.
+	 * This can be overwritten if another attack is queued, or cancelled
 	 * entirely with no replacement.
 	 */
 	private Attack nextAttack;
 
 	/**
-	 * The spell the player is currently autocasting in combat. If this is null, then no spell is being autocast.
+	 * The spell the player is currently autocasting in combat. If this is null,
+	 * then no spell is being autocast.
 	 */
 	private CombatSpell autocast;
 
@@ -159,7 +172,8 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 	private int runEnergy = 100;
 
 	/**
-	 * Constructs a new Persona from the given profile. This will modify the profile.
+	 * Constructs a new Persona from the given profile. This will modify the
+	 * profile.
 	 * 
 	 * @param profile
 	 *            the profile to use
@@ -198,7 +212,8 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 
 					if (old != null && item != null) {
 						if (old.getId() == item.getId()) {
-							return; // We're still wielding the same item, the attack is fine.
+							return; // We're still wielding the same item, the
+									// attack is fine.
 						}
 					}
 
@@ -283,7 +298,10 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 					long drop = Math.min(item.getAmount(), item.getStackSize());
 					GroundItemStack g = new GroundItemStack(item.setAmount(drop), owner, 50, 250);
 					g.setLocation(getCenter());
-					item = item.setAmount(item.getAmount() - drop); // Will eventually set item to NULL
+					item = item.setAmount(item.getAmount() - drop); // Will
+																	// eventually
+																	// set item
+																	// to NULL
 				}
 			}
 
@@ -293,9 +311,11 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 	}
 
 	/**
-	 * Sends the given message as if this player had said it in public. This is different to say(), as this records a message in the surrounding
-	 * players chatbox and logs it to console. This calls a cancellable PersonaChatEvent which may modify the text. This method will also auto caps
-	 * and auto grammar the given String. Note this invokes chat(s, 0).
+	 * Sends the given message as if this player had said it in public. This is
+	 * different to say(), as this records a message in the surrounding players
+	 * chatbox and logs it to console. This calls a cancellable PersonaChatEvent
+	 * which may modify the text. This method will also auto caps and auto
+	 * grammar the given String. Note this invokes chat(s, 0).
 	 * 
 	 * @param s
 	 *            the message to send
@@ -305,9 +325,11 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 	}
 
 	/**
-	 * Sends the given message as if this player had said it in public. This is different to say(), as this records a message in the surrounding
-	 * players chatbox and logs it to console. This calls a cancellable PersonaChatEvent which may modify the text. This method will also auto caps
-	 * and auto grammar the given String.
+	 * Sends the given message as if this player had said it in public. This is
+	 * different to say(), as this records a message in the surrounding players
+	 * chatbox and logs it to console. This calls a cancellable PersonaChatEvent
+	 * which may modify the text. This method will also auto caps and auto
+	 * grammar the given String.
 	 * 
 	 * @param s
 	 *            the message to send
@@ -340,7 +362,8 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 	}
 
 	/**
-	 * Sets the autocast spell for this Persona. This spell will be used when generating attacks.
+	 * Sets the autocast spell for this Persona. This spell will be used when
+	 * generating attacks.
 	 * 
 	 * @param spell
 	 *            the spell, this may be null
@@ -360,7 +383,8 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 	}
 
 	/**
-	 * Sets the Model used by this Persona to the given Model. This also forces the given model to be updated (model.setChanged()).
+	 * Sets the Model used by this Persona to the given Model. This also forces
+	 * the given model to be updated (model.setChanged()).
 	 * 
 	 * @param model
 	 *            the model
@@ -371,7 +395,8 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 	}
 
 	/**
-	 * The spell this player is currently autocasting. This spell may be null, if they are not casting spells.
+	 * The spell this player is currently autocasting. This spell may be null,
+	 * if they are not casting spells.
 	 * 
 	 * @return the spell to cast
 	 */
@@ -393,7 +418,8 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 	}
 
 	/**
-	 * Sets the current spellbook for this persona. For a player, this will also update the user's magic interface.
+	 * Sets the current spellbook for this persona. For a player, this will also
+	 * update the user's magic interface.
 	 * 
 	 * @param book
 	 *            the new spellbook
@@ -425,8 +451,10 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 	}
 
 	/**
-	 * The LostAndFound items for this Persona. This is used for returning any items which the game has somehow not had space to give to the player,
-	 * but should not be discarded. Lost items are automatically deposited into the player's bank
+	 * The LostAndFound items for this Persona. This is used for returning any
+	 * items which the game has somehow not had space to give to the player, but
+	 * should not be discarded. Lost items are automatically deposited into the
+	 * player's bank
 	 * 
 	 * @return The LostAndFound items for this Persona
 	 */
@@ -435,7 +463,8 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 	}
 
 	/**
-	 * True if this mob is running, false if not. A mob that is running may move 2 tiles per tick, a mob that is walking may move 1 tile per tick.
+	 * True if this mob is running, false if not. A mob that is running may move
+	 * 2 tiles per tick, a mob that is walking may move 1 tile per tick.
 	 * 
 	 * @return true if the mob is running
 	 */
@@ -444,7 +473,8 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 	}
 
 	/**
-	 * The style of attack that this Persona is currently using. This defaults to punch
+	 * The style of attack that this Persona is currently using. This defaults
+	 * to punch
 	 * 
 	 * @return the attack style, not null.
 	 */
@@ -473,15 +503,20 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 		}
 
 		if (m.hasChanged()) {
-			// This should not be triggered, but it is. This is the only section of code
-			// where we modify MovementUpdate direction. This means somehow, this run()
+			// This should not be triggered, but it is. This is the only section
+			// of code
+			// where we modify MovementUpdate direction. This means somehow,
+			// this run()
 			// is being called twice, possibly by two WalkAction?
-			// It seems to occur when interacting with a gameobject that is immediately
-			// next to the player, and then interacting with one that is further away.
+			// It seems to occur when interacting with a gameobject that is
+			// immediately
+			// next to the player, and then interacting with one that is further
+			// away.
 			// Eg queuing an empty path, and then queuing a non-empty path.
 
 			/*
-			 * Wait no, it occurs when the player has to move 1 tile to target then move n tiles to second target in the same tick
+			 * Wait no, it occurs when the player has to move 1 tile to target
+			 * then move n tiles to second target in the same tick
 			 */
 			throw new IllegalStateException("Movement update mask has already changed dir " + m.getDirection() + ", tele " + m.hasTeleported() + ", ActionQueue: " + getActions().toString());
 		}
@@ -490,7 +525,8 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 			Direction next = path.next();
 
 			if (next.conflict(getLocation()) != 0) {
-				return true; // Our path has become blocked or was invalid (Eg door closes)
+				return false; // Our path has become blocked or was invalid (Eg
+								// door closes)
 			}
 
 			int dx = next.dx;
@@ -498,9 +534,15 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 
 			Location dest;
 			MobMoveEvent e;
-			// TODO: Check the next point in the path is still valid, as the clip in the
-			// game world may change (Eg door opens or, more importantly, closes!)
-			if (this.isRunning() && path.isEmpty() == false) { // TODO: If NPC's ever run, this check will need to be removed
+			// TODO: Check the next point in the path is still valid, as the
+			// clip in the
+			// game world may change (Eg door opens or, more importantly,
+			// closes!)
+			if (this.isRunning() && path.isEmpty() == false) { // TODO: If NPC's
+																// ever run,
+																// this check
+																// will need to
+																// be removed
 				Direction dir2 = path.peek(); // Not remove()!
 
 				dx += dir2.dx;
@@ -521,7 +563,8 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 					m.setWalk(next);
 				} else {
 					if (dir2.conflict(getLocation().add(next.dx, next.dy)) != 0) {
-						return true; // Our path has become blocked or was invalid (Eg door closes)
+						return true; // Our path has become blocked or was
+										// invalid (Eg door closes)
 					}
 					path.next(); // We are using this step. (Remove dir2)
 					m.setRun(next, dir2);
@@ -545,7 +588,8 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 				} catch (RuntimeException ex) {
 					if (ex.getCause() instanceof EncryptedException) {
 						// So if we failed to set the new location due to map
-						// encryption, we shouldn't inform the player that they moved.
+						// encryption, we shouldn't inform the player that they
+						// moved.
 						m.reset();
 					}
 				}
@@ -561,7 +605,8 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 	}
 
 	/**
-	 * Sets a mob to running. A mob that is running may move 2 tiles per tick, a mob that is walking may move 1 tile per tick.
+	 * Sets a mob to running. A mob that is running may move 2 tiles per tick, a
+	 * mob that is walking may move 1 tile per tick.
 	 * 
 	 * @param run
 	 *            true if this Mob should start running
@@ -571,7 +616,8 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 	}
 
 	/**
-	 * The inventory for this Persona, not null. This is for managing the Persona's items in their backpack.
+	 * The inventory for this Persona, not null. This is for managing the
+	 * Persona's items in their backpack.
 	 * 
 	 * @return The inventory for this Persona
 	 */
@@ -580,7 +626,8 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 	}
 
 	/**
-	 * The container for this Persona that represents their bank. This is never null. It is for managing the items in the persona's bank
+	 * The container for this Persona that represents their bank. This is never
+	 * null. It is for managing the items in the persona's bank
 	 * 
 	 * @return the Persona's bank
 	 */
@@ -589,7 +636,8 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 	}
 
 	/**
-	 * This player's configuration file. This contains everything except name, location, password, last IP, and last seen
+	 * This player's configuration file. This contains everything except name,
+	 * location, password, last IP, and last seen
 	 * 
 	 * @return the player's config file
 	 */
@@ -598,8 +646,9 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 	}
 
 	/**
-	 * The PersonaOptions for this Persona, not null. This is for managing the Right-Click options available to the Persona when Right-Clicking
-	 * another player.
+	 * The PersonaOptions for this Persona, not null. This is for managing the
+	 * Right-Click options available to the Persona when Right-Clicking another
+	 * player.
 	 * 
 	 * @return the PersonaOptions available when right clicking a player.
 	 */
@@ -608,20 +657,27 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 	}
 
 	/**
-	 * This registers the given serializable object with this Persona. If the config has already been loaded, then the deserialize() method is called
-	 * on the given object, using the ConfigSection available in this Persona's config at the given key. If the config has not yet been loaded (This
-	 * is done in the load(File f) call), then the serializable object is still registered under the given key, and then when the config is loaded,
-	 * the deserialize() method is called with the appropriate ConfigSection as an argument.
+	 * This registers the given serializable object with this Persona. If the
+	 * config has already been loaded, then the deserialize() method is called
+	 * on the given object, using the ConfigSection available in this Persona's
+	 * config at the given key. If the config has not yet been loaded (This is
+	 * done in the load(File f) call), then the serializable object is still
+	 * registered under the given key, and then when the config is loaded, the
+	 * deserialize() method is called with the appropriate ConfigSection as an
+	 * argument.
 	 * 
-	 * Calling this method also means that when this Persona has serialize() called, it will call the serialize() method on the given YML object and
-	 * set the ConfigSection at the given key to the result. The result of this serialization is then written to disk, allowing persistant data to be
+	 * Calling this method also means that when this Persona has serialize()
+	 * called, it will call the serialize() method on the given YML object and
+	 * set the ConfigSection at the given key to the result. The result of this
+	 * serialization is then written to disk, allowing persistant data to be
 	 * stored across Personas.
 	 * 
 	 * @param key
 	 *            the key for the config section.
 	 * @param yml
 	 *            the object to deserialize/serialize.
-	 * @return true if the object was deserialized, false if the server is still waiting for the player to load.
+	 * @return true if the object was deserialized, false if the server is still
+	 *         waiting for the player to load.
 	 */
 	public boolean register(String key, YMLSerializable yml) {
 		if (key == null) {
@@ -639,7 +695,7 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 		}
 		return false;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public <Y extends YMLSerializable> Y getAttachment(String key, Class<Y> cast) {
 		return (Y) attachments.get(key);
@@ -654,7 +710,8 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 		e.call();
 
 		// Submit our health regen tick
-		// Core.getServer().getTicker().submit(6 - Core.getServer().getTicks() % 6, new Tickable() {
+		// Core.getServer().getTicker().submit(6 - Core.getServer().getTicks() %
+		// 6, new Tickable() {
 		new Tickable() {
 			@Override
 			public void tick() {
@@ -705,7 +762,8 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 	}
 
 	/**
-	 * Fetches the Persona's SkillSet. This also contains any temporary modifications to skills, like prayer or potion modifications.
+	 * Fetches the Persona's SkillSet. This also contains any temporary
+	 * modifications to skills, like prayer or potion modifications.
 	 * 
 	 * @return the Persona's SkillSet
 	 */
@@ -781,7 +839,8 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 	}
 
 	/**
-	 * The username for this Persona. Returns directly from the profile given in the constructor.
+	 * The username for this Persona. Returns directly from the profile given in
+	 * the constructor.
 	 * 
 	 * @return The username for this Persona.
 	 */
@@ -790,7 +849,8 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 	}
 
 	/**
-	 * The rights of this Persona. Zero representing a normal player, one representing Player Mod and two representing an Admin.
+	 * The rights of this Persona. Zero representing a normal player, one
+	 * representing Player Mod and two representing an Admin.
 	 * 
 	 * @return the rights level of the persona.
 	 */
@@ -799,8 +859,9 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 	}
 
 	/**
-	 * Fetches the next available PlayerID from the server. If no ID is available (Server full), then this throws a {@link RuntimeException}. If the
-	 * ID is available, this Persona takes the slot and ID for itself.
+	 * Fetches the next available PlayerID from the server. If no ID is
+	 * available (Server full), then this throws a {@link RuntimeException}. If
+	 * the ID is available, this Persona takes the slot and ID for itself.
 	 * 
 	 * @throws WorldFullException
 	 *             if the world is full of players
@@ -817,8 +878,9 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 	}
 
 	/**
-	 * Destroys this Persona. It calls Persona.save(), cancels ticking, removes the Persona from the Core's Persona list then calls super.destroy().
-	 * The super.destroy() call sets the location to null.
+	 * Destroys this Persona. It calls Persona.save(), cancels ticking, removes
+	 * the Persona from the Core's Persona list then calls super.destroy(). The
+	 * super.destroy() call sets the location to null.
 	 * 
 	 * @throws RuntimeException
 	 *             if this Persona is already destroyed.
@@ -829,7 +891,10 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 			throw new RuntimeException("This player has already been destroyed.");
 		}
 
-		for (Persona p : Core.getServer().getPersonas()) {// TODO: optimise this, add some sort of check for lobbyplayers?
+		for (Persona p : Core.getServer().getPersonas()) {// TODO: optimise
+															// this, add some
+															// sort of check for
+															// lobbyplayers?
 			if (p instanceof Player) {
 				Player other = (Player) p;
 
@@ -856,6 +921,8 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 		// Call super.setLocation() whenever we move,
 		// Make telelort() clear actions.
 		// getActions().clear();
+		MobPreTeleportEvent teleportEvent = new MobPreTeleportEvent(this, this.getLocation(), dest);
+		teleportEvent.call();
 		this.setLocation(dest);
 		this.getUpdateMask().getMovement().setTeleported(true);
 	}
@@ -889,7 +956,8 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 		}
 
 		if (autocast != null) {
-			// TODO: If the player hasn't got the runes, should autocast be cancelled?
+			// TODO: If the player hasn't got the runes, should autocast be
+			// cancelled?
 			return new MagicAttack(this, autocast);
 		}
 
@@ -906,8 +974,10 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 	}
 
 	/**
-	 * Queues the given attack. If it is null, this method will cancel any existing attack. Any existing attack is cancelled, though the attack
-	 * currently being executed is not. This method changes the result of nextAttack(). Calling queueAttack(null) does not stop attacks being
+	 * Queues the given attack. If it is null, this method will cancel any
+	 * existing attack. Any existing attack is cancelled, though the attack
+	 * currently being executed is not. This method changes the result of
+	 * nextAttack(). Calling queueAttack(null) does not stop attacks being
 	 * generated.
 	 * 
 	 * @param a
@@ -919,7 +989,9 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 
 	@Override
 	public int getMaxHealth() {
-		return getSkills().getLevel(SkillType.CONSTITUTION) * 10; // TODO: Add equipment bonuses
+		return getSkills().getLevel(SkillType.CONSTITUTION) * 10; // TODO: Add
+																	// equipment
+																	// bonuses
 	}
 
 	@Override
@@ -942,9 +1014,9 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 	public void onIdle() {
 		// Nothing.
 	}
-	
+
 	@Override
-	public Location getSpawn(){
+	public Location getSpawn() {
 		return DEFAULT_PLAYER_SPAWN;
 	}
 }

@@ -19,6 +19,7 @@ import org.maxgamer.rs.model.entity.mob.npc.loot.Loot;
 import org.maxgamer.rs.model.entity.mob.npc.loot.LootItem;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;
 import org.maxgamer.rs.model.events.mob.MobMoveEvent;
+import org.maxgamer.rs.model.events.mob.MobPreTeleportEvent;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.item.ground.GroundItemStack;
 import org.maxgamer.rs.model.item.inventory.Equipment;
@@ -43,7 +44,8 @@ public class NPC extends Mob {
 	private NPCDefinition definition;
 
 	/**
-	 * The NPCModel this NPC uses to represent visible information (Head icon, etc)
+	 * The NPCModel this NPC uses to represent visible information (Head icon,
+	 * etc)
 	 */
 	private MobModel model;
 
@@ -57,8 +59,10 @@ public class NPC extends Mob {
 	private NPCGroup group;
 
 	/**
-	 * Constructs a new NPC from the given ID. This loads the definition ID from the cache and database. If either fails, a {@link RuntimeException}
-	 * is thrown. This does not spawn the NPC in the gameworld, you must use setLocation() for that. Once a location is set, it will be visible to
+	 * Constructs a new NPC from the given ID. This loads the definition ID from
+	 * the cache and database. If either fails, a {@link RuntimeException} is
+	 * thrown. This does not spawn the NPC in the gameworld, you must use
+	 * setLocation() for that. Once a location is set, it will be visible to
 	 * players.
 	 * 
 	 * @param defId
@@ -92,7 +96,8 @@ public class NPC extends Mob {
 
 		this.setHealth(getMaxHealth());
 		loadId();
-		show(); // Technically we still need to await for a location to be set, but we can do this preemptively without hassle.
+		show(); // Technically we still need to await for a location to be set,
+				// but we can do this preemptively without hassle.
 	}
 
 	@Override
@@ -119,10 +124,14 @@ public class NPC extends Mob {
 	}
 
 	/**
-	 * Constructs a new NPC from the given ID. This loads the definition ID from the cache and database. If either fails, a {@link RuntimeException}
-	 * is thrown. This calls show() on the NPC and sets the location of the NPC to the given location. After calling this constructor, the NPC will be
-	 * available in the game world, unless the given location is NULL, in which case this will not spawn the NPC into the map. This calls NPC(defId)
-	 * and then invokes setLocation(). The effect of this constructor is the same as new NPC(defId).teleport(l);.
+	 * Constructs a new NPC from the given ID. This loads the definition ID from
+	 * the cache and database. If either fails, a {@link RuntimeException} is
+	 * thrown. This calls show() on the NPC and sets the location of the NPC to
+	 * the given location. After calling this constructor, the NPC will be
+	 * available in the game world, unless the given location is NULL, in which
+	 * case this will not spawn the NPC into the map. This calls NPC(defId) and
+	 * then invokes setLocation(). The effect of this constructor is the same as
+	 * new NPC(defId).teleport(l);.
 	 * 
 	 * @param defId
 	 *            the definition id for the NPC
@@ -147,8 +156,9 @@ public class NPC extends Mob {
 	}
 
 	/**
-	 * Sets the location for this NPC to spawn at. This may be null, and will be null on construction. A NPC who has no spawn location will simply die
-	 * and respawn, without being moved from its death location.
+	 * Sets the location for this NPC to spawn at. This may be null, and will be
+	 * null on construction. A NPC who has no spawn location will simply die and
+	 * respawn, without being moved from its death location.
 	 * 
 	 * @param l
 	 *            the location to set, may be null
@@ -173,7 +183,7 @@ public class NPC extends Mob {
 	 *             if the world is full of NPCs
 	 */
 	private void loadId() throws WorldFullException {
-		this.spawnIndex = (short) Core.getServer().getNPCs().add(this); 
+		this.spawnIndex = (short) Core.getServer().getNPCs().add(this);
 	}
 
 	@Override
@@ -226,6 +236,8 @@ public class NPC extends Mob {
 
 	@Override
 	public void teleport(Location dest) {
+		MobPreTeleportEvent teleportEvent = new MobPreTeleportEvent(this, this.getLocation(), dest);
+		teleportEvent.call();
 		setLocation(dest);
 		getUpdateMask().setTeleporting(true);
 	}
@@ -277,15 +289,20 @@ public class NPC extends Mob {
 		}
 
 		if (m.hasChanged()) {
-			// This should not be triggered, but it is. This is the only section of code
-			// where we modify MovementUpdate direction. This means somehow, this run()
+			// This should not be triggered, but it is. This is the only section
+			// of code
+			// where we modify MovementUpdate direction. This means somehow,
+			// this run()
 			// is being called twice, possibly by two WalkAction?
-			// It seems to occur when interacting with a gameobject that is immediately
-			// next to the player, and then interacting with one that is further away.
+			// It seems to occur when interacting with a gameobject that is
+			// immediately
+			// next to the player, and then interacting with one that is further
+			// away.
 			// Eg queuing an empty path, and then queuing a non-empty path.
 
 			/*
-			 * Wait no, it occurs when the player has to move 1 tile to target then move n tiles to second target in the same tick
+			 * Wait no, it occurs when the player has to move 1 tile to target
+			 * then move n tiles to second target in the same tick
 			 */
 			throw new IllegalStateException("Movement update mask has already changed dir " + m.getDirection() + ", tele " + m.hasTeleported() + ", ActionQueue: " + this.getActions().toString());
 		}
@@ -298,8 +315,10 @@ public class NPC extends Mob {
 
 			Location dest;
 			MobMoveEvent e;
-			// TODO: Check the next point in the path is still valid, as the clip in the
-			// game world may change (Eg door opens or, more importantly, closes!)
+			// TODO: Check the next point in the path is still valid, as the
+			// clip in the
+			// game world may change (Eg door opens or, more importantly,
+			// closes!)
 
 			m.setWalk(next);
 			dest = this.getLocation().add(dx, dy);
@@ -315,7 +334,8 @@ public class NPC extends Mob {
 				} catch (RuntimeException ex) {
 					if (ex.getCause() instanceof EncryptedException) {
 						// So if we failed to set the new location due to map
-						// encryption, we shouldn't inform the player that they moved.
+						// encryption, we shouldn't inform the player that they
+						// moved.
 						m.reset();
 					}
 				}
@@ -355,7 +375,8 @@ public class NPC extends Mob {
 				this.setTarget(target);
 			return;
 		}
-		// This automatically begins processing actions again by calling ActionQueue.queue()
+		// This automatically begins processing actions again by calling
+		// ActionQueue.queue()
 		if (this.getDefinition().canWalk()) {
 			getActions().queue(new WanderAction(NPC.this, getLocation(), 4, 10, 30));
 		}
@@ -403,7 +424,7 @@ public class NPC extends Mob {
 	public String getOption(int index) {
 		return getDefinition().getOption(index);
 	}
-	
+
 	public void setModel(MobModel model) {
 		if (model == null)
 			return;

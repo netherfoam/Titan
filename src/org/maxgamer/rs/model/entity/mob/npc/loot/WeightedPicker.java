@@ -30,16 +30,21 @@ public class WeightedPicker<T extends Weighted> {
 	@SafeVarargs
 	public WeightedPicker(T... options) {
 		this();
-		for (T w : options) {
+		for (T w : options)
 			this.add(w);
-		}
 	}
 
+	/**
+	 * Constructs a new {@code WeightedPicker} from the specified
+	 * {@code options}.
+	 * 
+	 * @param options
+	 *            The predefined set of Weighted objects which can be selected.
+	 */
 	public WeightedPicker(Collection<T> options) {
 		this();
-		for (T w : options) {
+		for (T w : options)
 			this.add(w);
-		}
 	}
 
 	/**

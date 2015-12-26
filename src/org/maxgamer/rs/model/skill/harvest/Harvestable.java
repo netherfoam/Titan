@@ -3,6 +3,7 @@ package org.maxgamer.rs.model.skill.harvest;
 import org.maxgamer.rs.core.tick.Tickable;
 import org.maxgamer.rs.lib.Erratic;
 import org.maxgamer.rs.model.entity.mob.Mob;
+import org.maxgamer.rs.model.entity.mob.npc.loot.WeightedPicker;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.item.ItemStack;
@@ -10,15 +11,18 @@ import org.maxgamer.rs.model.item.inventory.ContainerException;
 import org.maxgamer.rs.model.map.DynamicGameObject;
 import org.maxgamer.rs.model.map.GameObject;
 import org.maxgamer.rs.model.skill.SkillType;
+import org.maxgamer.rs.structure.ArrayUtility;
+import org.maxgamer.rs.structure.Filter;
 
 /**
  * @author netherfoam
  */
 public class Harvestable {
+
 	/**
 	 * The item given to the player after harvesting this
 	 */
-	private ItemStack reward;
+	private HarvestReward[] rewards;
 
 	/**
 	 * The minimum time to harvest this in ticks
@@ -73,7 +77,7 @@ public class Harvestable {
 	/**
 	 * Constructs a harvestable item
 	 * 
-	 * @param reward
+	 * @param rewards
 	 *            the item reward given for harvesting this, may be null
 	 * @param skill
 	 *            the skill type for harvesting this, must not be null if level
@@ -104,7 +108,7 @@ public class Harvestable {
 	 *            the tools which can be used to harvest this. May be null. If
 	 *            supplied, one of the given tools is required.
 	 */
-	public Harvestable(ItemStack reward, SkillType skill, int level, double exp, int minTime, int maxTime, int minResidual, int maxResidual, int replaceObjId, int respawnTicks, HarvestTool... tools) {
+	public Harvestable(HarvestReward[] rewards, SkillType skill, int level, double exp, int minTime, int maxTime, int minResidual, int maxResidual, int replaceObjId, int respawnTicks, HarvestTool... tools) {
 		if (minTime > maxTime) {
 			throw new IllegalArgumentException("MinTime must be <= maxTime");
 		}
@@ -136,7 +140,7 @@ public class Harvestable {
 
 		this.level = level;
 		this.skill = skill;
-		this.reward = reward;
+		this.rewards = rewards;
 		this.minTime = minTime;
 		this.maxTime = maxTime;
 		this.minResidual = minResidual;
@@ -145,6 +149,44 @@ public class Harvestable {
 		this.respawnTicks = respawnTicks;
 		this.tools = tools;
 		this.exp = exp;
+	}
+
+	/**
+	 * Constructs a harvestable item
+	 * 
+	 * @param reward
+	 *            the item reward given for harvesting this, may be null
+	 * @param skill
+	 *            the skill type for harvesting this, must not be null if level
+	 *            or exp is non-zero
+	 * @param level
+	 *            the level required to harvest this, must be non-zero if skill
+	 *            is non-null
+	 * @param exp
+	 *            the exp given for harvesting this pre-modifiers, must be zero
+	 *            is skill is null
+	 * @param minTime
+	 *            the minimum time in ticks required to harvest this pre
+	 *            modifiers
+	 * @param maxTime
+	 *            the maximum time in ticks required to harvest this pre
+	 *            modifiers
+	 * @param minResidual
+	 *            the minimum number of times this object may be harvested
+	 *            before replenished
+	 * @param maxResidual
+	 *            the maximum number of times this object may be harvested
+	 *            before replenished
+	 * @param replaceObjId
+	 *            the replacement object id when repleneshing, may be -1
+	 * @param respawnTicks
+	 *            the number of ticks to respawn this in, must be > 0
+	 * @param tools
+	 *            the tools which can be used to harvest this. May be null. If
+	 *            supplied, one of the given tools is required.
+	 */
+	public Harvestable(HarvestReward reward, SkillType skill, int level, double exp, int minTime, int maxTime, int minResidual, int maxResidual, int replaceObjId, int respawnTicks, HarvestTool... tools) {
+		this(new HarvestReward[] { reward }, skill, level, exp, minTime, maxTime, minResidual, maxResidual, replaceObjId, respawnTicks, tools);
 	}
 
 	/**
@@ -287,14 +329,22 @@ public class Harvestable {
 	 *            the player to reward
 	 * @return true if successful, false if it failed (Eg not enough space)
 	 */
-	public boolean applyReward(Persona p) {
+	public boolean applyReward(final Persona p) {
 		if (p == null) {
 			throw new NullPointerException();
 		}
-		if (reward != null) {
+		if (rewards != null) {
 			try {
-				p.getInventory().add(reward);
-				p.sendMessage("You get some " + reward.getDefinition().getName().toLowerCase() + ".");
+				HarvestReward[] arr = ArrayUtility.filter(rewards, new Filter<HarvestReward>() {
+					@Override
+					public boolean accept(HarvestReward t) {
+						return p.getSkills().getLevel(skill) >= t.getRequiredLevel();
+					}
+				});
+				WeightedPicker<HarvestReward> picker = new WeightedPicker<HarvestReward>(arr);
+				ItemStack item = picker.next().getReward();
+				p.getInventory().add(item);
+				p.sendMessage("You get some " + item.getDefinition().getName().toLowerCase() + ".");
 			} catch (ContainerException e) {
 				if (p instanceof Player) {
 					((Player) p).sendMessage("You need more space.");

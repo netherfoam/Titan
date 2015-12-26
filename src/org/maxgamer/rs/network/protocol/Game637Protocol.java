@@ -60,6 +60,7 @@ import org.maxgamer.rs.network.io.packet.player.InputHandler;
 import org.maxgamer.rs.network.io.packet.player.InterfaceComponentOnInterfaceComponentHandler;
 import org.maxgamer.rs.network.io.packet.player.InterfaceHandler;
 import org.maxgamer.rs.network.io.packet.player.ItemMoveHandler;
+import org.maxgamer.rs.network.io.packet.player.ItemOnItemHandler;
 import org.maxgamer.rs.network.io.packet.player.ItemOnObjectHandler;
 import org.maxgamer.rs.network.io.packet.player.KeyHandler;
 import org.maxgamer.rs.network.io.packet.player.LoadHandler;
@@ -189,6 +190,7 @@ public class Game637Protocol extends GameProtocol {
 
 		PACKET_MANAGER.setHandler(ItemOnObjectHandler.OPCODE, new ItemOnObjectHandler());
 		PACKET_MANAGER.setHandler(GrandExchangeHandler.OPCODE, new GrandExchangeHandler());
+		PACKET_MANAGER.setHandler(ItemOnItemHandler.OPCODE, new ItemOnItemHandler());
 	}
 
 	/** An array of players who are within view distance of this player */

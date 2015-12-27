@@ -642,6 +642,14 @@ public final class GameObjectProto {
 		GameObjectProto proto = new GameObjectProto();
 		proto.id = id;
 		
+		Object[][] farmingIDs = { { 7847, "Flower Patch" }, { 8551, "Allotment" }, { 8550, "Allotment" }, { 8150, "Herb patch" } };
+		for (Object[] farmingID : farmingIDs) {
+			if (id == (Integer) farmingID[0]) {
+				proto.name = (String) farmingID[1];
+				proto.options = new String[] { "Rake", "Inspect", "Guide", null, null };
+			}
+		}
+		
 		RSInputStream in = new RSInputStream(new ByteBufferInputStream(bb));
 		
 		proto.readObject(in);
@@ -731,6 +739,10 @@ public final class GameObjectProto {
 	
 	public boolean isSolid() {
 		return isSolid;
+	}
+	
+	public String[] getOptions() {
+		return options;
 	}
 	
 	@Override

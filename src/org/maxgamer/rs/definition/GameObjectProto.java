@@ -642,7 +642,15 @@ public final class GameObjectProto {
 		GameObjectProto proto = new GameObjectProto();
 		proto.id = id;
 		
-		Object[][] farmingIDs = { { 7847, "Flower Patch" }, { 8551, "Allotment" }, { 8550, "Allotment" }, { 8150, "Herb patch" } };
+		Object[][] farmingIDs = {
+		/** ALLOTMENT PATCHES **/
+		{ 8550, "Allotment" }, { 8551, "Allotment" }, { 8552, "Allotment" }, { 8553, "Allotment" }, { 8554, "Allotment" }, { 8555, "Allotment" }, { 8556, "Allotment" }, { 8557, "Allotment" },
+		
+		/** FLOWER PATCHES **/
+		{ 7847, "Flower Patch" }, { 7848, "Flower Patch" }, { 7849, "Flower Patch" }, { 7850, "Flower Patch" },
+		
+		/** HERB PATCHES **/
+		{ 8150, "Herb patch" }, { 8151, "Herb patch" }, { 8152, "Herb patch" }, { 8153, "Herb patch" } };
 		for (Object[] farmingID : farmingIDs) {
 			if (id == (Integer) farmingID[0]) {
 				proto.name = (String) farmingID[1];

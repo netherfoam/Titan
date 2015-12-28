@@ -93,7 +93,7 @@ public class Area implements MBR {
 		return MBRUtil.isOverlap(this, m);
 	}
 
-	public boolean contains(Position p) {
+	public boolean containsPosition(Position p) {
 		int x1 = Math.min(min.x, max.x);
 		int x2 = Math.max(min.x, max.x);
 		int y1 = Math.min(min.y, max.y);

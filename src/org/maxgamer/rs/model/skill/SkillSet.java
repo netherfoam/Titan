@@ -8,6 +8,7 @@ import org.maxgamer.rs.lib.Calc;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.npc.NPC;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;
+import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.network.Client;
 import org.maxgamer.rs.network.io.packet.RSOutgoingPacket;
 import org.maxgamer.rs.structure.YMLSerializable;
@@ -30,8 +31,8 @@ public class SkillSet implements YMLSerializable {
 	protected final HashMap<SkillType, Skill> skills = new HashMap<SkillType, Skill>();
 	
 	/**
-	 * Tick task levels stats towards their normal value over time. One invocation
-	 * per 30 seconds, or 50 ticks.
+	 * Tick task levels stats towards their normal value over time. One
+	 * invocation per 30 seconds, or 50 ticks.
 	 */
 	private Tickable normalizer;
 	
@@ -208,16 +209,16 @@ public class SkillSet implements YMLSerializable {
 	}
 	
 	/**
-	 * Sets the modifier for the given skill type. If this would reduce the owners
-	 * temporary level below 0, this reduces the modifier in such a way that the
-	 * new temporary level will become at minimum, 0.
+	 * Sets the modifier for the given skill type. If this would reduce the
+	 * owners temporary level below 0, this reduces the modifier in such a way
+	 * that the new temporary level will become at minimum, 0.
 	 * @param t the skill to set
 	 * @param modifier the modifier to set
 	 * @throws NullPointerException if the skill is null
 	 */
 	public void setModifier(SkillType t, double modifier) {
-		if(t == null) throw new NullPointerException("SkillType may not be null");
-		if(getLevel(t, false) + modifier < 0) modifier = -getLevel(t, false);
+		if (t == null) throw new NullPointerException("SkillType may not be null");
+		if (getLevel(t, false) + modifier < 0) modifier = -getLevel(t, false);
 		
 		if (skills.containsKey(t) == false) {
 			skills.put(t, new Skill(t, 0));
@@ -232,7 +233,7 @@ public class SkillSet implements YMLSerializable {
 			out.writeByteS((byte) getLevel(t) + (int) getModifier(t));
 			c.write(out);
 		}
-		if(modifier != 0){
+		if (modifier != 0) {
 			this.normalize();
 		}
 	}
@@ -244,7 +245,7 @@ public class SkillSet implements YMLSerializable {
 	 * @throws NullPointerException if the given skill type is null
 	 */
 	public double getModifier(SkillType t) {
-		if(t == null) throw new NullPointerException("SkillType may not be null");
+		if (t == null) throw new NullPointerException("SkillType may not be null");
 		if (skills.containsKey(t) == false) {
 			return 0;
 		}
@@ -305,15 +306,15 @@ public class SkillSet implements YMLSerializable {
 	}
 	
 	/**
-	 * Restores the given {@link SkillType} by the given amount. This will not grant a boost
-	 * to the skill. 
+	 * Restores the given {@link SkillType} by the given amount. This will not
+	 * grant a boost to the skill.
 	 * @param type the skill type to boost
 	 * @param levels the number of levels to restore
 	 * @throws IllegalArgumentException if the given levels to restore is < 0
 	 */
-	public void restore(SkillType type, double levels){
-		if(type == null) throw new NullPointerException("SkillType may not be null");
-		if(levels < 0) throw new IllegalArgumentException("Levels to restore must be >= 0");
+	public void restore(SkillType type, double levels) {
+		if (type == null) throw new NullPointerException("SkillType may not be null");
+		if (levels < 0) throw new IllegalArgumentException("Levels to restore must be >= 0");
 		
 		double modifier = getModifier(type);
 		levels = Math.min(0, levels + modifier);
@@ -327,10 +328,8 @@ public class SkillSet implements YMLSerializable {
 	@Override
 	public ConfigSection serialize() {
 		ConfigSection map = new ConfigSection();
-		for (Entry<SkillType, Skill> e : this.skills.entrySet()) {
+		for (Entry<SkillType, Skill> e : this.skills.entrySet())
 			map.set(e.getKey().toString(), e.getValue().serialize());
-		}
-		
 		return map;
 	}
 	
@@ -355,33 +354,34 @@ public class SkillSet implements YMLSerializable {
 					s.setLevel(1);
 				}
 			}
-			
 			setExp(t, s.getExp());
 			setModifier(t, s.getModifier());
+			skills.put(t, s);
 		}
+		this.refreshTargetValues();
 	}
 	
-	private void normalize(){
-		if(this.normalizer == null || this.normalizer.isQueued() == false){
-			this.normalizer = new Tickable(){
+	private void normalize() {
+		if (this.normalizer == null || this.normalizer.isQueued() == false) {
+			this.normalizer = new Tickable() {
 				@Override
 				public void tick() {
-					for(Skill s : skills.values()){
-						if(s.getModifier() == 0) continue;
-						if(s.getType() == SkillType.PRAYER) continue;
+					for (Skill s : skills.values()) {
+						if (s.getModifier() == 0) continue;
+						if (s.getType() == SkillType.PRAYER) continue;
 						double mod = s.getModifier();
 						
-						if(s.getModifier() > 0){
+						if (s.getModifier() > 0) {
 							setModifier(s.getType(), Calc.maxd(mod - 1, 0));
 						}
-						else{
+						else {
 							setModifier(s.getType(), Calc.mind(mod + 1, 0));
 						}
 					}
-					if(isNormalized() == false){
+					if (isNormalized() == false) {
 						this.queue(50);
 					}
-					else{
+					else {
 						normalizer = null; //We are done, indicate so
 					}
 				}
@@ -390,13 +390,79 @@ public class SkillSet implements YMLSerializable {
 		}
 	}
 	
-	private boolean isNormalized(){
-		for(Skill s : this.skills.values()){
-			if(s.getType() == SkillType.PRAYER) continue;
-			if(s.getModifier() != 0){
+	private boolean isNormalized() {
+		for (Skill s : this.skills.values()) {
+			if (s.getType() == SkillType.PRAYER) continue;
+			if (s.getModifier() != 0) {
 				return false;
 			}
 		}
 		return true;
+	}
+	
+	public void targetSkillLevel(SkillType type, int level) {
+		Skill skill = skills.get(type);
+		if (skill.getLevel() >= level) {
+			owner.sendMessage("You cannot set that level target.");
+			return;
+		}
+		skill.setTargetLevel(level);
+		skill.setTargetExp(-1);
+		skill.setTargeting(true);
+		refreshTargetValues();
+	}
+	
+	public void targetSkillExp(SkillType type, double experience) {
+		Skill skill = skills.get(type);
+		if (skill.getExp() >= experience) {
+			owner.sendMessage("You cannot set that experience target.");
+			return;
+		}
+		skill.setTargetLevel(-1);
+		skill.setTargetExp(experience);
+		skill.setTargeting(true);
+		refreshTargetValues();
+	}
+	
+	public void removeTarget(SkillType type) {
+		Skill skill = skills.get(type);
+		skill.setTargetLevel(-1);
+		skill.setTargetExp(-1);
+		skill.setTargeting(false);
+		refreshTargetValues();
+	}
+	
+	private void refreshTargetValues() {
+		if (this.owner instanceof Player) {
+			Player p = (Player) this.owner;
+			p.getProtocol().sendConfig(1966, getTargetConfigValue(false)); //enables targeting
+			p.getProtocol().sendConfig(1968, getTargetConfigValue(true)); //enables lvl targeting
+			for (int i = 0; i < skills.size(); i++) {
+				Skill skill = skills.get(SkillType.forTargetId(i));
+				if (!skill.isTargeting()) {
+					p.getProtocol().sendConfig(1969 + skill.getType().getTargetId(), 0); //sets the lvl/xp target
+				}
+				else {
+					if (skill.getTargetExp() > 0) {
+						p.getProtocol().sendConfig(1969 + skill.getType().getTargetId(), (int) skill.getTargetExp()); //sets the lvl/xp target
+					}
+					else {
+						p.getProtocol().sendConfig(1969 + skill.getType().getTargetId(), (int) skill.getTargetLevel()); //sets the lvl/xp target
+					}
+				}
+			}
+		}
+	}
+	
+	private int getTargetConfigValue(boolean experienceTarget) {
+		int value = 0;
+		for (int index = 1; index < skills.size() + 1; index++) {
+			Skill skill = skills.get(SkillType.forTargetId(index - 1));
+			if (skill.isTargeting()) {
+				if (experienceTarget && skill.getTargetLevel() < 0) continue;
+				value += 1 << index;
+			}
+		}
+		return value;
 	}
 }

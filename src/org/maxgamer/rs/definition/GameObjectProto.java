@@ -640,23 +640,8 @@ public final class GameObjectProto {
 			throw new NullPointerException("ByteBuffer may not be null!");
 		}
 		GameObjectProto proto = new GameObjectProto();
+		proto.name = "";
 		proto.id = id;
-		
-		Object[][] farmingIDs = {
-		/** ALLOTMENT PATCHES **/
-		{ 8550, "Allotment" }, { 8551, "Allotment" }, { 8552, "Allotment" }, { 8553, "Allotment" }, { 8554, "Allotment" }, { 8555, "Allotment" }, { 8556, "Allotment" }, { 8557, "Allotment" },
-		
-		/** FLOWER PATCHES **/
-		{ 7847, "Flower Patch" }, { 7848, "Flower Patch" }, { 7849, "Flower Patch" }, { 7850, "Flower Patch" },
-		
-		/** HERB PATCHES **/
-		{ 8150, "Herb patch" }, { 8151, "Herb patch" }, { 8152, "Herb patch" }, { 8153, "Herb patch" } };
-		for (Object[] farmingID : farmingIDs) {
-			if (id == (Integer) farmingID[0]) {
-				proto.name = (String) farmingID[1];
-				proto.options = new String[] { "Rake", "Inspect", "Guide", null, null };
-			}
-		}
 		
 		RSInputStream in = new RSInputStream(new ByteBufferInputStream(bb));
 		
@@ -669,6 +654,11 @@ public final class GameObjectProto {
 			proto.isSolid = true;
 			proto.actionCount = 0;
 		}
+		if (proto.getOption(0) == null) proto.options[0] = "";
+		if (proto.getOption(1) == null) proto.options[1] = "";
+		if (proto.getOption(2) == null) proto.options[2] = "";
+		if (proto.getOption(3) == null) proto.options[3] = "";
+		if (proto.getOption(4) == null) proto.options[4] = "";
 		return proto;
 	}
 	

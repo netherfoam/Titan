@@ -123,6 +123,10 @@ public class ItemStack implements Comparable<ItemStack>, YMLSerializable {
 		return ItemStack.create(this.id, amount, this.health);
 	}
 	
+	public ItemStack setHealth(int health) {
+		return ItemStack.create(this.id, this.amount, health);
+	}
+	
 	public ItemStack getNoted() {
 		ItemStack noted = ItemStack.create(this.getId() + 1, this.getAmount(), this.getHealth());
 		if (noted.getDefinition().isNoted()) {

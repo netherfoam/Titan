@@ -598,7 +598,7 @@ public final class ArrayUtility {
 	 */
 	public static <T> int indexOf(T o, T[] a) {
 		for (int i = 0; i < a.length; i++)
-			if (o == a)
+			if (o == a[i])
 				return i;
 		return -1;
 	}

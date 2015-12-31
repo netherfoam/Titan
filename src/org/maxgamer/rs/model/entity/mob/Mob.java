@@ -844,6 +844,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	}
 	
 	public void use(final GameObject g, final int option) {
+		if (option == -1) return;
 		AStar finder = new AStar(20);
 		Path path = finder.findPath(this.getLocation(), g.getLocation(), g.getLocation().add(g.getSizeX() - 1, g.getSizeY() - 1), this.getSizeX(), this.getSizeY(), g);
 		

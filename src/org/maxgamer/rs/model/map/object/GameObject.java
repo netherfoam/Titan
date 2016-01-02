@@ -1,4 +1,4 @@
-package org.maxgamer.rs.model.map;
+package org.maxgamer.rs.model.map.object;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -11,6 +11,8 @@ import org.maxgamer.rs.core.tick.Tickable;
 import org.maxgamer.rs.definition.GameObjectProto;
 import org.maxgamer.rs.model.entity.Entity;
 import org.maxgamer.rs.model.entity.mob.persona.player.Viewport;
+import org.maxgamer.rs.model.map.ClipMasks;
+import org.maxgamer.rs.model.map.Location;
 import org.maxgamer.rs.model.map.path.Direction;
 import org.maxgamer.rs.model.map.path.Directions;
 import org.maxgamer.rs.model.map.path.SimpleDirection;

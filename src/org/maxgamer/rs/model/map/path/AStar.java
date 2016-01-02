@@ -6,9 +6,9 @@ import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.lib.Calc;
 import org.maxgamer.rs.model.entity.Entity;
 import org.maxgamer.rs.model.entity.mob.Mob;
-import org.maxgamer.rs.model.map.GameObject;
 import org.maxgamer.rs.model.map.Location;
 import org.maxgamer.rs.model.map.Position;
+import org.maxgamer.rs.model.map.object.GameObject;
 import org.maxgamer.rs.structure.timings.StopWatch;
 
 /**

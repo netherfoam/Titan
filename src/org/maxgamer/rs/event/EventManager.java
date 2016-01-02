@@ -4,8 +4,6 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.model.entity.mob.npc.SpawnManager;
 import org.maxgamer.rs.model.javascript.dialogue.TalkToListener;
 import org.maxgamer.rs.model.skill.prayer.PrayerListener;
 
@@ -15,9 +13,6 @@ public class EventManager {
 	public synchronized void reload(){
 		listeners = new HashMap<EventPriority, LinkedList<HandlerExecutor>>(EventPriority.values().length);
 		
-		if(Core.getWorldConfig().getBoolean("load.npcs", true)){
-			this.register(new SpawnManager());
-		}
 		this.register(new PrayerListener());
 		this.register(new TalkToListener());
 	}

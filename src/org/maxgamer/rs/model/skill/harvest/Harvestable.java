@@ -7,8 +7,8 @@ import org.maxgamer.rs.model.entity.mob.persona.Persona;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.item.inventory.ContainerException;
-import org.maxgamer.rs.model.map.DynamicGameObject;
-import org.maxgamer.rs.model.map.GameObject;
+import org.maxgamer.rs.model.map.object.DynamicGameObject;
+import org.maxgamer.rs.model.map.object.GameObject;
 import org.maxgamer.rs.model.skill.SkillType;
 
 /**

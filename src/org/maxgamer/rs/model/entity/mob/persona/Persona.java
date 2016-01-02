@@ -1,5 +1,6 @@
 package org.maxgamer.rs.model.entity.mob.persona;
 
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -65,7 +66,7 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 	/**
 	 * The default location that players will spawn at. This is configurable in the world config.
 	 */
-	public static final Location DEFAULT_PLAYER_SPAWN = Location.deserialize(Core.getServer().getConfig().getSection("spawn"), Core.getServer().getMap(), new Location(Core.getServer().getMap(), 3221, 3220, 0));
+	public static final Location DEFAULT_PLAYER_SPAWN = Location.deserialize(Core.getServer().getConfig().getSection("spawn"), new Location(3221, 3220, 0));
 
 	/**
 	 * The unique ID for this Persona. This varies from 0 to 2046. When sending the ID to clients, +1 should be added, as a 0 ID represents a null
@@ -719,10 +720,10 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 		if (l != null) {
 			try {
 				l.getMap().load(l.x, l.y);
-			} catch (EncryptedException e) {
+			} catch (IOException e) {
 				// Okay, so we couldn't load the map correctly.
 				// There is no nice way of handling this.
-				throw new RuntimeException("Failed to load encrypted map.", e);
+				throw new RuntimeException("Failed to load map.", e);
 			}
 		}
 		super.setLocation(l);

@@ -4,7 +4,7 @@ import org.maxgamer.rs.command.CmdName;
 import org.maxgamer.rs.command.PlayerCommand;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
-import org.maxgamer.rs.model.map.DynamicGameObject;
+import org.maxgamer.rs.model.map.object.DynamicGameObject;
 
 /**
  * @author netherfoam

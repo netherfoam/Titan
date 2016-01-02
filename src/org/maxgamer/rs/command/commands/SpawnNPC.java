@@ -1,7 +1,5 @@
 package org.maxgamer.rs.command.commands;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.text.ParseException;
 
@@ -13,6 +11,7 @@ import org.maxgamer.rs.model.entity.mob.npc.NPC;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
 import org.maxgamer.rs.model.map.Location;
+import org.maxgamer.rs.model.map.spawns.NPCSpawn;
 import org.maxgamer.rs.structure.Util;
 
 /**
@@ -42,25 +41,22 @@ public class SpawnNPC implements PlayerCommand {
 			}
 			
 			Location l = p.getLocation();
-			NPC n = new NPC(Integer.parseInt(args[0]), l);
-			n.setSpawn(p.getLocation());
 			
 			if(!save){
+				NPC n = new NPC(Integer.parseInt(args[0]), l);
 				p.sendMessage("Spawned NPC " + args[0] + ": " + n.getDefinition().getName() + " temporarily at " + l);
 			}
 			else{
-				if(l.getMap() != Core.getServer().getMap()){
-					p.sendMessage("Currently, we cannot spawn mobs in worlds other than the main one permanently. The maps API needs more work and it's not simple!");
-					return;
+				try{
+					NPCSpawn spawn = new NPCSpawn(Integer.parseInt(args[0]), l);
+					spawn.insert(Core.getWorldDatabase().getConnection());
+					NPC n = spawn.spawn();
+					p.sendMessage("Spawned NPC " + args[0] + ": " + n.getDefinition().getName() + " permanently at " + l);
 				}
-				Connection con = Core.getWorldDatabase().getConnection();
-				PreparedStatement ps = con.prepareStatement("INSERT INTO npc_spawns (npc, x, y, z) VALUES (?, ?, ?, ?)");
-				ps.setInt(1, n.getDefinition().getId());
-				ps.setInt(2, l.x);
-				ps.setInt(3, l.y);
-				ps.setInt(4, l.z);
-				ps.execute();
-				p.sendMessage("Spawned NPC " + args[0] + ": " + n.getDefinition().getName() + " permanently at " + l);
+				catch(SQLException e){
+					p.sendMessage("Failed to contact the MySQL database: " + e.getClass().getSimpleName() + "(" + e.getMessage() + ")");
+					e.printStackTrace();
+				}
 			}
 		}
 		catch (WorldFullException e) {

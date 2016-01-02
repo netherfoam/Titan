@@ -1,4 +1,5 @@
-package org.maxgamer.rs.model.map;
+package org.maxgamer.rs.model.map.object;
+
 
 /**
  * @author netherfoam

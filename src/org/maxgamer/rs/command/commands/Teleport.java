@@ -1,7 +1,6 @@
 package org.maxgamer.rs.command.commands;
 
 import org.maxgamer.rs.command.PlayerCommand;
-import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
 import org.maxgamer.rs.model.map.Location;
@@ -21,7 +20,7 @@ public class Teleport implements PlayerCommand {
 		}
 		
 		try {
-			Location dest = new Location(Core.getServer().getMap(), Integer.parseInt(args[0]), Integer.parseInt(args[1]), args.length >= 3 ? Integer.parseInt(args[2]) : 0);
+			Location dest = new Location(Integer.parseInt(args[0]), Integer.parseInt(args[1]), args.length >= 3 ? Integer.parseInt(args[2]) : 0);
 			p.teleport(dest);
 			p.sendMessage("Teleported to " + dest);
 		}

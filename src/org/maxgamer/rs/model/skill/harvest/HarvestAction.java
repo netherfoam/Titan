@@ -5,7 +5,7 @@ import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.facing.Facing;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
-import org.maxgamer.rs.model.map.GameObject;
+import org.maxgamer.rs.model.map.object.GameObject;
 
 import co.paralleluniverse.fibers.SuspendExecution;
 

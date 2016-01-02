@@ -2,8 +2,8 @@ package org.maxgamer.rs.network.io.packet.player;
 
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.item.ItemStack;
-import org.maxgamer.rs.model.map.GameObject;
 import org.maxgamer.rs.model.map.Location;
+import org.maxgamer.rs.model.map.object.GameObject;
 import org.maxgamer.rs.network.io.packet.PacketProcessor;
 import org.maxgamer.rs.network.io.packet.RSIncomingPacket;
 

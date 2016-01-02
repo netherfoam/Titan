@@ -1,7 +1,8 @@
-package org.maxgamer.rs.model.map;
+package org.maxgamer.rs.model.map.object;
 
 import java.io.IOException;
 
+import org.maxgamer.rs.model.map.Location;
 import org.maxgamer.rs.model.map.path.SimpleDirection;
 
 /**

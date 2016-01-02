@@ -16,7 +16,7 @@ import org.maxgamer.rs.structure.configs.ConfigSection;
  * @author netherfoam
  */
 public class Location extends Position implements MBR {
-	public static Location deserialize(ConfigSection s, WorldMap map, Location fallback) {
+	public static Location deserialize(ConfigSection s, Location fallback) {
 		if (s == null) {
 			return fallback;
 		}
@@ -28,6 +28,10 @@ public class Location extends Position implements MBR {
 		if (x == -1 || y == -1) {
 			return fallback;
 		}
+		
+		String mapName = s.getString("map", Core.getServer().getMaps().translate(new Position(x, y)));
+		WorldMap map = Core.getServer().getMaps().get(mapName);
+		
 		return new Location(map, x, y, z);
 	}
 	
@@ -55,8 +59,8 @@ public class Location extends Position implements MBR {
 		}
 	}
 	
-	public Location(int x, int y, int z) {
-		this(Core.getServer().getMap(), x, y, z);
+	public Location(int x, int y, int z){
+		this(Core.getServer().getMaps().at(x, y), x, y, z);
 	}
 	
 	/**

@@ -8,11 +8,11 @@ import org.maxgamer.rs.lib.BufferUtils;
 import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.map.Chunk;
 import org.maxgamer.rs.model.map.ClipMasks;
-import org.maxgamer.rs.model.map.GameObject;
 import org.maxgamer.rs.model.map.Location;
 import org.maxgamer.rs.model.map.StandardMap;
-import org.maxgamer.rs.model.map.StaticGameObject;
 import org.maxgamer.rs.model.map.WorldMap;
+import org.maxgamer.rs.model.map.object.GameObject;
+import org.maxgamer.rs.model.map.object.StaticGameObject;
 import org.maxgamer.rs.model.map.path.Directions;
 import org.maxgamer.rs.model.map.path.SimpleDirection;
 

@@ -2,7 +2,7 @@ package org.maxgamer.rs.model.events.mob;
 
 import org.maxgamer.rs.event.Cancellable;
 import org.maxgamer.rs.model.entity.mob.Mob;
-import org.maxgamer.rs.model.map.GameObject;
+import org.maxgamer.rs.model.map.object.GameObject;
 
 public class MobUseObjectEvent extends MobEvent implements Cancellable {
 	private GameObject target;

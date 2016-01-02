@@ -1,5 +1,7 @@
 package org.maxgamer.rs.model.entity.mob.npc;
 
+import java.util.UUID;
+
 import org.maxgamer.rs.cache.EncryptedException;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.core.server.WorldFullException;
@@ -32,6 +34,8 @@ import org.maxgamer.rs.model.skill.SkillType;
  * @author netherfoam
  */
 public class NPC extends Mob {
+	private String uuid;
+	
 	/**
 	 * The index in the array of NPC's the server holds, of this NPC
 	 */
@@ -55,6 +59,20 @@ public class NPC extends Mob {
 	private SkillSet skills;
 
 	private NPCGroup group;
+	
+	/**
+	 * Constructs a new NPC from the given ID. This loads the definition ID from the cache and database. If either fails, a {@link RuntimeException}
+	 * is thrown. This calls show() on the NPC and sets the location of the NPC to the given location. After calling this constructor, the NPC will be
+	 * available in the game world, unless the given location is NULL, in which case this will not spawn the NPC into the map. This calls NPC(defId)
+	 * and then invokes setLocation(). The effect of this constructor is the same as new NPC(defId).teleport(l);.
+	 * 
+	 * @param defId
+	 *            the definition id for the NPC
+	 * @throws WorldFullException
+	 */
+	public NPC(int defId, Location l) throws WorldFullException{
+		this(defId, UUID.randomUUID().toString(), l);
+	}
 
 	/**
 	 * Constructs a new NPC from the given ID. This loads the definition ID from the cache and database. If either fails, a {@link RuntimeException}
@@ -65,7 +83,7 @@ public class NPC extends Mob {
 	 *            the definition id for the NPC
 	 * @throws WorldFullException
 	 */
-	public NPC(int defId) throws WorldFullException {
+	public NPC(int defId, String uuid, Location l) throws WorldFullException {
 		super(1, 1);
 		try {
 			this.definition = NPCDefinition.getDefinition(defId);
@@ -93,8 +111,18 @@ public class NPC extends Mob {
 		this.setHealth(getMaxHealth());
 		loadId();
 		show(); // Technically we still need to await for a location to be set, but we can do this preemptively without hassle.
+		setLocation(l);
 	}
-
+	
+	/**
+	 * The unique identifier representing this NPC.  NPC's which are saved after server restarts will have the same UUID.  NPC's which are created
+	 * on the fly will have randomly generated UUID's.
+	 * @return the unique string representing this NPC.
+	 */
+	public String getUUID(){
+		return uuid;
+	}
+	
 	@Override
 	public void onDeath() {
 		// Spawn the loot for this NPC, it has died.
@@ -116,21 +144,6 @@ public class NPC extends Mob {
 			GroundItemStack ground = new GroundItemStack(stack, killer, 50, 500);
 			ground.setLocation(loc);
 		}
-	}
-
-	/**
-	 * Constructs a new NPC from the given ID. This loads the definition ID from the cache and database. If either fails, a {@link RuntimeException}
-	 * is thrown. This calls show() on the NPC and sets the location of the NPC to the given location. After calling this constructor, the NPC will be
-	 * available in the game world, unless the given location is NULL, in which case this will not spawn the NPC into the map. This calls NPC(defId)
-	 * and then invokes setLocation(). The effect of this constructor is the same as new NPC(defId).teleport(l);.
-	 * 
-	 * @param defId
-	 *            the definition id for the NPC
-	 * @throws WorldFullException
-	 */
-	public NPC(int defId, Location l) throws WorldFullException {
-		this(defId);
-		setLocation(l);
 	}
 
 	public NPCGroup getGroup() {
@@ -202,8 +215,9 @@ public class NPC extends Mob {
 	 * @return
 	 */
 	public int getId() {
-		if (model instanceof NPCModel)
+		if (model instanceof NPCModel){
 			return ((NPCModel) model).getModelId();
+		}
 		return definition.getId();
 	}
 

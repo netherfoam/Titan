@@ -85,6 +85,7 @@ import org.maxgamer.rs.model.javascript.dialogue.DialogueManager;
 import org.maxgamer.rs.model.lobby.Lobby;
 import org.maxgamer.rs.model.map.Location;
 import org.maxgamer.rs.model.map.StandardMap;
+import org.maxgamer.rs.model.map.MapManager;
 import org.maxgamer.rs.model.map.WorldMap;
 import org.maxgamer.rs.module.ModuleLoader;
 import org.maxgamer.rs.network.Client;
@@ -99,11 +100,7 @@ import org.maxgamer.rs.structure.timings.StopWatch;
  * @author netherfoam
  */
 public class Server {
-	/**
-	 * The world map, this is not a dynamically generated one and is parsed
-	 * directly from the cache.
-	 */
-	private StandardMap map;
+	private MapManager maps;
 	
 	/**
 	 * The network object this server runs off
@@ -242,6 +239,32 @@ public class Server {
 	}
 	
 	/**
+	 * Fetches the Map Manager
+	 * @return the Map Manager
+	 */
+	public synchronized MapManager getMaps(){
+		if(this.maps == null){
+			this.maps = new MapManager(new File("maps"));
+			getEvents().register(this.maps);
+			
+			// This costs around 50mb of RAM.
+			WorldMap map = this.maps.get("mainland");
+			if(map == null){
+				try {
+					map = new StandardMap("mainland");
+					this.maps.persist(map);
+					this.maps.save(map);
+				}
+				catch (IOException e) {
+					e.printStackTrace();
+					System.exit(1);
+				}
+			}
+		}
+		return this.maps;
+	}
+	
+	/**
 	 * Loads this server and starts it so that players can begin connecting.
 	 * @throws IOException if there is an issue with the config or map
 	 * @throws SQLException
@@ -299,16 +322,17 @@ public class Server {
 				try {
 					Server.this.lobby = new Lobby();
 					
-					//We should initialize everything before loading user content
-					//Eg commands, events, modules
-					Log.info("Loading StandardMap...");
-					Server.this.map = new StandardMap("World", 16384, 16384); //this costs around 50mb of RAM.
-					Log.info("...StandardMap Loaded!");
+					// We should initialize everything before loading user content
+					// Eg commands, events, modules
+					Log.info("Loading Map...");
+					getMaps();
+					Log.info("...Map Loaded!");
+					
 					Server.this.modules = new ModuleLoader();
 					Server.this.ticker = new ServerTicker(Server.this);
 					Server.this.groundItems = new GroundItemManager();
-					//Server.this.scripts = new BeanScriptEngine();
 					
+					// Preload our event system
 					getEvents();
 					
 					Log.debug("Loading Commands...");
@@ -515,20 +539,6 @@ public class Server {
 	}
 	
 	/**
-	 * Fetches the primary world map where most activities take place. You can
-	 * construct your own dynamic maps, though you must manage them on your own.
-	 * This is not a dynamic map, and costs at least 50MB of RAM to hold. A
-	 * dynamic map is much smaller.
-	 * @return the world map
-	 */
-	public WorldMap getMap() {
-		if (map == null) {
-			throw new RuntimeException("Server Map hasn't been initialized!");
-		}
-		return map;
-	}
-	
-	/**
 	 * Unloads all modules, calls a new ServerShutdownEvent, shuts down the
 	 * network and save's all player data.
 	 */
@@ -618,11 +628,20 @@ public class Server {
 	 * Saves all currently online players to disk.
 	 */
 	public void save() {
+		int failures = this.maps.save();
+		if(failures > 0){
+			Log.warning("Failed to save " + failures + " maps.");
+		}
+		
 		Core.submit(new Runnable() {
 			@Override
 			public void run() {
 				if (Core.getServer().getClients().isEmpty() == false) {
 					Core.getServer().getLogon().getAPI().save(Core.getServer().getClients());
+				}
+				int errors = maps.save();
+				if(errors != 0){
+					Log.warning(errors + " errors occured while saving worlds.");
 				}
 			}
 		}, true);

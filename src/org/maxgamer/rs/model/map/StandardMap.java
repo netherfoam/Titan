@@ -15,8 +15,8 @@ import org.maxgamer.rs.model.events.world.ChunkLoadEvent;
  * @author netherfoam
  */
 public class StandardMap extends WorldMap {
-	public StandardMap(String name, int sizeX, int sizeY) throws IOException {
-		super(name, sizeX, sizeY);
+	public StandardMap(String name) throws IOException{
+		super(name, 16384, 16384);
 	}
 	
 	public static final int FLAG_CLIP = 0x1;

@@ -2,7 +2,6 @@ package org.maxgamer.rs.model.entity.mob.combat.mage;
 
 import java.util.HashMap;
 
-import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.model.map.Location;
 import org.maxgamer.rs.model.skill.SkillType;
 
@@ -58,17 +57,18 @@ public class ModernBook extends Spellbook {
 		spells.put(55, new RootSpell(20, 177, 710, 5, 180, -1, -1, 8, 17, EARTH_RUNE.setAmount(4), WATER_RUNE.setAmount(4), NATURE_RUNE.setAmount(3))); //Snare, Exp: 60.5
 		spells.put(81, new RootSpell(20, 177, 710, 5, 179, -1, -1, 8, 25, EARTH_RUNE.setAmount(5), WATER_RUNE.setAmount(5), NATURE_RUNE.setAmount(4))); //Bind, Exp: 91
 		
+		
 		//Teleport spells
-		spells.put(24, new TeleportSpell(1, 1576, 8939, 5, new Location(Core.getServer().getMap(), 3221, 3218, 0))); //Home teleport, Exp: 0
-		spells.put(37, new TeleportSpell(10, 1576, 8939, 5, new Location(Core.getServer().getMap(), 2411, 2832, 0), LAW_RUNE.setAmount(1), WATER_RUNE.setAmount(1), AIR_RUNE.setAmount(1))); //Mobilising Armies teleport, Exp: 19
-		spells.put(40, new TeleportSpell(25, 1576, 8939, 5, new Location(Core.getServer().getMap(), 3211, 3422, 0), LAW_RUNE.setAmount(1), FIRE_RUNE.setAmount(1), AIR_RUNE.setAmount(3))); //Varrock teleport, Exp: 35
-		spells.put(43, new TeleportSpell(31, 1576, 8939, 5, new Location(Core.getServer().getMap(), 3221, 3219, 0), LAW_RUNE.setAmount(1), EARTH_RUNE.setAmount(1), AIR_RUNE.setAmount(3))); //Lumbridge teleport, Exp: 41
-		spells.put(46, new TeleportSpell(37, 1576, 8939, 5, new Location(Core.getServer().getMap(), 2966, 3379, 0), LAW_RUNE.setAmount(1), WATER_RUNE.setAmount(1), AIR_RUNE.setAmount(3))); //Falador teleport, Exp: 48
-		spells.put(51, new TeleportSpell(45, 1576, 8939, 5, new Location(Core.getServer().getMap(), 2757, 3477, 0), LAW_RUNE.setAmount(1), AIR_RUNE.setAmount(5))); //Camelot teleport, Exp: 55.5
-		spells.put(57, new TeleportSpell(51, 1576, 8939, 5, new Location(Core.getServer().getMap(), 2662, 3307, 0), LAW_RUNE.setAmount(2), WATER_RUNE.setAmount(2))); //Ardougne teleport, Exp: 61
-		spells.put(62, new TeleportSpell(58, 1576, 8939, 5, new Location(Core.getServer().getMap(), 2891, 3678, 0), LAW_RUNE.setAmount(2), EARTH_RUNE.setAmount(2))); //Watch Tower teleport, Exp: 68
-		spells.put(69, new TeleportSpell(61, 1576, 8939, 5, new Location(Core.getServer().getMap(), 2547, 3113, 0), LAW_RUNE.setAmount(2), FIRE_RUNE.setAmount(2))); //Trollheim teleport, Exp: 68
-		spells.put(72, new TeleportSpell(64, 1576, 8939, 5, new Location(Core.getServer().getMap(), 2797, 2798, 1), LAW_RUNE.setAmount(2), FIRE_RUNE.setAmount(2), WATER_RUNE.setAmount(2))); //Ape Atoll teleport, Exp: 74
+		spells.put(24, new TeleportSpell(1, 1576, 8939, 5, new Location(3221, 3218, 0))); //Home teleport, Exp: 0
+		spells.put(37, new TeleportSpell(10, 1576, 8939, 5, new Location(2411, 2832, 0), LAW_RUNE.setAmount(1), WATER_RUNE.setAmount(1), AIR_RUNE.setAmount(1))); //Mobilising Armies teleport, Exp: 19
+		spells.put(40, new TeleportSpell(25, 1576, 8939, 5, new Location(3211, 3422, 0), LAW_RUNE.setAmount(1), FIRE_RUNE.setAmount(1), AIR_RUNE.setAmount(3))); //Varrock teleport, Exp: 35
+		spells.put(43, new TeleportSpell(31, 1576, 8939, 5, new Location(3221, 3219, 0), LAW_RUNE.setAmount(1), EARTH_RUNE.setAmount(1), AIR_RUNE.setAmount(3))); //Lumbridge teleport, Exp: 41
+		spells.put(46, new TeleportSpell(37, 1576, 8939, 5, new Location(2966, 3379, 0), LAW_RUNE.setAmount(1), WATER_RUNE.setAmount(1), AIR_RUNE.setAmount(3))); //Falador teleport, Exp: 48
+		spells.put(51, new TeleportSpell(45, 1576, 8939, 5, new Location(2757, 3477, 0), LAW_RUNE.setAmount(1), AIR_RUNE.setAmount(5))); //Camelot teleport, Exp: 55.5
+		spells.put(57, new TeleportSpell(51, 1576, 8939, 5, new Location(2662, 3307, 0), LAW_RUNE.setAmount(2), WATER_RUNE.setAmount(2))); //Ardougne teleport, Exp: 61
+		spells.put(62, new TeleportSpell(58, 1576, 8939, 5, new Location(2891, 3678, 0), LAW_RUNE.setAmount(2), EARTH_RUNE.setAmount(2))); //Watch Tower teleport, Exp: 68
+		spells.put(69, new TeleportSpell(61, 1576, 8939, 5, new Location(2547, 3113, 0), LAW_RUNE.setAmount(2), FIRE_RUNE.setAmount(2))); //Trollheim teleport, Exp: 68
+		spells.put(72, new TeleportSpell(64, 1576, 8939, 5, new Location(2797, 2798, 1), LAW_RUNE.setAmount(2), FIRE_RUNE.setAmount(2), WATER_RUNE.setAmount(2))); //Ape Atoll teleport, Exp: 74
 		
 		//Alchemy spells
 		spells.put(38, new AlchemySpell(21, 112, 712, 5, 0.6, NATURE_RUNE.setAmount(1), FIRE_RUNE.setAmount(3)));

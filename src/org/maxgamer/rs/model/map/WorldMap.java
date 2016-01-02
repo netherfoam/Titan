@@ -1,10 +1,12 @@
 package org.maxgamer.rs.model.map;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
 
 import org.maxgamer.rs.cache.EncryptedException;
 import org.maxgamer.rs.core.Core;
+import org.maxgamer.rs.core.server.WorldFullException;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.persona.player.ViewDistance;
 import org.maxgamer.rs.structure.areagrid.AreaGrid;
@@ -76,9 +78,9 @@ public abstract class WorldMap {
 		if (sizeX % CHUNK_SIZE != 0 || sizeY % CHUNK_SIZE != 0) {
 			throw new IllegalArgumentException("Maps must be a multiple of chunk size.. given x: " + sizeX + ", y: " + sizeY);
 		}
+		this.name = name;
 		this.sizeX = sizeX;
 		this.sizeY = sizeY;
-		this.name = name;
 		
 		StopWatch w = Core.getTimings().start("map-init");
 		entities = new AreaGrid<MBR>(sizeX, sizeY, 8);
@@ -112,9 +114,10 @@ public abstract class WorldMap {
 	 * @param y the y coordinate of the center chunk
 	 * @return true if any loading was caused, false if all tiles were already
 	 *         loaded.
-	 * @throws EncryptedException if the map file could not be accessed.
+	 * @throws WorldFullException 
+	 * @throws IOException 
 	 */
-	public void load(int x, int y) throws EncryptedException {
+	public void load(int x, int y) throws IOException {
 		StopWatch w = Core.getTimings().start("worldmap-load");
 		
 		for (int i = (x - LOAD_RANGE - 7) >> 3; i < (x + LOAD_RANGE + 7) >> 3; i++) {
@@ -129,13 +132,14 @@ public abstract class WorldMap {
 					}
 				}
 				catch (IndexOutOfBoundsException e) {
-				}//Near map edge
+					//Near map edge
+				}
 			}
 		}
 		w.stop();
 	}
 	
-	public void load(MBR m) throws EncryptedException {
+	public void load(MBR m) throws IOException {
 		StopWatch w = Core.getTimings().start("worldmap-load");
 		for (int i = 0; i < m.getDimension(0); i++) {
 			for (int j = 0; j < m.getDimension(1); j++) {
@@ -163,7 +167,7 @@ public abstract class WorldMap {
 	 * The number of tiles horizontally (West->East) this map is.
 	 * @return the size from West to East in tiles
 	 */
-	public int getSizeX() {
+	public int width() {
 		return sizeX;
 	}
 	
@@ -171,7 +175,7 @@ public abstract class WorldMap {
 	 * The number of tiles vertically (South->North) this map is.
 	 * @return the size from South to North in tiles
 	 */
-	public int getSizeY() {
+	public int height() {
 		return sizeY;
 	}
 	

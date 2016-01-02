@@ -7,10 +7,8 @@ import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.item.inventory.Container;
-import org.maxgamer.rs.model.item.inventory.ContainerException;
 import org.maxgamer.rs.model.item.inventory.ContainerListener;
-import org.maxgamer.rs.model.item.inventory.ContainerState;
-import org.maxgamer.rs.model.item.inventory.VendorContainer;
+import org.maxgamer.rs.model.item.vendor.VendorContainer;
 
 /**
  * @author netherfoam
@@ -44,7 +42,7 @@ public class VendorInterface extends PrimaryInterface implements ContainerListen
 	@Override
 	public void onOpen() {
 		getPlayer().getProtocol().sendConfig(118, 4);
-		getPlayer().getProtocol().sendConfig(1496, -1); //Number of free items, or something? Index of end of free items? (Eg splitter value?)
+		getPlayer().getProtocol().sendConfig(1496, 555); //Number of free items, or something? Index of end of free items? (Eg splitter value?)
 		getPlayer().getProtocol().sendConfig(532, vendor.getCurrency()); //Currency ID
 		super.onOpen();
 		
@@ -62,6 +60,7 @@ public class VendorInterface extends PrimaryInterface implements ContainerListen
 			getPlayer().getProtocol().sendBConfig(SHOP_ITEM_PRICE_BCONFIG_OFFSE + i, item.getDefinition().getHighAlchemy());
 			getPlayer().getProtocol().setItem(SHOP_INVENTORY_ID, false, item, i);
 		}
+		getPlayer().getProtocol().sendContainer(555, false, player.getInventory());
 		side = new VendorSideInterface(getPlayer(), vendor);
 		getPlayer().getWindow().open(side);
 	}
@@ -132,31 +131,10 @@ public class VendorInterface extends PrimaryInterface implements ContainerListen
 					break;
 			}
 			//If we made it here, they're attempting to buy form the shop.
-			long amount = Math.min(item.getAmount(), vendor.getNumberOf(item));
-			if (amount <= 0) {
-				getPlayer().sendMessage("The vendor is out of stock.");
+			if (!vendor.buy(player, item, slotId)) {
+				player.sendMessage("Transaction failed!");
 				return;
 			}
-			
-			item = item.setAmount(amount);
-			ContainerState inv = getPlayer().getInventory().getState();
-			ContainerState ven = vendor.getState();
-			
-			try {
-				ItemStack cost = ItemStack.create(vendor.getCurrency(), item.getAmount() * item.getDefinition().getHighAlchemy());
-				if (cost != null) inv.remove(cost);
-				
-				ven.remove(slotId, item);
-				inv.add(item);
-			}
-			catch (ContainerException e) {
-				getPlayer().sendMessage("Transaction failed.");
-				return;
-			}
-			
-			//We know we were successful here.
-			ven.apply();
-			inv.apply();
 		}
 	}
 	

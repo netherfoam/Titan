@@ -58,6 +58,8 @@ public abstract class MobModel implements YMLSerializable {
 	 */
 	private int title = 0;
 	
+	private int renderAnimationId = 1426;
+	
 	/**
 	 * Fetches the maximum colour number for the given slot, where the given
 	 * slot is a value from 0-4 representing the piece of character design that
@@ -114,7 +116,7 @@ public abstract class MobModel implements YMLSerializable {
 	 * 
 	 * skin color: gets darker the bigger the number
 	 */
-
+	
 	/**
 	 * The colours for a player
 	 */
@@ -160,7 +162,7 @@ public abstract class MobModel implements YMLSerializable {
 				// and can be found in the cache. The render ID
 				// varies depending on which weapon the player
 				// is currently wielding.
-				out.writeShort(1426); // TODO mob render animation
+				out.writeShort(renderAnimationId); // TODO mob render animation
 				
 				out.write(getName());
 				out.writeByte(getCombatLevel());
@@ -192,7 +194,7 @@ public abstract class MobModel implements YMLSerializable {
 	/**
 	 * Sets the name of this MobModel
 	 */
-	public void setName(String name){
+	public void setName(String name) {
 		this.name = name;
 		this.setChanged(true);
 	}
@@ -201,7 +203,7 @@ public abstract class MobModel implements YMLSerializable {
 	 * Toggles combat colouring on this model's right click menu.
 	 * @param color true for color (green-yellow-red) or false for white
 	 */
-	public void setCombatColoured(boolean color){
+	public void setCombatColoured(boolean color) {
 		this.combatColour = color;
 		this.setChanged(true);
 	}
@@ -210,7 +212,7 @@ public abstract class MobModel implements YMLSerializable {
 	 * Toggles the skull above this model's head
 	 * @param skulled true to enable the skull
 	 */
-	public void setSkulled(boolean skulled){
+	public void setSkulled(boolean skulled) {
 		this.skulled = skulled;
 		this.setChanged(true);
 	}
@@ -376,5 +378,13 @@ public abstract class MobModel implements YMLSerializable {
 		this.female = map.getBoolean("female", this.female);
 		this.combatLevel = (byte) map.getInt("combatLevel", this.combatLevel);
 		this.title = map.getInt("title", this.title);
+	}
+	
+	public int getRenderAnimationId() {
+		return renderAnimationId;
+	}
+	
+	public void setRenderAnimationId(int renderAnimationId) {
+		this.renderAnimationId = renderAnimationId;
 	}
 }

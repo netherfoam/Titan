@@ -17,6 +17,7 @@ import org.maxgamer.rs.model.entity.mob.npc.NPC;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;
 import org.maxgamer.rs.model.entity.mob.persona.PersonaOption;
 import org.maxgamer.rs.model.events.mob.MobDeathEvent;
+import org.maxgamer.rs.model.events.mob.MobItemOnItemEvent;
 import org.maxgamer.rs.model.events.mob.MobItemOnObjectEvent;
 import org.maxgamer.rs.model.events.mob.MobLoadEvent;
 import org.maxgamer.rs.model.events.mob.MobUnloadEvent;
@@ -35,15 +36,21 @@ import org.maxgamer.rs.model.map.path.AStar;
 import org.maxgamer.rs.model.map.path.Path;
 import org.maxgamer.rs.model.map.path.PathFinder;
 import org.maxgamer.rs.model.skill.SkillSet;
+import org.maxgamer.rs.structure.ArrayUtility;
+import org.maxgamer.rs.structure.configs.ConfigSection;
 
 import co.paralleluniverse.fibers.SuspendExecution;
 
 /**
  * Represents a Mob which has health, equipment, an action queue, an UpdateMask,
  * can run and fight.
+ * 
  * @author netherfoam
  */
 public abstract class Mob extends Entity implements EquipmentHolder {
+	
+	private final ConfigSection temporaryConfigs;
+	
 	/**
 	 * The update mask used for this mob, contains animations/movement
 	 * updates/etc
@@ -78,7 +85,6 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 */
 	private boolean retaliate = true;
 	
-	
 	private int unrootTick;
 	private int rootImmunityTick;
 	private boolean isLoaded;
@@ -93,6 +99,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	
 	/**
 	 * Constructs a new mob
+	 * 
 	 * @param sizeX the size of this mob along the X (East-West) axis
 	 * @param sizeY the size of this mob along the Y (North-South) axis
 	 */
@@ -100,6 +107,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 		super(sizeX, sizeY);
 		this.actionQueue = new ActionQueue(this);
 		this.damage = new DamageLog(this);
+		this.temporaryConfigs = new ConfigSection();
 	}
 	
 	public Mob getTarget() {
@@ -128,7 +136,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 		
 		if (target != null) {
 			getDamage().setLastTarget(target);
-			//New target is not null
+			// New target is not null
 			getActions().clear();
 			getActions().queue(new CombatFollow(this, target, new AStar(10)));
 		}
@@ -139,6 +147,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	
 	/**
 	 * Sets this mob's facing target to the given position
+	 * 
 	 * @param pos the position to face
 	 */
 	public void face(Position pos) {
@@ -148,6 +157,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	/**
 	 * Sets this mob's facing target to the given Mob. Players will actively
 	 * continue to face Mobs as the target moves.
+	 * 
 	 * @param mob the mob to face
 	 */
 	public void face(Mob mob) {
@@ -156,6 +166,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	
 	/**
 	 * Sets this mob's facing target to the entity's center position.
+	 * 
 	 * @param entity the entity to face. If the entity moves, this will not
 	 *        update the facing.
 	 */
@@ -167,6 +178,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 * The faced location / target for this mob. This is not equal to the update
 	 * mask facing, which only contains changes, whereas this contains the
 	 * current state.
+	 * 
 	 * @return the faced location / target for this mob.
 	 */
 	public Facing getFacing() {
@@ -193,6 +205,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	/**
 	 * "Force text" appears above the mob temporarily, as if the Mob had said
 	 * something.
+	 * 
 	 * @param text the text to create
 	 * @thread any
 	 */
@@ -203,6 +216,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	/**
 	 * Roots this mob in place for the given duration. A rooted mob may not
 	 * move.
+	 * 
 	 * @param duration the number of ticks to root them
 	 * @param immunity the duration of the "root immunity" granted after the
 	 *        effect wears off, in ticks
@@ -223,12 +237,12 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 		int newUnrootTick = tick + duration;
 		
 		if (force == false && rootImmunityTick > tick) {
-			//We are currently immune to rooting effects.
+			// We are currently immune to rooting effects.
 			return 0;
 		}
 		
 		if (newUnrootTick < unrootTick) {
-			//We are already rooted for longer than requested.
+			// We are already rooted for longer than requested.
 			return unrootTick - tick;
 		}
 		
@@ -251,20 +265,21 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 			mapLoaded = (loc.getMap().getClip(loc.x, loc.y, loc.z) & ClipMasks.UNLOADED_TILE) == 0;
 		}
 		else {
-			//Null location
+			// Null location
 			mapLoaded = false;
 		}
 		
 		super.setLocation(loc);
 		
-		//For some reason, the player seems to be unloading here. This means mapLoaded = false
+		// For some reason, the player seems to be unloading here. This means
+		// mapLoaded = false
 		
-		//If the map is unloaded and we are loaded, we must unload
+		// If the map is unloaded and we are loaded, we must unload
 		if (isLoaded() && mapLoaded == false) {
 			this.unload();
 		}
 		
-		//If the map is loaded, and we are not, we must load
+		// If the map is loaded, and we are not, we must load
 		if (isLoaded() == false && mapLoaded) {
 			this.load();
 		}
@@ -282,6 +297,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 * By implication, setting the location of a mob to a location that is not
 	 * loaded from one that is, will unload the mob. Visa versa, moving a mob
 	 * from an unloaded location to a loaded one will load the mob.
+	 * 
 	 * @return true if this mob is loaded.
 	 */
 	public final boolean isLoaded() {
@@ -310,10 +326,10 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 		}
 		
 		if (this.getActions().isEmpty()) {
-			try{
+			try {
 				this.onIdle();
 			}
-			catch(Exception e){
+			catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
@@ -371,6 +387,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	
 	/**
 	 * Returns true if this mob may not move. False if it may move.
+	 * 
 	 * @return true if this mob may not move.
 	 */
 	public boolean isRooted() {
@@ -381,6 +398,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 * The index in the client. This is different for players and NPCs.
 	 * (Specifically, Players client index is (playerId + 1) | 0x8000. NPC's
 	 * client index is just npcId + 1
+	 * 
 	 * @return the index.
 	 */
 	public abstract int getClientIndex();
@@ -389,6 +407,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 * Returns the next attack to be used by this mob in combat. The attack will
 	 * be attempted, though may fail. If it fails, the mob may continue
 	 * attacking in which case, another call will be made to nextAttack().
+	 * 
 	 * @return the next attack for this mob to perform.
 	 */
 	public abstract Attack nextAttack();
@@ -396,12 +415,14 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	/**
 	 * Returns the SkillSet for this Mob. Not all SkillTypes are available to
 	 * NPC's, unlike players.
+	 * 
 	 * @return the skills for this mob.
 	 */
 	public abstract SkillSet getSkills();
 	
 	/**
 	 * The damage meter for this mob
+	 * 
 	 * @return the damage meter not null
 	 */
 	public DamageLog getDamage() {
@@ -410,6 +431,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	
 	/**
 	 * Returns the CombatStats which control how powerful this mob is in combat.
+	 * 
 	 * @return the combat stats representing this mob's combat capability
 	 */
 	public CombatStats getCombatStats() {
@@ -421,6 +443,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 * was no path found, any results from the pathfinder will be used thus it
 	 * is the responsibility of the pathfinder as to whether a failure to find a
 	 * path will result in a second-best path being used.
+	 * 
 	 * @param to the position to move to
 	 * @param finder the pathfinder to use
 	 * @return true if a path was found (It may still be interrupted!) false if
@@ -443,6 +466,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	
 	/**
 	 * Walk the steps in the given path, as many as possible.
+	 * 
 	 * @param path the path to walk
 	 * @return true if the path was completed, cancelled or unusable, false if
 	 *         it can still be used next tick
@@ -451,6 +475,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	
 	/**
 	 * The UpdateMask used for this mob. This may be extended if necessary.
+	 * 
 	 * @return the update mask for this mob
 	 */
 	public UpdateMask getUpdateMask() {
@@ -461,6 +486,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 * Animates the mob with the given animation and priority. This is a
 	 * shorthand method for accessing the update mask. This uses level 5
 	 * priority (eat/drink level)
+	 * 
 	 * @param emo the animation id
 	 */
 	public void animate(int emo) {
@@ -472,6 +498,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 * shorthand method for accessing the update mask. Standard levels of
 	 * priority are 5 for eat/drink, 10 for bury/pick, 50 for death, 20 for
 	 * attack, 5 for defence
+	 * 
 	 * @param emo the animation id
 	 * @param priority the priority of the animation. Higher priority animations
 	 *        will override lower ones.
@@ -485,6 +512,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 * shorthand method for accessing the update mask. Standard levels of
 	 * priority are 5 for eat/drink, 10 for bury/pick, 50 for death, 20 for
 	 * attack, 5 for defence
+	 * 
 	 * @param anim the animation
 	 * @param priority the priority of the animation. Higher priority animations
 	 *        will override lower ones.
@@ -496,6 +524,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	/**
 	 * Overlays graphics on the mob. This is a shorthand method for accessing
 	 * the update mask.
+	 * 
 	 * @param gfx the id of the graphics to use
 	 */
 	public void graphics(int gfx) {
@@ -506,6 +535,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 * The queue of actions for this Mob. For example, this queue may contain
 	 * actions like walking, filling a vial with water, identifying herbs,
 	 * attacking a mob.
+	 * 
 	 * @return the action queue for this mob
 	 */
 	public ActionQueue getActions() {
@@ -516,18 +546,21 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 * Fetches the unique ID for this mob. When sending the ID's to the client,
 	 * +1 will be added to the result of this call because the client represents
 	 * ID=0 with NULL mobs.
+	 * 
 	 * @return the unique ID for this mob, 0-MAX_MOBS - 1
 	 */
 	public abstract short getSpawnIndex();
 	
 	/**
 	 * The Model used for this mob. This is essentially an UpdateMask.
+	 * 
 	 * @return the Model used for this mob
 	 */
 	public abstract MobModel getModel();
 	
 	/**
 	 * Teleports this mob to the given location
+	 * 
 	 * @param dest the location to teleport to
 	 * @thread main
 	 */
@@ -535,6 +568,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	
 	/**
 	 * The current health of this mob
+	 * 
 	 * @return The current health of this mob
 	 */
 	public int getHealth() {
@@ -547,6 +581,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 * value is less than 0, health will be set to 0. Otherwise health will be
 	 * set to the given value. This alters the return value of isDead() if
 	 * health is at 0.
+	 * 
 	 * @param hp the new health for the mob.
 	 * @thread main
 	 */
@@ -561,10 +596,10 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 			if (this.getFacing() != null) {
 				this.setFacing(null);
 			}
-			//Mob has died
-			this.getActions().clear(); //Remove all cancellable
+			// Mob has died
+			this.getActions().clear(); // Remove all cancellable
 			for (Action a : this.getActions().getList()) {
-				this.getActions().cancel(a); //Force cancel anything left
+				this.getActions().cancel(a); // Force cancel anything left
 			}
 			setTarget(null);
 			this.getActions().queue(new DeathAction(this));
@@ -575,6 +610,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	
 	/**
 	 * Heals this mob the given amount
+	 * 
 	 * @param hp the health to add to this mobs health
 	 * @return the amount of health gained
 	 */
@@ -603,20 +639,25 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 * The maximum health of this mob. The current health does not necessarily
 	 * have to be less than or equal to this. Health normalizes towards this
 	 * value over time.
+	 * 
 	 * @return the maximum health of this mob
 	 */
 	public abstract int getMaxHealth();
 	
 	/**
-	 * The location that this NPC should be teleported to before being respawned. Event
-	 * handlers may change this location when a Mob dies through {@link MobDeathEvent#setSpawn(Location)}
-	 * @return The location that this NPC should be teleported to before being respawned.
+	 * The location that this NPC should be teleported to before being
+	 * respawned. Event handlers may change this location when a Mob dies
+	 * through {@link MobDeathEvent#setSpawn(Location)}
+	 * 
+	 * @return The location that this NPC should be teleported to before being
+	 *         respawned.
 	 */
 	public abstract Location getSpawn();
 	
 	/**
 	 * The equipment that this mob is currently wielding, such as Rune Scimitar,
 	 * Dharok's Platebody or Amulet of Glory
+	 * 
 	 * @return the equipment this mob is wielding
 	 */
 	public Equipment getEquipment() {
@@ -625,6 +666,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	
 	/**
 	 * Returns true if this mob's health is set to 0.
+	 * 
 	 * @return true if this mob's health is <= 0. False if it is > 0.
 	 */
 	public boolean isDead() {
@@ -634,6 +676,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	/**
 	 * Determines if this mob is visible to the given mob. This method should be
 	 * overridden if the mob can become invisible.
+	 * 
 	 * @param to
 	 * @return
 	 */
@@ -648,6 +691,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	/**
 	 * Restores this mob to full health and removes any other imperfections,
 	 * such as drained stats.
+	 * 
 	 * @thread main
 	 */
 	public void restore() {
@@ -660,6 +704,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	/**
 	 * Returns true if the mob is hidden from players view, false if it is
 	 * visible.
+	 * 
 	 * @return true if the mob is hidden from players view, false if it is
 	 *         visible.
 	 */
@@ -671,6 +716,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 * Hides this mob from players so that it isn't visible. The result of
 	 * isHidden() will be true after this call. If the mob is currently hidden,
 	 * this has no effect. The effect will occur on the next tick.
+	 * 
 	 * @thread any
 	 */
 	public void hide() {
@@ -681,6 +727,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 * Shows this mob to players so that it becomes visible. The result of
 	 * isHidden() will be false after this call. If the mob is currently
 	 * visible, this has no effect. The effect will occur on the next tick.
+	 * 
 	 * @thread any
 	 */
 	public void show() {
@@ -690,6 +737,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	/**
 	 * Respawns this mob. This resets the stats and health to the standard
 	 * amount, and calls show() if the mob is currently hidden.
+	 * 
 	 * @thread main
 	 */
 	public void respawn() {
@@ -705,6 +753,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	
 	/**
 	 * The number of ticks before this mob respawns after death.
+	 * 
 	 * @return The number of ticks before this mob respawns after death.
 	 * @thread any
 	 */
@@ -713,6 +762,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	/**
 	 * Destroys this mob by calling the super Entity.destroy(), and if this mob
 	 * is not already hidden, calls hide() on this mob.
+	 * 
 	 * @thread primary
 	 */
 	@Override
@@ -734,6 +784,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 * Setting this to false will mean this mob will not retaliate. If a mob is
 	 * busy performing some other action, it generally won't cancel the other
 	 * action.
+	 * 
 	 * @param retal true if this mob should retaliate when hit.
 	 */
 	public void setRetaliate(boolean retal) {
@@ -743,6 +794,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	/**
 	 * Returns whether this mob will currently retaliate to any incoming
 	 * attacks.
+	 * 
 	 * @return true if retaliating to attacks, false if it ignores the attacker.
 	 */
 	public boolean isRetaliate() {
@@ -751,6 +803,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	
 	/**
 	 * Returns true if the given mob may attack this mob.
+	 * 
 	 * @param src the mob who is attacking
 	 * @return true if this mob may be attacked, false otherwise.
 	 */
@@ -759,6 +812,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	/**
 	 * Fetches the name of this mob. This should be the exact name when right
 	 * clicking on the mob.
+	 * 
 	 * @return
 	 */
 	public abstract String getName();
@@ -774,18 +828,23 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	public abstract void onIdle();
 	
 	public void sendMessage(String msg) {
-		//Empty
+		// Empty
 	}
 	
 	public void use(ItemStack item, int slot, String option) {
 		MobUseItemEvent e = new MobUseItemEvent(this, item, option, slot);
 		e.call();
-		if(e.isCancelled()){
+		if (e.isCancelled()) {
 			return;
 		}
 	}
 	
-	public void use(final GameObject g, final String option) {
+	public void use(GameObject g, String option) {
+		use(g, ArrayUtility.indexOf(option, g.getDefiniton().getOptions()));
+	}
+	
+	public void use(final GameObject g, final int option) {
+		if (option == -1) return;
 		AStar finder = new AStar(20);
 		Path path = finder.findPath(this.getLocation(), g.getLocation(), g.getLocation().add(g.getSizeX() - 1, g.getSizeY() - 1), this.getSizeX(), this.getSizeY(), g);
 		
@@ -832,7 +891,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	public void use(NPC npc, String option) {
 		final MobUseNPCEvent e = new MobUseNPCEvent(this, npc, option);
 		e.call();
-		if(e.isCancelled()){
+		if (e.isCancelled()) {
 			return;
 		}
 	}
@@ -846,7 +905,9 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 		}
 		
 		if (path.isEmpty() == false) {
-			//Given our pathfinding algorithm, it ignores the object. Thus the path leads into the corner of the object. So we delete the last step, if one is created.
+			// Given our pathfinding algorithm, it ignores the object. Thus the
+			// path leads into the corner of the object. So we delete the last
+			// step, if one is created.
 			path.removeLast();
 		}
 		
@@ -854,12 +915,12 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 		
 		final MobItemOnObjectEvent e = new MobItemOnObjectEvent(this, object, item);
 		if (path.isEmpty() == false) {
-			WalkAction walk = new WalkAction(this, path){
+			WalkAction walk = new WalkAction(this, path) {
 				@Override
-				public void run() throws SuspendExecution{
+				public void run() throws SuspendExecution {
 					super.run();
 					e.call();
-					if(e.isCancelled()){
+					if (e.isCancelled()) {
 						return;
 					}
 				}
@@ -868,33 +929,37 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 		}
 		else {
 			e.call();
-			if(e.isCancelled()){
+			if (e.isCancelled()) {
 				return;
 			}
 		}
 	}
 	
 	public void use(ItemStack item, ItemStack target) {
-		throw new RuntimeException("Not implemented");
+		this.getActions().clear();
+		
+		MobItemOnItemEvent event = new MobItemOnItemEvent(this, item, target);
+		event.call();
+		if (event.isCancelled()) return;
 	}
 	
 	public void use(ItemStack item, NPC target) {
 		throw new RuntimeException("Not implemented");
 	}
 	
-	public void use(final GroundItemStack item, String option){
+	public void use(final GroundItemStack item, String option) {
 		this.getActions().clear();
 		AStar finder = new AStar(10);
 		Path path = finder.findPath(this.getLocation(), item.getLocation(), item.getLocation(), this.getSizeX(), this.getSizeY());
 		
 		final MobUseGroundItemEvent e = new MobUseGroundItemEvent(this, item, option);
 		if (path.isEmpty() == false) {
-			WalkAction walk = new WalkAction(this, path){
+			WalkAction walk = new WalkAction(this, path) {
 				@Override
-				public void run() throws SuspendExecution{
+				public void run() throws SuspendExecution {
 					super.run();
 					e.call();
-					if(e.isCancelled()){
+					if (e.isCancelled()) {
 						return;
 					}
 				}
@@ -903,9 +968,13 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 		}
 		else {
 			e.call();
-			if(e.isCancelled()){
+			if (e.isCancelled()) {
 				return;
 			}
 		}
+	}
+	
+	public ConfigSection getTemporaryConfigs() {
+		return temporaryConfigs;
 	}
 }

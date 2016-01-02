@@ -4,9 +4,31 @@ package org.maxgamer.rs.model.skill;
  * @author netherfoam
  */
 public enum SkillType {
-	ATTACK(0, 99, "Attack"), DEFENCE(1, 99, "Defence"), STRENGTH(2, 99, "Strength"), CONSTITUTION(3, 99, "Constitution"), RANGE(4, 99, "Range"), PRAYER(5, 99, "Prayer"), MAGIC(6, 99, "Magic"), COOKING(7, 99, "Cooking"), WOODCUTTING(8, 99, "Woodcutting"), FLETCHING(9, 99, "Fletching"), FISHING(10, 99, "Fishing"), FIREMAKING(11, 99, "Firemaking"), CRAFTING(
-			12, 99, "Crafting"), SMITHING(13, 99, "Smithing"), MINING(14, 99, "Mining"), HERBLORE(15, 99, "Herblore"), THIEVING(16, 99, "Thieving"), AGILITY(17, 99, "Agility"), SLAYER(18, 99, "Slayer"), FARMING(19, 99, "Farming"), RUNECRAFTING(20, 99, "Runecrafting"), HUNTER(21, 99, "Hunter"), CONSTRUCTION(22, 99, "Construction"), SUMMONING(23, 99,
-			"Summoning"), DUNGEONEERING(24, 120, "Dungeoneering");
+	ATTACK(0, 99, 0, "Attack"),
+	DEFENCE(1, 99, 4, "Defence"),
+	STRENGTH(2, 99, 1, "Strength"),
+	CONSTITUTION(3, 99, 5, "Constitution"),
+	RANGE(4, 99, 2, "Range"),
+	PRAYER(5, 99, 6, "Prayer"),
+	MAGIC(6, 99, 3, "Magic"),
+	COOKING(7, 99, 15, "Cooking"),
+	WOODCUTTING(8, 99, 17, "Woodcutting"),
+	FLETCHING(9, 99, 18, "Fletching"),
+	FISHING(10, 99, 14, "Fishing"),
+	FIREMAKING(11, 99, 16, "Firemaking"),
+	CRAFTING(12, 99, 10, "Crafting"),
+	SMITHING(13, 99, 13, "Smithing"),
+	MINING(14, 99, 12, "Mining"),
+	HERBLORE(15, 99, 8, "Herblore"),
+	THIEVING(16, 99, 9, "Thieving"),
+	AGILITY(17, 99, 7, "Agility"),
+	SLAYER(18, 99, 19, "Slayer"),
+	FARMING(19, 99, 20, "Farming"),
+	RUNECRAFTING(20, 99, 11, "Runecrafting"),
+	HUNTER(21, 99, 22, "Hunter"),
+	CONSTRUCTION(22, 99, 21, "Construction"),
+	SUMMONING(23, 99, 23, "Summoning"),
+	DUNGEONEERING(24, 120, 24, "Dungeoneering");
 	
 	/**
 	 * Maximum experience a skill can have. Any experience after this point is
@@ -23,22 +45,31 @@ public enum SkillType {
 		}
 	}
 	
-	public static SkillType forId(int id){
+	public static SkillType forId(int id) {
 		//Is this optimised by the compiler?
 		return SkillType.values()[id];
+	}
+	
+	public static SkillType forTargetId(int id) {
+		for (SkillType type : values())
+			if (type.getTargetId() == id) return type;
+		//Is this optimised by the compiler?
+		return null;
 	}
 	
 	/** Network ID */
 	private byte id;
 	/** Max level */
 	private int max;
+	private final int targetId;
 	/** Nice name of skill */
 	private String name;
 	
-	private SkillType(int id, int max, String name) {
+	private SkillType(int id, int max, int targetId, String name) {
 		this.id = (byte) id;
 		this.max = max;
 		this.name = name;
+		this.targetId = targetId;
 	}
 	
 	/**
@@ -94,5 +125,9 @@ public enum SkillType {
 			throw new IllegalArgumentException("Skill levels must be > 0 and <= 120");
 		}
 		return EXPERIENCE_REQUIRED[level - 1];
+	}
+	
+	public int getTargetId() {
+		return targetId;
 	}
 }

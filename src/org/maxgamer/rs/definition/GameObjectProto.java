@@ -640,6 +640,7 @@ public final class GameObjectProto {
 			throw new NullPointerException("ByteBuffer may not be null!");
 		}
 		GameObjectProto proto = new GameObjectProto();
+		proto.name = "";
 		proto.id = id;
 		
 		RSInputStream in = new RSInputStream(new ByteBufferInputStream(bb));
@@ -653,6 +654,11 @@ public final class GameObjectProto {
 			proto.isSolid = true;
 			proto.actionCount = 0;
 		}
+		if (proto.getOption(0) == null) proto.options[0] = "";
+		if (proto.getOption(1) == null) proto.options[1] = "";
+		if (proto.getOption(2) == null) proto.options[2] = "";
+		if (proto.getOption(3) == null) proto.options[3] = "";
+		if (proto.getOption(4) == null) proto.options[4] = "";
 		return proto;
 	}
 	
@@ -731,6 +737,10 @@ public final class GameObjectProto {
 	
 	public boolean isSolid() {
 		return isSolid;
+	}
+	
+	public String[] getOptions() {
+		return options;
 	}
 	
 	@Override

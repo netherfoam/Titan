@@ -113,7 +113,17 @@ public class EquipmentInterface extends SideInterface {
 					getPlayer().sendMessage("Not enough space!");
 					return;
 				}
-				
+
+
+				ItemStack weapon = equip.get(WieldType.WEAPON.getSlot());
+				ItemStack gloves = equip.get(WieldType.GLOVES.getSlot());
+				if (weapon != null) {
+					player.getModel().setRenderAnimationId(weapon.getDefinition().getRenderAnim());
+				} else if (gloves != null) {
+					player.getModel().setRenderAnimationId(gloves.getDefinition().getRenderAnim());
+				} else {
+					player.getModel().setRenderAnimationId(1426);
+				}
 				equip.apply();
 				inv.apply();
 			}

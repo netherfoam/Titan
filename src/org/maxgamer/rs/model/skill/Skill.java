@@ -13,6 +13,10 @@ public class Skill implements YMLSerializable {
 	private double exp;
 	private double modifier;
 	
+	private double targetExp = -1;
+	private int targetLevel = -1;
+	private boolean targeting;
+	
 	/**
 	 * Represents a player's skill
 	 * @param type the skill type
@@ -74,7 +78,7 @@ public class Skill implements YMLSerializable {
 		return this.modifier;
 	}
 	
-	public SkillType getType(){
+	public SkillType getType() {
 		return this.type;
 	}
 	
@@ -84,6 +88,9 @@ public class Skill implements YMLSerializable {
 		
 		map.set("modifier", getModifier());
 		map.set("exp", getExp());
+		map.set("target_exp", getTargetExp());
+		map.set("target_lvl", getTargetLevel());
+		map.set("targeted", isTargeting());
 		
 		return map;
 	}
@@ -93,5 +100,33 @@ public class Skill implements YMLSerializable {
 		this.exp = map.getDouble("exp", 0);
 		this.modifier = map.getInt("modifier", 0);
 		this.level = type.getLevel(exp);
+		this.targetExp = map.getDouble("target_exp");
+		this.targetLevel = map.getInt("target_lvl");
+		this.targeting = map.getBoolean("targeted");
 	}
+	
+	public double getTargetExp() {
+		return targetExp;
+	}
+	
+	public void setTargetExp(double targetExp) {
+		this.targetExp = targetExp;
+	}
+	
+	public int getTargetLevel() {
+		return targetLevel;
+	}
+	
+	public void setTargetLevel(int targetLevel) {
+		this.targetLevel = targetLevel;
+	}
+	
+	public boolean isTargeting() {
+		return targeting;
+	}
+	
+	public void setTargeting(boolean targeting) {
+		this.targeting = targeting;
+	}
+	
 }

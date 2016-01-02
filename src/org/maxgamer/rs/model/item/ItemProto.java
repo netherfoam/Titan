@@ -627,4 +627,13 @@ public class ItemProto extends Definition {
 	public boolean isStackable() {
 		return this.isNoted() || stackable;
 	}
+	
+	public int getRenderAnim() {
+		if (clientScriptData == null)
+			return 1426;
+		Object animId = clientScriptData.get(644);
+		if (animId instanceof Integer)
+			return (Integer) animId;
+		return 1426;
+	}
 }

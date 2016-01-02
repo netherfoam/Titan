@@ -295,4 +295,15 @@ public class Location extends Position implements MBR {
 		}
 		return closest;
 	}
+	
+	@Override
+	public ConfigSection serialize(){
+		ConfigSection map = super.serialize();
+		map.set("z", this.z);
+		
+		if(map != null){
+			map.set("map", this.map.getName());
+		}
+		return map;
+	}
 }

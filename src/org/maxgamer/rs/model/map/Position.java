@@ -1,5 +1,7 @@
 package org.maxgamer.rs.model.map;
 
+import org.maxgamer.rs.structure.configs.ConfigSection;
+
 /**
  * @author netherfoam
  */
@@ -118,5 +120,12 @@ public class Position {
 	@Override
 	public String toString() {
 		return "(" + x + ", " + y + ")";
+	}
+
+	public ConfigSection serialize() {
+		ConfigSection map = new ConfigSection();
+		map.set("x", this.x);
+		map.set("y", this.y);
+		return map;
 	}
 }

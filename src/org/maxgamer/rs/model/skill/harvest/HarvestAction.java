@@ -17,35 +17,35 @@ public class HarvestAction extends Action {
 	private Harvestable harvest;
 	private HarvestTool tool;
 	private int harvestTime;
-	
+
 	public HarvestAction(Mob mob, GameObject target, Harvestable harvest) {
 		super(mob);
-		
+
 		if (target == null) {
 			throw new NullPointerException("Target may not be null");
 		}
 		if (harvest == null) {
 			throw new NullPointerException("Harvestable may not be null");
 		}
-		
+
 		this.target = target;
 		this.harvest = harvest;
-		
+
 		if (target.hasData() == false) {
 			target.setData(harvest.getResidualAmount());
 		}
-		this.harvestTime = harvest.getHarvestTime();
+		this.harvestTime = 0;
 		if (mob instanceof Persona) {
 			this.tool = harvest.getTool((Persona) mob);
-			
+
 			if (tool != null) {
-				this.harvestTime = (int) (this.harvestTime / this.tool.getEfficiency());
+				this.harvestTime = harvest.getHarvestTime((Persona) mob, tool);
 			}
 		}
-		//mob.getUpdateMask().getFacing().setTarget(target.getCenter());
+		// mob.getUpdateMask().getFacing().setTarget(target.getCenter());
 		mob.setFacing(Facing.face(target.getCenter()));
 	}
-	
+
 	@Override
 	protected void run() throws SuspendExecution {
 		if (tool == null) {
@@ -54,28 +54,28 @@ public class HarvestAction extends Action {
 				return;
 			}
 		}
-		
-		while(true){
+
+		while (true) {
 			if (target.getData() <= 0) {
-				//We are done
+				// We are done
 				return;
 			}
-			
+
 			getOwner().getUpdateMask().setAnimation(tool.getAnimation(), 3);
-			
+
 			harvestTime--;
 			if (harvestTime > 0) {
-				//Keep harvesting
+				// Keep harvesting
 				wait(1);
 				continue;
 			}
-			
+
 			target.setData(target.getData() - 1);
-			
+
 			if (getOwner() instanceof Persona) {
 				harvest.applyReward((Persona) getOwner());
 			}
-			
+
 			if (target.getData() == 0) {
 				harvest.replenish(target);
 				getOwner().getUpdateMask().setAnimation(null, 3);
@@ -83,12 +83,12 @@ public class HarvestAction extends Action {
 			}
 		}
 	}
-	
+
 	@Override
 	protected void onCancel() {
 		getOwner().getUpdateMask().setAnimation(null, 25);
 	}
-	
+
 	@Override
 	protected boolean isCancellable() {
 		return true;

@@ -101,6 +101,12 @@ public class MiniGameNPC<M extends MiniGame> extends NPC {
 			return null;
 		}
 	}
+	
+	@Override
+	public void destroy() {
+		super.destroy();
+		tickable.cancel();
+	}
 
 	@Override
 	public void respawn() {

@@ -55,19 +55,19 @@ public abstract class Follow extends Action {
 	
 	/**
 	 * Called each tick that the follow is active. If the current location is
-	 * desirable, then the follow will not continue to move until it is not. This
-	 * method is used to check if a current location is desired, eg. It returns
-	 * true if the owner is shooting at a target, and there is a line of sight
-	 * path between the owner and the target.
+	 * desirable, then the follow will not continue to move until it is not.
+	 * This method is used to check if a current location is desired, eg. It
+	 * returns true if the owner is shooting at a target, and there is a line of
+	 * sight path between the owner and the target.
 	 * 
-	 * @return true if the owner should move if possible, false if the owner shouldn't
-	 * 		   move for this tick.
+	 * @return true if the owner should move if possible, false if the owner
+	 *         shouldn't move for this tick.
 	 */
 	public abstract boolean isSatisfied();
 	
 	/**
-	 * Called when the follow is still active, but there is no work
-	 * to be done, eg. the target has been reached.
+	 * Called when the follow is still active, but there is no work to be done,
+	 * eg. the target has been reached.
 	 */
 	public abstract void onWait();
 	
@@ -81,22 +81,22 @@ public abstract class Follow extends Action {
 		
 		Location d = getTarget().getLocation();
 		
-		if (d.near(getOwner().getLocation(), getBreakDistance()) == false) {
-			return false;
-		}
+		if (d == null || getTarget() == null) return false;
+		
+		if (d.near(getOwner().getLocation(), getBreakDistance()) == false) return false;
 		
 		return true;
 	}
 	
 	@Override
-	protected final void run() throws SuspendExecution{
+	protected final void run() throws SuspendExecution {
 		Mob mob = getOwner();
 		MovementUpdate m = mob.getUpdateMask().getMovement();
 		Path path = null;
 		
 		getOwner().face(getTarget());
 		
-		while(isFollowing()){
+		while (isFollowing()) {
 			if (getOwner().getLocation().equals(getTarget().getLocation())) {
 				//Whoops, we're ontop of our target!
 				Direction[] dirs = Directions.ALL;
@@ -118,9 +118,9 @@ public abstract class Follow extends Action {
 				continue;
 			}
 			
-			if(isSatisfied() == false){
+			if (isSatisfied() == false) {
 				//The mob wants to get closer to their target!
-				if(path == null || path.isEmpty()){
+				if (path == null || path.isEmpty()) {
 					//Plan a new path to the target
 					Location dest = getTarget().getLocation();
 					
@@ -136,10 +136,10 @@ public abstract class Follow extends Action {
 					wait(1);
 					continue;
 				}
-			
+				
 				getOwner().move(path);
 			}
-			else{
+			else {
 				this.onWait();
 			}
 			
@@ -151,7 +151,7 @@ public abstract class Follow extends Action {
 	@Override
 	protected void onCancel() {
 		//No longer stalking them. Preserve facing though
-		if(getOwner().getFacing() != null){
+		if (getOwner().getFacing() != null) {
 			getOwner().face(getOwner().getFacing().getPosition());
 		}
 	}

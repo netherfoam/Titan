@@ -20,6 +20,14 @@ public class Damage {
 		this.target = target;
 	}
 	
+	public void setType(DamageType type) {
+		this.type = type;
+	}
+	
+	public void setHit(int hit) {
+		this.hit = hit;
+	}
+	
 	public int getHit() {
 		return hit;
 	}

@@ -17,6 +17,7 @@ import org.maxgamer.rs.command.commands.Clear;
 import org.maxgamer.rs.command.commands.Clients;
 import org.maxgamer.rs.command.commands.Clip;
 import org.maxgamer.rs.command.commands.CloseInterface;
+import org.maxgamer.rs.command.commands.Config;
 import org.maxgamer.rs.command.commands.Connections;
 import org.maxgamer.rs.command.commands.CopyCat;
 import org.maxgamer.rs.command.commands.Debug;
@@ -84,8 +85,8 @@ import org.maxgamer.rs.model.item.ground.GroundItemManager;
 import org.maxgamer.rs.model.javascript.dialogue.DialogueManager;
 import org.maxgamer.rs.model.lobby.Lobby;
 import org.maxgamer.rs.model.map.Location;
-import org.maxgamer.rs.model.map.StandardMap;
 import org.maxgamer.rs.model.map.MapManager;
+import org.maxgamer.rs.model.map.StandardMap;
 import org.maxgamer.rs.model.map.WorldMap;
 import org.maxgamer.rs.module.ModuleLoader;
 import org.maxgamer.rs.network.Client;
@@ -496,6 +497,7 @@ public class Server {
 			commands.register("vendor", new Vendor());
 			commands.register("whisper", new Whisper());
 			commands.register("js", new JSCommand());
+			commands.register("config", new Config());
 			
 			ConfigSection config = Core.getWorldConfig().getSection("commands", null);
 			if (config != null) {

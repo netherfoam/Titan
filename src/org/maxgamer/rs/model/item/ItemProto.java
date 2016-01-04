@@ -31,14 +31,14 @@ public class ItemProto extends Definition {
 	private static HashMap<Integer, ItemProto> definitions = new HashMap<Integer, ItemProto>(2000);
 	private static HashMap<String, ArrayList<Integer>> names = new HashMap<String, ArrayList<Integer>>();
 	
-	public static ItemProto[] forName(String name){
+	public static ItemProto[] forName(String name) {
 		ArrayList<Integer> ids = names.get(name);
-		if(ids == null){
+		if (ids == null) {
 			return null;
 		}
 		ItemProto[] protos = new ItemProto[ids.size()];
 		
-		for(int i = 0; i < ids.size(); i++){
+		for (int i = 0; i < ids.size(); i++) {
 			protos[i] = ItemProto.getDefinition(ids.get(i));
 		}
 		
@@ -62,7 +62,7 @@ public class ItemProto extends Definition {
 					proto = new ItemProto(id);
 					proto.reload(rs);
 					
-					if(rs.getObject("equipmentType") != null){
+					if (rs.getObject("equipmentType") != null) {
 						Weapon w = new Weapon(id);
 						w.reload(rs);
 						proto.weapon = w;
@@ -84,7 +84,8 @@ public class ItemProto extends Definition {
 	}
 	
 	/**
-	 * Loads all required information. Optionally grabs extra info if the lazy parameter is false
+	 * Loads all required information. Optionally grabs extra info if the lazy
+	 * parameter is false
 	 * @param lazy
 	 * @throws Exception
 	 */
@@ -94,7 +95,7 @@ public class ItemProto extends Definition {
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
 			ArrayList<Integer> list = names.get(rs.getString("i.name"));
-			if(list == null){
+			if (list == null) {
 				list = new ArrayList<Integer>(1);
 				names.put(rs.getString("i.name"), list);
 			}
@@ -191,8 +192,9 @@ public class ItemProto extends Definition {
 	private double weight;
 	
 	private boolean stackable;
-/*	@Mapping
-	private boolean noted;*/
+	/*
+	 * @Mapping private boolean noted;
+	 */
 	@Mapping(serializer = RequirementSerializer.class)
 	protected HashMap<SkillType, Integer> requirements = new HashMap<SkillType, Integer>();
 	
@@ -201,28 +203,28 @@ public class ItemProto extends Definition {
 		this.id = (short) id;
 	}
 	
-	public int getCharges(){
+	public int getCharges() {
 		int start = this.name.lastIndexOf('(');
 		int end = this.name.lastIndexOf(')');
 		
-		if(start == -1 || end == -1 || start > end) throw new RuntimeException("Item does not have charges.");
+		if (start == -1 || end == -1 || start > end) return 0;
 		
-		try{
+		try {
 			return Integer.parseInt(this.name.substring(start + 1, end));
 		}
-		catch(NumberFormatException e){
-			throw new RuntimeException("Item does not have charges.");
+		catch (NumberFormatException e) {
+			return 0;
 		}
 	}
 	
-	public ItemProto toCharges(int n){
-		try{
+	public ItemProto toCharges(int n) {
+		try {
 			int end = this.name.lastIndexOf('(');
 			String next = this.name.substring(0, end) + '(' + n + ')';
 			
 			ItemProto[] options = ItemProto.forName(next);
-			for(ItemProto proto : options){
-				if(proto.isNoted() == this.isNoted()) return proto;
+			for (ItemProto proto : options) {
+				if (proto.isNoted() == this.isNoted()) return proto;
 			}
 			return null;
 		}
@@ -629,11 +631,9 @@ public class ItemProto extends Definition {
 	}
 	
 	public int getRenderAnim() {
-		if (clientScriptData == null)
-			return 1426;
+		if (clientScriptData == null) return 1426;
 		Object animId = clientScriptData.get(644);
-		if (animId instanceof Integer)
-			return (Integer) animId;
+		if (animId instanceof Integer) return (Integer) animId;
 		return 1426;
 	}
 }

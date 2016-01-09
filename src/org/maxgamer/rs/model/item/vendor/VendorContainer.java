@@ -1,6 +1,9 @@
-package org.maxgamer.rs.model.item.inventory;
+package org.maxgamer.rs.model.item.vendor;
 
+import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.item.ItemStack;
+import org.maxgamer.rs.model.item.inventory.Container;
+import org.maxgamer.rs.model.item.inventory.StackType;
 
 /**
  * Represents a vendor's stock, which has a few unique properties:<br>
@@ -11,7 +14,7 @@ import org.maxgamer.rs.model.item.ItemStack;
  * - Items not in the default stock are slowly removed from the container
  * @author netherfoam
  */
-public class VendorContainer extends Container {
+public abstract class VendorContainer extends Container {
 	/**
 	 * The items currently available in this vendor
 	 */
@@ -57,6 +60,19 @@ public class VendorContainer extends Container {
 			defaults[i] = stock[i].getAmount();
 		}
 	}
+	
+	/**
+	 * The specified {@code buyer} buys the specified {@code toBuy} from the
+	 * {@code slot} of this {@code VendorContainer}.
+	 * 
+	 * @param buyer the mob buying the item
+	 * @param toBuy the item being bought
+	 * @param slot the slot being bought from
+	 * @return true if the item was bought; return false otherwise
+	 */
+	public abstract boolean buy(Mob buyer, ItemStack toBuy, int slot);
+	
+	public abstract boolean sell(Mob seller, ItemStack toSell, int slot);
 	
 	/**
 	 * The ID of the ItemStack to use as currency for this vendor

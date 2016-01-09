@@ -17,6 +17,7 @@ import org.maxgamer.rs.command.commands.Clear;
 import org.maxgamer.rs.command.commands.Clients;
 import org.maxgamer.rs.command.commands.Clip;
 import org.maxgamer.rs.command.commands.CloseInterface;
+import org.maxgamer.rs.command.commands.Config;
 import org.maxgamer.rs.command.commands.Connections;
 import org.maxgamer.rs.command.commands.CopyCat;
 import org.maxgamer.rs.command.commands.Debug;
@@ -499,6 +500,7 @@ public class Server {
 			commands.register("vendor", new Vendor());
 			commands.register("whisper", new Whisper());
 			commands.register("js", new JSCommand());
+			commands.register("config", new Config());
 			
 			ConfigSection config = Core.getWorldConfig().getSection("commands", null);
 			if (config != null) {

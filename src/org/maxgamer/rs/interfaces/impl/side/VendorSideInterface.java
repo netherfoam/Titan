@@ -6,10 +6,8 @@ import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.item.inventory.Container;
-import org.maxgamer.rs.model.item.inventory.ContainerException;
 import org.maxgamer.rs.model.item.inventory.ContainerListener;
-import org.maxgamer.rs.model.item.inventory.ContainerState;
-import org.maxgamer.rs.model.item.inventory.VendorContainer;
+import org.maxgamer.rs.model.item.vendor.VendorContainer;
 
 /**
  * @author netherfoam
@@ -93,6 +91,7 @@ public class VendorSideInterface extends SideInterface {
 			switch (option) {
 				case 0: //Info
 					//TODO
+					player.sendMessage(item.getName() + " x " + item.getAmount() + " costs " + item.getDefinition().getLowAlchemy() + ".");
 					return;
 				case 9: //Examine
 					getPlayer().sendMessage(item.getExamine());
@@ -111,36 +110,10 @@ public class VendorSideInterface extends SideInterface {
 					break;
 			}
 			
-			long amount = Math.min(item.getAmount(), getPlayer().getInventory().getNumberOf(item));
-			if (amount <= 0) {
-				//This is bizare, they have tried to sell an item with 0 amount and not through a hack.
-				getPlayer().sendMessage("You don't have enough of those.");
+			if (!vendor.sell(player, item, slotId)) {
+				player.sendMessage("Transaction failed!");
 				return;
 			}
-			item = item.setAmount(amount);
-			
-			ItemStack price = ItemStack.create(vendor.getCurrency(), item.getAmount() * item.getDefinition().getLowAlchemy());
-			if (price == null) {
-				getPlayer().sendMessage("That's not worth anything.");
-				return;
-			}
-			
-			ContainerState inv = getPlayer().getInventory().getState();
-			ContainerState vend = vendor.getState();
-			
-			try {
-				inv.remove(slotId, item);
-				inv.add(price);
-				vend.add(item);
-			}
-			catch (ContainerException e) {
-				getPlayer().sendMessage("Transaction failed.");
-				return;
-			}
-			
-			//We know the transaction succeeded here
-			vend.apply();
-			inv.apply();
 		}
 	}
 	

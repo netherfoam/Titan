@@ -5,6 +5,7 @@ import java.util.HashMap;
 import org.maxgamer.rs.interfaces.SideInterface;
 import org.maxgamer.rs.interfaces.impl.primary.ItemsOnDeathInterface;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
+import org.maxgamer.rs.model.events.mob.MobEquipEvent;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.item.WieldType;
 import org.maxgamer.rs.model.item.inventory.Container;
@@ -78,8 +79,6 @@ public class EquipmentInterface extends SideInterface {
 	
 	@Override
 	public void onClick(int option, int buttonId, int slot, int itemId) {
-		System.out.println("Equipment click.");
-		
 		//Slot is invalid for the equipment interface, it is sent by the client as 65535 (-1)
 		//Client instead sends button ID based on the slot they clicked.
 		if (buttonId == 45) { //Items on death
@@ -87,7 +86,7 @@ public class EquipmentInterface extends SideInterface {
 			return;
 		}
 		
- 		if (BUTTON_TO_SLOT.containsKey(buttonId)) {
+		if (BUTTON_TO_SLOT.containsKey(buttonId)) {
 			WieldType type = BUTTON_TO_SLOT.get(buttonId);
 			
 			ItemStack item = getPlayer().getEquipment().get(type);
@@ -106,6 +105,11 @@ public class EquipmentInterface extends SideInterface {
 				ContainerState inv = getPlayer().getInventory().getState();
 				
 				try {
+
+					MobEquipEvent event = new MobEquipEvent(player, item, null);
+					event.call();
+					if (event.isCancelled())
+						return;
 					equip.remove(type.getSlot(), item);
 					inv.add(item);
 				}
@@ -113,15 +117,12 @@ public class EquipmentInterface extends SideInterface {
 					getPlayer().sendMessage("Not enough space!");
 					return;
 				}
-
-
+				
 				ItemStack weapon = equip.get(WieldType.WEAPON.getSlot());
-				ItemStack gloves = equip.get(WieldType.GLOVES.getSlot());
 				if (weapon != null) {
 					player.getModel().setRenderAnimationId(weapon.getDefinition().getRenderAnim());
-				} else if (gloves != null) {
-					player.getModel().setRenderAnimationId(gloves.getDefinition().getRenderAnim());
-				} else {
+				}
+				else {
 					player.getModel().setRenderAnimationId(1426);
 				}
 				equip.apply();

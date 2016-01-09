@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
+import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.core.tick.Tickable;
 import org.maxgamer.rs.event.EventHandler;
 import org.maxgamer.rs.event.EventListener;
@@ -183,6 +184,7 @@ public abstract class MiniGame extends Tickable implements EventListener {
 			removeMob(mob);
 		if (associatedMap != null)
 			associatedMap = null;
+		configs.clear();
 	}
 
 	/**
@@ -385,6 +387,8 @@ public abstract class MiniGame extends Tickable implements EventListener {
 	}
 
 	public WorldMap getAssociatedMap() {
+		if (associatedMap == null)
+			return Core.getServer().getMaps().get("mainland");
 		return associatedMap;
 	}
 

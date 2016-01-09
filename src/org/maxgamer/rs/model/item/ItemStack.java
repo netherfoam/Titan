@@ -34,9 +34,10 @@ public class ItemStack implements Comparable<ItemStack>, YMLSerializable {
 		}
 	}
 	
-	/*public static ItemStack forName(String case_sensitive){
-		ItemProto proto = ItemProto.forName(case_sensitive);
-	}*/
+	/*
+	 * public static ItemStack forName(String case_sensitive){ ItemProto proto =
+	 * ItemProto.forName(case_sensitive); }
+	 */
 	
 	public static ItemStack create(ConfigSection s) {
 		return ItemStack.create(s.getInt("id"), s.getLong("amount", 1), s.getInt("health", 0));
@@ -102,11 +103,11 @@ public class ItemStack implements Comparable<ItemStack>, YMLSerializable {
 		return proto;
 	}
 	
-	public int getCharges(){
+	public int getCharges() {
 		return getDefinition().getCharges();
 	}
 	
-	public ItemStack setCharges(int charges){
+	public ItemStack setCharges(int charges) {
 		return ItemStack.create(getDefinition().toCharges(charges).getId(), getAmount(), getHealth());
 	}
 	
@@ -137,8 +138,7 @@ public class ItemStack implements Comparable<ItemStack>, YMLSerializable {
 	}
 	
 	public ItemStack getUnnoted() {
-		if (!getDefinition().isNoted())
-			return this;
+		if (!getDefinition().isNoted()) return this;
 		if (this.getId() == 10828) {
 			return ItemStack.create(10843, this.getAmount(), this.getHealth());
 		}
@@ -167,7 +167,7 @@ public class ItemStack implements Comparable<ItemStack>, YMLSerializable {
 	
 	@Override
 	public String toString() {
-		return getDefinition().getName() + "(" + getId() + ") x" + getAmount();
+		return getDefinition().getName() + "(" + getId() + ") x" + getAmount() + " health=" + health;
 	}
 	
 	@Override
@@ -241,11 +241,11 @@ public class ItemStack implements Comparable<ItemStack>, YMLSerializable {
 		return getDefinition().getInventoryOptions();
 	}
 	
-	public String getGroundOption(int id){
+	public String getGroundOption(int id) {
 		return getDefinition().getGroundOptions()[id];
 	}
 	
-	public String getInventoryOption(int id){
+	public String getInventoryOption(int id) {
 		return getDefinition().getInventoryOptions()[id];
 	}
 	
@@ -257,10 +257,10 @@ public class ItemStack implements Comparable<ItemStack>, YMLSerializable {
 		return getDefinition().isNoted();
 	}
 	
-	public boolean hasOption(String name){
-		for(String s : getDefinition().getInventoryOptions()){
-			if(s == null) continue;
-			if(name.equals(s)) return true;
+	public boolean hasOption(String name) {
+		for (String s : getDefinition().getInventoryOptions()) {
+			if (s == null) continue;
+			if (name.equals(s)) return true;
 		}
 		return false;
 	}

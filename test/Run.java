@@ -2,11 +2,9 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 
-
 public class Run {
 	private static final Class<?>[] CLASSES = new Class<?>[]{
 		AreaGridTest.class,
-		RSCompressionTest.class
 	};
 	
 	public static void main(String[] args){

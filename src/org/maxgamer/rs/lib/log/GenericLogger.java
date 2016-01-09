@@ -13,6 +13,7 @@ public class GenericLogger implements Logger {
 	
 	public void log(String s) {
 		System.out.println(s);
+		System.out.flush();
 	}
 	
 	@Override

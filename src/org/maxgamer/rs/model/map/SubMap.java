@@ -6,16 +6,12 @@ import java.nio.ByteBuffer;
 
 import org.maxgamer.rs.cache.MapCache;
 import org.maxgamer.rs.cache.format.Landscape;
+import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.events.world.ChunkLoadEvent;
 
-/**
- * Represents the primary world for the server, compared to secondary worlds
- * such as Dungeons and Player Houses.
- * @author netherfoam
- */
-public class StandardMap extends WorldMap {
-	public StandardMap(String name) {
-		super(name, 16384, 16384);
+public class SubMap extends WorldMap{
+	public SubMap(String name, Position offset, int width, int height) {
+		super(name, offset, width, height);
 	}
 	
 	@Override
@@ -24,6 +20,8 @@ public class StandardMap extends WorldMap {
 		int rx = x >> 3;
 		int ry = y >> 3;
 		
+		Log.debug("Requested chunk load at " + x + ", " + y + ", " + z);
+		
 		for (int i = 0; i < 8; i++) {
 			for (int j = 0; j < 8; j++) {
 				for (int k = 0; k < 4; k++) {
@@ -31,7 +29,9 @@ public class StandardMap extends WorldMap {
 					int cx = (rx << 3) + i;
 					int cy = (ry << 3) + j;
 					Chunk c = getChunk(cx, cy, k);
-					c.setLoaded(true);
+					if(c != null){
+						c.setLoaded(true);
+					}
 				}
 			}
 		}
@@ -56,8 +56,10 @@ public class StandardMap extends WorldMap {
 						int cx = (rx << 3) + i;
 						int cy = (ry << 3) + j;
 						Chunk c = getChunk(cx, cy, k);
-						ChunkLoadEvent e = new ChunkLoadEvent(this, c, cx, cy, k);
-						e.call();
+						if(c != null){
+							ChunkLoadEvent e = new ChunkLoadEvent(this, c, cx, cy, k);
+							e.call();
+						}
 					}
 				}
 			}
@@ -68,6 +70,9 @@ public class StandardMap extends WorldMap {
 		}
 		catch (IOException e) {
 			throw e;
+		}
+		finally{
+			Log.debug("Result: " + getChunk(x, y, z));
 		}
 	}
 	

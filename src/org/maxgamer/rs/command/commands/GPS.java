@@ -8,8 +8,8 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
 /**
  * @author netherfoam
  */
-@CmdName(names = { "location" })
-public class Position implements PlayerCommand {
+@CmdName(names = { "location", "position" })
+public class GPS implements PlayerCommand {
 
 	@Override
 	public void execute(Player p, String[] args) {

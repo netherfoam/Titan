@@ -142,11 +142,13 @@ public class ModuleLoader {
 			modCfg.reload(); //Initial load
 			meta.setConfig(modCfg);
 			
+			// We add it now, so that if loading calls unload() during load(), then we don't add the module to the set of loaded modules
+			this.modules.put(m.getName().toLowerCase(), m);
+			
 			try {
 				m.load();
 			}
-			catch (Throwable t1) {
-				//t1.printStackTrace();
+			catch (Throwable t) {
 				Log.severe("Error calling module load() on " + m.getName() + " (" + f.getName() + ").");
 				try {
 					m.unload();
@@ -155,11 +157,11 @@ public class ModuleLoader {
 				catch (Throwable t2) {
 					//Ignored, failed to unload.
 				}
-				throw t1; //Caught later
+				this.modules.remove(m.getName().toLowerCase());
+				throw t; //Caught later
 			}
 			
-			//There were no errors.
-			this.modules.put(m.getName().toLowerCase(), m);
+			
 			return m;
 		}
 		catch (IOException e) {

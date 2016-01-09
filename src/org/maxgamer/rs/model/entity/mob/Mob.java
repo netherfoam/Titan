@@ -271,9 +271,6 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 		
 		super.setLocation(loc);
 		
-		// For some reason, the player seems to be unloading here. This means
-		// mapLoaded = false
-		
 		// If the map is unloaded and we are loaded, we must unload
 		if (isLoaded() && mapLoaded == false) {
 			this.unload();

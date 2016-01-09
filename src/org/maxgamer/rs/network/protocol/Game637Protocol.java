@@ -38,6 +38,7 @@ import org.maxgamer.rs.model.map.DynamicMap;
 import org.maxgamer.rs.model.map.Location;
 import org.maxgamer.rs.model.map.Position;
 import org.maxgamer.rs.model.map.StandardMap;
+import org.maxgamer.rs.model.map.SubMap;
 import org.maxgamer.rs.model.map.WorldMap;
 import org.maxgamer.rs.model.map.object.DynamicGameObject;
 import org.maxgamer.rs.model.map.object.GameObject;
@@ -402,19 +403,23 @@ public class Game637Protocol extends GameProtocol {
 	 * method on any masks.
 	 */
 	public void sendUpdates() {
-		boolean firstUpdate = viewport == null;
+		boolean firstUpdate = false;
+		if(viewport == null) {
+			firstUpdate = true;
+		}
+		
 		if (isMapUpdateRequired()) {
+			Log.debug("Map upadte sent!");
 			sendMap();
 		}
 
 		boolean change = false;
 		final Location playerLoc = getPlayer().getLocation();
-		MBR visibleArea = viewport; // A MBR that overlaps with all entities
-									// that the player can see with their view
-									// distance.
+		
+		// A MBR that overlaps with all entities that the player can see with their view distance.
+		MBR visibleArea = viewport; 
 
 		PriorityQueue<Persona> sorted = new PriorityQueue<Persona>(100, new Comparator<Persona>() {
-
 			@Override
 			public int compare(Persona p1, Persona p2) {
 				return getPlayer().getPriority(p2) - getPlayer().getPriority(p1);
@@ -424,6 +429,7 @@ public class Game637Protocol extends GameProtocol {
 		sorted.addAll(playerLoc.getMap().getEntities(MBRUtil.getOverlap(visibleArea, new Cube(new int[] {
 				playerLoc.x - PLAYER_UPDATE_RADIUS, playerLoc.y - PLAYER_UPDATE_RADIUS, playerLoc.z }, new int[] {
 				playerLoc.x + PLAYER_UPDATE_RADIUS, playerLoc.y + PLAYER_UPDATE_RADIUS, 1 })), 100, Persona.class));
+		
 		ArrayList<Persona> nearby = new ArrayList<Persona>(sorted);
 		nearby.remove(getPlayer()); // Don't send updates about ourself here.
 
@@ -437,9 +443,9 @@ public class Game637Protocol extends GameProtocol {
 		}
 
 		RSOutgoingPacket out = new RSOutgoingPacket(70);
-		RSOutgoingPacket update = new RSOutgoingPacket(-1); // This is a dummy
-															// packet. We use it
-															// later.
+		
+		// This is a dummy packet. We append it later.
+		RSOutgoingPacket update = new RSOutgoingPacket(-1); 
 		out.startBitAccess();
 
 		if (getPlayer().getUpdateMask().hasChanged() || getPlayer().getModel().hasChanged() || firstUpdate) {
@@ -889,7 +895,7 @@ public class Game637Protocol extends GameProtocol {
 		if (mu.getMovement().hasTeleported()) {
 			mask |= MASK_TELEPORTED;
 
-			// The value '1' here causes the palyer to teleport without
+			// The value '1' here causes the player to teleport without
 			// movement.
 			// Other values cause the player to walk, unless the distance is
 			// further than
@@ -1423,8 +1429,8 @@ public class Game637Protocol extends GameProtocol {
 			return true;
 		}
 
-		return false; // Map sent previously, same map, player is within view
-						// distance. All fine!
+		// Map sent previously, same map, player is within view distance. All fine!
+		return false; 
 	}
 
 	/**
@@ -1443,7 +1449,7 @@ public class Game637Protocol extends GameProtocol {
 		WorldMap m = getPlayer().getLocation().getMap();
 		RSOutgoingPacket out;
 
-		if (m instanceof StandardMap) {
+		if (m instanceof StandardMap || m instanceof SubMap) {
 			out = new RSOutgoingPacket(80);
 		} else if (m instanceof DynamicMap) {
 			out = new RSOutgoingPacket(31);
@@ -1473,30 +1479,23 @@ public class Game637Protocol extends GameProtocol {
 
 		WorldMap map = l.getMap();
 
-		if (m instanceof StandardMap) {
+		if (m instanceof StandardMap || m instanceof SubMap) {
 			out.writeLEShortA(l.y >> 3);
 			out.writeShortA(l.x >> 3);
 
-			out.writeByte(getPlayer().getViewDistance().getId()); // Viewport
-																	// depth
+			// Viewport depth
+			out.writeByte(getPlayer().getViewDistance().getId()); 
 
 			out.writeByteA(1); // Unknown, possibly force load.
 
 			int chunkX = l.x >> 3;
 			int chunkY = l.y >> 3;
 
-			/*
-			 * Bitshift right by 3, then dividing by two equals bitshift right
-			 * by 4
-			 */
+			// Bitshift right by 3, then dividing by two equals bitshift right by 4
 			int mapHash = getPlayer().getViewDistance().getTileSize() >> 4;
 
 			for (int regionX = (chunkX - mapHash) >> 3; regionX <= (chunkX + mapHash) >> 3; regionX++) {
 				for (int regionY = (chunkY - mapHash) >> 3; regionY <= (chunkY + mapHash) >> 3; regionY++) {
-					if (map.getChunk(regionX << 3, regionY << 3, 0) == null) {
-						continue; // No XTEA keys are used here.
-					}
-
 					int fileId;
 					try {
 						fileId = Core.getCache().getFileId(IDX.LANDSCAPES, "l" + regionX + "_" + regionY);

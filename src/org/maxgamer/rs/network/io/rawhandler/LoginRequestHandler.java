@@ -31,19 +31,8 @@ public class LoginRequestHandler extends RawHandler {
 			RSA_EXPONENT = new BigInteger("0");
 		}
 		else{
-			if(priv.startsWith("0x") || priv.startsWith("0X")){
-				RSA_MODULUS = new BigInteger(priv, 16);
-			}
-			else{
-				RSA_MODULUS = new BigInteger(priv, 10);
-			}
-			
-			if(priv.startsWith("0x") || priv.startsWith("0X")){
-				RSA_EXPONENT = new BigInteger(exp, 16);
-			}
-			else{
-				RSA_EXPONENT = new BigInteger(exp, 10);
-			}
+			RSA_MODULUS = new BigInteger(priv, 16);
+			RSA_EXPONENT = new BigInteger(exp, 16);
 		}
 		
 		if(RSA_MODULUS.intValue() == 0){
@@ -97,10 +86,10 @@ public class LoginRequestHandler extends RawHandler {
 					//We try again without an RSA key, in case the client has it disabled.
 					rsaEncrypted = new RSByteBuffer(ByteBuffer.wrap(rsaPayload));
 					
-					rsaHeader = rsaEncrypted.readByte();
+					int rawHeader = rsaEncrypted.readByte();
 					
-					if(rsaHeader != 10){
-						Log.warning("Invalid RSA Header: " + rsaHeader + ", length: " + packetLength);
+					if(rawHeader != 10){
+						Log.warning("Invalid RSA Header: " + rsaHeader + " or " + rawHeader + " (if no RSA used), length: " + packetLength);
 						Log.warning("This may indicate that the client is using a different RSA key, or the protocol handling is incorrect");
 						Log.warning("Dropping connection from " + getSession().getIP().getHostName());
 						getSession().close(false);

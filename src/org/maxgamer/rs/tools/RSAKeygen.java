@@ -33,20 +33,21 @@ public class RSAKeygen {
 	    
 	    
 	    prompt.println("Private Modulus (For Server):");
-	    prompt.printf("0x%X\n", privSpec.getModulus());
+	    prompt.printf("%X\n", privSpec.getModulus());
 	    prompt.println("Private Exponent (For Server):");
-	    prompt.printf("0x%X\n", privSpec.getPrivateExponent());
-	    
+	    prompt.printf("%X\n", privSpec.getPrivateExponent());
+	    prompt.println();
 	    prompt.println("Public Modulus (For Client):");
-	    prompt.printf("0x%X\n", pubSpec.getModulus());
-	    prompt.println("Public Exponent  (For Server):");
-	    prompt.printf("0x%X\n", pubSpec.getPublicExponent());
+	    prompt.printf("%X\n", pubSpec.getModulus());
+	    prompt.println("Public Exponent  (For Client):");
+	    prompt.printf("%X\n", pubSpec.getPublicExponent());
 	    
 	    prompt.println("Should I insert the private modulus/exponent into your config/world.yml now? [no]:");
 	    if(prompt.getBoolean(false)){
 	    	FileConfig config = Core.getWorldConfig();
-	    	config.set("rsa.private-key", String.format("0x%X", privSpec.getModulus()));
-	    	config.set("rsa.private-exponent", String.format("0x%X", privSpec.getModulus()));
+	    	config.set("rsa.private-key", String.format("%X", privSpec.getModulus()));
+	    	config.set("rsa.private-exponent", String.format("%X", privSpec.getPrivateExponent()));
+	    	config.save();
 	    }
 	    
 	    prompt.println("Done! Don't forget to insert your public modulus and exponent into your client!");

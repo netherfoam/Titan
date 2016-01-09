@@ -16,13 +16,19 @@ public class DebugHandler extends RawHandler {
 	public void handle(RSByteBuffer b) {
 		Log.debug("Reading data...");
 		int i = 0;
+		
+		StringBuilder sb = new StringBuilder();
 		while (b.isEmpty() == false) {
-			Log.debug(String.format("%X ", b.readByte()));
+			sb.append(String.format("%X ", b.readByte()));
 			i++;
 			if (i >= 20) {
-				Log.debug("\n");
+				Log.debug(sb.toString());
+				sb = new StringBuilder();
 				i = 0;
 			}
+		}
+		if(sb.length() > 0){
+			Log.debug(sb.toString());
 		}
 	}
 }

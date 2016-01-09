@@ -24,10 +24,10 @@ public class AreaManager {
 	
 	public void add(Area a) {
 		if (a.getMap() != this.map) throw new IllegalArgumentException("Cannot add an area from one map to an AreaManager of a different map.");
-		this.areas.put(a);
+		this.areas.put(a, a);
 	}
 	
 	public void remove(Area a) {
-		this.areas.remove(a);
+		this.areas.remove(a, a);
 	}
 }

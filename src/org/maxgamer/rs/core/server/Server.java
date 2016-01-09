@@ -39,7 +39,7 @@ import org.maxgamer.rs.command.commands.Kill;
 import org.maxgamer.rs.command.commands.LogonStatus;
 import org.maxgamer.rs.command.commands.ModuleCmd;
 import org.maxgamer.rs.command.commands.Nearby;
-import org.maxgamer.rs.command.commands.Position;
+import org.maxgamer.rs.command.commands.GPS;
 import org.maxgamer.rs.command.commands.Queues;
 import org.maxgamer.rs.command.commands.RangeGear;
 import org.maxgamer.rs.command.commands.Rank;
@@ -81,11 +81,12 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Viewport;
 import org.maxgamer.rs.model.events.server.ServerShutdownEvent;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.item.ground.GroundItemManager;
+import org.maxgamer.rs.model.javascript.JavaScriptFiber;
 import org.maxgamer.rs.model.javascript.dialogue.DialogueManager;
 import org.maxgamer.rs.model.lobby.Lobby;
 import org.maxgamer.rs.model.map.Location;
-import org.maxgamer.rs.model.map.StandardMap;
 import org.maxgamer.rs.model.map.MapManager;
+import org.maxgamer.rs.model.map.StandardMap;
 import org.maxgamer.rs.model.map.WorldMap;
 import org.maxgamer.rs.module.ModuleLoader;
 import org.maxgamer.rs.network.Client;
@@ -270,7 +271,63 @@ public class Server {
 	 * @throws SQLException
 	 */
 	public void load() throws IOException, SQLException {
-		Runnable r = new Runnable() {
+		this.thread.submit(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					Server.this.lobby = new Lobby();
+					
+					// We should initialize everything before loading user content
+					// Eg commands, events, modules
+					Log.info("Loading Map...");
+					getMaps();
+					Log.info("...Map Loaded!");
+					
+					Server.this.modules = new ModuleLoader();
+					Server.this.ticker = new ServerTicker(Server.this);
+					Server.this.groundItems = new GroundItemManager();
+					
+					// Preload our event system
+					getEvents();
+					
+					Log.debug("Loading Commands...");
+					getCommands();
+					Log.debug("Loading Modules...");
+					Server.this.modules.load();
+					Log.debug("Modules Loaded!");
+					
+					Server.this.logon.start();
+					
+					//SpawnManager.loadAll();
+					
+					//Autosave
+					int interval = Core.getWorldConfig().getInt("autosave-interval", 10000);
+					if (interval > 0) {
+						Server.this.autosave = new AutoSave(interval);
+						Core.submit(Server.this.autosave, interval, true);
+					}
+					
+					File startup = new File("startup.js");
+					if(startup.exists()){
+						JavaScriptFiber startupJS = new JavaScriptFiber(startup);
+						startupJS.start();
+					}
+					
+					Server.this.thread.submit(ticker);
+					//Note that Server.this doesn't start the network, that is done by the
+					//logon server when a connection is established. The logon server
+					//will also drop the connection if the logon connection is lost
+					Log.info("Server initialized!");
+					getThread().resetUsage();
+				}
+				catch (Throwable t) {
+					t.printStackTrace();
+				}
+			}
+		});
+		this.thread.start();
+		
+		Runnable maskUpdate = new Runnable() {
 			@Override
 			public void run() {
 				//This should be done in the main thread, because if the world is modified while we're sending masks,
@@ -314,61 +371,7 @@ public class Server {
 				Core.submit(this, Core.getWorldConfig().getInt("update-interval", 30), false);
 			}
 		};
-		Core.submit(r, Core.getWorldConfig().getInt("update-interval", 30), false);
-		
-		this.thread.submit(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					Server.this.lobby = new Lobby();
-					
-					// We should initialize everything before loading user content
-					// Eg commands, events, modules
-					Log.info("Loading Map...");
-					getMaps();
-					Log.info("...Map Loaded!");
-					
-					Server.this.modules = new ModuleLoader();
-					Server.this.ticker = new ServerTicker(Server.this);
-					Server.this.groundItems = new GroundItemManager();
-					
-					// Preload our event system
-					getEvents();
-					
-					Log.debug("Loading Commands...");
-					getCommands();
-					Log.debug("Loading Modules...");
-					Server.this.modules.load();
-					Log.debug("Modules Loaded!");
-					
-					Server.this.logon.start();
-					
-					//SpawnManager.loadAll();
-					
-					//Autosave
-					int interval = Core.getWorldConfig().getInt("autosave-interval", 10000);
-					if (interval > 0) {
-						Server.this.autosave = new AutoSave(interval);
-						Core.submit(Server.this.autosave, interval, true);
-					}
-					
-					//Log.debug("Loading BeanScriptEngine...");
-					//Server.this.scripts.reload();
-					//Log.debug("Loaded BeanScriptEngine!");
-					
-					Server.this.thread.submit(ticker);
-					//Note that Server.this doesn't start the network, that is done by the
-					//logon server when a connection is established. The logon server
-					//will also drop the connection if the logon connection is lost
-					Log.info("Server initialized!");
-					getThread().resetUsage();
-				}
-				catch (Throwable t) {
-					t.printStackTrace();
-				}
-			}
-		});
-		this.thread.start();
+		Core.submit(maskUpdate, Core.getWorldConfig().getInt("update-interval", 30), false);
 	}
 	
 	/**
@@ -466,7 +469,7 @@ public class Server {
 			commands.register("logonstatus", new LogonStatus());
 			commands.register("modulecmd", new ModuleCmd());
 			commands.register("nearby", new Nearby());
-			commands.register("position", new Position());
+			commands.register("position", new GPS());
 			commands.register("queues", new Queues());
 			commands.register("rangegear", new RangeGear());
 			commands.register("rank", new Rank());
@@ -543,6 +546,17 @@ public class Server {
 	 * network and save's all player data.
 	 */
 	public void shutdown() {
+		File shutdown = new File("shutdown.js");
+		if(shutdown.exists()){
+			JavaScriptFiber shutdownJS = new JavaScriptFiber(shutdown);
+			try {
+				shutdownJS.start();
+			}
+			catch (IOException e) {
+				Log.warning("Failed to run shutdown.js: " + e.getClass().getSimpleName() + "(" + e.getMessage() + ")");
+			}
+		}
+		
 		if (logon.isRunning()) logon.stop(); //Saves all players
 		modules.unload();
 		ServerShutdownEvent e = new ServerShutdownEvent(this);

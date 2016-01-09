@@ -29,7 +29,7 @@ public class Location extends Position implements MBR {
 			return fallback;
 		}
 		
-		String mapName = s.getString("map", Core.getServer().getMaps().translate(new Position(x, y)));
+		String mapName = s.getString("map", Core.getServer().getMaps().mainland().getName());
 		WorldMap map = Core.getServer().getMaps().get(mapName);
 		
 		return new Location(map, x, y, z);
@@ -57,10 +57,27 @@ public class Location extends Position implements MBR {
 		if (z < 0 || z > 3) {
 			throw new IllegalArgumentException("Heights must be in the range of 0-3 inclusive. Given Z: " + z);
 		}
+		
+		Position offset = map.offset();
+		if(offset.x > x){
+			throw new IllegalArgumentException("Location is out of map. Requested x=" + x + ", but map goes as low as x=" + offset.x);
+		}
+		
+		if(offset.y > y){
+			throw new IllegalArgumentException("Location is out of map. Requested y=" + y + ", but map goes as low as y=" + offset.y);
+		}
+		
+		if(x >= offset.x + map.width()){
+			throw new IllegalArgumentException("Location is out of map. Requested x=" + x + ", but map goes as high as x=" + (offset.x + map.width()));
+		}
+		
+		if(y >= offset.y + map.height()){
+			throw new IllegalArgumentException("Location is out of map. Requested y=" + y + ", but map goes as high as y=" + (offset.y + map.height()));
+		}
 	}
 	
 	public Location(int x, int y, int z){
-		this(Core.getServer().getMaps().at(x, y), x, y, z);
+		this(Core.getServer().getMaps().mainland(), x, y, z);
 	}
 	
 	/**

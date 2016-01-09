@@ -168,4 +168,9 @@ public class Chunk {
 	protected void setLoaded(boolean loaded) {
 		this.loaded = loaded;
 	}
+	
+	@Override
+	public String toString(){
+		return "Chunk(" + cacheX + ", " + cacheY + ") isLoaded(" + isLoaded() + ")";
+	}
 }

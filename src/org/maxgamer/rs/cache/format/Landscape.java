@@ -9,6 +9,7 @@ import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.map.Chunk;
 import org.maxgamer.rs.model.map.ClipMasks;
 import org.maxgamer.rs.model.map.Location;
+import org.maxgamer.rs.model.map.Position;
 import org.maxgamer.rs.model.map.StandardMap;
 import org.maxgamer.rs.model.map.WorldMap;
 import org.maxgamer.rs.model.map.object.GameObject;
@@ -308,15 +309,15 @@ public class Landscape {
 						 * ClipMasks.BLOCKED_TILE); }
 						 */
 						
-						if ((flags & StandardMap.FLAG_UNKNOWN) == StandardMap.FLAG_UNKNOWN) {
+						if ((flags & WorldMap.FLAG_UNKNOWN) == WorldMap.FLAG_UNKNOWN) {
 							map.addClip(xOffset + localX, yOffset + localY, height, ClipMasks.BLOCKED_TILE);
 						}
 						
-						if ((flags & StandardMap.FLAG_UNKNOWN2) == StandardMap.FLAG_UNKNOWN2) {
+						if ((flags & WorldMap.FLAG_UNKNOWN2) == WorldMap.FLAG_UNKNOWN2) {
 							map.addClip(xOffset + localX, yOffset + localY, height, ClipMasks.BLOCKED_TILE);
 						}
 						
-						flags = flags & ~(StandardMap.FLAG_CLIP | StandardMap.FLAG_BRIDGE | StandardMap.FLAG_ROOF | StandardMap.FLAG_UNKNOWN | StandardMap.FLAG_UNKNOWN2);
+						flags = flags & ~(WorldMap.FLAG_CLIP | WorldMap.FLAG_BRIDGE | WorldMap.FLAG_ROOF | WorldMap.FLAG_UNKNOWN | WorldMap.FLAG_UNKNOWN2);
 						if (flags != 0) {
 							Log.debug("Leftover flag at " + (xOffset + localX) + ", " + (yOffset + localY) + ", " + height + ", Flag remains: " + flags);
 						}
@@ -324,15 +325,18 @@ public class Landscape {
 				}
 			}
 			
+			Position min = map.offset();
+			
 			for (ObjectData d : this.objects) {
 				if (d.localX < localXOffset || d.localX >= localXMax) continue; //Out of bounds given
 				if (d.localY < localYOffset || d.localY >= localYMax) continue; //Out of bounds given
 				if (d.height < minZ || d.height > maxZ) continue;
 				
-				/*
-				 * TODO dementhium does this here, when adding objects: if
-				 * ((landscapeData[1][localX][localY] & 2) == 2) { height--; }
-				 */
+				// Ensure the object is within the map's bounds
+				if(xOffset + d.localX < min.x) continue;
+				if(xOffset + d.localX >= min.x + map.width()) continue;
+				if(yOffset + d.localY < min.y) continue;
+				if(yOffset + d.localY >= min.y + map.height()) continue;
 				
 				d.toObject(map, xOffset, yOffset, zOffset);
 			}

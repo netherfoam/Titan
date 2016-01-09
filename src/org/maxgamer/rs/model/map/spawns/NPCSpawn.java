@@ -39,8 +39,13 @@ public class NPCSpawn extends Transparent {
 	}
 	
 	public NPC spawn(){
-		NPC npc = new NPC(npc_id, id, getLocation());
-		npc.setSpawn(npc.getLocation());
+		Location l = getLocation();
+		if(l.getMap() == null){
+			throw new IllegalStateException("Map not found: " + map + ", cannot spawn NPC.");
+		}
+		
+		NPC npc = new NPC(npc_id, id, l);
+		npc.setSpawn(l);
 		return npc;
 	}
 }

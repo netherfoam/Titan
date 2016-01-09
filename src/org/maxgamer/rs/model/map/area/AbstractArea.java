@@ -67,8 +67,8 @@ public abstract class AbstractArea extends Area implements EventListener {
 	public void onTeleport(MobPreTeleportEvent event) {
 		if (event.getMob() == null) return;
 		
-		Location from = event.getTeleportFromLocation();
-		Location to = event.getTeleportToLocation();
+		Location from = event.getFrom();
+		Location to = event.getTo();
 		
 		if (containsPosition(from) && !containsPosition(to)) {
 			onLeave(event.getMob(), AreaChangeState.TELEPORT);

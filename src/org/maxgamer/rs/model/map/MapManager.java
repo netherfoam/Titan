@@ -89,30 +89,8 @@ public class MapManager implements EventListener, Iterable<WorldMap>{
 		}
 	}
 	
-	public String translate(Position pos){
-		return translate(pos.x, pos.y);
-	}
-	
-	public String translate(int x, int y){
-		// TODO: The return value of this will change when we split
-		// the "mainland" map into several smaller sub-maps.  Submaps
-		// will use less memory and load faster individually, but are
-		// a bit more difficult to design and implement.
-		
-		// The idea of this method will be to translate an X/Y coordinate
-		// into the name of the map that the given X/Y coordinates fall
-		// into, or throw an IllegalArgumentException if no map is at the
-		// given location (Perhaps?)
-		
-		return "mainland";
-	}
-	
-	public WorldMap at(Position pos){
-		return get(translate(pos));
-	}
-	
-	public WorldMap at(int x, int y){
-		return get(translate(x, y));
+	public WorldMap mainland(){
+		return get("mainland");
 	}
 	
 	public Iterator<WorldMap> iterator(){

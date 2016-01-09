@@ -2,6 +2,7 @@ package org.maxgamer.rs.model.entity.mob.persona.player;
 
 import org.maxgamer.rs.lib.Calc;
 import org.maxgamer.rs.model.map.Location;
+import org.maxgamer.rs.model.map.Position;
 import org.maxgamer.rs.model.map.WorldMap;
 import org.maxgamer.rs.structure.areagrid.Cube;
 
@@ -73,11 +74,12 @@ public enum ViewDistance {
 		int chunks = getChunkRadius();
 		WorldMap m = center.getMap();
 		
-		int minX = Calc.betweeni(0, m.width() - 1, (center.x & ~0x7) - (chunks * 8));
-		int minY = Calc.betweeni(0, m.height() - 1, (center.y & ~0x7) - (chunks * 8));
+		Position offset = m.offset();
+		int minX = Calc.betweeni(offset.x, offset.x + m.width() - 1, (center.x & ~0x7) - (chunks * 8));
+		int minY = Calc.betweeni(offset.y, offset.y + m.height() - 1, (center.y & ~0x7) - (chunks * 8));
 		
-		int maxX = Calc.betweeni(0, m.width() - 1, (center.x & ~0x7) + (chunks * 8) + 7);
-		int maxY = Calc.betweeni(0, m.height() - 1, (center.y & ~0x7) + (chunks * 8) + 7);
+		int maxX = Calc.betweeni(offset.x, offset.x + m.width() - 1, (center.x & ~0x7) + (chunks * 8) + 7);
+		int maxY = Calc.betweeni(offset.y, offset.y + m.height() - 1, (center.y & ~0x7) + (chunks * 8) + 7);
 		
 		Cube cube = new Cube(new int[] { minX, minY, 0 }, new int[] { maxX - minX, maxY - minY, 3 }); //TODO: Should this really be 4? not 3?
 		return cube;

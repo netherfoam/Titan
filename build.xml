@@ -11,7 +11,7 @@
 
 	<target name="compile">
 		<mkdir dir="bin" />
-		<javac srcdir="src" destdir="bin" includeantruntime="false" classpathref="class.path" debug="true">
+		<javac source="1.7" target="1.7" srcdir="src" destdir="bin" includeantruntime="false" classpathref="class.path" debug="true">
 		</javac>
 		
 		<taskdef name="quasar" classname="co.paralleluniverse.fibers.instrument.InstrumentationTask" classpathref="class.path">

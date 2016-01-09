@@ -260,7 +260,7 @@ public class Prompter {
 		this.newSysOutPrintStream.flush();
 		byte[] data = this.newSysOut.toByteArray();
 		System.setOut(this.oldSysOut);
-		this.oldSysOut.print(String.valueOf(data));
+		this.oldSysOut.print(new String(data));
 		this.oldSysOut.flush();
 		
 		this.newSysOut = null;

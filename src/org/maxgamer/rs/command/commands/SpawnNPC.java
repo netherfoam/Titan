@@ -47,6 +47,10 @@ public class SpawnNPC implements PlayerCommand {
 				p.sendMessage("Spawned NPC " + args[0] + ": " + n.getDefinition().getName() + " temporarily at " + l);
 			}
 			else{
+				if(Core.getServer().getMaps().isPersisted(p.getMap()) == false){
+					p.sendMessage("The map you are in is not persistant. You should persist the map before spawning NPC's permanently in it.");
+					return;
+				}
 				try{
 					NPCSpawn spawn = new NPCSpawn(Integer.parseInt(args[0]), l);
 					spawn.insert(Core.getWorldDatabase().getConnection());

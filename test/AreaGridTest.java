@@ -19,7 +19,7 @@ public class AreaGridTest {
 				
 				Cube c = new Cube(new int[] { i * 8, j * 8 }, new int[] { 8, 8 });
 				assert(g.get(c, 0).isEmpty());
-				g.put(c);
+				g.put(c, c);
 			}
 		}
 		Cube c = new Cube(new int[] { 8, 8 }, new int[] { 8, 8 });

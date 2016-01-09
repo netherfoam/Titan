@@ -902,21 +902,21 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 	}
 	
 	@Override
-	public void teleport(Location dest) {
-		if (dest == null) {
+	public void teleport(Location to) {
+		if (to == null) {
 			throw new NullPointerException("Cannot teleport a player to a NULL location.");
 		}
-		if (dest.getMap() == null) {
+		if (to.getMap() == null) {
 			throw new NullPointerException("Destination map may not be NULL");
 		}
 		// Disabled, we need setLocation() for this stuff!
 		// TODO: Make setLocation() not clear actions,
 		// Call super.setLocation() whenever we move,
-		// Make telelort() clear actions.
+		// Make teleport() clear actions.
 		// getActions().clear();
-		MobPreTeleportEvent teleportEvent = new MobPreTeleportEvent(this, this.getLocation() == null ? dest : this.getLocation(), dest);
-		teleportEvent.call();
-		this.setLocation(dest);
+		MobPreTeleportEvent event = new MobPreTeleportEvent(this, this.getLocation() == null ? to : this.getLocation(), to);
+		event.call();
+		this.setLocation(event.getTo());
 		this.getUpdateMask().getMovement().setTeleported(true);
 	}
 	
@@ -981,9 +981,8 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 	
 	@Override
 	public int getMaxHealth() {
-		return getSkills().getLevel(SkillType.CONSTITUTION) * 10; // TODO: Add
-																	// equipment
-																	// bonuses
+		// TODO: Add equipment bonuses
+		return getSkills().getLevel(SkillType.CONSTITUTION) * 10;
 	}
 	
 	@Override
@@ -999,7 +998,7 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 	
 	@Override
 	public void onUnload() {
-		
+		Log.debug("unloaded " + this);
 	}
 	
 	@Override

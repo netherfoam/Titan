@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import org.maxgamer.rs.cache.EncryptedException;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.core.server.WorldFullException;
 import org.maxgamer.rs.model.entity.mob.Mob;
@@ -32,7 +31,25 @@ public abstract class WorldMap {
 	/**
 	 * Minimum load distance for players.
 	 */
-	private static int LOAD_RANGE = ViewDistance.SMALL.getTileSize() / 2;
+	private static int LOAD_RADIUS = ViewDistance.SMALL.getTileSize() / 2;
+	
+	public static final int FLAG_CLIP = 0x1;
+	public static final int FLAG_BRIDGE = 0x2;
+	
+	/**
+	 * Flag given if there is a roof over this piece of terrain
+	 */
+	public static final int FLAG_ROOF = 0x4;
+	
+	/**
+	 * Steep cliff flag? Elevation flag?
+	 */
+	public static final int FLAG_UNKNOWN = 0x8;
+	
+	/**
+	 * Wall flag?
+	 */
+	public static final int FLAG_UNKNOWN2 = 0x10;
 	
 	/**
 	 * A spatial map of all the entities that are currently active in this world
@@ -49,15 +66,11 @@ public abstract class WorldMap {
 	 */
 	private Chunk[][][] chunks;
 	
-	/**
-	 * The size of the map horizontally (West->East) in tiles.
-	 */
-	private int sizeX;
+	//private final Position min;
+	private final Position min_chunk;
 	
-	/**
-	 * The size of the map vertically (South->North) in tiles
-	 */
-	private int sizeY;
+	private final int width;
+	private final int height;
 	
 	/**
 	 * The user-friendly name for this map. This will be displayed to players
@@ -68,28 +81,42 @@ public abstract class WorldMap {
 	/**
 	 * Constructs a new world map of the given size. The size must be divisible
 	 * by CHUNK_SIZE and is the number of tiles in the map.
-	 * @param sizeX the size of the map West->East in tiles
-	 * @param sizeY the size of the map South->North in tiles
+	 * @param width the size of the map West->East in tiles
+	 * @param height the size of the map South->North in tiles
 	 */
-	public WorldMap(String name, final int sizeX, final int sizeY) {
+	public WorldMap(String name, final int width, final int height) {
+		this(name, new Position(0, 0), width, height);
+	}
+	
+	public WorldMap(String name, Position min, int width, int height) {
 		if (name == null || name.isEmpty()) {
 			throw new IllegalArgumentException("WorldMap name may not be null or empty");
 		}
-		if (sizeX % CHUNK_SIZE != 0 || sizeY % CHUNK_SIZE != 0) {
-			throw new IllegalArgumentException("Maps must be a multiple of chunk size.. given x: " + sizeX + ", y: " + sizeY);
+		if(min == null){
+			throw new NullPointerException("Min position may not be null");
 		}
+		
 		this.name = name;
-		this.sizeX = sizeX;
-		this.sizeY = sizeY;
+		this.min_chunk = new Position(min.x >> CHUNK_BITS, min.y >> CHUNK_BITS);
+		this.width = width;
+		this.height = height;
+		
+		if (width() % CHUNK_SIZE != 0 || height() % CHUNK_SIZE != 0) {
+			throw new IllegalArgumentException("Maps must be a multiple of chunk size.. given width: " + width() + ", height: " + height());
+		}
 		
 		StopWatch w = Core.getTimings().start("map-init");
-		entities = new AreaGrid<MBR>(sizeX, sizeY, 8);
-		chunks = new Chunk[sizeX >> CHUNK_BITS][sizeY >> CHUNK_BITS][4];
+		entities = new AreaGrid<MBR>(width(), height(), 8);
+		chunks = new Chunk[width() >> CHUNK_BITS][height() >> CHUNK_BITS][4];
 		w.stop();
 	}
 	
+	public final Position offset(){
+		return new Position(min_chunk.x << CHUNK_BITS, min_chunk.y << CHUNK_BITS);
+	}
+	
 	public boolean isLoaded(int cx, int cy, int z) {
-		Chunk c = this.chunks[cx][cy][z];
+		Chunk c = this.chunks[cx - this.min_chunk.x][cy - this.min_chunk.y][z];
 		if (c == null) {
 			return false;
 		}
@@ -118,13 +145,16 @@ public abstract class WorldMap {
 	 * @throws IOException 
 	 */
 	public void load(int x, int y) throws IOException {
+		//x -= this.min_chunk.x << CHUNK_BITS;
+		//y -= this.min_chunk.y << CHUNK_BITS;
+		
 		StopWatch w = Core.getTimings().start("worldmap-load");
 		
-		for (int i = (x - LOAD_RANGE - 7) >> 3; i < (x + LOAD_RANGE + 7) >> 3; i++) {
-			for (int j = (y - LOAD_RANGE - 7) >> 3; j < (y + LOAD_RANGE + 7) >> 3; j++) {
+		for (int i = (x - LOAD_RADIUS - 7) >> 3; i < (x + LOAD_RADIUS + 7) >> 3; i++) {
+			for (int j = (y - LOAD_RADIUS - 7) >> 3; j < (y + LOAD_RADIUS + 7) >> 3; j++) {
 				try {
 					for (int z = 0; z < 4; z++) {
-						Chunk c = chunks[i][j][z];
+						Chunk c = chunks[i - this.min_chunk.x][j - this.min_chunk.y][z];
 						if (c == null || c.isLoaded() == false) {
 							//Forces load
 							fetch(i, j, z);
@@ -145,10 +175,13 @@ public abstract class WorldMap {
 			for (int j = 0; j < m.getDimension(1); j++) {
 				int x = (i + m.getMin(0)) >> 8;
 				int y = (j + m.getMin(1)) >> 8;
+					
+				//x -= this.min_chunk.x << CHUNK_BITS;
+				//y -= this.min_chunk.y << CHUNK_BITS;
 				
 				for (int z = 0; z < 4; z++) {
 					try {
-						Chunk c = chunks[x][y][z];
+						Chunk c = chunks[x - this.min_chunk.x][y - this.min_chunk.y][z];
 						if (c == null || c.isLoaded() == false) {
 							//Forces load
 							fetch(x, y, z);
@@ -167,16 +200,16 @@ public abstract class WorldMap {
 	 * The number of tiles horizontally (West->East) this map is.
 	 * @return the size from West to East in tiles
 	 */
-	public int width() {
-		return sizeX;
+	public final int width() {
+		return this.width;
 	}
 	
 	/**
 	 * The number of tiles vertically (South->North) this map is.
 	 * @return the size from South to North in tiles
 	 */
-	public int height() {
-		return sizeY;
+	public final int height() {
+		return this.height;
 	}
 	
 	/**
@@ -186,7 +219,7 @@ public abstract class WorldMap {
 	 */
 	public void put(MBR e) {
 		StopWatch w = Core.getTimings().start("worldmap-put");
-		entities.put(e);
+		entities.put(proxy(e), e);
 		w.stop();
 	}
 	
@@ -198,8 +231,31 @@ public abstract class WorldMap {
 	 */
 	public void remove(MBR e) {
 		StopWatch w = Core.getTimings().start("worldmap-remove");
-		entities.remove(e);
+		entities.remove(proxy(e), e);
 		w.stop();
+	}
+	
+	private MBR proxy(final MBR mbr){
+		//TODO: if (min.x == 0 && min.y == 0) return mbr // this will be faster but harder to test
+		/*return mbr;*/
+		return new MBR() {
+			@Override
+			public int getMin(int axis) {
+				if(axis == 0) return mbr.getMin(axis) - (min_chunk.x << CHUNK_BITS);
+				if(axis == 1) return mbr.getMin(axis) - (min_chunk.y << CHUNK_BITS);
+				return mbr.getMin(axis);
+			}
+			
+			@Override
+			public int getDimensions() {
+				return mbr.getDimensions();
+			}
+			
+			@Override
+			public int getDimension(int axis) {
+				return mbr.getDimension(axis);
+			}
+		};
 	}
 	
 	/**
@@ -212,8 +268,9 @@ public abstract class WorldMap {
 	 */
 	public Chunk getChunk(int chunkX, int chunkY, int z) {
 		StopWatch w = Core.getTimings().start("worldmap-getChunk");
+		
 		try {
-			Chunk c = chunks[chunkX][chunkY][z];
+			Chunk c = chunks[chunkX - this.min_chunk.x][chunkY - this.min_chunk.y][z];
 			if (c == null) {
 				c = constructChunk(chunkX, chunkY, z);
 				if (c == null) {
@@ -221,7 +278,6 @@ public abstract class WorldMap {
 					c = new Chunk(0, 0, 0);
 				}
 				setChunk(chunkX, chunkY, z, c);
-				//chunks[chunkX][chunkY][z] = c;
 				
 				return c;
 			}
@@ -243,8 +299,9 @@ public abstract class WorldMap {
 	 * meaning it may be faster to simply load 64 chunks.
 	 * @param x the chunk x
 	 * @param y the chunk y
+	 * @throws IOException 
 	 */
-	protected abstract void fetch(int x, int y, int z) throws EncryptedException;
+	protected abstract void fetch(int x, int y, int z) throws IOException;
 	
 	protected abstract Chunk constructChunk(int chunkX, int chunkY, int z);
 	
@@ -256,10 +313,10 @@ public abstract class WorldMap {
 	 * @param c the new chunk to set
 	 */
 	protected void setChunk(int chunkX, int chunkY, int z, Chunk c) {
-		if (chunks[chunkX][chunkY][z] == c) return; //Already set.
+		if (chunks[chunkX - this.min_chunk.x][chunkY - this.min_chunk.y][z] == c) return; //Already set.
 		
 		//TODO: Update players, remove items, etc.
-		chunks[chunkX][chunkY][z] = c;
+		chunks[chunkX - this.min_chunk.x][chunkY - this.min_chunk.y][z] = c;
 		
 		for (Mob mob : getEntities(new Cube(new int[] { chunkX * 8, chunkY * 8 }, new int[] { CHUNK_SIZE, CHUNK_SIZE }), 2, Mob.class)) {
 			if (c != null) {
@@ -338,7 +395,7 @@ public abstract class WorldMap {
 		try {
 			int cx = x >> CHUNK_BITS;
 			int cy = y >> CHUNK_BITS;
-			Chunk c = chunks[cx][cy][z];
+			Chunk c = chunks[cx - this.min_chunk.x][cy - this.min_chunk.y][z];
 			if (c == null || c.isLoaded() == false) {
 				return -1;
 			}
@@ -357,7 +414,7 @@ public abstract class WorldMap {
 		try {
 			int cx = x >> CHUNK_BITS;
 			int cy = y >> CHUNK_BITS;
-			Chunk c = chunks[cx][cy][z];
+			Chunk c = chunks[cx - this.min_chunk.x][cy - this.min_chunk.y][z];
 			if (c == null || c.isLoaded() == false) {
 				return 0;
 			}
@@ -379,17 +436,20 @@ public abstract class WorldMap {
 	 * @param clazz The type of entity you're trying to retrieve.
 	 * @return the hashset of entities in the area overlapping with the query.
 	 */
-	public <T extends MBR> HashSet<T> getEntities(MBR query, int guess, Class<T> clazz) {
+	public <T extends MBR> HashSet<T> getEntities(final MBR query, int guess, Class<T> clazz) {
 		StopWatch w = Core.getTimings().start("worldmap-getEntities");
-		HashSet<T> set = entities.get(query, guess, clazz);
-		if (query.getDimensions() >= 3) {
+		
+		MBR proxy = proxy(query);
+		
+		HashSet<T> set = entities.get(proxy, guess, clazz);
+		if (proxy.getDimensions() >= 3) {
 			//validate all entities are in the requested dimensions
 			Iterator<T> sit = set.iterator();
 			while (sit.hasNext()) {
 				T t = sit.next();
 				//I think this is correct.
 				//TODO: This is bad, we should be using >= instead.
-				if (t.getMin(2) < query.getMin(2) || t.getMin(2) > query.getMin(2) + query.getDimension(2)) {
+				if (t.getMin(2) < proxy.getMin(2) || t.getMin(2) > proxy.getMin(2) + proxy.getDimension(2)) {
 					sit.remove();
 					continue;
 				}

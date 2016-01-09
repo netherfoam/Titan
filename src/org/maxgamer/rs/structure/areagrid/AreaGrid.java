@@ -3,7 +3,7 @@ package org.maxgamer.rs.structure.areagrid;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-public class AreaGrid<T extends MBR> {
+public class AreaGrid<T> {
 	/**
 	 * Represents an area inside an AreaGrid. Say an AreaGrid is 64x64, split into 16x16 cubes. Then the AreaGrid would have 4x4 Grids inside it,
 	 * each of 16x16 dimensions.
@@ -13,18 +13,45 @@ public class AreaGrid<T extends MBR> {
 		/**
 		 * The objects in this grid.
 		 */
-		private ArrayList<MBR> objects;
+		private ArrayList<Item> objects;
 		
 		/**
 		 * Constructs an empty grid
 		 */
 		public Grid(){}
 		
-		public ArrayList<MBR> getObjects(){
+		public ArrayList<Item> getObjects(){
 			if(this.objects == null){
-				this.objects = new ArrayList<MBR>(); //Default size here may be nice?
+				this.objects = new ArrayList<Item>(); //Default size here may be nice?
 			}
 			return this.objects;
+		}
+	}
+	
+	private static class Item{
+		private final MBR mbr;
+		private final Object object;
+		
+		public Item(MBR mbr, Object object){
+			this.mbr = mbr;
+			this.object = object;
+		}
+		
+		@Override
+		public boolean equals(Object o){
+			if(o instanceof Item){
+				Item i = (Item) o;
+				if(i.object != this.object){
+					return false;
+				}
+				
+				if(MBRUtil.isEqual(this.mbr, i.mbr, 2) == false){
+					return false;
+				}
+				
+				return true;
+			}
+			return false;
 		}
 	}
 	
@@ -48,6 +75,7 @@ public class AreaGrid<T extends MBR> {
 		if ((subgridSize & -subgridSize) != subgridSize) { // It looks like voodoo, but will return true if lengths isn't a power of 2.
 			throw new IllegalArgumentException("Lengths should be a multiple of 2!");
 		}
+		
 		width = (width + subgridSize - 1) / subgridSize;
 		length = (length + subgridSize - 1) / subgridSize;
 		
@@ -132,9 +160,10 @@ public class AreaGrid<T extends MBR> {
 			
 			for (int yOffset = 0; yOffset <= dy; yOffset++) {
 				Grid g = this.grid[X + xOffset][Y + yOffset];
-				if (g != null) {
+				if (g != null && g.objects != null) {
 					synchronized (g.getObjects()) {
-						for (MBR o : g.getObjects()) {
+						for (Item i : g.getObjects()) {
+							MBR o = i.mbr;
 							//Version 2.0
 							//We use <= query.getMin(0) because the boundaries TOUCH but do not overlap!
 							if (o.getMin(0) + o.getDimension(0) <= query.getMin(0)) {
@@ -150,7 +179,7 @@ public class AreaGrid<T extends MBR> {
 							if (o.getMin(1) >= query.getMin(1) + query.getDimension(1)) {
 								continue; //o's min is higher than query's max
 							}
-							objects.add((T) o);
+							objects.add((T) i.object);
 						}
 					}
 				}
@@ -184,7 +213,6 @@ public class AreaGrid<T extends MBR> {
 		dx = Math.min(this.grid.length - X - 1, dx);
 		
 		HashSet<U> objects = new HashSet<U>(guess);
-		
 		//We must put it in each grid that it overlaps with.
 		for (int xOffset = 0; xOffset <= dx; xOffset++) {
 			dy = Math.min(this.grid[X + xOffset].length - Y - 1, dy);
@@ -198,9 +226,10 @@ public class AreaGrid<T extends MBR> {
 					//We're < 0 or >= length. There are no MBR's here!
 					continue;
 				}
-				if (g != null) {
+				if (g != null && g.objects != null) {
 					synchronized (g.getObjects()) {
-						for (MBR o : g.getObjects()) {
+						for (Item i : g.getObjects()) {
+							MBR o = i.mbr;
 							//Version 2.0
 							//We use <= query.getMin(0) because the boundaries TOUCH but do not overlap!
 							if (o.getMin(0) + o.getDimension(0) <= query.getMin(0)) {
@@ -217,8 +246,8 @@ public class AreaGrid<T extends MBR> {
 								continue; //o's min is higher than query's max
 							}
 							
-							if (clazz.isInstance(o)) {
-								objects.add((U) o);
+							if (clazz.isInstance(i.object)) {
+								objects.add((U) i.object);
 							}
 						}
 					}
@@ -233,7 +262,7 @@ public class AreaGrid<T extends MBR> {
 	 * Adds the given MBR to this grid.
 	 * @param m The MBR to add.
 	 */
-	public void put(T m) {
+	public void put(MBR m, T t) {
 		this.validate(m);
 		
 		int X = (Math.max(m.getMin(0), 0)) >> this.bits;
@@ -255,18 +284,17 @@ public class AreaGrid<T extends MBR> {
 					this.grid[X + xOffset][Y + yOffset] = g;
 				}
 				synchronized (g.getObjects()) {
-					g.getObjects().add(m);
+					g.getObjects().add(new Item(m, t));
 				}
 			}
 		}
-		
 	}
 	
 	/**
 	 * Removes the given MBR from this area grid.
 	 * @param m The MBR to remove.
 	 */
-	public void remove(T m) {
+	public void remove(MBR m, T t) {
 		this.validate(m);
 		
 		int X = (Math.max(m.getMin(0), 0)) >> this.bits;
@@ -277,6 +305,8 @@ public class AreaGrid<T extends MBR> {
 		
 		dx = Math.min(this.grid.length - X - 1, dx);
 		
+		Item item = new Item(m, t);
+		
 		//We must put it in each grid that it overlaps with.
 		for (int xOffset = 0; xOffset <= dx; xOffset++) {
 			dy = Math.min(this.grid[X + xOffset].length - Y - 1, dy);
@@ -286,8 +316,11 @@ public class AreaGrid<T extends MBR> {
 				if (g == null) {
 					continue;
 				}
+				
+				if(g.objects == null) continue;
+				
 				synchronized (g.getObjects()) {
-					g.getObjects().remove(m);
+					g.getObjects().remove(item);
 				}
 			}
 		}
@@ -307,7 +340,7 @@ public class AreaGrid<T extends MBR> {
 		
 		for (int i = 0; i < 2; i++) {
 			if (m.getDimension(i) <= 0) {
-				throw new IllegalArgumentException("AreaGrid MBR's must have all dimensions > 0");
+				throw new IllegalArgumentException("AreaGrid MBR's must have all dimensions > 0. Dimension " + i + " is " + m.getDimension(i));
 			}
 		}
 	}

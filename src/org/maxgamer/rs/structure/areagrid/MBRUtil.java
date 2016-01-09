@@ -45,10 +45,41 @@ public class MBRUtil{
 		return new Cube(mins, dims);
 	}
 	
+	public static boolean isEqual(MBR m1, MBR m2, int numDims){
+		for(int axis = 0; axis < numDims; axis++){
+			if(m1.getDimension(axis) != m2.getDimension(axis)) return false;
+			if(m1.getMin(axis) != m2.getMin(axis)) return false;
+		}
+		return true;
+	}
+	
+	public static boolean isEqual(MBR m1, MBR m2){
+		if(m1 == m2) return true;
+		if(m1.getDimensions() != m2.getDimensions()) return false;
+		
+		for(int axis = 0; axis < m1.getDimensions(); axis++){
+			if(m1.getDimension(axis) != m2.getDimension(axis)) return false;
+			if(m1.getMin(axis) != m2.getMin(axis)) return false;
+		}
+		return true;
+	}
+	
 	private static void assertDims(MBR... mbr){
 		int dims = mbr[0].getDimensions();
 		for(int i = 1; i < mbr.length; i++){
 			if(mbr[i].getDimensions() != dims) throw new IllegalArgumentException("MBR's must have the same number of dimensions!");
 		}
+	}
+
+	public static String toString(MBR mbr) {
+		StringBuilder sb = new StringBuilder();
+		for(int i = 0; i < mbr.getDimensions(); i++){
+			sb.append(mbr.getMin(i) + ",");
+		}
+		sb.append(" .. ");
+		for(int i = 0; i < mbr.getDimensions(); i++){
+			sb.append(mbr.getDimension(i) + "x");
+		}
+		return sb.toString();
 	}
 }

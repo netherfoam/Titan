@@ -1440,13 +1440,8 @@ public class Game637Protocol extends GameProtocol {
 		Log.debug("Sending map to " + getPlayer());
 		WorldMap m = getPlayer().getLocation().getMap();
 		RSOutgoingPacket out;
-<<<<<<< HEAD
 
 		if (m instanceof StandardMap || m instanceof SubMap) {
-=======
-		
-		if (m instanceof StandardMap) {
->>>>>>> c8fe6376b3d7dcd212a45d89c4d042ee7c3c8b51
 			out = new RSOutgoingPacket(80);
 		}
 		else if (m instanceof DynamicMap) {
@@ -1477,50 +1472,22 @@ public class Game637Protocol extends GameProtocol {
 		this.viewport.getCenter().getMap().put(this.viewport);
 		
 		WorldMap map = l.getMap();
-<<<<<<< HEAD
-
 		if (m instanceof StandardMap || m instanceof SubMap) {
 			out.writeLEShortA(l.y >> 3);
 			out.writeShortA(l.x >> 3);
 
 			// Viewport depth
 			out.writeByte(getPlayer().getViewDistance().getId()); 
-
-=======
-		
-		if (m instanceof StandardMap) {
-			out.writeLEShortA(l.y >> 3);
-			out.writeShortA(l.x >> 3);
-			
-			out.writeByte(getPlayer().getViewDistance().getId()); // Viewport
-																	// depth
-			
->>>>>>> c8fe6376b3d7dcd212a45d89c4d042ee7c3c8b51
 			out.writeByteA(1); // Unknown, possibly force load.
 			
 			int chunkX = l.x >> 3;
 			int chunkY = l.y >> 3;
-<<<<<<< HEAD
 
 			// Bitshift right by 3, then dividing by two equals bitshift right by 4
-=======
-			
-			/*
-			 * Bitshift right by 3, then dividing by two equals bitshift right
-			 * by 4
-			 */
->>>>>>> c8fe6376b3d7dcd212a45d89c4d042ee7c3c8b51
 			int mapHash = getPlayer().getViewDistance().getTileSize() >> 4;
 			
 			for (int regionX = (chunkX - mapHash) >> 3; regionX <= (chunkX + mapHash) >> 3; regionX++) {
 				for (int regionY = (chunkY - mapHash) >> 3; regionY <= (chunkY + mapHash) >> 3; regionY++) {
-<<<<<<< HEAD
-=======
-					if (map.getChunk(regionX << 3, regionY << 3, 0) == null) {
-						continue; // No XTEA keys are used here.
-					}
-					
->>>>>>> c8fe6376b3d7dcd212a45d89c4d042ee7c3c8b51
 					int fileId;
 					try {
 						fileId = Core.getCache().getFileId(IDX.LANDSCAPES, "l" + regionX + "_" + regionY);

@@ -43,25 +43,15 @@ public class HarvestTool {
 	public HarvestTool(SkillType skill, int level, int animation) {
 		this(null, skill, level, animation, 1);
 	}
-	
-	/**
-	 * Returns true if the given Persona has the required tool and/or skill for
-	 * this harvest tool
-	 * 
-	 * @param p the persona
-	 * @return true if the player has the required skill, false if they do not
-	 */
+
 	public boolean has(Persona p) {
 		if (p == null) throw new NullPointerException();
 		
-		if (item != null) {
+		if (item != null)
 			if (p.getInventory().contains(item) == false && p.getEquipment().contains(item) == false) return false;
-		}
 		
-		if (skill != null) {
+		if (skill != null)
 			if (p.getSkills().getLevel(skill, true) < level) return false;
-		}
-		
 		return true;
 	}
 	

@@ -5,6 +5,7 @@ import org.maxgamer.rs.structure.configs.ConfigSection;
 
 /**
  * Represents a player's skill.
+ * 
  * @author netherfoam
  */
 public class Skill implements YMLSerializable {
@@ -12,15 +13,19 @@ public class Skill implements YMLSerializable {
 	private int level;
 	private double exp;
 	private double modifier;
-	
+
 	private double targetExp = -1;
 	private int targetLevel = -1;
-	private boolean targeting;
-	
+
+	private boolean levelChanged;
+
 	/**
 	 * Represents a player's skill
-	 * @param type the skill type
-	 * @param exp the skill's experience
+	 * 
+	 * @param type
+	 *            the skill type
+	 * @param exp
+	 *            the skill's experience
 	 */
 	public Skill(SkillType type, double exp) {
 		this.type = type;
@@ -28,73 +33,76 @@ public class Skill implements YMLSerializable {
 		this.exp = exp;
 		this.level = type.getLevel(exp);
 	}
-	
+
 	/**
 	 * The level of this skill
+	 * 
 	 * @return The level of this skill
 	 */
 	public int getLevel() {
 		return level;
 	}
-	
+
 	/**
 	 * Sets the level for this skill, by retrieving the minimum experience
 	 * requirement for the level and setting the level.
-	 * @param level the new level to set.
+	 * 
+	 * @param level
+	 *            the new level to set.
 	 */
 	public void setLevel(int level) {
 		setExp(SkillType.getExpRequired(level));
 	}
-	
+
 	/**
 	 * Sets the experience of this skill.
-	 * @param exp Sets the experience of this skill.
+	 * 
+	 * @param exp
+	 *            Sets the experience of this skill.
 	 */
 	public void setExp(double exp) {
 		if (exp > SkillType.MAX_EXP) {
 			exp = SkillType.MAX_EXP;
-		}
-		else if (exp < 0) {
+		} else if (exp < 0) {
 			exp = 0;
 		}
-		
+
 		this.exp = exp;
 		this.level = type.getLevel(exp);
 	}
-	
+
 	public double getExp() {
 		return exp;
 	}
-	
+
 	public void addExp(double d) {
 		this.setExp(this.exp + d);
 	}
-	
+
 	public void setModifier(double modifier) {
 		this.modifier = modifier;
 	}
-	
+
 	public double getModifier() {
 		return this.modifier;
 	}
-	
+
 	public SkillType getType() {
 		return this.type;
 	}
-	
+
 	@Override
 	public ConfigSection serialize() {
 		ConfigSection map = new ConfigSection();
-		
+
 		map.set("modifier", getModifier());
 		map.set("exp", getExp());
 		map.set("target_exp", getTargetExp());
 		map.set("target_lvl", getTargetLevel());
-		map.set("targeted", isTargeting());
-		
+
 		return map;
 	}
-	
+
 	@Override
 	public void deserialize(ConfigSection map) {
 		this.exp = map.getDouble("exp", 0);
@@ -102,31 +110,34 @@ public class Skill implements YMLSerializable {
 		this.level = type.getLevel(exp);
 		this.targetExp = map.getDouble("target_exp");
 		this.targetLevel = map.getInt("target_lvl");
-		this.targeting = map.getBoolean("targeted");
 	}
-	
+
 	public double getTargetExp() {
 		return targetExp;
 	}
-	
+
 	public void setTargetExp(double targetExp) {
 		this.targetExp = targetExp;
 	}
-	
+
 	public int getTargetLevel() {
 		return targetLevel;
 	}
-	
+
 	public void setTargetLevel(int targetLevel) {
 		this.targetLevel = targetLevel;
 	}
-	
+
 	public boolean isTargeting() {
-		return targeting;
+		return targetExp > 0 || targetLevel > 0;
 	}
-	
-	public void setTargeting(boolean targeting) {
-		this.targeting = targeting;
+
+	public boolean hasLevelChanged() {
+		return levelChanged;
 	}
-	
+
+	public void setLevelChanged(boolean levelChanged) {
+		this.levelChanged = levelChanged;
+	}
+
 }

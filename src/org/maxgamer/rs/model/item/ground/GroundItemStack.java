@@ -2,6 +2,7 @@ package org.maxgamer.rs.model.item.ground;
 
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.model.entity.Entity;
+import org.maxgamer.rs.model.entity.Interactable;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.map.Location;
@@ -9,7 +10,7 @@ import org.maxgamer.rs.model.map.Location;
 /**
  * @author netherfoam
  */
-public class GroundItemStack extends Entity implements Comparable<GroundItemStack> {
+public class GroundItemStack extends Entity implements Comparable<GroundItemStack>, Interactable {
 	/**
 	 * The ItemStack on the ground
 	 */
@@ -82,6 +83,15 @@ public class GroundItemStack extends Entity implements Comparable<GroundItemStac
 	}
 	
 	/**
+	 * Returns true if this {@link GroundItemStack} has the given interaction option
+	 * @param name
+	 * @return
+	 */
+	public boolean hasOption(String name){
+		return getItem().hasGroundOption(name);
+	}
+	
+	/**
 	 * True if this item has expired and has been deleted
 	 * @return true if this item has expired
 	 */
@@ -138,5 +148,10 @@ public class GroundItemStack extends Entity implements Comparable<GroundItemStac
 		//Worth noting that this calls setLocation(null), which will
 		//remove the item from the GroundItemManager.
 		super.destroy();
+	}
+
+	@Override
+	public String[] getOptions() {
+		return getItem().getGroundOptions();
 	}
 }

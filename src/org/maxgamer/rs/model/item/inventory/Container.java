@@ -1,5 +1,6 @@
 package org.maxgamer.rs.model.item.inventory;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -969,6 +970,19 @@ public abstract class Container implements Cloneable, Iterable<ItemStack>, YMLSe
 				throw new RuntimeException("May not remove elements from a container through an iterator.");
 			}
 		};
+	}
+	
+	/**
+	 * Returns a new list which contains the contents of this container. This list will
+	 * not contain any null items.
+	 * @return a list of items in this container.
+	 */
+	public ArrayList<ItemStack> toList(){
+		ArrayList<ItemStack> list = new ArrayList<ItemStack>(this.getSize());
+		for(ItemStack item : this.getContents()){
+			list.add(item);
+		}
+		return list;
 	}
 
 	@Override

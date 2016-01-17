@@ -15,7 +15,7 @@ import org.maxgamer.rs.structure.configs.ConfigSection;
  * Represents a location in game.
  * @author netherfoam
  */
-public class Location extends Position implements MBR {
+public class Location extends Position implements MBR, Locatable {
 	public static Location deserialize(ConfigSection s, Location fallback) {
 		if (s == null) {
 			return fallback;
@@ -322,5 +322,17 @@ public class Location extends Position implements MBR {
 			map.set("map", this.map.getName());
 		}
 		return map;
+	}
+
+	@Override
+	public Location getLocation() {
+		return this;
+	}
+	
+	public boolean near(Location l, int distance){
+		if(super.near(l, distance) && l.z == this.z && this.map == l.map){
+			return true;
+		}
+		return false;
 	}
 }

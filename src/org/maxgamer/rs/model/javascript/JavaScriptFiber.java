@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContinuationPending;
+import org.mozilla.javascript.Function;
 import org.mozilla.javascript.ImporterTopLevel;
 import org.mozilla.javascript.Script;
 import org.mozilla.javascript.Scriptable;
@@ -67,6 +68,24 @@ public class JavaScriptFiber {
 		catch(IOException e){
 			/* This shouldn't happen unless development is being done in core.js */
 			throw new RuntimeException(e);
+		}
+		finally{
+			Context.exit();
+		}
+	}
+	
+	/**
+	 * Invokes the given method with the given parameters in this JavaScriptFiber
+	 * @param method the method to invoke
+	 * @param params the parameters
+	 * @return the result of the call, may be null.
+	 */
+	public Object invoke(String method, Object... params){
+		try{
+			Context ctx = Context.enter();
+			Function func = (Function) this.scope.get(method, scope);
+			Object result = func.call(ctx, scope, scope, params);
+			return result;
 		}
 		finally{
 			Context.exit();

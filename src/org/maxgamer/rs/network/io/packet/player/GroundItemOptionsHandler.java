@@ -1,12 +1,17 @@
 package org.maxgamer.rs.network.io.packet.player;
 
+import org.maxgamer.rs.model.action.WalkAction;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.item.ItemProto;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.item.ground.GroundItemStack;
 import org.maxgamer.rs.model.map.Location;
+import org.maxgamer.rs.model.map.path.AStar;
+import org.maxgamer.rs.model.map.path.Path;
 import org.maxgamer.rs.network.io.packet.PacketProcessor;
 import org.maxgamer.rs.network.io.packet.RSIncomingPacket;
+
+import co.paralleluniverse.fibers.SuspendExecution;
 
 /**
  * @author netherfoam
@@ -30,7 +35,7 @@ public class GroundItemOptionsHandler implements PacketProcessor<Player> {
 	 */
 	
 	@Override
-	public void process(Player player, RSIncomingPacket packet) throws Exception {
+	public void process(final Player player, RSIncomingPacket packet) throws Exception {
 		GroundItemStack target = null;
 		int option = -1;
 		@SuppressWarnings("unused")
@@ -99,13 +104,35 @@ public class GroundItemOptionsHandler implements PacketProcessor<Player> {
 			return;
 		}
 		
-		//TODO: Throw GroundItemStackInteract event
+		final GroundItemStack item = target;
+		
 		String name = target.getItem().getGroundOptions()[option];
 		if (name == null) {
 			player.getCheats().log(30, "Player attempted to use a NULL option on GroundItemStack (ID " + target.getItem().getId() + ")");
 			return;
 		}
 		
-		player.use(target, name);
+		final int opt = option;
+		
+		player.getActions().clear();
+		AStar finder = new AStar(10);
+		Path path = finder.findPath(player.getLocation(), target.getLocation(), target.getLocation(), player.getSizeX(), player.getSizeY());
+		if (!path.isEmpty()) {
+			WalkAction walk = new WalkAction(player, path) {
+				@Override
+				public void run() throws SuspendExecution {
+					super.run();
+					
+					// Then use the object
+					player.use(item, item.getItem().getGroundOption(opt));
+				}
+			};
+			player.getActions().queue(walk);
+		}
+		else {
+			player.use(target, target.getItem().getGroundOption(option));
+		}
+		
+		player.use(target, target.getItem().getGroundOption(opt));
 	}
 }

@@ -1,7 +1,12 @@
 package org.maxgamer.rs.model.entity;
 
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.core.server.IllegalThreadException;
+import org.maxgamer.rs.model.map.Locatable;
 import org.maxgamer.rs.model.map.Location;
 import org.maxgamer.rs.model.map.WorldMap;
 import org.maxgamer.rs.structure.areagrid.MBR;
@@ -11,7 +16,7 @@ import org.maxgamer.rs.structure.areagrid.MBR;
  * objects, players, mobs, NPC's, bots, items on the ground and more.
  * @author netherfoam
  */
-public abstract class Entity implements MBR {
+public abstract class Entity implements MBR, Locatable {
 	/** Size along x axis in tiles */
 	private int sizeX = 1;
 	/** Size along y axis in tiles */
@@ -27,11 +32,109 @@ public abstract class Entity implements MBR {
 	 */
 	private Location location;
 	
+	private ArrayList<WeakReference<Entity>> viewers;
+	
 	/**
 	 * Constructs a new entity with size = 1x1
 	 */
 	public Entity() {
 		
+	}
+	
+	public final void setPrivate(boolean isPrivate){
+		if(isPrivate){
+			this.viewers = new ArrayList<WeakReference<Entity>>(0);
+		}
+		else{
+			this.viewers = null;
+		}
+	}
+	
+	public final boolean isPrivate(){
+		if(viewers == null){
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Returns true if this entity is visible to the given entity. Entities, by default,
+	 * are visible to all other Entities. Entities can be made private by calling
+	 * {@link Entity#setPrivate(true)}. Once private, an entity can be hidden/shown
+	 * to specific entities. A destroyed Entity is never visible.
+	 * @param viewer the entity attempting to view this entity
+	 * @return true if the entity can see this
+	 */
+	public boolean isVisible(Entity viewer){
+		if(this.isDestroyed()){ 
+			return false;
+		}
+		
+		if(isPrivate() == false){
+			return true;
+		}
+		
+		Iterator<WeakReference<Entity>> it = viewers.iterator();
+		while(it.hasNext()){
+			WeakReference<Entity> ref = it.next();
+			Entity e = ref.get();
+			if(e == null){
+				it.remove();
+			}
+			if(e == viewer){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Hides this entity from the given viewer. 
+	 * @param viewer the viewer
+	 * @throws IllegalStateException if this entity is public
+	 */
+	public final void addViewer(Entity viewer){
+		if(isPrivate() == false){
+			throw new IllegalStateException("Entity is public. Therefore it cannot be hidden!");
+		}
+		
+		Iterator<WeakReference<Entity>> it = viewers.iterator();
+		while(it.hasNext()){
+			WeakReference<Entity> ref = it.next();
+			Entity e = ref.get();
+			if(e == null){
+				it.remove();
+			}
+			if(e == viewer){
+				it.remove();
+			}
+		}
+	}
+	
+	/**
+	 * Shows this entity to the given viewer. If this is public, the method does nothing.
+	 * @param viewer the viewer
+	 */
+	public final void removeViewer(Entity viewer){
+		if(isPrivate() == false){
+			/* Entity is visible to everyone already */
+			return;
+		}
+		
+		Iterator<WeakReference<Entity>> it = viewers.iterator();
+		while(it.hasNext()){
+			WeakReference<Entity> ref = it.next();
+			Entity e = ref.get();
+			if(e == null){
+				it.remove();
+			}
+			if(e == viewer){
+				return;
+			}
+		}
+		
+		viewers.add(new WeakReference<Entity>(viewer));
 	}
 	
 	/**

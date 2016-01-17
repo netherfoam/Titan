@@ -923,6 +923,10 @@ public class NPCDefinition extends Definition {
 		return options[slot];
 	}
 	
+	public String[] getInteractions(){
+		return options.clone();
+	}
+	
 	public boolean hasInteraction(String name) {
 		for (String s : options) {
 			if (s == null) continue;

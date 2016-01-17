@@ -10,6 +10,7 @@ import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.core.tick.Tickable;
 import org.maxgamer.rs.definition.GameObjectProto;
 import org.maxgamer.rs.model.entity.Entity;
+import org.maxgamer.rs.model.entity.Interactable;
 import org.maxgamer.rs.model.entity.mob.persona.player.Viewport;
 import org.maxgamer.rs.model.map.ClipMasks;
 import org.maxgamer.rs.model.map.Location;
@@ -20,7 +21,7 @@ import org.maxgamer.rs.model.map.path.SimpleDirection;
 /**
  * @author netherfoam
  */
-public abstract class GameObject extends Entity {
+public abstract class GameObject extends Entity implements Interactable {
 	/**
 	 * The previously loaded game object definitions
 	 */

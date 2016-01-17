@@ -66,15 +66,6 @@ public abstract class Interface extends Window {
 	}
 
 	/**
-	 * Fetches the owner of this Pane, as given in the constructor. Not null.
-	 * 
-	 * @return the owner of this Pane, as given in the constructor. Not null.
-	 */
-	public Player getPlayer() {
-		return this.player;
-	}
-
-	/**
 	 * True if this interface is currently visible to the player, false if it is
 	 * not
 	 */

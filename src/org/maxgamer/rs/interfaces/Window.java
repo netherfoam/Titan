@@ -37,7 +37,7 @@ public abstract class Window {
 		return interfaceId;
 	}
 
-	public Player getPlayer() {
+	public final Player getPlayer() {
 		return player;
 	}
 

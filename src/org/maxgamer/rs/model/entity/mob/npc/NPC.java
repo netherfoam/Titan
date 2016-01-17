@@ -6,6 +6,7 @@ import org.maxgamer.rs.cache.EncryptedException;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.core.server.WorldFullException;
 import org.maxgamer.rs.model.action.WanderAction;
+import org.maxgamer.rs.model.entity.Interactable;
 import org.maxgamer.rs.model.entity.mob.Bonus;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.MobModel;
@@ -34,7 +35,7 @@ import org.maxgamer.rs.model.skill.SkillType;
 /**
  * @author netherfoam
  */
-public class NPC extends Mob {
+public class NPC extends Mob implements Interactable {
 	private String uuid;
 	
 	/**
@@ -431,5 +432,15 @@ public class NPC extends Mob {
 		if (model == null) return;
 		this.model = model;
 		model.setChanged(true);
+	}
+	
+	@Override
+	public boolean hasOption(String option) {
+		return getDefinition().hasInteraction(option);
+	}
+	
+	@Override
+	public String[] getOptions() {
+		return getDefinition().getInteractions();
 	}
 }

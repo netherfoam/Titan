@@ -143,15 +143,6 @@ public abstract class Pane extends Window {
 		return interfaces.get(Integer.valueOf(id));
 	}
 
-	/**
-	 * Fetches the owner of this Pane, as given in the constructor. Not null.
-	 * 
-	 * @return the owner of this Pane, as given in the constructor. Not null.
-	 */
-	public Player getPlayer() {
-		return this.player;
-	}
-
 	public void onOpen() {
 
 	}

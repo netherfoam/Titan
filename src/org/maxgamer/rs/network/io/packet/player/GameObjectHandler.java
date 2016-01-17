@@ -2,12 +2,17 @@ package org.maxgamer.rs.network.io.packet.player;
 
 import org.maxgamer.rs.definition.GameObjectProto;
 import org.maxgamer.rs.lib.log.Log;
+import org.maxgamer.rs.model.action.WalkAction;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
 import org.maxgamer.rs.model.map.Location;
 import org.maxgamer.rs.model.map.object.GameObject;
+import org.maxgamer.rs.model.map.path.AStar;
+import org.maxgamer.rs.model.map.path.Path;
 import org.maxgamer.rs.network.io.packet.PacketProcessor;
 import org.maxgamer.rs.network.io.packet.RSIncomingPacket;
+
+import co.paralleluniverse.fibers.SuspendExecution;
 
 /**
  * @author netherfoam
@@ -92,6 +97,7 @@ public class GameObjectHandler implements PacketProcessor<Player> {
 		
 		Log.debug("ID: " + id + ", X: " + x + ", Y: " + y);
 		id = id & 0xFFFF; // Signed
+		final int opt = option;
 		
 		Location l = new Location(p.getLocation().getMap(), x, y, p.getLocation().z);
 		for (final GameObject g : l.getNearby(GameObject.class, 0)) {
@@ -102,7 +108,37 @@ public class GameObjectHandler implements PacketProcessor<Player> {
 					return;
 				}
 				
-				p.use(g, option);
+				AStar finder = new AStar(20);
+				Path path = finder.findPath(p.getLocation(), g.getLocation(), g.getLocation().add(g.getSizeX() - 1, g.getSizeY() - 1), p.getSizeX(), p.getSizeY(), g);
+				
+				if (path.hasFailed()) {
+					return;
+				}
+				
+				if (!path.isEmpty()) {
+					// Given our pathfinding algorithm, it ignores the object.
+					// Thus the path leads into the corner of the object. So we
+					// delete the last step, if one is created.
+					path.removeLast();
+				}
+				
+				p.getActions().clear();
+				if (!path.isEmpty()) {
+					WalkAction walk = new WalkAction(p, path) {
+						@Override
+						public void run() throws SuspendExecution {
+							super.run();
+							
+							// Then use the object
+							p.use(g, opt);
+						}
+					};
+					p.getActions().queue(walk);
+				}
+				else {
+					p.use(g, opt);
+				}
+				
 				return;
 			}
 		}

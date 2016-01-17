@@ -3,6 +3,7 @@ package org.maxgamer.rs.model.item;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 
+import org.maxgamer.rs.model.entity.Interactable;
 import org.maxgamer.rs.model.item.weapon.Weapon;
 import org.maxgamer.rs.structure.YMLSerializable;
 import org.maxgamer.rs.structure.configs.ConfigSection;
@@ -10,7 +11,7 @@ import org.maxgamer.rs.structure.configs.ConfigSection;
 /**
  * @author netherfoam
  */
-public class ItemStack implements Comparable<ItemStack>, YMLSerializable {
+public class ItemStack implements Comparable<ItemStack>, YMLSerializable, Interactable {
 	private static HashMap<String, WeakReference<ItemStack>> cache = new HashMap<String, WeakReference<ItemStack>>();
 	/** The generic currency in the game */
 	public static final ItemStack COINS = ItemStack.create(995);
@@ -245,6 +246,15 @@ public class ItemStack implements Comparable<ItemStack>, YMLSerializable {
 		return getDefinition().getGroundOptions()[id];
 	}
 	
+	public boolean hasGroundOption(String name){
+		for(String s : getGroundOptions()){
+			if(s.equals(name)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public String getInventoryOption(int id) {
 		return getDefinition().getInventoryOptions()[id];
 	}
@@ -263,5 +273,10 @@ public class ItemStack implements Comparable<ItemStack>, YMLSerializable {
 			if (name.equals(s)) return true;
 		}
 		return false;
+	}
+
+	@Override
+	public String[] getOptions() {
+		return getDefinition().getInventoryOptions();
 	}
 }

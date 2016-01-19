@@ -1,20 +1,22 @@
 package org.maxgamer.rs.model.requirement;
 
-import org.maxgamer.rs.model.entity.mob.Mob;
-
 /**
  * @author Albert Beaupre
+ *
+ * @param <T>
+ *            the type this requirement uses to check for passing
  */
-public interface Requirement {
-	
+public interface Requirement<T> {
+
 	/**
-	 * Returns true if the specified {@code mob} passes this {@code Requirement}
-	 * . If the specified {@code mob} does not pass this {@code Requirement},
-	 * return false.
+	 * Returns true if the specified {@code type} passes this
+	 * {@code Requirement} . If the specified {@code type} does not pass this
+	 * {@code Requirement}, return false.
 	 * 
-	 * @param mob the mob to check for passing
-	 * @return true if the mob passes; return false otherwise
+	 * @param type
+	 *            the type to check for passing
+	 * @return true if the type passes; return false otherwise
 	 */
-	boolean passes(Mob mob);
-	
+	boolean passes(T type);
+
 }

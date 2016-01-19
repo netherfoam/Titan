@@ -36,15 +36,16 @@ public class ItemsOnDeathInterface extends PrimaryInterface {
 		int keep = getKeepSize();
 		keepContainer = new GenericContainer(keep, StackType.NEVER);
 		int index = 0;
-		while (keep > 0) {
+		while (keep > 0 && !all.isEmpty()) {
 			ItemStack item = all.get(index);
+			if (item == null)
+				continue;
 			all.remove(item.setAmount(1));
 			if (all.get(index) == null || all.get(index).getAmount() == 0)
 				index++;
 			keep--;
-			keepContainer.add(item.setAmount(1));
+			keepContainer.add(item.setAmount(1).setHealth(keep));
 		}
-		System.out.println(keepContainer);
 
 		Object[] params = new Object[] { getRiskedWealth(), getCarriedWealth(), "", 0, 0, getKeepItem(3), getKeepItem(2), getKeepItem(1), getKeepItem(0), getKeepSize(), 0 };
 

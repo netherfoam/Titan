@@ -84,8 +84,7 @@ public class SkillsInterface extends SideInterface {
 					if (buttonId == 150) player.getSkills().targetSkillExp(SkillType.SUMMONING, (int) value);
 				}
 			});
-		}
-		else if (option == 3) {
+		} else if (option == 3) {
 			if (buttonId == 200) player.getSkills().removeTarget(SkillType.ATTACK);
 			if (buttonId == 11) player.getSkills().removeTarget(SkillType.STRENGTH);
 			if (buttonId == 28) player.getSkills().removeTarget(SkillType.DEFENCE);

@@ -1,0 +1,18 @@
+#What port is the logon server running on
+port: 9692
+#How many bytes should our incoming buffer be? (Recommended size)
+bufferSize: 4096
+#The IP of the server which is running the logon server
+host: localhost
+#The password to join the logon server
+pass: passwd5
+
+#The profiles database
+database:
+    type: mysql
+    file: "data/profiles.db"
+    host: localhost
+    user: root
+    pass: nether
+    database: profiles
+    port: 3306

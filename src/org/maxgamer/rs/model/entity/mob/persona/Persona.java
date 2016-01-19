@@ -66,7 +66,7 @@ import org.maxgamer.rs.structure.configs.ConfigSection;
  * 
  * @author netherfoam
  */
-public abstract class Persona extends Mob implements YMLSerializable, InventoryHolder {
+public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 	/**
 	 * The default location that players will spawn at. This is configurable in
 	 * the world config.
@@ -917,6 +917,7 @@ public abstract class Persona extends Mob implements YMLSerializable, InventoryH
 		MobPreTeleportEvent event = new MobPreTeleportEvent(this, this.getLocation() == null ? to : this.getLocation(), to);
 		event.call();
 		this.setLocation(event.getTo());
+		Log.debug(this + " teleported to " + this.getLocation());
 		this.getUpdateMask().getMovement().setTeleported(true);
 	}
 	

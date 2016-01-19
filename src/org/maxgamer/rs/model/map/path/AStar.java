@@ -170,6 +170,10 @@ public class AStar implements PathFinder {
 	public Path findPath(Mob m, Position min, Position max, GameObject... ignores) {
 		return findPath(m.getLocation(), min, max, m.getSizeX(), m.getSizeY(), ignores);
 	}
+	
+	public Path findPath(Mob m, Position dest, int radius){
+		return findPath(m.getLocation(), dest.add(-radius, -radius), dest.add(radius, radius), m.getSizeX(), m.getSizeY());
+	}
 
 	public Path findPath(Mob m, Entity to) {
 		return findPath(m.getLocation(), to.getLocation(), to.getLocation().add(to.getSizeX() - 1, to.getSizeY() - 1), to.getSizeX(), to.getSizeY());

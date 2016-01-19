@@ -211,5 +211,12 @@ public abstract class Action {
 		getOwner().getActions().cancel(this);
 	}
 	
+	/**
+	 * Returns true if this Action completed without being interrupted
+	 * @return true if this Action completed without being interrupted
+	 */
+	public boolean isComplete(){
+		return fiber.isTerminated();
+	}
 	
 }

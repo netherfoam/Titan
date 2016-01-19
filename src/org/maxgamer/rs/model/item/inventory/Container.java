@@ -87,6 +87,15 @@ public abstract class Container implements Cloneable, Iterable<ItemStack>, YMLSe
 	 * @return The ItemStack at that slot, NEVER Null.
 	 */
 	public abstract ItemStack get(int slot);
+	
+	/**
+	 * Alias of get()
+	 * @param slot the slot
+	 * @return the ItemStack at that slot, NEVER null
+	 */
+	public ItemStack getItem(int slot){
+		return get(slot);
+	}
 
 	/**
 	 * Returns the size of this Container. Should be positive.
@@ -207,6 +216,10 @@ public abstract class Container implements Cloneable, Iterable<ItemStack>, YMLSe
 	/**
 	 * Methods which add/remove items.
 	 */
+	
+	public final synchronized boolean transferTo(Container to, ItemStack item){
+		return this.transferTo(to, new ItemStack[]{item});
+	}
 
 	/**
 	 * Transfers the given items from this container to the given container.
@@ -247,6 +260,10 @@ public abstract class Container implements Cloneable, Iterable<ItemStack>, YMLSe
 		}
 		return true;
 	}
+	
+	public final synchronized void add(int preferredSlot, ItemStack item) throws ContainerException{
+		this.add(preferredSlot, new ItemStack[]{item});
+	}
 
 	/**
 	 * Adds the given list of items to this container.
@@ -276,6 +293,10 @@ public abstract class Container implements Cloneable, Iterable<ItemStack>, YMLSe
 			int slot = updates.pop();
 			this.set(slot, proto[slot]);
 		}
+	}
+	
+	public final synchronized void add(ItemStack item) throws ContainerException{
+		this.add(new ItemStack[]{item});
 	}
 
 	public final synchronized void add(ItemStack... list) throws ContainerException {
@@ -329,6 +350,10 @@ public abstract class Container implements Cloneable, Iterable<ItemStack>, YMLSe
 
 		this.remove(-1, items);
 	}
+	
+	public final synchronized void remove(int preferredSlot, ItemStack item) throws ContainerException{
+		this.remove(preferredSlot, new ItemStack[]{item});
+	}
 
 	/**
 	 * Removes the given items from the players inventory.
@@ -355,6 +380,10 @@ public abstract class Container implements Cloneable, Iterable<ItemStack>, YMLSe
 			int slot = updates.pop();
 			this.set(slot, proto[slot]);
 		}
+	}
+	
+	public final synchronized void remove(ItemStack item) throws ContainerException{
+		this.remove(new ItemStack[]{item});
 	}
 
 	public final synchronized void remove(ItemStack... list) throws ContainerException {
@@ -545,6 +574,10 @@ public abstract class Container implements Cloneable, Iterable<ItemStack>, YMLSe
 		}
 		return data;
 	}
+	
+	public final synchronized boolean containsAll(ItemStack item) {
+		return this.containsAll(new ItemStack[]{item});
+	}
 
 	/**
 	 * Checks that this Container contains all the given items (Including their
@@ -631,6 +664,10 @@ public abstract class Container implements Cloneable, Iterable<ItemStack>, YMLSe
 		}
 
 		return space;
+	}
+	
+	public final synchronized boolean hasRoom(ItemStack item) {
+		return this.hasRoom(new ItemStack[]{item});
 	}
 
 	/**
@@ -777,6 +814,10 @@ public abstract class Container implements Cloneable, Iterable<ItemStack>, YMLSe
 		}
 
 		return this.containsAll(list);
+	}
+	
+	public final synchronized boolean containsAny(ItemStack item) {
+		return this.containsAny(new ItemStack[]{item});
 	}
 
 	public synchronized final boolean containsAny(ItemStack... items) {

@@ -97,6 +97,7 @@ import org.maxgamer.rs.structure.configs.ConfigSection;
 import org.maxgamer.rs.structure.configs.FileConfig;
 import org.maxgamer.rs.structure.sql.Database.ConnectionException;
 import org.maxgamer.rs.structure.timings.StopWatch;
+import org.mozilla.javascript.ContinuationPending;
 
 /**
  * @author netherfoam
@@ -310,8 +311,17 @@ public class Server {
 					
 					File startup = new File("startup.js");
 					if(startup.exists()){
-						JavaScriptFiber startupJS = new JavaScriptFiber(startup);
-						startupJS.start();
+						JavaScriptFiber js = new JavaScriptFiber(Core.CLASS_LOADER);
+						try{
+							js.parse(startup);
+						}
+						catch(ContinuationPending e){
+							//TODO: Allow them.
+							Log.warning("Can't use continuations in startup.js");
+						}
+						catch(IOException e){
+							e.printStackTrace();
+						}
 					}
 					
 					Server.this.thread.submit(ticker);
@@ -550,9 +560,12 @@ public class Server {
 	public void shutdown() {
 		File shutdown = new File("shutdown.js");
 		if(shutdown.exists()){
-			JavaScriptFiber shutdownJS = new JavaScriptFiber(shutdown);
+			JavaScriptFiber js = new JavaScriptFiber(Core.CLASS_LOADER);
 			try {
-				shutdownJS.start();
+				js.parse(shutdown);
+			}
+			catch(ContinuationPending e){
+				Log.warning("Can't throw continuations in shutdown.js!");
 			}
 			catch (IOException e) {
 				Log.warning("Failed to run shutdown.js: " + e.getClass().getSimpleName() + "(" + e.getMessage() + ")");

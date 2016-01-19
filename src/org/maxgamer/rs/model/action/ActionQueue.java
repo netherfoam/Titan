@@ -100,6 +100,20 @@ public class ActionQueue extends FastTickable {
 	}
 	
 	/**
+	 * Fetches the first action in this ActionQueue that is a class or subclass of the given type.
+	 * @param <T> the Action type, eg CombatFollow.class
+	 * @param type the Action type, eg CombatFollow.class
+	 * @return the Action or null if none match.
+	 */
+	@SuppressWarnings("unchecked")
+	public <T extends Action> T first(Class<T> type){
+		for(Action a : this.queue){
+			if(type.isInstance(a)) return ((T) a);
+		}
+		return null;
+	}
+	
+	/**
 	 * Cancels all actions which an instance of or a subclass of the given type.
 	 * @param type the type to cancel, eg WalkAction
 	 * @return the number of cancelled actions or 0 if none were cancelled.

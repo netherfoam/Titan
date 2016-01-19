@@ -3,15 +3,18 @@ package org.maxgamer.rs.model.javascript;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 import org.mozilla.javascript.Context;
+import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.ContinuationPending;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.ImporterTopLevel;
+import org.mozilla.javascript.NativeFunction;
 import org.mozilla.javascript.Script;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
@@ -24,15 +27,26 @@ public class JavaScriptFiber {
 		}
 	}
 	
-	/**
-	 * Library JavaScript files which should be loaded in all Fibers
-	 */
-	private static final String[] LIBS = new String[]{ "lib/core.js" };
+	private final ContextFactory factory = new JavaScriptContextFactory(){
+		@Override
+		public long credits(){
+			return credits;
+		}
+		@Override
+		public void pay(long expense){
+			credits -= expense;
+		}
+	};
 	
 	/**
-	 * The file that this Script originated from
+	 * Maximum number of millisecond credits for this script to hold at once
 	 */
-	private final File file;
+	private static final long MAX_CREDITS = 300; 
+	
+	/**
+	 * How many millisecond credits this script is rationed when called
+	 */
+	private static final long CREDITS_PER_CALL = 5;
 	
 	/**
 	 * The scope of this script. This contains all functions and variables
@@ -40,10 +54,16 @@ public class JavaScriptFiber {
 	 */
 	private Scriptable scope;
 	
+	private ClassLoader loader;
+	
+	private HashMap<File, Long> sources = new HashMap<File, Long>();
+	
 	/**
-	 * Created when execution is paused / pause() is called.
+	 * The number of millisecond credits this script holds. Every time it is called,
+	 * an amount of credits are supplied. Up to MAX_CREDITS may be stored at once. 
+	 * If this drops below 0, then the script will throw a TimeoutError.
 	 */
-	private ContinuationPending pending;
+	private long credits = MAX_CREDITS;
 	
 	/**
 	 * Constructs a new JavaScriptFiber, loading the given file
@@ -52,22 +72,17 @@ public class JavaScriptFiber {
 	 * can't be loaded. 
 	 * @param file The file that contains the script that is to be run.
 	 */
-	public JavaScriptFiber(File file) {
-		this.file = file;
+	public JavaScriptFiber(ClassLoader loader) {
+		this.loader = loader;
 		try{
-			Context context = Context.enter();
+			Context context = factory.enterContext();
+			context.setApplicationClassLoader(loader);
 			
 			/* Create our scope, ImporterTopLevel allows references to classes by full name */
 			this.scope = context.initStandardObjects(new ImporterTopLevel(context)); 
 			
-			/* Load our library files - Currently only lib/core.js */
-			for (String s : LIBS) {
-				this.include(s);
-			}
-		}
-		catch(IOException e){
-			/* This shouldn't happen unless development is being done in core.js */
-			throw new RuntimeException(e);
+			/* Reference required to "this" to pause. */
+			this.set("fiber", this);
 		}
 		finally{
 			Context.exit();
@@ -80,12 +95,27 @@ public class JavaScriptFiber {
 	 * @param params the parameters
 	 * @return the result of the call, may be null.
 	 */
-	public Object invoke(String method, Object... params){
+	public Object invoke(String method, Object... params) throws ContinuationPending, NoSuchMethodException {
 		try{
-			Context ctx = Context.enter();
+			Context ctx = factory.enterContext();
+			ctx.setApplicationClassLoader(loader);
+			
+			Object o = this.scope.get(method, scope);
+			
+			if(o == Function.NOT_FOUND){
+				throw new NoSuchMethodException("Method not found: " + method + "(...)");
+			}
+			
+			if(o instanceof Function == false){
+				throw new RuntimeException(o + " is not of type " + Function.class.getCanonicalName() + ", cannot call " + method + "()");
+			}
+			
 			Function func = (Function) this.scope.get(method, scope);
-			Object result = func.call(ctx, scope, scope, params);
-			return result;
+			
+			return ctx.callFunctionWithContinuations(func, this.scope, params);
+		}
+		catch(ContinuationPending e){
+			throw e;
 		}
 		finally{
 			Context.exit();
@@ -99,6 +129,70 @@ public class JavaScriptFiber {
 	 * @param path the path to the file, without js/ prefix. Eg lib/dialogue.js or npc/doomsayer.js
 	 * @throws IOException
 	 */
+	public Object parse(String path) throws IOException, ContinuationPending{
+		File f = new File(SCRIPT_FOLDER, path);
+		InputStream in;
+		String name = f.getPath();
+		if(f.exists()){
+			in = new FileInputStream(f);
+		}
+		else{
+			throw new FileNotFoundException(f.getPath());
+		}
+		
+		return this.parse(name, in);
+	}
+	
+	/**
+	 * Interprets the given file.  This should not be used on suspendable scripts.
+	 * @param f the file to load
+	 * @throws IOException if an {@link IOException} occurs.
+	 */
+	public Object parse(File f) throws IOException, ContinuationPending{
+		FileInputStream in = new FileInputStream(f);
+		try{
+			sources.put(f, System.currentTimeMillis());
+			return parse(f.getPath(), in);
+		}
+		finally{
+			in.close();
+		}
+	}
+	
+	/**
+	 * Interprets the given InputStream.  This should not be used on suspendable scripts.
+	 * @param in the {@link InputStream} to load
+	 * @throws IOException if an {@link IOException} occurs.
+	 */
+	public Object parse(String name, InputStream in) throws IOException, ContinuationPending{
+		Context context = factory.enterContext();
+		context.setApplicationClassLoader(loader);
+		
+		NativeFunction script = null;
+		try{
+			/* Sets interpreted mode, allowing us to pause the script during execution */
+			context.setOptimizationLevel(-1);
+			
+			InputStreamReader reader = new InputStreamReader(in);
+			script = (NativeFunction) context.compileReader(reader, name, 1, null);
+			reader.close();
+			
+			return context.executeScriptWithContinuations((Script) script, this.scope);
+		}
+		catch(ContinuationPending e){
+			System.out.println("Paused at " + script.getDebuggableView().getSourceName() + "#" + script.getDebuggableView().getFunctionName());
+			throw e;
+		}
+		finally{
+			Context.exit();
+		}
+	}
+	
+	/**
+	 * Parses the given file but does not allow for {@link ContinuationPending} to be thrown
+	 * @param path the path of the file to parse, as in Titan/javascripts/{path}
+	 * @throws IOException if an {@link IOException} occurs
+	 */
 	public void include(String path) throws IOException{
 		File f = new File(SCRIPT_FOLDER, path);
 		InputStream in;
@@ -110,31 +204,69 @@ public class JavaScriptFiber {
 			throw new FileNotFoundException(f.getPath());
 		}
 		
-		this.load(name, in);
+		Context context = factory.enterContext();
+		context.setApplicationClassLoader(loader);
+		
+		try{
+			/* Sets interpreted mode, allowing us to pause the script during execution */
+			context.setOptimizationLevel(-1);
+			
+			sources.put(f, System.currentTimeMillis());
+			
+			InputStreamReader reader = new InputStreamReader(in);
+			context.evaluateReader(this.scope, reader, name, 1, null);
+			
+			reader.close();
+		}
+		catch(ContinuationPending e){
+			throw e;
+		}
+		finally{
+			Context.exit();
+		}
 	}
 	
 	/**
-	 * Interprets the given file.  This should not be used on suspendable scripts.
-	 * @param f the file to load
-	 * @throws IOException if an {@link IOException} occurs.
+	 * Returns true if any of the loaded files have been modified since they
+	 * were loaded.
+	 * @return true if any of the loaded files have been modified
 	 */
-	public void load(File f) throws IOException{
-		FileInputStream in = new FileInputStream(f);
-		load(f.getPath(), in);
-		in.close();
+	public boolean modified(){
+		for(Entry<File, Long> entry : this.sources.entrySet()){
+			File f = entry.getKey();
+			long loaded = entry.getValue();
+			
+			if(f.lastModified() > loaded){
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	/**
-	 * Interprets the given InputStream.  This should not be used on suspendable scripts.
-	 * @param in the {@link InputStream} to load
-	 * @throws IOException if an {@link IOException} occurs.
+	 * Reloads any loaded files.  If force is true, then all files will be reloaded.
+	 * If force is false, they will only be reloaded if modified.  Remanents of old
+	 * code are not removed from the scope. You may need to reset continuations if this
+	 * occurs.
+	 * @param force true to reload everything, false to reload only changes
 	 */
-	public void load(String name, InputStream in) throws IOException{
-		Context context = Context.enter();
-		InputStreamReader reader = new InputStreamReader(in);
-		context.evaluateReader(this.scope, reader, name, 1, null);
-		reader.close();
-		Context.exit();
+	public void reload(boolean force){
+		for(Entry<File, Long> entry : this.sources.entrySet()){
+			File f = entry.getKey();
+			long loaded = entry.getValue();
+			
+			if(force || f.lastModified() > loaded){
+				try{
+					this.parse(f);
+				}
+				catch(IOException e){
+					// Skip parsing it
+				}
+				catch(ContinuationPending p){
+					throw new RuntimeException("Cannot reload() a script that raises ContinuationPending!");
+				}
+			}
+		}
 	}
 	
 	/**
@@ -147,66 +279,21 @@ public class JavaScriptFiber {
 	}
 	
 	/**
-	 * Starts the {@link JavaScriptFiber}.  This will return when the script
-	 * either raises a {@link ContinuationPending} exception (through pause())
-	 * or finishes.
-	 * @throws IOException if an {@link IOException} occurs.
-	 */
-	public void start() throws IOException {
-		try {
-			Context context = Context.enter();
-			
-			/* Sets interpreted mode, allowing us to pause the script during execution */
-			context.setOptimizationLevel(-1);
-			
-			/* Reference required to "this" to pause. */
-			this.set("fiber", this);
-			
-			/* Parse the entire file */
-			FileReader reader = new FileReader(this.file);
-			Script script = context.compileReader(reader, this.file.getPath(), 1, null);
-			reader.close();
-			
-			/* Begins executing, until it finishes or pause() is called, which throws ContinuationPending */
-			context.executeScriptWithContinuations(script, this.scope);
-		}
-		catch (ContinuationPending pending) {
-			return;
-		}
-		finally {
-			Context.exit();
-		}
-		
-		/* This is only reached if the script finished peacefully */
-		stop();
-	}
-	
-	/**
-	 * Terminates this JavaScript fiber. If the fiber is running, this will 
-	 * terminate at the next pause() call.
-	 */
-	public void stop(){
-		scope = null;
-		pending = null;
-	}
-	
-	/**
 	 * Pauses the JavaScriptFiber. This should only be called as a result of the
 	 * JavaScriptFiber's calls. This throws {@link ContinuationPending}.
 	 */
-	public void pause() throws ContinuationPending {
-		if(isFinished()){
-			return;
-		}
-		
-		Context context = Context.enter();
+	public ContinuationPending state() {
+		Context context = factory.enterContext();
 		try {
-			this.pending = context.captureContinuation();
-			throw pending;
+			return context.captureContinuation();
 		}
 		finally {
 			Context.exit();
 		}
+	}
+	
+	public void pause() throws ContinuationPending{
+		throw state();
 	}
 	
 	/**
@@ -214,45 +301,27 @@ public class JavaScriptFiber {
 	 * is caught from a pause().
 	 * @param response
 	 */
-	public void unpause(Object response) {
-		if(isFinished()) return;
-		
+	public Object unpause(ContinuationPending start, Object response) {
 		/* Prevent double unpauses() or unpausing finished fibers */
-		if(this.pending == null){
-			throw new IllegalStateException("Cannot unpause, as JavaScriptFiber is currently not paused! Maybe it finished?");
+		if(start == null){
+			throw new NullPointerException("ContinuationPending may not be null for unpause()");
 		}
 		
+		credits = Math.min(credits + CREDITS_PER_CALL, MAX_CREDITS);
+		
+		Context context = factory.enterContext();
 		try {
-			Context context = Context.enter();
-			
-			/* Remove our reference to pending */
-			ContinuationPending pending = this.pending;
-			this.pending = null;
+			context.setApplicationClassLoader(loader);
 			
 			/* Resumes the script. This runs until the script finishes or is paused again. */
-			context.resumeContinuation(pending.getContinuation(), this.scope, response);
+			return context.resumeContinuation(start.getContinuation(), this.scope, response);
 		}
-		catch (ContinuationPending pending) {
+		catch (ContinuationPending finish) {
 			/* Script was paused, it will be resumed later. */
-			return;
+			throw finish;
 		}
 		finally {
 			Context.exit();
 		}
-		
-		/* This is only reached if the script finished peacefully */
-		stop();
-	}
-	
-	/**
-	 * Returns true if this {@link JavaScriptFiber} has terminated.
-	 * @return true if this {@link JavaScriptFiber} has terminated.
-	 */
-	public boolean isFinished(){
-		if(scope == null){
-			return true;
-		}
-		
-		return false;
 	}
 }

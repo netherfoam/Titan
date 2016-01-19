@@ -11,7 +11,7 @@ function chat(speaker, message, emote){
 
 function option(options, title){
 	title = title || "Select an option";
-	DialogueUtil.option(fiber, player, options, title);
+	return DialogueUtil.option(fiber, player, options, title);
 }
 
 function think(text, title){
@@ -25,13 +25,13 @@ function thought(text, title){
 
 function pick(items, max){
 	max = max || 28;
-	DialogueUtil.pick(fiber, player, items, max);
+	return DialogueUtil.pick(fiber, player, items, max);
 }
 
 function string(question){
-	DialogueUtil.readString(fiber, player, question);
+	return DialogueUtil.readString(fiber, player, question);
 }
 
 function number(question){
-	DialogueUtil.readNumber(fiber, player, question);
+	return DialogueUtil.readNumber(fiber, player, question);
 }

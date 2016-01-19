@@ -36,7 +36,6 @@ import org.maxgamer.rs.model.map.path.AStar;
 import org.maxgamer.rs.model.map.path.Path;
 import org.maxgamer.rs.model.map.path.PathFinder;
 import org.maxgamer.rs.model.skill.SkillSet;
-import org.maxgamer.rs.structure.ArrayUtility;
 import org.maxgamer.rs.structure.configs.ConfigSection;
 
 /**
@@ -90,12 +89,6 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	private Facing facing;
 
 	/**
-	 * The mob we are trying to kill. Not all of our attacks necessarily have to
-	 * involve this target.
-	 */
-	private Mob target;
-
-	/**
 	 * Constructs a new mob
 	 * 
 	 * @param sizeX
@@ -109,8 +102,26 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 		this.damage = new DamageLog(this);
 		this.temporaryConfigs = new ConfigSection();
 	}
+	
+	public Mob getTarget(){
+		CombatFollow follow = getActions().first(CombatFollow.class);
+		if(follow == null) return null;
+		
+		return follow.getTarget();
+	}
+	
+	public void setTarget(Mob target){
+		if (target != null) {
+			getDamage().setLastTarget(target);
+			// New target is not null
+			getActions().clear();
+			getActions().queue(new CombatFollow(this, target, new AStar(10)));
+		} else {
+			getActions().clear();
+		}
+	}
 
-	public Mob getTarget() {
+	/*public Mob getTarget() {
 		if (this.target != null) {
 			if (this.target.isDead()) {
 				this.setTarget(null);
@@ -138,7 +149,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 		} else {
 			getActions().clear();
 		}
-	}
+	}*/
 
 	/**
 	 * Sets this mob's facing target to the given position
@@ -434,6 +445,10 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	public CombatStats getCombatStats() {
 		return this.combatStats;
 	}
+	
+	public Action move(Position to){
+		return this.move(to, new AStar(5));
+	}
 
 	/**
 	 * Walks this mob to the given position via the given pathfinder. If there
@@ -449,19 +464,18 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 *         one was not.
 	 * @thread main
 	 */
-	public boolean move(Position to, PathFinder finder) {
+	public Action move(Position to, PathFinder finder) {
 		if (Core.getServer().getThread().isServerThread() == false) {
 			throw new IllegalThreadException("Must be invoked in main thread");
 		}
 
-		Path path = finder.findPath(getLocation(), to, to, getSizeX(),
-				getSizeY());
+		Path path = finder.findPath(getLocation(), to, to, getSizeX(), getSizeY());
 
 		Action walk = new WalkAction(this, path);
 		getActions().clear();
 		getActions().queue(walk);
 
-		return !path.hasFailed();
+		return walk;
 	}
 
 	/**
@@ -843,24 +857,36 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 		// Empty
 	}
 
-	public void use(ItemStack item, int slot, String option) {
+	public boolean use(ItemStack item, int slot, String option) {
 		MobUseItemEvent e = new MobUseItemEvent(this, item, option, slot);
 		e.call();
-		if (e.isCancelled()) {
-			return;
-		}
+		
+		return e.isConsumed();
+	}
+	
+	public boolean use(ItemStack item, String option){
+		return this.use(item, -1, option);
 	}
 
-	public void use(GameObject g, String option) {
-		use(g, ArrayUtility.indexOf(option, g.getDefiniton().getOptions()));
+	public boolean use(GameObject g, String option) {
+		int i = 0;
+		for(String s : g.getOptions()){
+			if(s != null && s.equals(option)){
+				return use(g, i);
+			}
+			
+			i++;
+		}
+		throw new IllegalArgumentException("No option available: '" + option + "' on " + g);
 	}
 
 	public boolean use(GameObject g, int option) {
-		if (option < 0 || option >= g.getDefiniton().getOptions().length)
+		if (option < 0 || option >= g.getDefiniton().getOptions().length){
 			throw new IllegalArgumentException("Cannot invoke option " + option);
-		if (g.getDefiniton().getOption(option) == null)
-			throw new IllegalArgumentException("Cannot invoke option " + option
-					+ " ( no such option )");
+		}
+		if (g.getDefiniton().getOption(option) == null){
+			throw new IllegalArgumentException("Cannot invoke option " + option + " ( no such option )");
+		}
 
 		final MobUseObjectEvent e = new MobUseObjectEvent(this, g, option);
 		this.face(g);

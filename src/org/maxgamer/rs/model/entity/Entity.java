@@ -90,9 +90,8 @@ public abstract class Entity implements MBR, Locatable {
 	}
 	
 	/**
-	 * Hides this entity from the given viewer. 
+	 * Shows this entity to the given viewer. If this is public, the method does nothing.
 	 * @param viewer the viewer
-	 * @throws IllegalStateException if this entity is public
 	 */
 	public final void addViewer(Entity viewer){
 		if(isPrivate() == false){
@@ -113,8 +112,9 @@ public abstract class Entity implements MBR, Locatable {
 	}
 	
 	/**
-	 * Shows this entity to the given viewer. If this is public, the method does nothing.
+	 * Hides this entity from the given viewer. 
 	 * @param viewer the viewer
+	 * @throws IllegalStateException if this entity is public
 	 */
 	public final void removeViewer(Entity viewer){
 		if(isPrivate() == false){

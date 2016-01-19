@@ -189,8 +189,6 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 
 	@Override
 	protected void onLoad() {
-		// It should not be. We need to avoid setting the player's location.
-		// Location is not YMLSerializable by design
 		this.getProtocol().login();
 
 		ConfigSection config = getConfig().getSection("location");
@@ -236,7 +234,6 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 		getWindow().open(new IgnoresSideInterface(this));
 		getWindow().open(new CombatStyles(this));
 		getWindow().open(new SettingsInterface(this));
-		// getWindow().open(new EmotesInterface(this));
 		getWindow().open(new ChatInterface(this));
 		getWindow().open(new NotesInterface(this));
 		getWindow().open(new RunInterface(this));
@@ -244,8 +241,7 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 		getWindow().open(new SkillsInterface(this));
 		getWindow().open(new TasksInterface(this));
 
-		this.getProtocol().sendConfig(281, 1000); // Removes tutorial island
-													// limitations
+		this.getProtocol().sendConfig(281, 1000); // Removes tutorial island limitations
 	}
 
 	/**

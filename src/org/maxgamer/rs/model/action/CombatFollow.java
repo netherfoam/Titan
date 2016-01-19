@@ -68,4 +68,12 @@ public class CombatFollow extends Follow {
 			yield();
 		}
 	}
+	
+	@Override
+	public void onCancel(){
+		super.onCancel();
+		if(getOwner().getTarget() != null){
+			getOwner().setTarget(null);
+		}
+	}
 }

@@ -20,6 +20,10 @@ public class Erratic {
 		return r.nextInt(max);
 	}
 	
+	public static <T> T any(T[] items){
+		return items[r.nextInt(items.length)];
+	}
+	
 	public static String nextString(int length){
 		String options = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 		char[] chars = new char[length];

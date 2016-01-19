@@ -6,21 +6,29 @@ import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.map.Location;
 import org.maxgamer.rs.model.map.path.AStar;
 import org.maxgamer.rs.model.map.path.Path;
+import org.mozilla.javascript.ContinuationPending;
 
 import co.paralleluniverse.fibers.SuspendExecution;
 
 public class JSUtil {
 	public static void wait(final JavaScriptFiber fiber, int ticks){
+		final ContinuationPending state = fiber.state();
+		
 		Tickable t = new Tickable() {
 			@Override
 			public void tick() {
-				fiber.unpause(null);
+				try{
+					fiber.unpause(state, null);
+				}
+				catch(ContinuationPending e){
+					/* Quietly - Someone elses responsibility! */
+				}
 			}
 		};
 		
 		t.queue(ticks);
 		
-		fiber.pause();
+		throw state;
 	}
 	
 	public static void move(final JavaScriptFiber fiber, Mob mob, Location dest, boolean block){
@@ -33,11 +41,17 @@ public class JSUtil {
 			mob.getActions().queue(walk);
 		}
 		else{
+			final ContinuationPending state = fiber.state();
 			walk = new WalkAction(mob, path){
 				@Override
 				public void run() throws SuspendExecution{
 					super.run();
-					fiber.unpause(null);
+					try{
+						fiber.unpause(state, null);
+					}
+					catch(ContinuationPending e){
+						/* Someone elses problem! */
+					}
 				}
 				
 				@Override
@@ -47,7 +61,8 @@ public class JSUtil {
 				}
 			};
 			mob.getActions().queue(walk);
-			fiber.pause();
+			
+			throw state;
 		}
 	}
 	

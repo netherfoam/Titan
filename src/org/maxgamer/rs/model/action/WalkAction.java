@@ -17,6 +17,10 @@ public class WalkAction extends Action {
 		this.path = path;
 	}
 	
+	public Path getPath(){
+		return path;
+	}
+	
 	/**
 	 * Walks the next phase of the path. This should be called once per tick for
 	 * smooth walking.

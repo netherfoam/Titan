@@ -537,6 +537,12 @@ public abstract class GameObject extends Entity implements Interactable {
 		return this.def.hasRangeBlockClipFlag();
 	}
 	
+	@Override
+	public boolean isVisible(Entity to){
+		if(isHidden()) return false;
+		return super.isVisible(to);
+	}
+	
 	/**
 	 * Hides this object from the view of players. This updates it on the
 	 * clients which can view this.
@@ -737,5 +743,10 @@ public abstract class GameObject extends Entity implements Interactable {
 		sb.append(",facing: " + Directions.getName(this.getFacing()));
 		sb.append(",ac=" + this.getActionCount() + ",solid=" + this.isSolid() + ",low=" + this.hasRangeBlockClipFlag());
 		return sb.toString();
+	}
+	
+	@Override
+	public String[] getOptions() {
+		return def.getOptions().clone();
 	}
 }

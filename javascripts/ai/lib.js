@@ -1,41 +1,16 @@
-importClass(org.maxgamer.rs.module.people.select.GroundSelector);
-importClass(org.maxgamer.rs.module.people.select.ItemSelector);
-importClass(org.maxgamer.rs.module.people.select.NPCSelector);
-importClass(org.maxgamer.rs.module.people.select.ObjectSelector);
-
+var fiber;
 var body;
-var selected;
+var included_files = [];
 
-function objects(){
-	selected = new ObjectSelector(body, 20);
-	return selected;
+function require(path){
+	for(var v in included_files){
+		if(v == path) return;
+	}
+
+	fiber.include(path);
+	included_files.push(path);
 }
 
-function items(){
-	selected = new ItemSelector(body.getInventory());
-	return selected;
-}
-
-function equipment(){
-	selected = new ItemSelector(body.getEquipment());
-	return selected;
-}
-
-function bank(){
-	selected = new ItemSelector(body.getBank());
-	return selected;
-}
-
-function npcs(){
-	selected = new NPCSelector(body, 20);
-	return selected;
-}
-
-function ground(){
-	selected = new GroundSelector(body, 20);
-	return selected;
-}
-
-function selected(){
-	return selected;
+function wait(){
+	return fiber.pause();
 }

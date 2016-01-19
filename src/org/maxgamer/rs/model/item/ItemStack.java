@@ -248,6 +248,7 @@ public class ItemStack implements Comparable<ItemStack>, YMLSerializable, Intera
 	
 	public boolean hasGroundOption(String name){
 		for(String s : getGroundOptions()){
+			if(s == null) continue;
 			if(s.equals(name)){
 				return true;
 			}

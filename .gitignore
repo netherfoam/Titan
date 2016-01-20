@@ -5,6 +5,7 @@
 .externalToolBuilders/
 .settings
 *.log
+/build.num
 *titan-modules/
 *titan-client/
 

@@ -27,10 +27,16 @@
 		    <classpath refid="class.path"/>
 		</manifestclasspath>
 		
+		<property name="version.num" value="1.00"/>
+     	<buildnumber file="build.num"/>
+		<exec executable="hostname" outputproperty="computer.hostname"/>
+		
 		<jar destfile="Titan.jar" basedir="bin">
 			<manifest>
 				<attribute name="Main-Class" value="org.maxgamer.rs.core.RSBootstrap" />
 				<attribute name="Class-Path" value="${lib.list}"/>
+				<attribute name="Implementation-Version" value="${build.number}"/>
+				<attribute name="Implementation-Vendor" value="${computer.hostname}"/>
 			</manifest>
 		</jar>
 	</target>

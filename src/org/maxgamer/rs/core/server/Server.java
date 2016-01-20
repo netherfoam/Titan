@@ -26,6 +26,7 @@ import org.maxgamer.rs.command.commands.DialogueCmd;
 import org.maxgamer.rs.command.commands.Die;
 import org.maxgamer.rs.command.commands.GC;
 import org.maxgamer.rs.command.commands.GFX;
+import org.maxgamer.rs.command.commands.GPS;
 import org.maxgamer.rs.command.commands.Gear;
 import org.maxgamer.rs.command.commands.Hide;
 import org.maxgamer.rs.command.commands.HideObjects;
@@ -40,7 +41,6 @@ import org.maxgamer.rs.command.commands.Kill;
 import org.maxgamer.rs.command.commands.LogonStatus;
 import org.maxgamer.rs.command.commands.ModuleCmd;
 import org.maxgamer.rs.command.commands.Nearby;
-import org.maxgamer.rs.command.commands.GPS;
 import org.maxgamer.rs.command.commands.Queues;
 import org.maxgamer.rs.command.commands.RangeGear;
 import org.maxgamer.rs.command.commands.Rank;
@@ -510,7 +510,7 @@ public class Server {
 			commands.register("vendor", new Vendor());
 			commands.register("whisper", new Whisper());
 			commands.register("js", new JSCommand());
-			commands.register("config", new Config());
+			commands.register("config", new Config()); 
 			
 			ConfigSection config = Core.getWorldConfig().getSection("commands", null);
 			if (config != null) {

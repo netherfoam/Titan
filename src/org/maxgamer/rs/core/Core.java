@@ -43,6 +43,16 @@ import org.maxgamer.rs.tools.ConfigSetup;
  */
 public class Core {
 	/**
+	 * The hostname that built the project and build number
+	 */
+	public static final String VERSION = Core.class.getPackage().getImplementationVendor() + "#" + Core.class.getPackage().getImplementationVersion();
+	
+	/**
+	 * The build number represented as an integer
+	 */
+	public static final int BUILD = Integer.parseInt(Core.class.getPackage().getImplementationVersion());
+	
+	/**
 	 * Handles scheduling of tasks for a later date, optionally on the main
 	 * thread or on an async thread
 	 */
@@ -117,12 +127,12 @@ public class Core {
 			getWorldConfig().set(parts[0], parts[1]);
 		}
 		
-		Log.init(LogLevel.valueOf(getWorldConfig().getString("log.level", LogLevel.INFO.toString())));
-		Log.info("-- Blaze Booting --");
-		Log.info("-- Server Booting at " + new Date().toString() + " --");
-		
 		if (threads <= 0) threads = Runtime.getRuntime().availableProcessors();
-		Log.info("Booting. Core threads: " + threads);
+		
+		Log.init(LogLevel.valueOf(getWorldConfig().getString("log.level", LogLevel.INFO.toString())));
+		Log.info("Booting on " + new Date().toString() + " --");
+		Log.info("Version: " + Core.VERSION + ", Threads: " + threads);
+		
 		final long start = System.currentTimeMillis();
 		
 		threadPool = Executors.newFixedThreadPool(threads, new ThreadFactory() {

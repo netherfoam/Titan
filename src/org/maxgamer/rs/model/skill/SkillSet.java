@@ -100,7 +100,7 @@ public class SkillSet implements YMLSerializable {
 		
 		if (skill.getLevel() > previousLevel) {
 			if (owner instanceof Player) {
-				Player p = (Player) owner;
+				//Player p = (Player) owner;
 				//TODO level up
 			}
 			owner.graphics(199);

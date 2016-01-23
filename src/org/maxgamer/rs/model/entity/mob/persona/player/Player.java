@@ -137,11 +137,14 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 	private long created = System.currentTimeMillis();
 	
 	/**
-	 * The epoch time in milliseconds that the player last had their playtime
-	 * updated. This is used to calculate the amount of time to add to their
-	 * playtime
+	 * The epoch time in milliseconds that the player was loaded
 	 */
-	private long lastPlaytimeUpdate = System.currentTimeMillis();
+	private long loggedInAt = System.currentTimeMillis();
+	
+	/**
+	 * The total playtime this player has
+	 */
+	private long playtime = 0;
 	
 	/**
 	 * Constructs a new Player but does not add them to the world. This does not
@@ -212,6 +215,22 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 		}
 	}
 	
+	/**
+	 * The epoch time that this player was created in milliseconds.
+	 * @return The epoch time that this player was created in milliseconds.
+	 */
+	public long getCreated(){
+		return created;
+	}
+	
+	/**
+	 * The amount of playtime this player has, in milliseconds
+	 * @return The amount of playtime this player has, in milliseconds
+	 */
+	public long getPlaytime(){
+		return playtime + (System.currentTimeMillis() - loggedInAt);
+	}
+	
 	@Override
 	protected void onLoad() {
 		this.getProtocol().login();
@@ -225,7 +244,8 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 			this.setLocation(DEFAULT_PLAYER_SPAWN);
 		}
 		this.created = getConfig().getLong("created", created);
-		this.lastPlaytimeUpdate = System.currentTimeMillis();
+		this.playtime = getConfig().getLong("playtime", playtime);
+		this.loggedInAt = System.currentTimeMillis();
 		this.getProtocol().sendMap();
 		
 		this.gamepane = new GamePane(this);
@@ -662,9 +682,8 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 	@Override
 	public ConfigSection serialize() {
 		ConfigSection config = super.serialize();
-		config.set("playtime", System.currentTimeMillis() - lastPlaytimeUpdate);
+		config.set("playtime", getPlaytime());
 		config.set("created", created);
-		lastPlaytimeUpdate = System.currentTimeMillis();
 		return config;
 	}
 }

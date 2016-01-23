@@ -35,55 +35,58 @@ public class MapStructure {
 		RandomAccessFile raf = new RandomAccessFile(f, "rw");
 		FileChannel channel = raf.getChannel();
 		
-		if(map instanceof StandardMap){
-			ByteBuffer bb = ByteBuffer.allocate(1);
-			bb.put((byte) TYPE_STANDARD);
-			bb.flip();
-			channel.write(bb, 0);
-		}
-		else if(map instanceof DynamicMap){
-			int width = map.width() >> 3;
-			int height = map.height() >> 3;
-			
-			ByteBuffer bb = ByteBuffer.allocate(3);
-			bb.put((byte) TYPE_STANDARD);
-			bb.put((byte) (width - 1));
-			bb.put((byte) (height - 1));
-			bb.flip();
-			
-			channel.write(bb, 0);
-			
-			bb = ByteBuffer.allocate(RECORD_SIZE);
-			
-			for(int i = 0; i < width; i++){
-				for(int j = 0; j < height; j++){
-					
-					for(int k = 0; k < 4; k++){
-						Chunk c = map.getChunk(i, j, k);
+		try{
+			if(map instanceof StandardMap){
+				ByteBuffer bb = ByteBuffer.allocate(1);
+				bb.put((byte) TYPE_STANDARD);
+				bb.flip();
+				channel.write(bb, 0);
+			}
+			else if(map instanceof DynamicMap){
+				int width = map.width() >> 3;
+				int height = map.height() >> 3;
+				
+				ByteBuffer bb = ByteBuffer.allocate(3);
+				bb.put((byte) TYPE_STANDARD);
+				bb.put((byte) (width - 1));
+				bb.put((byte) (height - 1));
+				bb.flip();
+				
+				channel.write(bb, 0);
+				
+				bb = ByteBuffer.allocate(RECORD_SIZE);
+				
+				for(int i = 0; i < width; i++){
+					for(int j = 0; j < height; j++){
 						
-						if(c == null){
-							bb.put((byte) 0xFF);
-							bb.put((byte) 0xFF);
-							bb.put((byte) 0xFF);
+						for(int k = 0; k < 4; k++){
+							Chunk c = map.getChunk(i, j, k);
+							
+							if(c == null){
+								bb.put((byte) 0xFF);
+								bb.put((byte) 0xFF);
+								bb.put((byte) 0xFF);
+							}
+							else{
+								bb.put((byte) c.getCacheX());
+								bb.put((byte) c.getCacheY());
+								bb.put((byte) c.getCacheZ());
+							}
 						}
-						else{
-							bb.put((byte) c.getCacheX());
-							bb.put((byte) c.getCacheY());
-							bb.put((byte) c.getCacheZ());
-						}
+						
+						bb.flip();
+						channel.write(bb, 3 + (i * width + j) * RECORD_SIZE);
 					}
-					
-					bb.flip();
-					channel.write(bb, 3 + (i * width + j) * RECORD_SIZE);
 				}
 			}
+			else{
+				throw new NotImplementedException();
+			}
 		}
-		else{
-			throw new NotImplementedException();
+		finally{
+			channel.close();
+			raf.close();
 		}
-		
-		channel.close();
-		raf.close();
 	}
 	
 	public static MapStructure load(File parent, String name) throws FileNotFoundException{

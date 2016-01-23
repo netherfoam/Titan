@@ -11,13 +11,14 @@
 
 	<target name="compile">
 		<mkdir dir="bin" />
-		<javac source="1.7" target="1.7" srcdir="src" destdir="bin" includeantruntime="false" classpathref="class.path" debug="true">
-		</javac>
+		<javac source="1.7" target="1.7" srcdir="src" destdir="bin" includeantruntime="false" classpathref="class.path" debug="true" />
 		
 		<taskdef name="quasar" classname="co.paralleluniverse.fibers.instrument.InstrumentationTask" classpathref="class.path">
 		</taskdef>
 		<quasar>
-			<fileset dir="bin" />
+			<fileset dir="bin">
+				<include name="*.jar" />
+			</fileset>
 		</quasar>
 
 	</target>
@@ -27,14 +28,28 @@
 		    <classpath refid="class.path"/>
 		</manifestclasspath>
 		
-		<property name="version.num" value="1.00"/>
-     	<buildnumber file="build.num"/>
 		<exec executable="hostname" outputproperty="computer.hostname"/>
 		
 		<jar destfile="Titan.jar" basedir="bin">
 			<manifest>
 				<attribute name="Main-Class" value="org.maxgamer.rs.core.RSBootstrap" />
 				<attribute name="Class-Path" value="${lib.list}"/>
+			</manifest>
+		</jar>
+	</target>
+	
+	<target name="release" depends="jar">
+		<buildnumber file="build.num"/>
+		
+		<exec executable="hostname" outputproperty="computer.hostname"/>
+		<jar jarfile="Titan.jar" basedir="bin">
+			<zipgroupfileset dir="lib">
+				<include name="*.jar" />
+				<exclude name="kryo-2.22-all.jar" />
+			</zipgroupfileset>
+			
+			<manifest>
+				<attribute name="Main-Class" value="org.maxgamer.rs.core.RSBootstrap" />
 				<attribute name="Implementation-Version" value="${build.number}"/>
 				<attribute name="Implementation-Vendor" value="${computer.hostname}"/>
 			</manifest>
@@ -43,6 +58,29 @@
 
 	<target name="run" depends="jar">
 		<java jar="Titan.jar" fork="true" classpathref="class.path" />
+	</target>
+
+	<target name="test" depends="compile">
+		<javac source="1.7" target="1.7" srcdir="test" destdir="test" includeantruntime="false" classpathref="class.path" debug="true" />
+
+		<junit haltonfailure="true" printsummary="withOutAndErr" showoutput="yes" fork="yes">
+			<classpath>
+				<pathelement location="${class.path}" />
+				<pathelement location="bin" />
+				<pathelement location="test" />
+				<fileset dir="test">
+					<include name="*.jar" />
+				</fileset>
+			</classpath>
+
+			<formatter type="plain" usefile="false" />
+
+			<batchtest fork="yes" todir="test">
+				<fileset dir="test">
+					<include name="**/*.java" />
+				</fileset>
+			</batchtest>
+		</junit>
 	</target>
 
 </project>

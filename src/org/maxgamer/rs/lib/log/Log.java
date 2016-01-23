@@ -26,6 +26,7 @@ public class Log {
 		try {
 			File f = new File("server.log");
 			f.createNewFile();
+			@SuppressWarnings("resource")
 			final PrintStream file = new PrintStream(new FileOutputStream(f, true));
 			
 			ps = new PrintStream(System.out) {

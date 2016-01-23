@@ -24,7 +24,6 @@ public class ConfigSetup {
 		
 		p.println();
 		p.println("Please take a moment to configure world.yml. This is required set-up, or your server will not function!");
-		System.out.println("THIS SHOULD NEVER PRINT!");
 		p.println(" -- Database Setup --");
 		p.println("Please note that SQLite is not functional yet!");
 		p.print("Use MySQL [true]: ");
@@ -41,7 +40,7 @@ public class ConfigSetup {
 			config.set("database.pass", p.getString());
 			
 			p.print("Database name [titan]: ");
-			config.set("database.name", p.getString(Pattern.compile("[A-Za-z0-9_]{1,}"), "titan"));
+			config.set("database.database", p.getString(Pattern.compile("[A-Za-z0-9_]{1,}"), "titan"));
 			
 			p.print("Database port [3306]: ");
 			config.set("database.port", p.getInt(3306));
@@ -76,7 +75,6 @@ public class ConfigSetup {
 		p.println("Please take a moment to configure logon.yml. This is required set-up, or your server will not function!");
 		p.println(" -- Database Setup --");
 		p.println("Please note that SQLite is not functional yet!");
-		System.out.println("THIS SHOULD NEVER PRINT EITHER!");
 		p.print("Use MySQL [true]: ");
 		if(p.getBoolean(true)){
 			config.set("database.type", "mysql");
@@ -91,7 +89,7 @@ public class ConfigSetup {
 			config.set("database.pass", p.getString());
 			
 			p.print("Database name [titan]: ");
-			config.set("database.name", p.getString(Pattern.compile("[A-Za-z0-9_]{1,}"), "titan"));
+			config.set("database.database", p.getString(Pattern.compile("[A-Za-z0-9_]{1,}"), "titan"));
 			
 			p.print("Database port [3306]: ");
 			config.set("database.port", p.getInt(3306));

@@ -132,6 +132,7 @@ public class XMLItemDefImporter {
 				}
 			}
 		}
+		fin.close();
 		System.out.println("Done!");
 	}
 }

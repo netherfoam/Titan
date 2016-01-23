@@ -45,12 +45,20 @@ public class Core {
 	/**
 	 * The hostname that built the project and build number
 	 */
-	public static final String VERSION = Core.class.getPackage().getImplementationVendor() + "#" + Core.class.getPackage().getImplementationVersion();
+	public static final String AUTHOR;
 	
 	/**
-	 * The build number represented as an integer
+	 * The version
 	 */
-	public static final int BUILD = Integer.parseInt(Core.class.getPackage().getImplementationVersion());
+	public static final String BUILD;
+	
+	static{
+		String vendor = Core.class.getPackage().getImplementationVendor();
+		AUTHOR = vendor;
+		
+		String version = Core.class.getPackage().getImplementationVersion();
+		BUILD = version;
+	}
 	
 	/**
 	 * Handles scheduling of tasks for a later date, optionally on the main
@@ -131,7 +139,7 @@ public class Core {
 		
 		Log.init(LogLevel.valueOf(getWorldConfig().getString("log.level", LogLevel.INFO.toString())));
 		Log.info("Booting on " + new Date().toString() + " --");
-		Log.info("Version: " + Core.VERSION + ", Threads: " + threads);
+		Log.info("Version: " + Core.AUTHOR + ", Threads: " + threads);
 		
 		final long start = System.currentTimeMillis();
 		

@@ -1,8 +1,17 @@
 <project>
-	<path id="class.path">
+	<path id="lib.path">
 	    <fileset dir="lib">
 	        <include name="*.jar"/>
 	    </fileset>
+	</path>
+
+	<path id="test.path">
+		<path refid="lib.path" />
+		<pathelement location="bin"/>
+	    <fileset dir="test">
+	        <include name="*.jar"/>
+	    </fileset>
+	    <pathelement location="test"/>
 	</path>
 
 	<target name="clean">
@@ -11,9 +20,9 @@
 
 	<target name="compile">
 		<mkdir dir="bin" />
-		<javac source="1.7" target="1.7" srcdir="src" destdir="bin" includeantruntime="false" classpathref="class.path" debug="true" />
+		<javac source="1.7" target="1.7" srcdir="src" destdir="bin" includeantruntime="false" classpathref="lib.path" debug="true" />
 		
-		<taskdef name="quasar" classname="co.paralleluniverse.fibers.instrument.InstrumentationTask" classpathref="class.path">
+		<taskdef name="quasar" classname="co.paralleluniverse.fibers.instrument.InstrumentationTask" classpathref="lib.path">
 		</taskdef>
 		<quasar>
 			<fileset dir="bin">
@@ -25,7 +34,7 @@
 
 	<target name="jar" depends="compile">
 		<manifestclasspath property="lib.list" jarfile="Titan.jar">
-		    <classpath refid="class.path"/>
+		    <classpath refid="lib.path"/>
 		</manifestclasspath>
 		
 		<exec executable="hostname" outputproperty="computer.hostname"/>
@@ -57,20 +66,17 @@
 	</target>
 
 	<target name="run" depends="jar">
-		<java jar="Titan.jar" fork="true" classpathref="class.path" />
+		<java jar="Titan.jar" fork="true" classpathref="lib.path" />
 	</target>
 
 	<target name="test" depends="compile">
-		<javac source="1.7" target="1.7" srcdir="test" destdir="test" includeantruntime="false" classpathref="class.path" debug="true" />
+		<javac source="1.7" target="1.7" srcdir="test" destdir="test" includeantruntime="false" classpathref="test.path" debug="true" >
+			<src path="test" />
+		</javac>
 
 		<junit haltonfailure="true" printsummary="withOutAndErr" showoutput="yes" fork="yes">
 			<classpath>
-				<pathelement location="${class.path}" />
-				<pathelement location="bin" />
-				<pathelement location="test" />
-				<fileset dir="test">
-					<include name="*.jar" />
-				</fileset>
+				<path refid="test.path" />
 			</classpath>
 
 			<formatter type="plain" usefile="false" />

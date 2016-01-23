@@ -67,6 +67,7 @@ import org.maxgamer.rs.command.commands.Timings;
 import org.maxgamer.rs.command.commands.Title;
 import org.maxgamer.rs.command.commands.Tphere;
 import org.maxgamer.rs.command.commands.Vendor;
+import org.maxgamer.rs.command.commands.Version;
 import org.maxgamer.rs.command.commands.Whisper;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.core.tick.Tickable;
@@ -511,6 +512,7 @@ public class Server {
 			commands.register("whisper", new Whisper());
 			commands.register("js", new JSCommand());
 			commands.register("config", new Config()); 
+			commands.register("version", new Version());
 			
 			ConfigSection config = Core.getWorldConfig().getSection("commands", null);
 			if (config != null) {

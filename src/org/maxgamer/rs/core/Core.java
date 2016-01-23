@@ -139,7 +139,7 @@ public class Core {
 		
 		Log.init(LogLevel.valueOf(getWorldConfig().getString("log.level", LogLevel.INFO.toString())));
 		Log.info("Booting on " + new Date().toString() + " --");
-		Log.info("Version: " + Core.AUTHOR + ", Threads: " + threads);
+		Log.info("Author: " + Core.AUTHOR + ", Build: " + Core.BUILD + ", Threads: " + threads);
 		
 		final long start = System.currentTimeMillis();
 		

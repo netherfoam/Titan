@@ -13,6 +13,12 @@ public class MobUseGroundItemEvent extends MobEvent implements Cancellable {
 	public MobUseGroundItemEvent(Mob mob, GroundItemStack item, String option) {
 		super(mob);
 		
+		if(mob == null) throw new NullPointerException("Mob can't be null");
+		if(item == null) throw new NullPointerException("GroundItemStack can't be null");
+		if(option == null) throw new NullPointerException("Option can't be null");
+		if(item.isDestroyed()) throw new IllegalArgumentException("Item may not be destroyed");
+		if(item.getLocation() == null) throw new NullPointerException("Item location may not be null");
+		
 		this.item = item;
 		this.option = option;
 	}

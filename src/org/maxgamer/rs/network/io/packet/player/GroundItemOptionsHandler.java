@@ -132,7 +132,5 @@ public class GroundItemOptionsHandler implements PacketProcessor<Player> {
 		else {
 			player.use(target, target.getItem().getGroundOption(option));
 		}
-		
-		player.use(target, target.getItem().getGroundOption(opt));
 	}
 }

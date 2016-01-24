@@ -50,7 +50,7 @@ public class PaneSet {
 	public void add(Pane pane) {
 		panes.add(pane); //This is our new Active pane
 		
-		if (pane.isVisible() == false) {
+		if (pane.isOpen() == false) {
 			pane.onOpen();
 		}
 		
@@ -71,7 +71,7 @@ public class PaneSet {
 		
 		panes.remove(pane);
 		
-		if (pane.isVisible()) {
+		if (pane.isOpen()) {
 			pane.onClose();
 		}
 		

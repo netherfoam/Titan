@@ -56,7 +56,7 @@ public abstract class SmithingInterface extends PrimaryInterface {
 	public void set(int pos, ItemStack item){
 		items[pos] = item;
 		
-		if(isVisible()){
+		if(isOpen()){
 			getPlayer().getProtocol().sendItemOnInterface(getChildId(), CHILD_IDS[pos], item);
 		}
 	}

@@ -1,11 +1,12 @@
 package org.maxgamer.rs.model.map;
 
+import org.maxgamer.rs.structure.areagrid.MBR;
 import org.maxgamer.rs.structure.configs.ConfigSection;
 
 /**
  * @author netherfoam
  */
-public class Position {
+public class Position implements MBR {
 	/** 14 bits size, or 16383. This is hardcoded in the client */
 	public static final int MAX_SIZE = 16383;
 	
@@ -127,5 +128,28 @@ public class Position {
 		map.set("x", this.x);
 		map.set("y", this.y);
 		return map;
+	}
+
+	@Override
+	public int getDimension(int axis) {
+		return 1;
+	}
+
+	@Override
+	public int getDimensions() {
+		return 2;
+	}
+
+	@Override
+	public int getMin(int axis) {
+		if(axis == 0){
+			return x;
+		}
+		else if(axis == 1){
+			return y;
+		}
+		else{
+			throw new IllegalArgumentException("Bad axis requested, " + axis);
+		}
 	}
 }

@@ -1,5 +1,6 @@
 package org.maxgamer.rs.command.commands;
 
+import org.maxgamer.rs.command.CmdName;
 import org.maxgamer.rs.command.PlayerCommand;
 import org.maxgamer.rs.interfaces.impl.chat.IntRequestInterface;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
@@ -8,6 +9,7 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
 /**
  * @author netherfoam
  */
+@CmdName(names={"interfaceshow", "interface", "showinterface", "sendinterface", "interfacesend"})
 public class InterfaceShow implements PlayerCommand {
 	@Override
 	public void execute(final Player p, String[] args) {
@@ -25,7 +27,7 @@ public class InterfaceShow implements PlayerCommand {
 								
 								@Override
 								public void onInput(long childPos) {
-									p.getProtocol().sendInterface(true, (int) parentID, (int) childPos, (int) childID);
+									p.getProtocol().sendInterface(false, (int) parentID, (int) childPos, (int) childID);
 								}
 							});
 						}

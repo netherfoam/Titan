@@ -134,16 +134,6 @@ public class PersonaModel extends MobModel implements YMLSerializable {
 	}
 	
 	@Override
-	public boolean isCombatColoured() {
-		return true;
-	}
-	
-	@Override
-	public boolean isSkulled() {
-		return false;
-	}
-	
-	@Override
 	public byte getPrayerIcon() {
 		return (byte) p.getPrayer().getPrayerHeadIcon();
 	}

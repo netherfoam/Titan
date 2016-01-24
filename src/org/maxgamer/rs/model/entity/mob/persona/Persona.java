@@ -784,6 +784,10 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 				// There is no nice way of handling this.
 				throw new RuntimeException("Failed to load map.", e);
 			}
+			
+			if(l.getMap().isLoaded(l.getChunkX(), l.getChunkY(), l.z) == false){
+				throw new RuntimeException("Failed to load map at " + l);
+			}
 		}
 		super.setLocation(l);
 	}

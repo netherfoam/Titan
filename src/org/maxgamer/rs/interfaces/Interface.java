@@ -31,11 +31,15 @@ public abstract class Interface extends Window {
 	 * @param childId
 	 *            The unique id for this interface, this is actually unique.
 	 */
-	public Interface(Player p, Window parent, short childPos, boolean clickable) {
+	public Interface(Player p, Window parent, int childPos, boolean clickable) {
 		super(p);
 		this.parent = parent;
 		this.clickable = clickable;
-		this.childPos = childPos;
+		
+		if(childPos > 0xFFFF){
+			throw new IllegalArgumentException("Bad childPos " + childPos);
+		}
+		this.childPos = (short) childPos; 
 	}
 
 	/**
@@ -69,7 +73,7 @@ public abstract class Interface extends Window {
 	 * True if this interface is currently visible to the player, false if it is
 	 * not
 	 */
-	public final boolean isVisible() {
+	public final boolean isOpen() {
 		return getPlayer().getPanes().getActive().isOpen(this);
 	}
 

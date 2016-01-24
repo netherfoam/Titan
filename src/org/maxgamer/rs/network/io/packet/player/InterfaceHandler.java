@@ -35,7 +35,7 @@ public class InterfaceHandler implements PacketProcessor<Player> {
 			return;
 		}
 		
-		if (interf.isVisible() == false) {
+		if (interf.isOpen() == false) {
 			p.getCheats().log(20, "Player attempted to use an interface which is not currently visible (Force-open?). Option: " + option + ", ChildId: " + childId + ", buttonId: " + buttonId + ", slot: " + slot + ", itemId: " + itemId);
 			return;
 		}

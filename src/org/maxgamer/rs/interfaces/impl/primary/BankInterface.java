@@ -257,7 +257,7 @@ public class BankInterface extends PrimaryInterface {
 		this.listener = new ContainerListener() {
 			@Override
 			public void onSet(Container c, int slot, ItemStack old) {
-				assert (BankInterface.this.isVisible()); //Should always be true if called
+				assert (BankInterface.this.isOpen()); //Should always be true if called
 				BankInterface.this.getPlayer().getProtocol().setItem(BANK_CONTAINER_ID, false, c.get(slot), slot);
 			}
 		};

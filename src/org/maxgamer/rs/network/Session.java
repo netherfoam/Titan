@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.entity.mob.persona.player.ScreenSettings;
 import org.maxgamer.rs.model.events.session.SessionCloseEvent;
 import org.maxgamer.rs.network.io.packet.RSOutgoingPacket;
@@ -76,12 +75,6 @@ public class Session extends ServerSession {
 		this.server = server;
 		this.lastPing = System.currentTimeMillis();
 		this.setHandler(new RawConnectionHandler(this));
-		closeHandlers.add(new Runnable() {
-			@Override
-			public void run() {
-				Log.debug("Session closed, was at handler stage: " + handler.getClass().getSimpleName());
-			}
-		});
 	}
 	
 	/**

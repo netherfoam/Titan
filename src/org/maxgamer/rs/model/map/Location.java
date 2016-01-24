@@ -35,6 +35,40 @@ public class Location extends Position implements MBR, Locatable {
 		return new Location(map, x, y, z);
 	}
 	
+	public static Location max(Location l, Location... locs){
+		int x = l.x;
+		int y = l.y;
+		int z = l.z;
+		
+		for(Location m : locs){
+			if(m.x > x) x = m.x;
+			if(m.y > y) y = m.y;
+			if(m.z > z) z = m.z;
+			if(m.map != l.map){
+				throw new IllegalArgumentException("Given locations with two different maps. " + l + " versus " + m);
+			}
+		}
+		
+		return new Location(l.map, x, y, z);
+	}
+	
+	public static Location min(Location l, Location... locs){
+		int x = l.x;
+		int y = l.y;
+		int z = l.z;
+		
+		for(Location m : locs){
+			if(m.x < x) x = m.x;
+			if(m.y < y) y = m.y;
+			if(m.z < z) z = m.z;
+			if(m.map != l.map){
+				throw new IllegalArgumentException("Given locations with two different maps. " + l + " versus " + m);
+			}
+		}
+		
+		return new Location(l.map, x, y, z);
+	}
+	
 	/** The map that this position is based on */
 	public final WorldMap map;
 	

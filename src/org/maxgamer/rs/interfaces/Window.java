@@ -25,7 +25,7 @@ public abstract class Window {
 			throw new IllegalArgumentException("InterfaceId must be a short, and therebefore between 0 and " + (0xFFFF));
 		}
 
-		if (this.isVisible()) {
+		if (this.isOpen()) {
 			throw new IllegalStateException("Interface is already open and therefore should not have its type ID modified");
 		}
 
@@ -61,6 +61,9 @@ public abstract class Window {
 	 *            the child ID of the interface to modify. This is frequently 0.
 	 */
 	public void setAccessMask(int flags, int offset, int length, int componentId) {
+		if(interfaceId == -1){
+			throw new IllegalStateException("InterfaceID has not yet been set! Call setChildId() first!");
+		}
 		if (offset > 0xFFFF)
 			throw new IllegalArgumentException("Length must be <= " + 0xFFFF + ", given " + length);
 		if (length < 0)
@@ -109,6 +112,10 @@ public abstract class Window {
 	 *            the String to set
 	 */
 	public void setString(int componentId, String s) {
+		if(interfaceId == -1){
+			throw new IllegalStateException("InterfaceID has not yet been set! Call setChildId() first!");
+		}
+		
 		RSOutgoingPacket out = new RSOutgoingPacket(33);
 
 		out.writePJStr1(String.valueOf(s)); // String.valueOf() turns null into 'null'
@@ -120,6 +127,10 @@ public abstract class Window {
 	}
 
 	public void setComponentVisible(int componentId, boolean visible) {
+		if(interfaceId == -1){
+			throw new IllegalStateException("InterfaceID has not yet been set! Call setChildId() first!");
+		}
+		
 		getPlayer().getProtocol().unlockInterfaceComponent(interfaceId, componentId, visible);
 	}
 
@@ -127,7 +138,7 @@ public abstract class Window {
 
 	public abstract void onClose();
 
-	public abstract boolean isVisible();
+	public abstract boolean isOpen();
 
 	/**
 	 * Called when the owner of this interface clicks on a button in this interface

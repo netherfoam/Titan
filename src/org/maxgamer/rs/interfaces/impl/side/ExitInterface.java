@@ -2,7 +2,7 @@ package org.maxgamer.rs.interfaces.impl.side;
 
 import org.maxgamer.rs.interfaces.SideInterface;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
-import org.maxgamer.rs.model.events.mob.persona.player.PlayerLogOutEvent;
+import org.maxgamer.rs.model.events.mob.persona.player.PlayerLeaveWorldEvent;
 
 /**
  * @author netherfoam
@@ -19,10 +19,10 @@ public class ExitInterface extends SideInterface {
 	
 	@Override
 	public void onClick(int option, int buttonId, int slotId, int itemId) {
-		PlayerLogOutEvent e;
+		PlayerLeaveWorldEvent e;
 		switch (buttonId) {
 			case BUTTON_LOBBY:
-				e = new PlayerLogOutEvent(getPlayer());
+				e = new PlayerLeaveWorldEvent(getPlayer());
 				e.call();
 				if (e.isCancelled()) {
 					return;
@@ -32,7 +32,7 @@ public class ExitInterface extends SideInterface {
 				player.destroy();
 				break;
 			case BUTTON_LOGIN:
-				e = new PlayerLogOutEvent(getPlayer());
+				e = new PlayerLeaveWorldEvent(getPlayer());
 				e.call();
 				if (e.isCancelled()) {
 					return;

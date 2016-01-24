@@ -574,10 +574,13 @@ public class Server {
 			}
 		}
 		
-		if (logon.isRunning()) logon.stop(); //Saves all players
-		modules.unload();
 		ServerShutdownEvent e = new ServerShutdownEvent(this);
 		e.call();
+		
+		maps.save();
+		
+		if (logon.isRunning()) logon.stop(); //Saves all players
+		modules.unload();
 		
 		if (network.isRunning()) network.stop();
 		thread.shutdown();

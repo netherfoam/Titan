@@ -44,8 +44,11 @@ public class InputHandler implements PacketProcessor<Player> {
 					p.getCheats().log(10, "Player attempted to input String to an interface they don't have access to");
 					return;
 				}
-				((IntInputInterface) interf).onInput(in.readInt() & 0xFFFFFFFF); //Client cannot input negative numbers
-				p.getWindow().close(interf);
+				// Client cannot input negative numbers
+				((IntInputInterface) interf).onInput(in.readInt() & 0xFFFFFFFF);
+				
+				// As a result of handling onInput() the interface may have been closed
+				if(interf.isOpen()) p.getWindow().close(interf);
 				break;
 		}
 	}

@@ -104,7 +104,7 @@ public abstract class ItemPickerDialogue extends Dialogue {
 		if(items.size() >= NAME_IDS.length) throw new IllegalStateException("ItemPickerDialogue may only contain up to 10 items!");
 		items.add(item);
 		
-		if(this.isVisible()){
+		if(this.isOpen()){
 			getPlayer().getProtocol().sendBConfig(CONFIG_IDS[items.size() - 1], item.getId());
 			getPlayer().getProtocol().sendGlobalString(NAME_IDS[items.size() - 1], item.getName());
 		}
@@ -117,7 +117,7 @@ public abstract class ItemPickerDialogue extends Dialogue {
 	public void remove(ItemStack item){
 		items.remove(item);
 		
-		if(this.isVisible()){
+		if(this.isOpen()){
 			getPlayer().getProtocol().sendBConfig(CONFIG_IDS[items.size() - 1], 0);
 			getPlayer().getProtocol().sendGlobalString(NAME_IDS[items.size() - 1], "");
 		}
@@ -153,7 +153,7 @@ public abstract class ItemPickerDialogue extends Dialogue {
 	@Override
 	public void onClose() {
 		super.onClose();
-		if (this.amount.isVisible()) getPlayer().getWindow().close(this.amount);
+		if (this.amount.isOpen()) getPlayer().getWindow().close(this.amount);
 	}
 	
 	@Override

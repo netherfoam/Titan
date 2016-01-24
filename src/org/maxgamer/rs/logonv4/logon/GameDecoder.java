@@ -32,8 +32,6 @@ public class GameDecoder extends OpcodeDecoder<LSIncomingPacket> implements Hand
 		String pass = in.readPJStr1();
 		String ip = in.readPJStr1();
 		
-		Log.debug("Auth request for " + name + "!");
-		
 		LSOutgoingPacket out = new LSOutgoingPacket(3);
 		AuthResult result = AuthResult.SUCCESS;
 		out.writeInt(sessionId);
@@ -115,7 +113,7 @@ public class GameDecoder extends OpcodeDecoder<LSIncomingPacket> implements Hand
 			//Not a big issue, and probably won't occur.
 			e.printStackTrace();
 		}
-		Log.debug("Auth Result: " + result);
+		Log.debug("Connect " + profile.getName() + ": " + result);
 		this.host.add(profile);
 		
 		host.write(out);
@@ -126,7 +124,6 @@ public class GameDecoder extends OpcodeDecoder<LSIncomingPacket> implements Hand
 		String name = in.readPJStr1();
 		byte[] payload = new byte[in.readInt()];
 		in.read(payload);
-		Log.debug("leaving " + name);
 		Profile profile = host.getPlayer(name);
 		
 		if (profile == null) {

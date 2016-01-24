@@ -16,7 +16,7 @@ import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.npc.NPC;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;
 import org.maxgamer.rs.model.events.mob.persona.PersonaDeathEvent;
-import org.maxgamer.rs.model.events.mob.persona.player.PlayerLogOutEvent;
+import org.maxgamer.rs.model.events.mob.persona.player.PlayerLeaveWorldEvent;
 import org.maxgamer.rs.model.map.MapBuilder;
 import org.maxgamer.rs.model.map.WorldMap;
 import org.maxgamer.rs.structure.Filter;
@@ -75,7 +75,7 @@ public abstract class MiniGame extends Tickable implements EventListener {
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
-	public void onLogout(PlayerLogOutEvent event) {
+	public void onLogout(PlayerLeaveWorldEvent event) {
 		leave(event.getMob(), true, MiniGameCause.LOG_OUT);
 	}
 

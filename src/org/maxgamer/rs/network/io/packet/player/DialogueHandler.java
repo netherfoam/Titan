@@ -19,7 +19,7 @@ public class DialogueHandler implements PacketProcessor<Player> {
 		int interfaceId = in.readLEShort();
 		
 		Interface iface = p.getWindow().getInterface(interfaceId);
-		if (iface == null || iface.isVisible() == false) {
+		if (iface == null || iface.isOpen() == false) {
 			p.getCheats().log(5, "Player attempted to interact with dialogue interface " + interfaceId + " but interface not found.");
 			return;
 		}

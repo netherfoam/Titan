@@ -84,17 +84,22 @@ public abstract class Attack {
 			}
 		}
 		
-		if (emote != null && emote.getId() >= 0) {
-			attacker.getUpdateMask().setAnimation(emote, 20);
+		if(damage.getDamages().isEmpty() == false){
+			if (emote != null && emote.getId() >= 0) {
+				attacker.getUpdateMask().setAnimation(emote, 20);
+			}
+			
+			if (graphics != null && graphics.getId() >= 0) {
+				attacker.getUpdateMask().setGraphics(graphics);
+			}
+			
+			this.perform(target, damage);
+			return true;
 		}
-		
-		if (graphics != null && graphics.getId() >= 0) {
-			attacker.getUpdateMask().setGraphics(graphics);
+		else{
+			/* No hits were dealt */
+			return false;
 		}
-		
-		this.perform(target, damage);
-		
-		return true;
 	}
 	
 	/**

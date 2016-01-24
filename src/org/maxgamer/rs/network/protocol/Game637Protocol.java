@@ -1362,7 +1362,7 @@ public class Game637Protocol extends GameProtocol {
 		
 		out.writeLEShort(parentId);
 		out.writeLEShort(interfacePosition);
-		out.writeLEShortA(interfacePosition >> 16 | interfaceUUID);
+		out.writeLEShortA(interfacePosition >> 16 | interfaceUUID); //interfacePosition's upper 16 bits will represent a parentId.
 		// out.writeByteC(clickable ? 0 : 1);
 		out.writeByteC(clickable ? 1 : 0);
 		

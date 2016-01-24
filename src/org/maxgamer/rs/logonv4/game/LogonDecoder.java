@@ -91,7 +91,6 @@ public class LogonDecoder extends OpcodeDecoder<LSIncomingPacket> {
 			@Override
 			public void run() {
 				int sessionId = in.readInt();
-				Log.debug("Got response for session request for session# " + sessionId);
 				AuthResult result = AuthResult.get(in.readByte() & 0xFF);
 				
 				Session session = Core.getServer().getNetwork().getSessionByID(sessionId);

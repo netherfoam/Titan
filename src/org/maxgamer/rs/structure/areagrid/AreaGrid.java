@@ -324,7 +324,33 @@ public class AreaGrid<T> {
 				}
 			}
 		}
+	}
+	
+	public <U extends T> HashSet<U> all(Class<U> clazz){
+		MBR mbr = new MBR() {
+			
+			@Override
+			public int getMin(int axis) {
+				return 0;
+			}
+			
+			@Override
+			public int getDimensions() {
+				return 2;
+			}
+			
+			@Override
+			public int getDimension(int axis) {
+				if(axis == 0){
+					return grid.length << bits;
+				}
+				else{
+					return grid[0].length << bits;
+				}
+			}
+		};
 		
+		return get(mbr, 1000, clazz);
 	}
 	
 	protected void validate(MBR m) {

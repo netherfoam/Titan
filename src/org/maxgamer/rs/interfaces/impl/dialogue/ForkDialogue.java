@@ -24,7 +24,7 @@ public abstract class ForkDialogue extends Dialogue {
 	 *            the option to add, eg "option 1", "option 2"
 	 */
 	public void add(String text) {
-		if (this.isVisible()) {
+		if (this.isOpen()) {
 			throw new IllegalStateException("Interface cannot have options added after opening");
 		}
 		if (this.options.size() >= MAX_OPTIONS) {
@@ -46,7 +46,7 @@ public abstract class ForkDialogue extends Dialogue {
 	public void setTitle(String title) {
 		this.title = title;
 
-		if (isVisible() && title != null) {
+		if (isOpen() && title != null) {
 			setString(1, title);
 		}
 	}
@@ -69,7 +69,7 @@ public abstract class ForkDialogue extends Dialogue {
 	 *            the option to remove
 	 */
 	public void remove(String text) {
-		if (this.isVisible()) {
+		if (this.isOpen()) {
 			throw new IllegalStateException("Interface cannot have options added after opening");
 		}
 

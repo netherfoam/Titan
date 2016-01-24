@@ -14,12 +14,21 @@ public class MobMoveEvent extends MobEvent implements Cancellable {
 	
 	public MobMoveEvent(Mob m, Position to, boolean run) {
 		super(m);
+		
+		if(m == null || to == null){
+			throw new NullPointerException();
+		}
+		
 		this.to = to;
 		this.run = run;
 	}
 	
-	public Position getDestination() {
+	public Position getTo() {
 		return to;
+	}
+	
+	public Position getFrom(){
+		return getMob().getLocation();
 	}
 	
 	public boolean isRunning() {

@@ -10,10 +10,10 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Player;
  * player may not log out yet.
  * @author netherfoam
  */
-public class PlayerLogOutEvent extends PlayerEvent implements Cancellable {
+public class PlayerLeaveWorldEvent extends PlayerEvent implements Cancellable {
 	private boolean cancel;
 	
-	public PlayerLogOutEvent(Player p) {
+	public PlayerLeaveWorldEvent(Player p) {
 		super(p);
 	}
 	

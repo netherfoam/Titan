@@ -22,12 +22,16 @@
 		<mkdir dir="bin" />
 		<javac source="1.7" target="1.7" srcdir="src" destdir="bin" includeantruntime="false" classpathref="lib.path" debug="true" />
 		
+		<path id="runtime.path">
+			<path refid="lib.path" />
+			<pathelement location="bin"/>
+		</path>
+		
 		<taskdef name="quasar" classname="co.paralleluniverse.fibers.instrument.InstrumentationTask" classpathref="lib.path">
 		</taskdef>
+		
 		<quasar>
-			<fileset dir="bin">
-				<include name="*.jar" />
-			</fileset>
+			<fileset dir="bin" />
 		</quasar>
 
 	</target>

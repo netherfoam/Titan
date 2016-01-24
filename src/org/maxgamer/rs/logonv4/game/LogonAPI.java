@@ -108,7 +108,6 @@ public class LogonAPI {
 		out.writePJStr1(name);
 		out.writePJStr1(pass);
 		out.writePJStr1(session.getIP().getAddress().getHostAddress());
-		Log.debug("Requesting auth for " + name);
 		try {
 			logon.write(out);
 			return true;

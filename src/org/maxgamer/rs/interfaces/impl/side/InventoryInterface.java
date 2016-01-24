@@ -76,7 +76,7 @@ public class InventoryInterface extends SideInterface {
 		this.listener = new ContainerListener() {
 			@Override
 			public void onSet(Container c, int slot, ItemStack old) {
-				assert (isVisible()); // Should always be true if called
+				assert (isOpen()); // Should always be true if called
 				getPlayer().getProtocol().setItem(CONTAINER_ID, false, c.get(slot), slot);
 			}
 		};

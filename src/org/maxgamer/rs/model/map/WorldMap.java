@@ -6,8 +6,12 @@ import java.util.Iterator;
 
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.core.server.WorldFullException;
+import org.maxgamer.rs.lib.log.Log;
+import org.maxgamer.rs.model.entity.Entity;
 import org.maxgamer.rs.model.entity.mob.Mob;
+import org.maxgamer.rs.model.entity.mob.persona.Persona;
 import org.maxgamer.rs.model.entity.mob.persona.player.ViewDistance;
+import org.maxgamer.rs.model.map.area.AreaManager;
 import org.maxgamer.rs.structure.areagrid.AreaGrid;
 import org.maxgamer.rs.structure.areagrid.Cube;
 import org.maxgamer.rs.structure.areagrid.MBR;
@@ -55,6 +59,8 @@ public abstract class WorldMap {
 	 * A spatial map of all the entities that are currently active in this world
 	 */
 	private AreaGrid<MBR> entities;
+	
+	private AreaManager areas;
 	
 	/**
 	 * An array of chunks, where each chunk is indexed by its chunk ID. Eg,
@@ -107,16 +113,43 @@ public abstract class WorldMap {
 		
 		StopWatch w = Core.getTimings().start("map-init");
 		entities = new AreaGrid<MBR>(width(), height(), 8);
-		chunks = new Chunk[width() >> CHUNK_BITS][height() >> CHUNK_BITS][4];
+		
+		//We only initialize the first layer to save memory.
+		chunks = new Chunk[width() >> CHUNK_BITS][][];
+		
 		w.stop();
+		areas = new AreaManager(this);
+		Core.getServer().getEvents().register(areas);
 	}
 	
 	public final Position offset(){
 		return new Position(min_chunk.x << CHUNK_BITS, min_chunk.y << CHUNK_BITS);
 	}
 	
+	private void check(int cx, int cy){
+		try{
+			if(this.chunks[cx - this.min_chunk.x] == null){
+				this.chunks[cx - this.min_chunk.x] = new Chunk[height() >> CHUNK_BITS][];
+			}
+			if(this.chunks[cx - this.min_chunk.x][cy - this.min_chunk.y] == null){
+				this.chunks[cx - this.min_chunk.x][cy - this.min_chunk.y] = new Chunk[4];
+			}
+		}
+		catch(Exception e){
+			Log.debug("cx: " + cx + ", cy: " + cy /*", w: " + this.chunks.length + " h: " + this.chunks[0].length*/);
+			e.printStackTrace();
+		}
+	}
+	
 	public boolean isLoaded(int cx, int cy, int z) {
-		Chunk c = this.chunks[cx - this.min_chunk.x][cy - this.min_chunk.y][z];
+		Chunk c;
+		try{
+			c = this.chunks[cx - this.min_chunk.x][cy - this.min_chunk.y][z];
+		}
+		catch(NullPointerException e){
+			return false;
+		}
+		
 		if (c == null) {
 			return false;
 		}
@@ -125,6 +158,10 @@ public abstract class WorldMap {
 		}
 		
 		return true;
+	}
+	
+	public AreaManager getAreas(){
+		return areas;
 	}
 	
 	/**
@@ -152,6 +189,7 @@ public abstract class WorldMap {
 		
 		for (int i = (x - LOAD_RADIUS - 7) >> 3; i < (x + LOAD_RADIUS + 7) >> 3; i++) {
 			for (int j = (y - LOAD_RADIUS - 7) >> 3; j < (y + LOAD_RADIUS + 7) >> 3; j++) {
+				check(i, j);
 				try {
 					for (int z = 0; z < 4; z++) {
 						Chunk c = chunks[i - this.min_chunk.x][j - this.min_chunk.y][z];
@@ -176,8 +214,7 @@ public abstract class WorldMap {
 				int x = (i + m.getMin(0)) >> 8;
 				int y = (j + m.getMin(1)) >> 8;
 					
-				//x -= this.min_chunk.x << CHUNK_BITS;
-				//y -= this.min_chunk.y << CHUNK_BITS;
+				check(i, j);
 				
 				for (int z = 0; z < 4; z++) {
 					try {
@@ -270,6 +307,8 @@ public abstract class WorldMap {
 		StopWatch w = Core.getTimings().start("worldmap-getChunk");
 		
 		try {
+			check(chunkX, chunkY);
+			
 			Chunk c = chunks[chunkX - this.min_chunk.x][chunkY - this.min_chunk.y][z];
 			if (c == null) {
 				c = constructChunk(chunkX, chunkY, z);
@@ -313,6 +352,8 @@ public abstract class WorldMap {
 	 * @param c the new chunk to set
 	 */
 	protected void setChunk(int chunkX, int chunkY, int z, Chunk c) {
+		check(chunkX, chunkY);
+		
 		if (chunks[chunkX - this.min_chunk.x][chunkY - this.min_chunk.y][z] == c) return; //Already set.
 		
 		//TODO: Update players, remove items, etc.
@@ -395,6 +436,8 @@ public abstract class WorldMap {
 		try {
 			int cx = x >> CHUNK_BITS;
 			int cy = y >> CHUNK_BITS;
+			check(cx, cy);
+			
 			Chunk c = chunks[cx - this.min_chunk.x][cy - this.min_chunk.y][z];
 			if (c == null || c.isLoaded() == false) {
 				return -1;
@@ -414,6 +457,8 @@ public abstract class WorldMap {
 		try {
 			int cx = x >> CHUNK_BITS;
 			int cy = y >> CHUNK_BITS;
+			check(cx, cy);
+			
 			Chunk c = chunks[cx - this.min_chunk.x][cy - this.min_chunk.y][z];
 			if (c == null || c.isLoaded() == false) {
 				return 0;
@@ -466,5 +511,28 @@ public abstract class WorldMap {
 	
 	public void trim() {
 		this.entities.trim();
+	}
+	
+	public void destroy(){
+		if(this.chunks == null){
+			throw new IllegalStateException("Map is already destroyed!");
+		}
+		
+		for(Entity e : this.entities.all(Entity.class)){
+			if(e instanceof Persona){
+				// We attempt to rescue persona's and send them to their spawn.
+				// If their spawn is the current map, they will be destroyed.
+				Persona p = (Persona) e;
+				p.teleport(p.getSpawn());
+				if(p.getMap() != this){
+					continue;
+				}
+			}
+			e.destroy();
+		}
+		
+		Core.getServer().getEvents().unregister(this.areas);
+		this.chunks = null;
+		this.entities = null;
 	}
 }

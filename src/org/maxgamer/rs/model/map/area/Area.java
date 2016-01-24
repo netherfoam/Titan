@@ -1,9 +1,9 @@
 package org.maxgamer.rs.model.map.area;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collection;
 
+import org.maxgamer.rs.model.entity.Entity;
+import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.map.Location;
 import org.maxgamer.rs.model.map.Position;
 import org.maxgamer.rs.model.map.WorldMap;
@@ -12,96 +12,121 @@ import org.maxgamer.rs.structure.areagrid.MBRUtil;
 
 /**
  * @author netherfoam
+ * @author Albert Beaupre
  */
 public class Area implements MBR {
-	private Location min;
-	private Location max;
-	private HashSet<AreaFlag> flags;
-
-	public Area(Location min, Location max) {
-		if (min.getMap() != max.getMap())
-			throw new IllegalArgumentException("An Area must range across only one map.");
-		this.flags = new HashSet<AreaFlag>(0);
-		int minX, minY, minZ;
-		int maxX, maxY, maxZ;
-
-		if (min.x <= max.x) {
-			minX = min.x;
-			maxX = max.x;
-		} else {
-			minX = max.x;
-			maxX = min.x;
-		}
-
-		if (min.y <= max.y) {
-			minY = min.y;
-			maxY = max.y;
-		} else {
-			minY = max.y;
-			maxY = min.y;
-		}
-
-		if (min.z <= max.z) {
-			minZ = min.z;
-			maxZ = max.z;
-		} else {
-			minZ = max.z;
-			maxZ = min.z;
-		}
-
-		this.min = new Location(min.getMap(), minX, minY, minZ);
-		this.max = new Location(min.getMap(), maxX, maxY, maxZ);
+	public enum AreaChangeState {
+		/**
+		 * The area was changed because the mob walked
+		 */
+		WALK,
+		
+		/**
+		 * The area was changed because the mob teleported
+		 */
+		TELEPORT, 
+		
+		/**
+		 * The area was changed by some other method of location modification. 
+		 * Includes logging in and out, or adding/removing an area from the
+		 * {@link AreaManager}. Essentially, the Server triggered this moreso
+		 * than the Mob triggered this.
+		 */
+		SERVER
+		
 	}
-
-	public boolean hasFlag(AreaFlag f) {
-		return flags.contains(f);
-	}
-
-	public void addFlag(AreaFlag f) {
-		this.flags.add(f);
-	}
-
-	public void removeFlag(AreaFlag f) {
-		this.flags.remove(f);
-	}
-
+	
 	/**
-	 * Returns an unmodifiable set of flags which are attached to this area.
-	 * 
-	 * @return the flags.
+	 * The bottom left corner (South-West most)
 	 */
-	public Set<AreaFlag> getFlags() {
-		return Collections.unmodifiableSet(this.flags);
+	private Location min;
+	
+	/**
+	 * The top right corner (North-East most)
+	 */
+	private Location max;
+	
+	/**
+	 * Constructs a new {@code AbstractArea} within the given locations to
+	 * create a cubic area region inside the specified {@code min} and
+	 * {@code max} arguments.
+	 * 
+	 * @param cornerA the first corner of the area
+	 * @param cornerB the opposite corner of the area
+	 */
+	public Area(Location cornerA, Location cornerB) {
+		if (cornerA.getMap() != cornerB.getMap()) throw new IllegalArgumentException("An Area must range across only one map.");
+		
+		this.min = Location.min(cornerA, cornerB);
+		this.max = Location.max(cornerA, cornerB);
 	}
-
+	
+	public final Location getMin(){
+		return min;
+	}
+	
+	public final Location getMax(){
+		return max;
+	}
+	
 	@Override
 	public int getMin(int axis) {
 		return min.getMin(axis);
 	}
-
+	
 	@Override
 	public int getDimension(int axis) {
 		return max.getMin(axis) - min.getMin(axis);
 	}
-
+	
 	@Override
 	public int getDimensions() {
 		return min.getDimensions(); // three
 	}
-
+	
 	public boolean contains(MBR m) {
 		return MBRUtil.isOverlap(this, m);
 	}
-
-	public boolean containsPosition(Position p) {
-		int x1 = Math.min(min.x, max.x);
-		int x2 = Math.max(min.x, max.x);
-		int y1 = Math.min(min.y, max.y);
-		int y2 = Math.max(min.y, max.y);
-		return p.x >= x1 && p.y >= y1 && p.x <= x2 && p.y <= y2;
+	
+	/**
+	 * Returns true if the given position is within this area.  This 
+	 * @param p
+	 * @return
+	 */
+	public boolean contains(Position p) {
+		if(p.x < min.x) return false;
+		if(p.y < min.y) return false;
+		if(p.x > max.x) return false;
+		if(p.y > max.y) return false;
+		
+		return true;
 	}
-
+	
 	public WorldMap getMap() {
 		return min.getMap();
 	}
+	
+	public <E extends Entity> Collection<E> getAll(int guess, Class<E> clazz) {
+		return getMap().getEntities(this, guess, clazz);
+	}
+	
+	/**
+	 * This method is executed when the specified {@code mob} enters this
+	 * {@code AbstractArea}.
+	 * 
+	 * @param mob the mob entering the area
+	 * @param state the state at which the mob entered this area
+	 */
+	public void onEnter(Mob mob, AreaChangeState state) {
+	};
+	
+	/**
+	 * This method is executed when the specified {@code mob} leaves this
+	 * {@code AbstractArea}.
+	 * 
+	 * @param mob the mob entering the area
+	 * @param state the state at which the mob leaves this area
+	 */
+	public void onLeave(Mob mob, AreaChangeState state) {
+	};
 }

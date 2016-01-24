@@ -35,7 +35,7 @@ import org.maxgamer.rs.model.entity.mob.persona.Persona;
 import org.maxgamer.rs.model.entity.mob.persona.PersonaOptions;
 import org.maxgamer.rs.model.events.mob.persona.player.PlayerDestroyEvent;
 import org.maxgamer.rs.model.events.mob.persona.player.PlayerEnterWorldEvent;
-import org.maxgamer.rs.model.events.mob.persona.player.PlayerLogOutEvent;
+import org.maxgamer.rs.model.events.mob.persona.player.PlayerLeaveWorldEvent;
 import org.maxgamer.rs.model.map.Location;
 import org.maxgamer.rs.network.Client;
 import org.maxgamer.rs.network.Session;
@@ -171,7 +171,7 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 					public void run() {
 						// This must be done in the primary thread.
 						if (!Player.this.isDestroyed()) {
-							PlayerLogOutEvent leave = new PlayerLogOutEvent(Player.this);
+							PlayerLeaveWorldEvent leave = new PlayerLeaveWorldEvent(Player.this);
 							leave.call();
 							if (leave.isCancelled()) {
 								// Keep attempting to leave until the event is
@@ -267,7 +267,6 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 		register("notes", this.notes);
 		register("music", this.music);
 		
-		getPersonaOptions().add(PersonaOptions.ATTACK, true);
 		getPersonaOptions().add(PersonaOptions.FOLLOW, false);
 		getPersonaOptions().add(PersonaOptions.TRADE, false);
 		getPersonaOptions().add(PersonaOptions.INSPECT, false);
@@ -289,6 +288,11 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 		getWindow().open(new TasksInterface(this));
 		
 		this.getProtocol().sendConfig(281, 1000); // Removes tutorial island limitations
+	}
+	
+	@Override
+	public void onUnload(){
+		super.onUnload();
 	}
 	
 	/**
@@ -604,7 +608,7 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 		if (this.gamepane != null) {
 			for (Interface iface : this.gamepane.getInterfaces()) {
 				try {
-					if (iface.isVisible()) {
+					if (iface.isOpen()) {
 						// May close other interfaces as well, which is why this check is necessary.
 						this.gamepane.close(iface);
 					}

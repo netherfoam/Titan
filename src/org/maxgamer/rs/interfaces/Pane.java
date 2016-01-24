@@ -38,11 +38,11 @@ public abstract class Pane extends Window {
 	 * @return true if the child replaced a previously existing child
 	 */
 	public void open(Interface iface) {
-		if (this.isVisible() == false) {
+		if (this.isOpen() == false) {
 			throw new IllegalStateException("The given pane is not visible.");
 		}
 
-		if (iface.getParent().isVisible() == false) {
+		if (iface.getParent().isOpen() == false) {
 			throw new IllegalArgumentException("The parent to that interface is not open.");
 		}
 
@@ -77,6 +77,17 @@ public abstract class Pane extends Window {
 			player.getActions().cancel(WalkAction.class); // Prevent walking
 		}
 	}
+	
+	public void close(Class<? extends Interface> type){
+		for(Interface i : getInterfaces()){
+			if(i.isOpen() == false) continue;
+			
+			if(type.isInstance(i)){
+				// This may close multiple child interfaces
+				close(i);
+			}
+		}
+	}
 
 	/**
 	 * Removes the given child from this Pane. The child then has close() called
@@ -94,17 +105,16 @@ public abstract class Pane extends Window {
 		}
 
 		Integer key = Integer.valueOf(iface.getChildId());
-		if (interfaces.get(key) != iface) {// TODO: this won't work with adding
-											// and deleting friends in the clan
-											// interface!
+		if (interfaces.get(key) != iface) {
+			// TODO: this won't work with adding
+			// and deleting friends in the clan
+			// interface!
 			throw new IllegalArgumentException("That interface is not opened! " + iface);
 		} else {
 			interfaces.remove(key);
 		}
 
-		player.getProtocol().sendCloseInterface(iface.getParent().getChildId(), iface.childPos);// childPos
-																								// was
-																								// childId
+		player.getProtocol().sendCloseInterface(iface.getParent().getChildId(), iface.childPos);
 		iface.onClose();
 	}
 
@@ -151,7 +161,7 @@ public abstract class Pane extends Window {
 
 	}
 
-	public boolean isVisible() {
+	public boolean isOpen() {
 		return getPlayer().getPanes().getActive() == this;
 	}
 }

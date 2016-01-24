@@ -46,8 +46,6 @@ import org.maxgamer.rs.structure.configs.ConfigSection;
  */
 public abstract class Mob extends Entity implements EquipmentHolder {
 
-	private final ConfigSection temporaryConfigs;
-
 	/**
 	 * The update mask used for this mob, contains animations/movement
 	 * updates/etc
@@ -100,7 +98,6 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 		super(sizeX, sizeY);
 		this.actionQueue = new ActionQueue(this);
 		this.damage = new DamageLog(this);
-		this.temporaryConfigs = new ConfigSection();
 	}
 	
 	public Mob getTarget(){
@@ -926,8 +923,5 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 		e.call();
 		return e.isConsumed();
 	}
-
-	public ConfigSection getTemporaryConfigs() {
-		return temporaryConfigs;
-	}
+	
 }

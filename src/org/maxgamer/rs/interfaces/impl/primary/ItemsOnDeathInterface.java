@@ -8,6 +8,7 @@ import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.item.inventory.Container;
 import org.maxgamer.rs.model.item.inventory.GenericContainer;
 import org.maxgamer.rs.model.item.inventory.StackType;
+import org.maxgamer.rs.model.skill.prayer.PrayerType;
 
 /**
  * @author Albert Beaupre
@@ -47,7 +48,8 @@ public class ItemsOnDeathInterface extends PrimaryInterface {
 			keepContainer.add(item.setAmount(1).setHealth(keep));
 		}
 
-		Object[] params = new Object[] { getRiskedWealth(), getCarriedWealth(), "", 0, 0, getKeepItem(3), getKeepItem(2), getKeepItem(1), getKeepItem(0), getKeepSize(), 0 };
+		int skull = player.getModel().isSkulled() ? 1 : 0;
+		Object[] params = new Object[] { getRiskedWealth(), getCarriedWealth(), "", 0, skull, getKeepItem(3), getKeepItem(2), getKeepItem(1), getKeepItem(0), getKeepSize(), 0 };
 
 		player.getProtocol().invokeScript(118, params);
 		this.setUnlockOptions(0, 211, 18, 0);
@@ -96,7 +98,12 @@ public class ItemsOnDeathInterface extends PrimaryInterface {
 	}
 
 	private int getKeepSize() {
-		return 3;
+		int keepSize = 3;
+		if (player.getModel().isSkulled())
+			keepSize -= 3;
+		if (player.getPrayer().isEnabled(PrayerType.CURSE_PROTECT_ITEM) || player.getPrayer().isEnabled(PrayerType.PROTECT_ITEM))
+			keepSize += 1;
+		return keepSize;
 	}
 
 	private int getKeepItem(int slot) {

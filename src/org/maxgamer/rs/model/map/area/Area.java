@@ -112,21 +112,21 @@ public class Area implements MBR {
 	
 	/**
 	 * This method is executed when the specified {@code mob} enters this
-	 * {@code AbstractArea}.
+	 * {@code Area}.
 	 * 
 	 * @param mob the mob entering the area
 	 * @param state the state at which the mob entered this area
 	 */
 	public void onEnter(Mob mob, AreaChangeState state) {
-	};
+	}
 	
 	/**
 	 * This method is executed when the specified {@code mob} leaves this
-	 * {@code AbstractArea}.
+	 * {@code Area}.
 	 * 
 	 * @param mob the mob entering the area
 	 * @param state the state at which the mob leaves this area
 	 */
 	public void onLeave(Mob mob, AreaChangeState state) {
-	};
+	}
 }

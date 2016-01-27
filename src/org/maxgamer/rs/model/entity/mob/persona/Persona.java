@@ -243,46 +243,29 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 		
 		if (!e.isSafe()) {
 			Container all = new GenericContainer(getInventory().getSize() + getEquipment().getSize(), StackType.ALWAYS);
-			all.addAll(getEquipment());
 			all.addAll(getInventory());
-			
+			all.addAll(getEquipment());
 			all.sort(new Comparator<ItemStack>() {
 				@Override
 				public int compare(ItemStack o1, ItemStack o2) {
 					return o2.getDefinition().getValue() - o1.getDefinition().getValue();
 				}
 			});
-			
+			all.shift();
+			int keep = e.getKeepSize();
+			Container keepContainer = new GenericContainer(keep, StackType.NEVER);
+			int index = 0;
+			while (keep > 0 && !all.isEmpty()) {
+				ItemStack item = all.get(index);
+				if (item == null) continue;
+				all.remove(item.setAmount(1));
+				if (all.get(index) == null || all.get(index).getAmount() == 0) index++;
+				keep--;
+				keepContainer.add(item.setAmount(1).setHealth(keep));
+			}
 			getInventory().clear();
 			getEquipment().clear();
-			
-			int keep = e.getKeepSize();
-			for (int i = 0; i < all.getSize() && keep > 0; i++) {
-				ItemStack item = all.get(i);
-				if (item == null) continue;
-				
-				if (item.getAmount() > keep) {
-					try {
-						getInventory().add(item.setAmount(keep));
-					}
-					catch (ContainerException ex) {
-						getLostAndFound().add(item.setAmount(keep));
-					}
-					all.remove(item.setAmount(keep));
-					keep = 0;
-				}
-				else {
-					try {
-						getInventory().add(item);
-					}
-					catch (ContainerException ex) {
-						getLostAndFound().add(item);
-					}
-					
-					all.remove(item);
-					keep -= item.getAmount();
-				}
-			}
+			getInventory().addAll(keepContainer);
 			
 			Persona owner = null;
 			Mob[] killers = getDamage().getKillers(DamageType.values());
@@ -786,7 +769,7 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 				throw new RuntimeException("Failed to load map.", e);
 			}
 			
-			if(l.getMap().isLoaded(l.getChunkX(), l.getChunkY(), l.z) == false){
+			if (l.getMap().isLoaded(l.getChunkX(), l.getChunkY(), l.z) == false) {
 				throw new RuntimeException("Failed to load map at " + l);
 			}
 		}
@@ -917,7 +900,7 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 		
 		MobTeleportEvent event = new MobTeleportEvent(this, this.getLocation() == null ? to : this.getLocation(), to);
 		event.call();
-		if(event.isCancelled()){
+		if (event.isCancelled()) {
 			return false;
 		}
 		
@@ -1018,25 +1001,27 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 	public Location getSpawn() {
 		return DEFAULT_PLAYER_SPAWN;
 	}
-
+	
 	@Override
 	public boolean has(ItemStack... items) {
 		// TODO: If the player is asked for 2 fire staff, and is wielding 1 and has the
 		// other in their inventory, this method will return false.
 		
 		ContainerState state = this.getInventory().getState();
-		try{
+		try {
 			state.remove(items);
 			return true;
 		}
-		catch(ContainerException e){}
+		catch (ContainerException e) {
+		}
 		
 		state = this.getEquipment().getState();
-		try{
+		try {
 			state.remove(items);
 			return true;
 		}
-		catch(ContainerException e){}
+		catch (ContainerException e) {
+		}
 		
 		return false;
 	}

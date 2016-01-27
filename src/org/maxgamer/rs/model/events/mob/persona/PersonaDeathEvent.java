@@ -1,6 +1,7 @@
 package org.maxgamer.rs.model.events.mob.persona;
 
 import org.maxgamer.rs.model.entity.mob.persona.Persona;
+import org.maxgamer.rs.model.skill.prayer.PrayerType;
 
 /**
  * Called during the start() call of a Persona for the first time
@@ -15,7 +16,6 @@ public class PersonaDeathEvent extends PersonaEvent {
 
 	public PersonaDeathEvent(Persona p) {
 		super(p);
-		setKeepSize(3);
 	}
 
 	public boolean isSafe() {
@@ -31,6 +31,11 @@ public class PersonaDeathEvent extends PersonaEvent {
 	}
 
 	public int getKeepSize() {
+		this.kept = 3;
+		if (getMob().getModel().isSkulled())
+			this.kept -= 3;
+		if (getMob().getPrayer().isEnabled(PrayerType.CURSE_PROTECT_ITEM) || getMob().getPrayer().isEnabled(PrayerType.PROTECT_ITEM))
+			this.kept += 1;
 		return this.kept;
 	}
 

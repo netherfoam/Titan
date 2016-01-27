@@ -36,7 +36,6 @@ import org.maxgamer.rs.model.map.path.AStar;
 import org.maxgamer.rs.model.map.path.Path;
 import org.maxgamer.rs.model.map.path.PathFinder;
 import org.maxgamer.rs.model.skill.SkillSet;
-import org.maxgamer.rs.structure.configs.ConfigSection;
 
 /**
  * Represents a Mob which has health, equipment, an action queue, an UpdateMask,
@@ -45,8 +44,6 @@ import org.maxgamer.rs.structure.configs.ConfigSection;
  * @author netherfoam
  */
 public abstract class Mob extends Entity implements EquipmentHolder {
-
-	private final ConfigSection temporaryConfigs;
 
 	/**
 	 * The update mask used for this mob, contains animations/movement
@@ -100,17 +97,17 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 		super(sizeX, sizeY);
 		this.actionQueue = new ActionQueue(this);
 		this.damage = new DamageLog(this);
-		this.temporaryConfigs = new ConfigSection();
 	}
-	
-	public Mob getTarget(){
+
+	public Mob getTarget() {
 		CombatFollow follow = getActions().first(CombatFollow.class);
-		if(follow == null) return null;
-		
+		if (follow == null){
+			return null;
+		}
 		return follow.getTarget();
 	}
-	
-	public void setTarget(Mob target){
+
+	public void setTarget(Mob target) {
 		if (target != null) {
 			getDamage().setLastTarget(target);
 			// New target is not null
@@ -120,7 +117,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 			getActions().clear();
 		}
 	}
-
+	
 	/**
 	 * Sets this mob's facing target to the given position
 	 * 
@@ -415,8 +412,8 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	public CombatStats getCombatStats() {
 		return this.combatStats;
 	}
-	
-	public Action move(Position to){
+
+	public Action move(Position to) {
 		return this.move(to, new AStar(5));
 	}
 
@@ -439,7 +436,8 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 			throw new IllegalThreadException("Must be invoked in main thread");
 		}
 
-		Path path = finder.findPath(getLocation(), to, to, getSizeX(), getSizeY());
+		Path path = finder.findPath(getLocation(), to, to, getSizeX(),
+				getSizeY());
 
 		Action walk = new WalkAction(this, path);
 		getActions().clear();
@@ -696,10 +694,11 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	public boolean isHidden() {
 		return hidden;
 	}
-	
+
 	@Override
-	public boolean isVisible(Entity viewer){
-		if(isHidden()) return false;
+	public boolean isVisible(Entity viewer) {
+		if (isHidden())
+			return false;
 		return super.isVisible(viewer);
 	}
 
@@ -838,32 +837,34 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	public boolean use(ItemStack item, int slot, String option) {
 		MobUseItemEvent e = new MobUseItemEvent(this, item, option, slot);
 		e.call();
-		
+
 		return e.isConsumed();
 	}
-	
-	public boolean use(ItemStack item, String option){
+
+	public boolean use(ItemStack item, String option) {
 		return this.use(item, -1, option);
 	}
 
 	public boolean use(GameObject g, String option) {
 		int i = 0;
-		for(String s : g.getOptions()){
-			if(s != null && s.equals(option)){
+		for (String s : g.getOptions()) {
+			if (s != null && s.equals(option)) {
 				return use(g, i);
 			}
-			
+
 			i++;
 		}
-		throw new IllegalArgumentException("No option available: '" + option + "' on " + g);
+		throw new IllegalArgumentException("No option available: '" + option
+				+ "' on " + g);
 	}
 
 	public boolean use(GameObject g, int option) {
-		if (option < 0 || option >= g.getDefiniton().getOptions().length){
+		if (option < 0 || option >= g.getDefiniton().getOptions().length) {
 			throw new IllegalArgumentException("Cannot invoke option " + option);
 		}
-		if (g.getDefiniton().getOption(option) == null){
-			throw new IllegalArgumentException("Cannot invoke option " + option + " ( no such option )");
+		if (g.getDefiniton().getOption(option) == null) {
+			throw new IllegalArgumentException("Cannot invoke option " + option
+					+ " ( no such option )");
 		}
 
 		final MobUseObjectEvent e = new MobUseObjectEvent(this, g, option);
@@ -905,7 +906,4 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 		return e.isConsumed();
 	}
 
-	public ConfigSection getTemporaryConfigs() {
-		return temporaryConfigs;
-	}
 }

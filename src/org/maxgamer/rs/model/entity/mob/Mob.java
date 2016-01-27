@@ -121,36 +121,6 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 		}
 	}
 
-	/*public Mob getTarget() {
-		if (this.target != null) {
-			if (this.target.isDead()) {
-				this.setTarget(null);
-			} else if (this.target.isAttackable(this) == false) {
-				this.setTarget(null);
-			} else if (this.target.isVisible(this) == false) {
-				this.setTarget(null);
-			} else if (this.target.getLocation().z != this.getLocation().z) {
-				this.setTarget(null);
-			} else if (this.target.getLocation().near(this.getLocation(), 25) == false) {
-				this.setTarget(null);
-			}
-		}
-		return this.target;
-	}
-
-	public void setTarget(Mob target) {
-		this.target = target;
-
-		if (target != null) {
-			getDamage().setLastTarget(target);
-			// New target is not null
-			getActions().clear();
-			getActions().queue(new CombatFollow(this, target, new AStar(10)));
-		} else {
-			getActions().clear();
-		}
-	}*/
-
 	/**
 	 * Sets this mob's facing target to the given position
 	 * 
@@ -586,7 +556,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 *            the location to teleport to
 	 * @thread main
 	 */
-	public abstract void teleport(Location dest);
+	public abstract boolean teleport(Location dest);
 
 	/**
 	 * The current health of this mob
@@ -852,6 +822,14 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 * This method is also invoked after the Mob is first loaded.
 	 */
 	public abstract void onIdle();
+	
+	/**
+	 * Returns true if this Mob has the given items on them. This returns true if 
+	 * the mob has the item in their inventory, or is wearing the items.
+	 * @param items the items
+	 * @return true if the items are contained, false otherwise
+	 */
+	public abstract boolean has(ItemStack... items);
 
 	public void sendMessage(String msg) {
 		// Empty

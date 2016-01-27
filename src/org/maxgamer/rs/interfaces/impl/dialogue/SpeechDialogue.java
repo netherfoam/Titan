@@ -33,7 +33,6 @@ public abstract class SpeechDialogue extends ThoughtDialogue {
 	public static final int BAD_ASS = 9855;
 	public static final int THINKING = 9860;
 	public static final int COOL_YES = 9864;
-	public static final int LAUGH_EXCITED = 9851;
 	public static final int SECRELTY_TALKING = 9838;
 	
 	/**

@@ -22,6 +22,7 @@ import org.maxgamer.rs.command.commands.Connections;
 import org.maxgamer.rs.command.commands.CopyCat;
 import org.maxgamer.rs.command.commands.Debug;
 import org.maxgamer.rs.command.commands.Descend;
+import org.maxgamer.rs.command.commands.DespawnObject;
 import org.maxgamer.rs.command.commands.DialogueCmd;
 import org.maxgamer.rs.command.commands.Die;
 import org.maxgamer.rs.command.commands.GC;
@@ -513,6 +514,7 @@ public class Server {
 			commands.register("js", new JSCommand());
 			commands.register("config", new Config()); 
 			commands.register("version", new Version());
+			commands.register("despawnobject", new DespawnObject());
 			
 			ConfigSection config = Core.getWorldConfig().getSection("commands", null);
 			if (config != null) {

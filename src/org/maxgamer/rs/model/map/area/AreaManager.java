@@ -8,7 +8,7 @@ import org.maxgamer.rs.event.EventListener;
 import org.maxgamer.rs.event.EventPriority;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.events.mob.MobMoveEvent;
-import org.maxgamer.rs.model.events.mob.MobPreTeleportEvent;
+import org.maxgamer.rs.model.events.mob.MobTeleportEvent;
 import org.maxgamer.rs.model.events.mob.persona.player.PlayerEnterWorldEvent;
 import org.maxgamer.rs.model.events.mob.persona.player.PlayerLeaveWorldEvent;
 import org.maxgamer.rs.model.map.Position;
@@ -56,7 +56,7 @@ public class AreaManager implements EventListener{
 	}
 	
 	@EventHandler(consumer = false, skipIfCancelled = true, priority = EventPriority.MONITOR)
-	public void onTeleport(MobPreTeleportEvent e) {
+	public void onTeleport(MobTeleportEvent e) {
 		move(e.getMob(), e.getFrom(), e.getTo(), AreaChangeState.TELEPORT);
 	}
 	

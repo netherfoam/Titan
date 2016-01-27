@@ -296,7 +296,9 @@ public abstract class GameObject extends Entity implements Interactable {
 				clips[0][1] |= ClipMasks.WALL_EAST;
 			}
 		}
-		if (isSolid) {
+		if (isSolid && getActionCount() != 2) { 
+			/* TODO: This may cause issues with walking through objects, but fixes the lumbridge spinning wheel doorway!
+			 * If issues occur, try remove the && getActionCount() != 2 comparison */
 			if (type == 0) {
 				if (direction == Directions.NORTH) {
 					clips[1][1] |= ClipMasks.BLOCKED_WEST;

@@ -30,7 +30,7 @@ import org.maxgamer.rs.model.entity.mob.persona.player.FriendsList;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
 import org.maxgamer.rs.model.events.mob.MobMoveEvent;
-import org.maxgamer.rs.model.events.mob.MobPreTeleportEvent;
+import org.maxgamer.rs.model.events.mob.MobTeleportEvent;
 import org.maxgamer.rs.model.events.mob.persona.PersonaChatEvent;
 import org.maxgamer.rs.model.events.mob.persona.PersonaDeathEvent;
 import org.maxgamer.rs.model.events.mob.persona.PersonaStartEvent;
@@ -41,6 +41,7 @@ import org.maxgamer.rs.model.item.inventory.BankContainer;
 import org.maxgamer.rs.model.item.inventory.Container;
 import org.maxgamer.rs.model.item.inventory.ContainerException;
 import org.maxgamer.rs.model.item.inventory.ContainerListener;
+import org.maxgamer.rs.model.item.inventory.ContainerState;
 import org.maxgamer.rs.model.item.inventory.GenericContainer;
 import org.maxgamer.rs.model.item.inventory.Inventory;
 import org.maxgamer.rs.model.item.inventory.PersonaEquipment;
@@ -906,23 +907,25 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 	}
 	
 	@Override
-	public void teleport(Location to) {
+	public boolean teleport(Location to) {
 		if (to == null) {
 			throw new NullPointerException("Cannot teleport a player to a NULL location.");
 		}
 		if (to.getMap() == null) {
 			throw new NullPointerException("Destination map may not be NULL");
 		}
-		// Disabled, we need setLocation() for this stuff!
-		// TODO: Make setLocation() not clear actions,
-		// Call super.setLocation() whenever we move,
-		// Make teleport() clear actions.
-		// getActions().clear();
-		MobPreTeleportEvent event = new MobPreTeleportEvent(this, this.getLocation() == null ? to : this.getLocation(), to);
+		
+		MobTeleportEvent event = new MobTeleportEvent(this, this.getLocation() == null ? to : this.getLocation(), to);
 		event.call();
+		if(event.isCancelled()){
+			return false;
+		}
+		
 		this.setLocation(event.getTo());
-		Log.debug(this + " teleported to " + this.getLocation());
 		this.getUpdateMask().getMovement().setTeleported(true);
+		this.getActions().clear();
+		
+		return true;
 	}
 	
 	@Override
@@ -1014,5 +1017,27 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 	@Override
 	public Location getSpawn() {
 		return DEFAULT_PLAYER_SPAWN;
+	}
+
+	@Override
+	public boolean has(ItemStack... items) {
+		// TODO: If the player is asked for 2 fire staff, and is wielding 1 and has the
+		// other in their inventory, this method will return false.
+		
+		ContainerState state = this.getInventory().getState();
+		try{
+			state.remove(items);
+			return true;
+		}
+		catch(ContainerException e){}
+		
+		state = this.getEquipment().getState();
+		try{
+			state.remove(items);
+			return true;
+		}
+		catch(ContainerException e){}
+		
+		return false;
 	}
 }

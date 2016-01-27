@@ -74,8 +74,14 @@ public class BookInterface extends PrimaryInterface {
 		if (option == 0) {
 			if (buttonId == 74) { //'X' in top right
 				getPlayer().getWindow().close(this);
-				return;
+			}
+			else if(buttonId == 73){
+				next();
 			}
 		}
 	}
+	
+	public void next(){}
+	
+	public void previous() {}
 }

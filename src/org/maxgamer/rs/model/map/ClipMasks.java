@@ -45,7 +45,7 @@ public class ClipMasks {
 			for (Field f : ClipMasks.class.getDeclaredFields()) {
 				if (f.getType().isPrimitive()) {
 					int val = f.getInt(null);
-					if ((val & lookup) != 0) {
+					if ((val & lookup) == val) {
 						values.add(f.getName() + " from " + String.format("0x%X", val));
 						//lookup = lookup & ~val;
 					}

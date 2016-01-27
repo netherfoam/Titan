@@ -492,9 +492,8 @@ public abstract class WorldMap {
 			Iterator<T> sit = set.iterator();
 			while (sit.hasNext()) {
 				T t = sit.next();
-				//I think this is correct.
 				//TODO: This is bad, we should be using >= instead.
-				if (t.getMin(2) < proxy.getMin(2) || t.getMin(2) > proxy.getMin(2) + proxy.getDimension(2)) {
+				if(t.getMin(2) + t.getDimension(2) < proxy.getMin(2) || t.getMin(2) > proxy.getMin(2) + proxy.getDimension(2)){
 					sit.remove();
 					continue;
 				}

@@ -95,13 +95,6 @@ public class SkillSet implements YMLSerializable {
 		skill.setExp(exp);
 		
 		if (skill.getLevel() != previousLevel) {
-			if(initializing == false){
-				if (owner instanceof Player) {
-					//Player p = (Player) owner;
-					//TODO level up
-				}
-				owner.graphics(199);
-			}
 			
 			// We may need to recalculate our combat level based on the new skill
 			if (t == SkillType.ATTACK || t == SkillType.STRENGTH || t == SkillType.DEFENCE || t == SkillType.CONSTITUTION || t == SkillType.RANGE || t == SkillType.MAGIC || t == SkillType.PRAYER || t == SkillType.SUMMONING) {

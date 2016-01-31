@@ -1,7 +1,8 @@
 /* These are implicitly set later by the JSFiber */
 var player;
 
-importClass(org.maxgamer.rs.model.javascript.dialogue.DialogueUtil);
+importClass(org.maxgamer.rs.model.javascript.DialogueUtil);
+importClass(org.maxgamer.rs.interfaces.impl.dialogue.SpeechDialogue);
 
 function chat(speaker, message, emote){
 	emote = emote || org.maxgamer.rs.interfaces.impl.dialogue.SpeechDialogue.CALM_TALK;

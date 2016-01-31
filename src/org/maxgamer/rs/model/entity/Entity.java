@@ -284,4 +284,6 @@ public abstract class Entity implements MBR, Locatable {
 		setLocation(null);
 		this.destroyed = true;
 	}
+	
+	public abstract String getName();
 }

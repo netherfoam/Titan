@@ -24,11 +24,11 @@ public class Log {
 	
 	public static void init(final LogLevel level) {
 		try {
-			File f = new File("server.log");
+			final File f = new File("server.log");
 			f.createNewFile();
-			final PrintStream file = new PrintStream(new FileOutputStream(f, true));
 			
 			ps = new PrintStream(System.out) {
+				final PrintStream file = new PrintStream(new FileOutputStream(f, true));
 				@Override
 				public void print(String s) {
 					super.print(s);

@@ -4,7 +4,8 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import org.maxgamer.rs.model.javascript.dialogue.TalkToListener;
+import org.maxgamer.rs.core.Core;
+import org.maxgamer.rs.model.javascript.interaction.InteractionListener;
 import org.maxgamer.rs.model.skill.prayer.PrayerListener;
 
 public class EventManager {
@@ -14,7 +15,7 @@ public class EventManager {
 		listeners = new HashMap<EventPriority, LinkedList<HandlerExecutor>>(EventPriority.values().length);
 		
 		this.register(new PrayerListener());
-		this.register(new TalkToListener());
+		this.register(new InteractionListener(Core.getServer().getInteractions()));
 	}
 	
 	/**

@@ -57,6 +57,7 @@ public class LoginRequestHandler extends RawHandler {
 			finally {
 				getSession().close(true);
 			}
+			return;
 		}
 		
 		InputStreamWrapper in = null;
@@ -129,6 +130,11 @@ public class LoginRequestHandler extends RawHandler {
 			//A nice way of reading.
 			in = new InputStreamWrapper(block);
 			name = in.readString();
+			
+			if(name.matches("[A-Za-z0-9_\\- ]{1,20}") == false){
+				getSession().write(AuthResult.CHANGE_NAME.getCode());
+				return;
+			}
 			
 			if (opcode == 16 || opcode == 18) { //Initial world join or resume (rejoin) request
 				toLobby = false;

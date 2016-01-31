@@ -94,6 +94,16 @@ public class SkillSet implements YMLSerializable {
 		int previousLevel = skill.getLevel();
 		skill.setExp(exp);
 		
+		// If the owner is a player, then we must send them the update packet.
+		if (owner instanceof Client) {
+			Client c = (Client) owner;
+			RSOutgoingPacket out = new RSOutgoingPacket(8);
+			out.writeInt1((int) exp);
+			out.writeByteS(t.getId());
+			out.writeByteS((byte) getLevel(t) + (int) getModifier(t));
+			c.write(out);
+		}
+		
 		if (skill.getLevel() != previousLevel) {
 			if(initializing == false){
 				if (owner instanceof Player) {
@@ -129,23 +139,13 @@ public class SkillSet implements YMLSerializable {
 				e.call();
 			}
 		}
-		
-		// If the owner is a player, then we must send them the update packet.
-		if (owner instanceof Client) {
-			Client c = (Client) owner;
-			RSOutgoingPacket out = new RSOutgoingPacket(8);
-			out.writeInt1((int) exp);
-			out.writeByteS(t.getId());
-			out.writeByteS((byte) getLevel(t) + (int) getModifier(t));
-			c.write(out);
-		}
 	}
 	
 	/**
 	 * Returns the amount of exp that the mob has in the given skill.
 	 * 
 	 * @param t the skill level
-	 * @return the amount of exp in teh level
+	 * @return the amount of exp in the level
 	 */
 	public double getExp(SkillType t) {
 		if (skills.containsKey(t) == false) {
@@ -167,7 +167,8 @@ public class SkillSet implements YMLSerializable {
 		if (skills.containsKey(t) == false) {
 			skills.put(t, new Skill(t, 0));
 		}
-		setExp(t, skills.get(t).getExp() + exp);
+		double old = skills.get(t).getExp();
+		setExp(t, old + exp);
 	}
 	
 	/**

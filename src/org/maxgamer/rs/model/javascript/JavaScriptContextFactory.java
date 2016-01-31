@@ -6,20 +6,29 @@ import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.Scriptable;
 
 public abstract class JavaScriptContextFactory extends ContextFactory{
-	public JavaScriptContextFactory(){
-		super();
-	}
+	private ClassLoader loader;
 	
+	public JavaScriptContextFactory(ClassLoader loader){
+		super();
+		this.loader = loader;
+	}
 	
 	public abstract long credits();
 	public abstract void pay(long cost);
 	
 	@Override
-	protected Context makeContext(){
+	protected JavaScriptContext makeContext(){
 		JavaScriptContext c = new JavaScriptContext(this);
 		c.setOptimizationLevel(-1);
 		c.setInstructionObserverThreshold(1000);
 		return c;
+	}
+	
+	@Override
+	public JavaScriptContext enterContext(){
+		JavaScriptContext context = (JavaScriptContext) super.enterContext();
+		context.setApplicationClassLoader(loader);
+		return context;
 	}
 	
 	@Override

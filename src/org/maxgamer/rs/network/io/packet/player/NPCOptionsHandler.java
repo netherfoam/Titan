@@ -4,11 +4,16 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 import org.maxgamer.rs.core.Core;
+import org.maxgamer.rs.model.action.WalkAction;
 import org.maxgamer.rs.model.entity.mob.npc.NPC;
 import org.maxgamer.rs.model.entity.mob.npc.NPCDefinition;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
+import org.maxgamer.rs.model.map.path.AStar;
+import org.maxgamer.rs.model.map.path.Path;
 import org.maxgamer.rs.network.io.packet.PacketProcessor;
 import org.maxgamer.rs.network.io.packet.RSIncomingPacket;
+
+import co.paralleluniverse.fibers.SuspendExecution;
 
 /**
  * @author netherfoam
@@ -23,8 +28,8 @@ public class NPCOptionsHandler implements PacketProcessor<Player> {
 	public static final int EXAMINE = 5;
 
 	@Override
-	public void process(Player player, RSIncomingPacket packet) throws Exception {
-		NPC target = null;
+	public void process(final Player player, RSIncomingPacket packet) throws Exception {
+		final NPC target;
 		int option = -1;
 		int index;
 
@@ -65,8 +70,7 @@ public class NPCOptionsHandler implements PacketProcessor<Player> {
 				NPCDefinition d = NPCDefinition.getDefinition(npcId);
 				player.sendMessage(d.getExamine());
 
-				// TODO DEBUG: Send the player the options they can click on the
-				// NPC
+				// TODO DEBUG: Send the player the options they can click on the NPC
 				String[] options = new String[] { d.getOption(0), d.getOption(1), d.getOption(2), d.getOption(3), d.getOption(4) };
 				player.sendMessage("NPCID " + npcId + " Options: " + Arrays.toString(options) + ", Clicked " + option);
 				HashSet<NPC> nearby = player.getLocation().getNearby(NPC.class, 5);
@@ -96,7 +100,7 @@ public class NPCOptionsHandler implements PacketProcessor<Player> {
 			return;
 		}
 		
-		String s = target.getOption(option);
+		final String s = target.getOption(option);
 		if(s == null){
 			player.getCheats().log(20, "Player attempted to use a NPC option that doesn't exist.  Target: " + target + ", option: " + option);
 			return;
@@ -110,6 +114,22 @@ public class NPCOptionsHandler implements PacketProcessor<Player> {
 			return;
 		}
 		
-		player.use(target, s);
+		if(s.equalsIgnoreCase("Attack") == false && player.getLocation().distanceSq(target.getLocation()) > 1){
+			AStar finder = new AStar(5);
+			Path p = finder.findPath(player, target.getLocation(), 1);
+			WalkAction walk = new WalkAction(player, p){
+				@Override
+				public void run() throws SuspendExecution{
+					super.run();
+					player.use(target, s);
+				}
+			};
+			player.getActions().clear();
+			player.getActions().queue(walk);
+		}
+		else{
+			player.use(target, s);
+		}
+		
 	}
 }

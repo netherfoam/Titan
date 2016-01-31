@@ -22,7 +22,6 @@ import org.maxgamer.rs.model.entity.mob.npc.loot.Loot;
 import org.maxgamer.rs.model.entity.mob.npc.loot.LootItem;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;
 import org.maxgamer.rs.model.events.mob.MobMoveEvent;
-import org.maxgamer.rs.model.events.mob.MobTeleportEvent;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.item.ground.GroundItemStack;
 import org.maxgamer.rs.model.item.inventory.Equipment;
@@ -237,26 +236,6 @@ public class NPC extends Mob implements Interactable {
 		// Delete ourselves.
 		Core.getServer().getNPCs().remove(spawnIndex);
 		setLocation(null);
-	}
-	
-	@Override
-	public boolean teleport(Location to) {
-		if (to == null) {
-			throw new NullPointerException("Cannot teleport a player to a NULL location.");
-		}
-		if (to.getMap() == null) {
-			throw new NullPointerException("Destination map may not be NULL");
-		}
-		
-		MobTeleportEvent event = new MobTeleportEvent(this, this.getLocation() == null ? to : this.getLocation(), to);
-		event.call();
-		if(event.isCancelled()){
-			return false;
-		}
-				
-		setLocation(event.getTo());
-		getUpdateMask().setTeleporting(true);
-		return true;
 	}
 	
 	@Override

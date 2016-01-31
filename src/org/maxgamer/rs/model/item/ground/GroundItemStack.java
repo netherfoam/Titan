@@ -162,4 +162,9 @@ public class GroundItemStack extends Entity implements Comparable<GroundItemStac
 	public String[] getOptions() {
 		return getItem().getGroundOptions();
 	}
+
+	@Override
+	public String getName() {
+		return getItem().getName();
+	}
 }

@@ -30,7 +30,6 @@ import org.maxgamer.rs.model.entity.mob.persona.player.FriendsList;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
 import org.maxgamer.rs.model.events.mob.MobMoveEvent;
-import org.maxgamer.rs.model.events.mob.MobTeleportEvent;
 import org.maxgamer.rs.model.events.mob.persona.PersonaChatEvent;
 import org.maxgamer.rs.model.events.mob.persona.PersonaDeathEvent;
 import org.maxgamer.rs.model.events.mob.persona.PersonaStartEvent;
@@ -518,11 +517,7 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 			// clip in the
 			// game world may change (Eg door opens or, more importantly,
 			// closes!)
-			if (this.isRunning() && path.isEmpty() == false) { // TODO: If NPC's
-																// ever run,
-																// this check
-																// will need to
-																// be removed
+			if (this.isRunning() && path.isEmpty() == false) { // TODO: If NPC's ever run, this check will need to be removed
 				Direction dir2 = path.peek(); // Not remove()!
 				
 				dx += dir2.dx;
@@ -887,28 +882,6 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 		
 		Core.getServer().getPersonas().remove(this.id);
 		super.destroy();
-	}
-	
-	@Override
-	public boolean teleport(Location to) {
-		if (to == null) {
-			throw new NullPointerException("Cannot teleport a player to a NULL location.");
-		}
-		if (to.getMap() == null) {
-			throw new NullPointerException("Destination map may not be NULL");
-		}
-		
-		MobTeleportEvent event = new MobTeleportEvent(this, this.getLocation() == null ? to : this.getLocation(), to);
-		event.call();
-		if (event.isCancelled()) {
-			return false;
-		}
-		
-		this.setLocation(event.getTo());
-		this.getUpdateMask().getMovement().setTeleported(true);
-		this.getActions().clear();
-		
-		return true;
 	}
 	
 	@Override

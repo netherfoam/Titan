@@ -54,13 +54,11 @@ public class MagicAttack extends Attack {
 	
 	@Override
 	public void perform(final Mob target, final AttackResult data) {
-		//this.spell.displayCast(attacker); //No need, done by Attack.java
 		if (this.spell.getProjectileId() >= 0) {
 			Projectile p = Projectile.create(this.spell.getProjectileId(), attacker.getLocation(), target);
 			p.launch();
 		}
 		
-		//Core.getServer().getTicker().submit(1, new Tickable(){;
 		new Tickable() {
 			@Override
 			public void tick() {
@@ -70,16 +68,10 @@ public class MagicAttack extends Attack {
 				MagicAttack.super.perform(target, data);
 				spell.perform(attacker, target, data);
 				
-				//This is done already because Combat.damage() is called, which sets last attacker. Here for documentation purposes.
-				//for(Mob t : data.getTargets()){
-				//	target.getCombat().setLastAttacker(attacker);
-				//}
-				
 				//If the spell is not a damage one, setLastAttacker will never be called otherwise.
 				target.getDamage().setLastAttacker(attacker);
 			}
 		}.queue(1);
-		;
 	}
 	
 	@Override

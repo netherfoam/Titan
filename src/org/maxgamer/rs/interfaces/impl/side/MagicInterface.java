@@ -19,6 +19,8 @@ import org.maxgamer.rs.model.skill.SkillType;
  * @author netherfoam
  */
 public class MagicInterface extends SideInterface {
+	private MagicAttack nextAttack;
+	
 	public MagicInterface(Player p, short childId) {
 		super(p, (short) (p.getSession().getScreenSettings().getDisplayMode() < 2 ? 209 : 94));
 		setChildId(childId);
@@ -97,8 +99,13 @@ public class MagicInterface extends SideInterface {
 		}
 		
 		TargetSpell t = (TargetSpell) s;
-		MagicAttack a = new MagicAttack(getPlayer(), t);
-		getPlayer().queueAttack(a);
+		this.nextAttack = new MagicAttack(getPlayer(), t){
+			@Override
+			public boolean run(Mob target){
+				if(nextAttack == this) nextAttack = null;
+				return super.run(target);
+			}
+		};
 		getPlayer().setTarget(target);
 	}
 	
@@ -129,5 +136,9 @@ public class MagicInterface extends SideInterface {
 				return;
 			}
 		}
+	}
+	
+	public MagicAttack attack(){
+		return this.nextAttack;
 	}
 }

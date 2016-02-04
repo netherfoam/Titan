@@ -119,13 +119,9 @@ public class GroundItemStack extends Entity implements Comparable<GroundItemStac
 	@Override
 	public boolean isVisible(Entity viewer){
 		if(viewer instanceof Mob){
-			return isVisible((Mob) viewer) && super.isVisible(viewer);
+			if(!isPublic() && getOwner() != viewer) return false;
 		}
 		return super.isVisible(viewer);
-	}
-	
-	public boolean isVisible(Mob to) {
-		return isPublic() || getOwner() == to;
 	}
 	
 	@Override

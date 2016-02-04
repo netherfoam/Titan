@@ -28,8 +28,11 @@ import org.maxgamer.rs.interfaces.impl.side.SettingsInterface;
 import org.maxgamer.rs.interfaces.impl.side.SkillsInterface;
 import org.maxgamer.rs.interfaces.impl.side.TasksInterface;
 import org.maxgamer.rs.lib.log.Log;
+import org.maxgamer.rs.model.entity.mob.combat.Attack;
 import org.maxgamer.rs.model.entity.mob.combat.AttackStyle;
+import org.maxgamer.rs.model.entity.mob.combat.JavaScriptAttack;
 import org.maxgamer.rs.model.entity.mob.combat.mage.CombatSpell;
+import org.maxgamer.rs.model.entity.mob.combat.mage.MagicAttack;
 import org.maxgamer.rs.model.entity.mob.combat.mage.Spellbook;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;
 import org.maxgamer.rs.model.entity.mob.persona.PersonaOptions;
@@ -317,6 +320,30 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 	public void setRunning(boolean run) {
 		super.setRunning(run);
 		this.getProtocol().sendConfig(173, isRunning() ? 1 : 0);
+	}
+	
+	@Override
+	public Attack nextAttack(){
+		/* First, we check if the player selected a spell to cast */
+		MagicInterface magic = this.getWindow().getInterface(MagicInterface.class);
+		if(magic != null){
+			MagicAttack a = magic.attack();
+			if(a != null){
+				return a;
+			}
+		}
+		
+		/* Second, we check if the player wants to use a special attack */
+		CombatStyles styles = this.getWindow().getInterface(CombatStyles.class);
+		if(styles != null){
+			JavaScriptAttack a = styles.attack();
+			if(a != null){
+				return a;
+			}
+		}
+		
+		/* Third, we resort to a generic Persona attack */
+		return super.nextAttack();
 	}
 	
 	/**
@@ -673,6 +700,13 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 		super.setAttackStyle(style);
 		
 		getProtocol().sendConfig(43, style.getSlot() > 0 ? style.getSlot() - 1 : -1);
+	}
+	
+	@Override
+	public void setAttackEnergy(int e){
+		super.setAttackEnergy(e);
+		
+		this.getProtocol().sendConfig(300, getAttackEnergy() * 10);
 	}
 	
 	public Notes getNotes() {

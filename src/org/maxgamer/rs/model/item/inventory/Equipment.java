@@ -71,4 +71,48 @@ public class Equipment extends Container {
 	public int getSize() {
 		return items.length;
 	}
+	
+	public ItemStack getHat() {
+		return get(WieldType.HAT);
+	}
+	
+	public ItemStack getBody() {
+		return get(WieldType.BODY);
+	}
+	
+	public ItemStack getBoots() {
+		return get(WieldType.BOOTS);
+	}
+	
+	public ItemStack getCape() {
+		return get(WieldType.CAPE);
+	}
+	
+	public ItemStack getAmulet() {
+		return get(WieldType.AMULET);
+	}
+	
+	public ItemStack getShield() {
+		return get(WieldType.SHIELD);
+	}
+	
+	public ItemStack getLegs() {
+		return get(WieldType.LEGS);
+	}
+	
+	public ItemStack getRing() {
+		return get(WieldType.RING);
+	}
+	
+	public ItemStack getArrows() {
+		return get(WieldType.ARROWS);
+	}
+	
+	public ItemStack getWeapon() {
+		return get(WieldType.WEAPON);
+	}
+	
+	public ItemStack getGloves() {
+		return get(WieldType.GLOVES);
+	}
 }

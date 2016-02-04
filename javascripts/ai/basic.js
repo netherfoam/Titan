@@ -38,7 +38,6 @@ function pick(){
 function danger(){
 	if(body.getHealth() < body.getMaxHealth() / 2){
 		/* We must eat */
-		
 		var food = items().option("Eat").first();
 
 		if(food != null){
@@ -76,18 +75,17 @@ function danger(){
 		}
 	}
 
+
 	return false;
 }
 
 function goals(){
-	//Intended to crash and trigger the timeout error
-
 	while(true){
 		wait();
 
 		if(body.getInventory().isFull() == false){
 			var ground = grounds().option("Take").reachable().nearest();
-			if(ground != null && move(ground.getLocation())){
+			if(ground != null && move(ground.getLocation()) && ground.isVisible(body)){
 				body.use(ground, "Take");
 				wait();
 			}
@@ -140,17 +138,12 @@ function goals(){
 			body.setTarget(target);
 			continue;
 		}
+		else if(body.getLocation().z > 0){
+			travel(body.getLocation().add(0, 0, -body.getLocation().z));
+			continue;
+		}
 		else{
-			if(body.getLocation().z > 0){
-				travel(body.getLocation().add(0, 0, -body.getLocation().z));
-				continue;
-			}
-
-			if(poi() == false){
-				body.say("Well, I'm lost.");
-				wander();
-				continue;
-			}
+			wander();
 		}
 	}
 }

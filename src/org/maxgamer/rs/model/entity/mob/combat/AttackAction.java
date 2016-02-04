@@ -9,19 +9,10 @@ import co.paralleluniverse.fibers.SuspendExecution;
 
 public class AttackAction extends Action {
 	private Mob target;
-	private Attack attack;
 	
-	public AttackAction(Mob mob, Mob target, Attack attack) {
+	public AttackAction(Mob mob, Mob target) {
 		super(mob);
-		if(attack == null){
-			throw new NullPointerException("Attack may not be null");
-		}
 		this.target = target;
-		this.attack = attack;
-	}
-	
-	public AttackAction(Mob mob, Mob target){
-		this(mob, target, mob.nextAttack());
 	}
 	
 	public Mob getTarget() {
@@ -46,13 +37,13 @@ public class AttackAction extends Action {
 	}
 
 	public Attack getAttack() {
-		return attack;
+		return getOwner().nextAttack();
 	}
 	
 	private boolean inRange() throws SuspendExecution{
-		int range = attack.getMaxDistance();
+		int range = getAttack().getMaxDistance();
 		
-		if(range == 1 && getTarget().getLocation().isDiagonal(getOwner().getLocation())){
+		if(range == 1 || getTarget().getLocation().isDiagonal(getOwner().getLocation())){
 			return true; //Allow diagonal combat
 		}
 		
@@ -63,11 +54,14 @@ public class AttackAction extends Action {
 	}
 
 	@Override
-	protected void run() throws SuspendExecution {
+	public void run() throws SuspendExecution {
 		long warmup = Core.getServer().getTicks() - getOwner().getDamage().getLastAttack();
 		
 		while(++warmup < getAttack().getWarmupTicks()){
+			assert getOwner().getActions().after(this) instanceof CombatFollow : "AttackAction tried to yield to CombatFollow but instead tried to yield to " + getOwner().getActions().after(this);
+			this.yield();
 			wait(1);
+			
 			if(getTarget() == null){
 				return;
 			}
@@ -94,6 +88,7 @@ public class AttackAction extends Action {
 		if(target != null && getAttack().run(target)){
 			getOwner().getDamage().setLastAttack(Core.getServer().getTicks());
 			target.getDamage().setLastAttacker(getOwner());
+			this.yield();
 		}
 	}
 	

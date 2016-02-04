@@ -277,8 +277,9 @@ public class SkillSet implements YMLSerializable {
 	 * @param t The skill to modify/buff
 	 * @param multiplier the multiplier, where 1 = normal, 1.1 = 10% boost, 0.9
 	 *        = 10% decrease.
+	 * @return the number of levels gained (may be negative for loss)
 	 */
-	public void buff(SkillType t, double multiplier) {
+	public int buff(SkillType t, double multiplier) {
 		if (t == null) {
 			throw new NullPointerException("SkillType may not be null");
 		}
@@ -315,6 +316,7 @@ public class SkillSet implements YMLSerializable {
 		}
 		
 		setModifier(t, curMod);
+		return (int) delta;
 	}
 	
 	/**

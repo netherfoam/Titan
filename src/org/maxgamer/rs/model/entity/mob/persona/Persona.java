@@ -155,13 +155,6 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 	private PrayerSet prayer;
 	
 	/**
-	 * A currently queued attack, such as a Special Attack or a Magic Spell.
-	 * This can be overwritten if another attack is queued, or cancelled
-	 * entirely with no replacement.
-	 */
-	private Attack nextAttack;
-	
-	/**
 	 * The spell the player is currently autocasting in combat. If this is null,
 	 * then no spell is being autocast.
 	 */
@@ -171,6 +164,11 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 	 * The run energy for this Persona
 	 */
 	private int runEnergy = 100;
+	
+	/**
+	 * The special attack energy for this Persona
+	 */
+	private int attackEnergy = 100;
 	
 	/**
 	 * Constructs a new Persona from the given profile. This will modify the
@@ -363,6 +361,29 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 				this.setAttackStyle(wep.getDefinition().getAttackStyle(1));
 			}
 		}
+	}
+	
+	/**
+	 * Sets the special attack energy for this Persona, where 100 is fully ready
+	 * and 0 is completely drained.
+	 * @param energy the new amount of special attack energy.
+	 * @throws IllegalArgumentException if the given amount is not between 0 and 100 inclusive
+	 */
+	public void setAttackEnergy(int energy){
+		if(energy < 0 || energy > 100){
+			throw new IllegalArgumentException("Energy must be 0 to 100 inclusive, given " + energy);
+		}
+		
+		this.attackEnergy = energy;
+	}
+	
+	/**
+	 * Gets the special attack energy for this Persona, where 100 is fully ready and 0
+	 * is completely drained.
+	 * @return the energy, from 0 to 100.
+	 */
+	public int getAttackEnergy(){
+		return this.attackEnergy;
 	}
 	
 	/**
@@ -683,9 +704,7 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 		PersonaStartEvent e = new PersonaStartEvent(this);
 		e.call();
 		
-		// Submit our health regen tick
-		// Core.getServer().getTicker().submit(6 - Core.getServer().getTicks() %
-		// 6, new Tickable() {
+		// Submit our health/spec regeneration tick
 		new Tickable() {
 			@Override
 			public void tick() {
@@ -705,7 +724,11 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 						setHealth(getHealth() + 1);
 					}
 				}
-				// Core.getServer().getTicker().submit(6 - healthTick, this);
+				
+				if(getAttackEnergy() < 100){
+					setAttackEnergy(Math.min(getAttackEnergy() + 5, 100));
+				}
+				
 				this.queue(6 - healthTick);
 			}
 		}.queue(6 - Core.getServer().getTicks() % 6);
@@ -714,6 +737,8 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 		this.setRetaliate(this.config.getBoolean("retaliate", this.isRetaliate()));
 		this.setSpellbook(Spellbook.getBook(this.config.getInt("spellbook", 192)));
 		this.setRunEnergy(this.config.getInt("energy.run", this.runEnergy));
+		this.setAttackEnergy(this.config.getInt("energy.attack", this.attackEnergy));
+		
 		if (this.getRunEnergy() > 0) {
 			this.setRunning(true);
 		}
@@ -798,6 +823,7 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 			this.config.set("retaliate", isRetaliate());
 			this.config.set("spellbook", this.spellbook.getChildId());
 			this.config.set("energy.run", this.runEnergy);
+			this.config.set("energy.attack", this.attackEnergy);
 		}
 		
 		return this.config;
@@ -899,23 +925,31 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 	public void restore() {
 		super.restore();
 		this.setRunEnergy(100);
+		this.setAttackEnergy(100);
+		
 		for (SkillType t : SkillType.values()) {
 			getSkills().setModifier(t, 0);
 		}
 	}
 	
+	private Attack nextAttack;
 	@Override
 	public Attack nextAttack() {
-		if (nextAttack != null) {
-			Attack a = nextAttack;
-			nextAttack = null; // Clear the attack
-			return a;
+		if(nextAttack != null){
+			return nextAttack;
 		}
 		
 		if (autocast != null) {
 			// TODO: If the player hasn't got the runes, should autocast be
 			// cancelled?
-			return new MagicAttack(this, autocast);
+			nextAttack = new MagicAttack(this, autocast){
+				@Override
+				public boolean run(Mob target){
+					nextAttack = null;
+					return super.run(target);
+				}
+			};
+			return nextAttack;
 		}
 		
 		// TODO: Decide whether to use a magic, range or melee attack.
@@ -923,24 +957,26 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 		if (item != null) {
 			// if (RangeAttack.isRange(item)) {
 			if (getAttackStyle().isType(SkillType.RANGE)) {
-				return new RangeAttack(this);
+				nextAttack = new RangeAttack(this){
+					@Override
+					public boolean run(Mob target){
+						nextAttack = null;
+						return super.run(target);
+					}
+				};
+				return nextAttack;
 			}
 			
 		}
-		return new MeleeAttack(this);
-	}
-	
-	/**
-	 * Queues the given attack. If it is null, this method will cancel any
-	 * existing attack. Any existing attack is cancelled, though the attack
-	 * currently being executed is not. This method changes the result of
-	 * nextAttack(). Calling queueAttack(null) does not stop attacks being
-	 * generated.
-	 * 
-	 * @param a the new attack, may be null
-	 */
-	public void queueAttack(Attack a) {
-		this.nextAttack = a;
+		
+		nextAttack = new MeleeAttack(this){
+			@Override
+			public boolean run(Mob target){
+				nextAttack = null;
+				return super.run(target);
+			}
+		};
+		return nextAttack;
 	}
 	
 	@Override

@@ -583,13 +583,8 @@ public class ItemProto extends Definition {
 	}
 	
 	private static void discard(ByteBuffer bb, int op, int bytes) {
-		long v = 0;
 		for (int i = 0; i < bytes; i++) {
-			v = (v << 8) | (bb.get() & 0xFF);
-		}
-		
-		if (v == 686) {
-			System.out.println("value " + v + " discarded for op" + op);
+			bb.get();
 		}
 	}
 	

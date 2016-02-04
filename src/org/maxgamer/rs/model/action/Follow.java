@@ -138,6 +138,10 @@ public abstract class Follow extends Action {
 				}
 				
 				getOwner().move(path);
+				
+				if(isSatisfied()){
+					this.onWait();
+				}
 			}
 			else {
 				this.onWait();

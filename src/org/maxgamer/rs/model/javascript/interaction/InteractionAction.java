@@ -47,6 +47,8 @@ public class InteractionAction extends Action{
 			e.printStackTrace();
 		}
 		
+		getOwner().face(target);
+		
 		try {
 			call = fiber.invoke(function, getOwner(), target);
 		}

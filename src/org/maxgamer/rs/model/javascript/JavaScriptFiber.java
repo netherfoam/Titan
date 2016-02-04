@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import org.maxgamer.rs.core.Core;
+import org.maxgamer.rs.lib.log.Log;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContinuationPending;
 import org.mozilla.javascript.Function;
@@ -81,6 +82,12 @@ public class JavaScriptFiber {
 			}
 			@Override
 			public void pay(long expense){
+				// We have unlimited credits on async threads.
+				if(Core.getServer().getThread().isServerThread() == false){
+					Log.debug("async thread gets free credits.");
+					return;
+				}
+				
 				credits -= expense;
 			}
 		};
@@ -97,6 +104,14 @@ public class JavaScriptFiber {
 		finally{
 			Context.exit();
 		}
+	}
+	
+	public void setCredits(long credits){
+		this.credits = credits;
+	}
+	
+	public long getCredits(){
+		return this.credits;
 	}
 	
 	public JavaScriptContext context(){

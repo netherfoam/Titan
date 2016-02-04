@@ -152,6 +152,22 @@ public abstract class Pane extends Window {
 	public Interface getInterface(int id) {
 		return interfaces.get(Integer.valueOf(id));
 	}
+	
+	/**
+	 * Fetches the given interface by type
+	 * @param type the type, may not be null
+	 * @return the interface or null if not found
+	 */
+	@SuppressWarnings("unchecked")
+	public <T extends Interface> T getInterface(Class<T> type){
+		if(type == null){
+			throw new NullPointerException("Type may not be null");
+		}
+		for(Interface iface : this.interfaces.values()){
+			if(type.isInstance(iface)) return (T) iface;
+		}
+		return null;
+	}
 
 	public void onOpen() {
 

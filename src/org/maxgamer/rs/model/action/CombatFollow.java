@@ -60,12 +60,12 @@ public class CombatFollow extends Follow {
 
 	@Override
 	public void onWait() {
-		if(getOwner().getActions().isQueued(this)){
+		if(getOwner().getActions().isQueued(this) && getOwner().getActions().before(this) instanceof AttackAction == false){
 			//Our action can be cancelled during the waiting period due to getTarget()
 			//which may invalidate our target at any point.
-			getOwner().getActions().insertBefore(this, getAttack());
+			AttackAction a = getAttack();
+			getOwner().getActions().insertBefore(this, a);
 			this.attack = null;
-			yield();
 		}
 	}
 	

@@ -8,7 +8,9 @@ import org.maxgamer.rs.model.entity.mob.Mob;
  * @author netherfoam
  */
 public class MeleeAttack extends Attack {
-	public static Damage rollMeleeDamage(Mob attacker, Mob target, int atkType) {
+	public static Damage roll(Mob attacker, Mob target) {
+		int atkType = attacker.getAttackStyle().getBonusType();
+		
 		CombatStats srcStats = attacker.getCombatStats();
 		CombatStats vicStats = target.getCombatStats();
 		
@@ -34,7 +36,7 @@ public class MeleeAttack extends Attack {
 	
 	@Override
 	public boolean prepare(Mob target, AttackResult data) {
-		Damage d = MeleeAttack.rollMeleeDamage(attacker, target, getStyle().getBonusType());
+		Damage d = MeleeAttack.roll(attacker, target);
 		data.add(d);
 		
 		return true;

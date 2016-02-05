@@ -582,7 +582,7 @@ public class Game637Protocol extends GameProtocol {
 				nit.remove();
 				continue;
 			}
-			if (n.getLocation() == null || n.isHidden() || n.getLocation().z != getPlayer().getLocation().z || MBRUtil.isOverlap(visibleArea, n.getLocation()) == false || n.getUpdateMask().isTeleporting() || sortedNPCList.indexOf(n) >= MAX_LOCAL_NPCS) {
+			if (n.getLocation() == null || n.isHidden() || n.getLocation().z != getPlayer().getLocation().z || MBRUtil.isOverlap(visibleArea, n.getLocation()) == false || n.getUpdateMask().getMovement().hasTeleported() || sortedNPCList.indexOf(n) >= MAX_LOCAL_NPCS) {
 				change = true;
 				// The NPC is not visible to the player anymore.
 				out.writeBits(1, 1);
@@ -602,8 +602,7 @@ public class Game637Protocol extends GameProtocol {
 			
 			if (n.getUpdateMask().getMovement().hasChanged()) {
 				change = true;
-				out.writeBits(2, 1);// Is one of these 'run' flag? TODO: NPC Run
-									// Protocol
+				out.writeBits(2, 1);// Is one of these 'run' flag? TODO: NPC Run Protocol
 				out.writeBits(3, n.getUpdateMask().getMovement().getDirection());
 				if (n.getUpdateMask().hasChanged()) {
 					out.writeBits(1, 1);
@@ -628,9 +627,6 @@ public class Game637Protocol extends GameProtocol {
 		visibleArea = new Cube(new int[] { playerLoc.x - 31, playerLoc.y - 31, playerLoc.z }, new int[] { 63, 63, 0 });
 		
 		// Adding new NPCs
-		// for (NPC n : viewport.getCenter().getMap().getEntities(visibleArea,
-		// 40, NPC.class)) {
-		// for(NPC n : sortedNPCList){
 		for (int i = 0; i < sortedNPCList.size() && i < MAX_LOCAL_NPCS; i++) {
 			NPC n = sortedNPCList.get(i);
 			if (localNpcs.contains(n)) { // TODO: Private NPC check
@@ -658,6 +654,10 @@ public class Game637Protocol extends GameProtocol {
 			if (y < 0) {
 				y += 32;
 			}
+			
+			assert (x <= 31) : "x data lost";
+			assert (y <= 31) : "y data lost";
+			
 			change = true;
 			out.writeBits(5, x);
 			out.writeBits(5, y);
@@ -669,12 +669,11 @@ public class Game637Protocol extends GameProtocol {
 			else {
 				out.writeBits(1, 0);
 			}
-			out.writeBits(3, 0); // Face-Dir.. TODO: Is there an option for this
-									// in players?
+			out.writeBits(3, 0); // Face-Dir.. TODO: Is there an option for this in players?
 			localNpcs.add(n);
 		}
 		
-		out.writeBits(15, 0x7FFF); // Some kind of EOF marker?
+		out.writeBits(15, 0x7FFF); // End of file marker
 		out.finishBitAccess();
 		if (change) {
 			out.write(update.getPayload());

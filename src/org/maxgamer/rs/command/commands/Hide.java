@@ -8,17 +8,16 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
  * @author netherfoam
  */
 public class Hide implements PlayerCommand {
-	
+
 	@Override
 	public void execute(Player p, String[] args) {
 		if (p.isHidden()) {
 			p.show();
-		}
-		else {
+		} else {
 			p.hide();
 		}
 	}
-	
+
 	@Override
 	public int getRankRequired() {
 		return Rights.ADMIN;

@@ -1,7 +1,6 @@
 package org.maxgamer.rs.command.commands;
 
 import org.maxgamer.rs.command.PlayerCommand;
-import org.maxgamer.rs.core.HeapDump;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
 
@@ -18,7 +17,6 @@ public class Hide implements PlayerCommand {
 		else {
 			p.hide();
 		}
-		HeapDump.dumpHeap("heap.bin", true);
 	}
 	
 	@Override

@@ -1,11 +1,13 @@
 package org.maxgamer.rs.command.commands;
 
+import java.util.Random;
+
 import org.maxgamer.rs.command.PlayerCommand;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
 
 public class ParticleColour implements PlayerCommand {
-
+	
 	@Override
 	public void execute(Player p, String[] args) {
 		if (args[0].equalsIgnoreCase("print")) {
@@ -13,9 +15,23 @@ public class ParticleColour implements PlayerCommand {
 			p.sendMessage("Ambient: " + p.getModel().ambient);
 			p.sendMessage("Intensity: " + p.getModel().intensity);
 			return;
-		} else if (args[0].equalsIgnoreCase("default")) {
+		}
+		else if (args[0].equalsIgnoreCase("default")) {
 			p.getModel().applyCustom = false;
 			p.getModel().setChanged(true);
+			p.sendMessage("Default sweet default!");
+			return;
+		}
+		else if (args[0].equalsIgnoreCase("random")) {
+			Random r = new Random();
+			p.getModel().red = r.nextInt(255);
+			p.getModel().green = r.nextInt(255);
+			p.getModel().blue = r.nextInt(255);
+			p.getModel().ambient = 30 + r.nextInt(30);
+			p.getModel().intensity = 30 + r.nextInt(30);
+			p.getModel().applyCustom = true;
+			p.getModel().setChanged(true);
+			p.sendMessage("Ahhh... Nothing better than a random colour!");
 			return;
 		}
 		if (args.length < 2) {
@@ -36,10 +52,10 @@ public class ParticleColour implements PlayerCommand {
 		p.getModel().setChanged(true);
 		return;
 	}
-
+	
 	@Override
 	public int getRankRequired() {
 		return Rights.ADMIN;
 	}
-
+	
 }

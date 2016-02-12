@@ -1,6 +1,5 @@
 package org.maxgamer.rs.model.item;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -11,22 +10,18 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.maxgamer.rs.cache.Archive;
 import org.maxgamer.rs.cache.IDX;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.definition.Definition;
 import org.maxgamer.rs.lib.BufferUtils;
-import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.entity.mob.Bonus;
-import org.maxgamer.rs.model.entity.mob.EquipmentHolder;
 import org.maxgamer.rs.model.entity.mob.combat.AttackStyle;
+import org.maxgamer.rs.model.item.inventory.Equipment;
 import org.maxgamer.rs.model.item.weapon.Weapon;
 import org.maxgamer.rs.model.skill.SkillType;
-import org.maxgamer.rs.structure.configs.FileConfig;
 import org.maxgamer.rs.structure.dbmodel.Mapping;
 
 /**
@@ -37,8 +32,6 @@ public class ItemProto extends Definition {
 	private static HashMap<Integer, ItemProto> definitions = new HashMap<Integer, ItemProto>(
 			2000);
 	private static HashMap<String, ArrayList<Integer>> names = new HashMap<String, ArrayList<Integer>>();
-
-	private static HashMap<String, EquipmentSet> equipmentSets = new HashMap<String, EquipmentSet>();
 
 	public static ItemProto[] forName(String name) {
 		ArrayList<Integer> ids = names.get(name);
@@ -105,7 +98,6 @@ public class ItemProto extends Definition {
 	 * @param lazy
 	 * @throws Exception
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static void init() throws Exception {
 		Connection con = Core.getWorldDatabase().getConnection();
 		PreparedStatement ps = con
@@ -121,28 +113,7 @@ public class ItemProto extends Definition {
 		}
 		rs.close();
 		ps.close();
-
-		Log.info("Loading Equipment Sets...");
-		FileConfig f = new FileConfig(new File("./config/equipment_sets.yml"));
-		f.reload();
-		for (Entry<String, Object> entry : f.entrySet()) {
-			List<Map> equipmentList = f.getList(entry.getKey(), Map.class);
-			EquipmentSet set = new EquipmentSet(entry.getKey());
-			for (Map<String, ArrayList<Integer>> wieldTypeMap : equipmentList) {
-				for (Entry<String, ArrayList<Integer>> e : wieldTypeMap.entrySet()) {
-					ItemStack[] stack = new ItemStack[e.getValue().size()];
-					for (int i = 0; i < e.getValue().size(); i++)
-						stack[i] = ItemStack.create(e.getValue().get(i));
-					set.setStack(WieldType.valueOf(e.getKey().toUpperCase()), stack);
-				}
-			}
-			equipmentSets.put(entry.getKey(), set);
-		}
-		Log.info("Loaded " + equipmentSets.size() + " Equipment Sets.");
-	}
-	
-	public static boolean isWearingSet(String setName, EquipmentHolder holder) {
-		return equipmentSets.get(setName).isWearingSet(holder);
+		Equipment.load();
 	}
 
 	@Mapping

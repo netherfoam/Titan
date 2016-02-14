@@ -1,0 +1,13 @@
+#Dharok the Wretched equipment set
+dharok:
+- hat: [4716, 4880, 4881, 4882, 4883]
+- body: [4720]
+- weapon: [4718]
+- legs: [4722]
+
+#Void Melee equipment set
+void melee:
+- hat: [11665]
+- body: [8839]
+- legs: [8840]
+- gloves: [8842]

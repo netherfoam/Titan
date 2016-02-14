@@ -16,11 +16,11 @@ import org.maxgamer.rs.structure.configs.ConfigSection;
 public class PersonaModel extends MobModel implements YMLSerializable {
 	
 	private byte[] look = new byte[] { 3, // Hair
-			14,// Beard
-			18,// Torso
-			26,// Arms
-			34,// Bracelets
-			38,// Legs
+			14, // Beard
+			18, // Torso
+			26, // Arms
+			34, // Bracelets
+			38, // Legs
 			42,// Shoes
 	};
 	
@@ -76,8 +76,7 @@ public class PersonaModel extends MobModel implements YMLSerializable {
 		}
 		
 		/*
-		 * If we're wearing a full body that hides arms, we notify the
-		 * client
+		 * If we're wearing a full body that hides arms, we notify the client
 		 */
 		if (chest == null || chest.getWeapon() == null || chest.getWeapon().isFullBody() == false) {
 			out.writeShort(FLAG_MODEL_ONLY | look[3]); // Arms
@@ -94,7 +93,7 @@ public class PersonaModel extends MobModel implements YMLSerializable {
 			out.writeShort(FLAG_EQUIP_ONLY | legs.getWeapon().getWornModel());
 		}
 		
-		ItemStack hat = e.get(WieldType.SHIELD);
+		ItemStack hat = e.get(WieldType.HAT);
 		if (hat == null || hat.getWeapon() == null || hat.getWeapon().isFullHat() == false) { // TODO: Zamarok/Saradomin hats (4042, 4041) do
 																								// weird
 																								// things
@@ -126,6 +125,8 @@ public class PersonaModel extends MobModel implements YMLSerializable {
 		else {
 			out.writeByte(0);
 		}
+		
+		out.writeShort(0);//Overrides TODO: 
 	}
 	
 	@Override

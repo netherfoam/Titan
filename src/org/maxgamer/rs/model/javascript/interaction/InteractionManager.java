@@ -2,7 +2,7 @@ package org.maxgamer.rs.model.javascript.interaction;
 
 import java.io.File;
 
-import org.maxgamer.rs.model.entity.Entity;
+import org.maxgamer.rs.model.entity.Interactable;
 import org.maxgamer.rs.model.javascript.JavaScriptFiber;
 
 public class InteractionManager{
@@ -13,14 +13,19 @@ public class InteractionManager{
 	 * @param entity the entity to interact with
 	 * @return the entity file or null if the file doesn't exist
 	 */
-	public File get(Entity entity){
+	public File get(Interactable entity, String option){
 		Class<?> clazz = entity.getClass();
 		
 		// We exhaust all superclass options as well as the base class
-		while(clazz != Entity.class){
+		while(clazz != Object.class){
 			String name = clazz.getSimpleName().toLowerCase();
 			
 			File f = new File(INTERACTION_FOLDER + File.separator + name, entity.getName() + ".js");
+			if(f.exists()){
+				return f;
+			}
+			
+			f = new File(INTERACTION_FOLDER + File.separator + name , option + ".js");
 			if(f.exists()){
 				return f;
 			}

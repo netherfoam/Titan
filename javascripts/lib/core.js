@@ -7,10 +7,12 @@ importClass(org.maxgamer.rs.model.map.Location);
 importClass(org.maxgamer.rs.model.item.ItemStack);
 importClass(org.maxgamer.rs.model.skill.SkillType);
 importClass(org.maxgamer.rs.model.action.Action);
+importClass(org.maxgamer.rs.lib.log.Log);
 
 // /* These imports are required by this file *
 importClass(org.maxgamer.rs.model.javascript.JSUtil);
 importClass(org.maxgamer.rs.lib.Erratic);
+importClass(java.lang.System);
 
 function include(path){
 	fiber.include(path);

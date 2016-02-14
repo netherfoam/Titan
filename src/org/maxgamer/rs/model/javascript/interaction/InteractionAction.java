@@ -6,6 +6,7 @@ import java.io.IOException;
 import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.action.Action;
 import org.maxgamer.rs.model.entity.Entity;
+import org.maxgamer.rs.model.entity.Interactable;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.javascript.JavaScriptCall;
 import org.maxgamer.rs.model.javascript.JavaScriptFiber;
@@ -14,11 +15,11 @@ import co.paralleluniverse.fibers.SuspendExecution;
 
 public class InteractionAction extends Action{
 	private String function;
-	private Entity target;
+	private Interactable target;
 	private File file;
 	private JavaScriptCall call;
 	
-	public InteractionAction(Mob mob, Entity target, File jsFile, String function) {
+	public InteractionAction(Mob mob, Interactable target, File jsFile, String function) {
 		super(mob);
 		this.target = target;
 		this.function = function;
@@ -47,7 +48,9 @@ public class InteractionAction extends Action{
 			e.printStackTrace();
 		}
 		
-		getOwner().face(target);
+		if(target instanceof Entity){
+			getOwner().face((Entity) target);
+		}
 		
 		try {
 			call = fiber.invoke(function, getOwner(), target);

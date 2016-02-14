@@ -149,7 +149,7 @@ public abstract class Follow extends Action {
 			
 			wait(1);
 		}
-		getOwner().setFacing(null);
+		getOwner().face(getTarget().getLocation());
 	}
 	
 	@Override

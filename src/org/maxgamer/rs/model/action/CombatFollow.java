@@ -25,7 +25,7 @@ public class CombatFollow extends Follow {
 
 	@Override
 	public int getBreakDistance() {
-		return 10;
+		return 10 + getAttack().getAttack().getMaxDistance();
 	}
 	
 	public AttackAction getAttack(){

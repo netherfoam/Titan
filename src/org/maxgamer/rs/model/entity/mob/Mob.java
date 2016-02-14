@@ -546,15 +546,15 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 			throw new NullPointerException("Destination map may not be NULL");
 		}
 		
-		if(getLocation() != null){
+		if (getLocation() != null) {
 			MobTeleportEvent event = new MobTeleportEvent(this, this.getLocation(), to);
 			event.call();
-			if(event.isCancelled()){
+			if (event.isCancelled()) {
 				return false;
 			}
 			setLocation(event.getTo());
 		}
-		else{
+		else {
 			setLocation(to);
 		}
 		
@@ -828,6 +828,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 		// Empty
 	}
 	
+	//TODO: Document these methods.
 	public boolean use(ItemStack item, int slot, String option) {
 		MobUseItemEvent e = new MobUseItemEvent(this, item, option, slot);
 		e.call();
@@ -859,8 +860,8 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 			throw new IllegalArgumentException("Cannot invoke option " + option + " ( no such option )");
 		}
 		
-		final MobUseObjectEvent e = new MobUseObjectEvent(this, g, option);
 		this.face(g);
+		MobUseObjectEvent e = new MobUseObjectEvent(this, g, option);
 		e.call();
 		
 		return e.isConsumed();

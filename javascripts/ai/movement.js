@@ -1,6 +1,8 @@
 importClass(org.maxgamer.rs.module.people.api.Pathing);
 importClass(org.maxgamer.rs.module.people.api.POI);
 importClass(org.maxgamer.rs.lib.Erratic);
+importClass(org.maxgamer.rs.module.people.api.Route);
+importClass(org.maxgamer.rs.lib.log.Log);
 
 var body;
 
@@ -17,7 +19,10 @@ function travel(dest, radius){
 
 	var action;
 	do{
-		action = Pathing.findPath(body, body.getLocation(), dest.add(-radius, -radius), dest.add(radius, radius), body.getSizeX(), body.getSizeY());
+		action = Route.walk(body, dest);
+		if(action == null || action.getPath().hasFailed()){
+			Log.debug("path failed to " + dest);
+		}
 		if(action == null){
 			return false;
 		}
@@ -39,7 +44,7 @@ function wander(distance){
 }
 
 function poi(){
-	var dest = POI.getPOI(body);
+	var dest = Route.waypoint(); //POI.getPOI(body);
 
 	if(dest == null){
 		/* We couldn't find a good POI to visit */

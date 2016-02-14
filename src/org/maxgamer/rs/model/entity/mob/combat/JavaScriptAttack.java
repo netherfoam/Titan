@@ -3,8 +3,7 @@ package org.maxgamer.rs.model.entity.mob.combat;
 import java.io.File;
 import java.io.IOException;
 
-import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.core.tick.Tickable;
+import org.maxgamer.rs.model.entity.mob.Animation;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.javascript.JavaScriptCall;
 import org.maxgamer.rs.model.javascript.JavaScriptFiber;
@@ -18,7 +17,8 @@ public class JavaScriptAttack extends Attack{
 	
 	public JavaScriptAttack(Mob attacker, int emote, int graphics, File file, DamageType type) throws IOException {
 		super(attacker, emote, graphics);
-		this.fiber = new JavaScriptFiber(Core.CLASS_LOADER);
+		this.fiber = new JavaScriptFiber();
+		this.fiber.parse("lib/core.js");
 		if(this.fiber.parse(file).isFinished() == false){
 			throw new EvaluatorException("May not pause during parsing of file");
 		}
@@ -58,21 +58,13 @@ public class JavaScriptAttack extends Attack{
 	@Override
 	public void perform(final Mob target, final AttackResult damage){
 		try {
-			final JavaScriptCall call = this.fiber.invoke("perform", attacker, target, damage);
+			this.fiber.invoke("perform", attacker, target, damage);
 			
 			// We allow pauses to be performed here, but they are not tied to the action. The attack action is finalised.
-			Tickable t = new Tickable(){
-				@Override
-				public void tick() {
-					fiber.unpause(call, null);
-					if(call.isFinished() == false){
-						this.queue(1);
-					}
-				}
-			};
-			t.queue(1);
+			// However the file may continue to execute in the background 
 		}
 		catch (NoSuchMethodException e) {
+			super.emote = new Animation(attacker.getCombatStats().getAttackAnimation());
 			super.perform(target, damage);
 		}
 	}

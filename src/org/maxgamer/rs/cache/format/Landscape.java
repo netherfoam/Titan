@@ -66,14 +66,17 @@ public class Landscape {
 							//tile_layer1_type[plane][localX][localY] = stream.readSignedByte();
 							//tile_layer1_shape[plane][localX][localY] = (byte) ((value - 2) / 4);
 							//tile_layer1_orientation[plane][localX][localY] = (byte) ((value - 2) + i1 & 3);
-							landscape.get();
+							l.overlays[z][localX][localY] = landscape.get();
+							//tile(Shape|type)[z][x][y] = (v - 2) / 4
+							//tileDirection[z][x][y] = (v something..)
+							
 						}
 						else if (v <= 81) {
 							l.flags[z][localX][localY] = (byte) (v - 49);
 						}
 						else {
-							// flags = value - 81; 
-							//tile_layer0_type[plane][localX][localY] = (byte) (value - 81);
+							// Describes the ID for the tile underlay (Eg grass)
+							l.underlays[z][localX][localY] = (byte) (v - 81);
 						}
 					}
 				}
@@ -193,12 +196,27 @@ public class Landscape {
 	private byte[][][] flags = new byte[MAX_HEIGHT][MAX_X][MAX_Y];
 	
 	/**
+	 * Contains an ID that is used to determine what type of terrain is
+	 * on the first layer. Eg grass.
+	 */
+	private byte[][][] underlays = new byte[MAX_HEIGHT][MAX_X][MAX_Y];
+	private byte[][][] overlays = new byte[MAX_HEIGHT][MAX_X][MAX_Y];
+	
+	/**
 	 * The list of objects in this landscape in no particular order
 	 */
 	private ArrayList<ObjectData> objects = new ArrayList<ObjectData>(4096);
 	
 	private Landscape() {
 		//Private constructor
+	}
+	
+	public byte getUnderlay(int x, int y, int z){
+		return underlays[z][x][y];
+	}
+	
+	public byte getOverlay(int x, int y, int z){
+		return overlays[z][x][y];
 	}
 	
 	/**

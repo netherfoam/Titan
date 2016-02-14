@@ -128,6 +128,11 @@ public class NPC extends Mob implements Interactable {
 	
 	@Override
 	public void onDeath() {
+		// Cancel our target if we had one
+		if(getTarget() != null){
+			setTarget(null);
+		}
+		
 		// Spawn the loot for this NPC, it has died.
 		Location loc = getCenter();
 		
@@ -153,11 +158,6 @@ public class NPC extends Mob implements Interactable {
 	
 	public Loot getLoot() {
 		return group.getLoot();
-	}
-	
-	@Override
-	public void setHealth(int health) {
-		super.setHealth(health);
 	}
 	
 	/**

@@ -39,6 +39,9 @@ public abstract class GameObject extends Entity implements Interactable {
 					throw new IOException("Error parsing gameobject " + id);
 				}
 				definitions.put(id, def);
+				
+				fixOptions(def);
+				
 				return def;
 			}
 			catch (IOException e) {
@@ -50,6 +53,45 @@ public abstract class GameObject extends Entity implements Interactable {
 		else {
 			//The game object definition is used elsewhere, we use the cached version to save resources.
 			return definitions.get(id);
+		}
+	}
+	
+	/**
+	 * Since some GameObjectProto's are aliased, some of their options are sitting in other objects.
+	 * This corrects that issue. I'm sure there's a better way of doing this.  This will call 
+	 * getDefinition(), which may cause this function to become recursive.
+	 * @param proto the object to fix.
+	 */
+	private static void fixOptions(GameObjectProto proto){
+		if(proto.getAliases() == null) return; //No aliases
+		
+		// TODO: This isn't quite correct and opens us up to a client-sided hack, where a user might force-show
+		// a family's options.  For example, a Trapdoor may be in a state "Open", "Closed". An Open trapdoor
+		// should not have the option to be opened, but a client sided hack may enable it. The server will currently
+		// accept the attempt to "Open" the opened trapdoor (Which ordinarily could not be done).
+		
+		for(int alias : proto.getAliases()){
+			GameObjectProto a;
+			try{
+				a = getDefinition(alias);
+			}
+			catch(RuntimeException e){
+				// We couldn't load that definition, skip it quietly.
+				if(e.getCause() instanceof IOException){
+					continue;
+				}
+				else{
+					throw e;
+				}
+			}
+			String[] alias_options = a.getOptions();
+			
+			for(int i = 0; i < alias_options.length; i++){
+				if(alias_options[i] == null) continue;
+				if(proto.getOption(i) != null) continue;
+				
+				proto.setOption(i, alias_options[i]);
+			}
 		}
 	}
 	
@@ -97,29 +139,7 @@ public abstract class GameObject extends Entity implements Interactable {
 	 */
 	public GameObject(int id, int type) {
 		super();
-		
-		if (definitions.containsKey(id) == false) {
-			//The gameobject has not been loaded before.
-			try {
-				//Each Archive from the IDX file has up to 256 subfiles
-				Archive a = Core.getCache().getArchive(IDX.OBJECTS, id >>> 8);
-				ByteBuffer src = a.get(id & 0xFF);
-				this.def = GameObjectProto.decode(id, src);
-				if (src.remaining() > 0) {
-					throw new IOException("Error parsing gameobject " + id);
-				}
-				definitions.put(id, this.def);
-			}
-			catch (IOException e) {
-				//We shouldn't be forced to catch this every time we want to construct
-				//a game object.
-				throw new RuntimeException(e);
-			}
-		}
-		else {
-			//The game object definition is used elsewhere, we use the cached version to save resources.
-			this.def = definitions.get(id);
-		}
+		this.def = getDefinition(id);
 		
 		this.type = type;
 		//Now we adjust our size

@@ -81,7 +81,8 @@ function danger(){
 
 function goals(){
 	while(true){
-		wait();
+		poi();
+		/*wait();
 
 		if(body.getInventory().isFull() == false){
 			var ground = grounds().option("Take").reachable().nearest();
@@ -144,6 +145,6 @@ function goals(){
 		}
 		else{
 			wander();
-		}
+		}*/
 	}
 }

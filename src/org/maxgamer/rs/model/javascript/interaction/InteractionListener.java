@@ -6,9 +6,11 @@ import java.io.IOException;
 import org.maxgamer.rs.event.EventHandler;
 import org.maxgamer.rs.event.EventListener;
 import org.maxgamer.rs.event.EventPriority;
-import org.maxgamer.rs.model.entity.Entity;
+import org.maxgamer.rs.model.entity.Interactable;
 import org.maxgamer.rs.model.entity.mob.Mob;
+import org.maxgamer.rs.model.entity.mob.facing.Facing;
 import org.maxgamer.rs.model.events.mob.MobUseGroundItemEvent;
+import org.maxgamer.rs.model.events.mob.MobUseItemEvent;
 import org.maxgamer.rs.model.events.mob.MobUseNPCEvent;
 import org.maxgamer.rs.model.events.mob.MobUseObjectEvent;
 
@@ -40,14 +42,24 @@ public class InteractionListener implements EventListener{
 		}
 	}
 	
-	public boolean use(Mob user, Entity target, String option) throws IOException{
-		File f = this.manager.get(target);
+	@EventHandler(consumer = true, priority = EventPriority.HIGH, skipIfCancelled = true)
+	public void useNPC(MobUseItemEvent e) throws IOException{
+		if(use(e.getMob(), e.getItem(), e.getOption())){
+			e.consume();
+		}
+	}
+	
+	public boolean use(Mob user, Interactable target, String option) throws IOException{
+		File f = this.manager.get(target, option);
 		if(f == null) return false;
 		
 		// Create the action, queue it
 		InteractionAction action = new InteractionAction(user, target, f, this.manager.toFunction(option));
 		user.getActions().clear();
 		user.getActions().queue(action);
+		if(target instanceof Mob){
+			((Mob) target).setFacing(Facing.face(user.getCenter()));
+		}
 		return true;
 	}
 }

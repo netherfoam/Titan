@@ -189,19 +189,22 @@ public class MapManager implements EventListener, Iterable<WorldMap>{
 			return;
 		}
 		
+		// TODO: This can be optimised by grouping chunks and then doing that selection instead of doing 16,000 odd queries for loading all of F2P
+		
 		try{
 			Connection con = Core.getWorldDatabase().getConnection();
-			PreparedStatement ps = con.prepareStatement("SELECT * FROM npc_spawns WHERE x BETWEEN ? AND ? AND y BETWEEN ? AND ? AND z = ?");
+			PreparedStatement ps = con.prepareStatement("SELECT * FROM npc_spawns WHERE map = ? AND x BETWEEN ? AND ? AND y BETWEEN ? AND ? AND z = ?");
 			int x = e.getChunkX() << WorldMap.CHUNK_BITS;
 			int y = e.getChunkY() << WorldMap.CHUNK_BITS;
 			int z = e.getChunkZ();
-			ps.setInt(1, x);
-			ps.setInt(2, x + WorldMap.CHUNK_SIZE - 1);
+			ps.setString(1, e.getMap().getName());
+			ps.setInt(2, x);
+			ps.setInt(3, x + WorldMap.CHUNK_SIZE - 1);
 			
-			ps.setInt(3, y);
-			ps.setInt(4, y + WorldMap.CHUNK_SIZE - 1);
+			ps.setInt(4, y);
+			ps.setInt(5, y + WorldMap.CHUNK_SIZE - 1);
 			
-			ps.setInt(5, z);
+			ps.setInt(6, z);
 			
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()){

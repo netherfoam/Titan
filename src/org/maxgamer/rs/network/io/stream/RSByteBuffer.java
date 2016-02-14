@@ -188,7 +188,7 @@ public class RSByteBuffer {
 	 * @return The 3-byte integer.
 	 */
 	public int readTriByte() {
-		return ((readByte() << 16) & 0xFF) | ((readByte() << 8) & 0xFF) | (readByte() & 0xFF);
+		return ((readByte() & 0xFF) << 16) | ((readByte() & 0xFF) << 8) | (readByte() & 0xFF);
 	}
 	
 	/**

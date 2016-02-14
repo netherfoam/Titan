@@ -1,5 +1,7 @@
 package org.maxgamer.rs.model.javascript;
 
+import org.maxgamer.rs.core.server.ServerTicker;
+import org.maxgamer.rs.core.tick.FastTickable;
 import org.maxgamer.rs.core.tick.Tickable;
 import org.maxgamer.rs.model.action.WalkAction;
 import org.maxgamer.rs.model.entity.mob.Animation;
@@ -14,14 +16,14 @@ public class JSUtil {
 	public static void wait(final JavaScriptFiber fiber, int ticks){
 		final JavaScriptCall state = fiber.context().getCall();
 		
-		Tickable t = new Tickable() {
+		FastTickable t = new FastTickable(ServerTicker.TICK_DURATION) {
 			@Override
 			public void tick() {
 				fiber.unpause(state, null);
 			}
 		};
 		
-		t.queue(ticks);
+		t.queue(ServerTicker.TICK_DURATION * ticks);
 		
 		fiber.pause();
 	}

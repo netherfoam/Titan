@@ -2,6 +2,7 @@ package org.maxgamer.rs.cache;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.ref.SoftReference;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 
@@ -11,7 +12,7 @@ import org.maxgamer.rs.core.Core;
  * @author netherfoam
  */
 public class MapCache {
-	private static HashMap<String, ByteBuffer> objects = new HashMap<String, ByteBuffer>(400);
+	private static HashMap<String, SoftReference<ByteBuffer>> objects = new HashMap<String, SoftReference<ByteBuffer>>(400);
 	
 	/**
 	 * Fetches the objects at the given zoneX
@@ -24,7 +25,11 @@ public class MapCache {
 		//An example of this is performed over at 
 		//http://www.rune-server.org/runescape-development/rs-503-client-server/help/450588-openrs-map-decrypting.html
 		String key = "l" + zoneX + "_" + zoneY;
-		ByteBuffer bb = objects.get(key);
+		SoftReference<ByteBuffer> ref = objects.get(key);
+		ByteBuffer bb =  null;
+		if(ref != null){
+			bb = ref.get();
+		}
 		if (bb != null) {
 			bb = bb.asReadOnlyBuffer();
 			return bb;
@@ -36,7 +41,7 @@ public class MapCache {
 			CacheFile c = Core.getCache().getFile(IDX.LANDSCAPES, fileId);
 			
 			bb = c.getData();
-			objects.put(key, bb);
+			objects.put(key, new SoftReference<ByteBuffer>(bb));
 			return bb.asReadOnlyBuffer(); //This is necessary, as we're storing the above bb in the objects map
 		}
 		catch (IOException e) {

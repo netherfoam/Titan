@@ -150,7 +150,7 @@ public class Core {
 			public Thread newThread(Runnable r) {
 				Thread t = new Thread(r, "ExecutorService " + nextThreadId++);
 				t.setContextClassLoader(CLASS_LOADER);
-				t.setPriority(Thread.MIN_PRIORITY);
+				t.setPriority(Thread.NORM_PRIORITY);
 				t.setDaemon(true);
 				return t;
 			}

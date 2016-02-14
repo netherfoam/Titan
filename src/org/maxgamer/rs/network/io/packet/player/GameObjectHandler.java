@@ -74,11 +74,14 @@ public class GameObjectHandler implements PacketProcessor<Player> {
 			case EXAMINE:
 				id = in.readShort();
 				id = id & 0xFFFF;
-				if (p.getRights() >= Rights.MOD) {
-					p.sendMessage("ID: " + id);
-				}
 				try {
 					GameObjectProto def = GameObject.getDefinition(id);
+					
+					if (p.getRights() >= Rights.MOD) {
+						p.sendMessage("ID: " + id);
+						Log.debug(def.toString());
+					}
+					
 					if (def == null) {
 						p.getCheats().log(5, "Player attempted to examine a NULL gameobject.");
 						return;
@@ -96,6 +99,10 @@ public class GameObjectHandler implements PacketProcessor<Player> {
 		}
 		
 		Log.debug("ID: " + id + ", X: " + x + ", Y: " + y);
+		if (p.getRights() >= Rights.MOD) {
+			GameObjectProto def = GameObject.getDefinition(id);
+			Log.debug(def.toString());
+		}
 		id = id & 0xFFFF; // Signed
 		final int opt = option;
 		
@@ -105,6 +112,11 @@ public class GameObjectHandler implements PacketProcessor<Player> {
 				String s = g.getDefiniton().getOption(option); // Becomes zero-based
 				if (s == null) {
 					p.getCheats().log(10, "Player attempted to use a NULL option on a gameobject. Gameobject: " + g + ", option: " + option + "/5");
+					return;
+				}
+				
+				if(s.isEmpty()){
+					Log.info(p + " attempted to use option#" + opt + " on " + g + ". Unfortunately, I couldn't find the name of the option!");
 					return;
 				}
 				

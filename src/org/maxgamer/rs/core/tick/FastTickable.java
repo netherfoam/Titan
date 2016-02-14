@@ -36,14 +36,18 @@ public abstract class FastTickable {
 		return req != null && req.cancel == false;
 	}
 	
-	public void queue() {
+	public void queue(){
+		this.queue(0);
+	}
+	
+	public void queue(int minimumDelayMs) {
 		if (isQueued()) {
 			throw new IllegalStateException("Cannot queue() " + this.getClass().getSimpleName() + " because it is already queued.");
 		}
 		
 		long waited = System.currentTimeMillis() - lastRun;
 		long delay = cycleMs - waited;
-		if (delay < 0) delay = 0;
+		if (delay < minimumDelayMs) delay = minimumDelayMs;
 		this.req = new RunRequest(this);
 		Core.submit(req, delay, false);
 	}

@@ -45,4 +45,12 @@ public class BufferUtils {
 		total += smart;
 		return total;
 	}
+	
+	public static String toString(ByteBuffer buffer){
+		StringBuilder builder = new StringBuilder(buffer.remaining());
+		for(int i = buffer.remaining(); i > 0; i--){
+			builder.append((char) buffer.get());
+		}
+		return builder.toString();
+	}
 }

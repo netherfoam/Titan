@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -17,14 +16,13 @@ import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.structure.configs.ConfigSection;
 import org.maxgamer.rs.structure.configs.FileConfig;
 
-import co.paralleluniverse.fibers.instrument.QuasarURLClassLoader;
-
 /**
  * @author netherfoam
  */
 public class ModuleLoader {
 	/** The folder where modules are loaded from */
 	public static final File MODULE_FOLDER = new File("modules");
+	public static final ModuleClassLoader CLASS_LOADER = new ModuleClassLoader(Core.CLASS_LOADER);
 	
 	/** Currently loaded modules */
 	private HashMap<String, Module> modules;
@@ -93,9 +91,8 @@ public class ModuleLoader {
 		try {
 			jar = new JarFile(f);
 			
-			//If the URL is already added, we want to unload all of the classes loaded from it. That is done in unload(),
-			//so we load the classes here, possibly again.
-			QuasarURLClassLoader cl = new QuasarURLClassLoader(new URL[] { f.toURI().toURL() }, Core.CLASS_LOADER);
+			ModuleClassLoader cl = ModuleLoader.CLASS_LOADER;
+			cl.addURL(f.toURI().toURL());
 			
 			ZipEntry e = jar.getEntry("module.yml");
 			if (e == null) {

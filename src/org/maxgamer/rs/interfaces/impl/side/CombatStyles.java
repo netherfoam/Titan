@@ -36,34 +36,40 @@ public class CombatStyles extends SideInterface {
 	public void onClick(int option, int buttonId, int slotId, int itemId) {
 		switch (buttonId) {
 			case 4:
+				if(this.attack != null){
+					this.attack = null;
+					getPlayer().getProtocol().sendConfig(SPECIAL_TOGGLE_CONFIG, 0);
+					return;
+				}
+				
+				ItemStack w = getPlayer().getEquipment().getWeapon();
+				if(w == null){
+					getPlayer().getCheats().log(4, "Player attempted to use a special attack while not wielding a weapon.");
+					return;
+				}
+				
+				// Naming conventions: Remove anything inside brackets such as (p++)
+				// And remove anything that's not alphanumeric, a space, underscore or dash.
+				String name = w.getName();
+				name = name.replaceAll("\\(.*\\)", "");
+				name = name.replaceAll("[^A-Za-z0-9 _ -]", "");
+				name = name.trim();
+				
+				DamageType type;
+				if(getPlayer().getAttackStyle().isType(SkillType.RANGE)){
+					type = DamageType.RANGE;
+				}
+				else{
+					type = DamageType.MELEE;
+				}
+				
+				File file = new File(JavaScriptFiber.SCRIPT_FOLDER, "attacks/special/" + name + ".js");
+				if(file.exists() == false){
+					Log.debug("Couldn't find " + name + " - Special attack failed.");
+					return;
+				}
+				
 				try {
-					ItemStack wep = getPlayer().getEquipment().getWeapon();
-					if(wep == null){
-						getPlayer().getCheats().log(4, "Player attempted to use a special attack while not wielding a weapon.");
-						return;
-					}
-					
-					// Naming conventions: Remove anything inside brackets such as (p++)
-					// And remove anything that's not alphanumeric, a space, underscore or dash.
-					String name = wep.getName();
-					name = name.replaceAll("\\(.*\\)", "");
-					name = name.replaceAll("[^A-Za-z0-9 _ -]", "");
-					name = name.trim();
-					
-					DamageType type;
-					if(getPlayer().getAttackStyle().isType(SkillType.RANGE)){
-						type = DamageType.RANGE;
-					}
-					else{
-						type = DamageType.MELEE;
-					}
-					
-					File file = new File(JavaScriptFiber.SCRIPT_FOLDER, "attacks/special/" + name + ".js");
-					if(file.exists() == false){
-						Log.debug("Couldn't find " + name + " - Special attack failed.");
-						return;
-					}
-					
 					this.attack = new JavaScriptAttack(getPlayer(), -1, -1, file, type){
 						@Override
 						public boolean run(Mob target){
@@ -75,14 +81,13 @@ public class CombatStyles extends SideInterface {
 					getPlayer().getProtocol().sendConfig(SPECIAL_TOGGLE_CONFIG, 1);
 				}
 				catch (IOException e) {
-					e.printStackTrace();
+					Log.info("Failed to read " + file + ", message: " + e.getClass().getSimpleName() + "(" + e.getMessage() + ")");
 				}
 				break;
 			case 11:
 			case 12:
 			case 13:
 			case 14:
-				//getPlayer().sendMessage("Combat Styles not implemented yet, sorry!");
 				ItemStack wep = getPlayer().getEquipment().get(WieldType.WEAPON);
 				AttackStyle style;
 				if (wep == null) {

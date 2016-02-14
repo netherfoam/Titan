@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 
 import org.maxgamer.rs.cache.RSInputStream;
 import org.maxgamer.rs.io.ByteBufferInputStream;
+import org.maxgamer.rs.structure.ReflectUtil;
 
 /* Class352 - Decompiled by JODE
  * Visit http://jode.sourceforge.net/
@@ -12,6 +13,13 @@ import org.maxgamer.rs.io.ByteBufferInputStream;
 
 public final class GameObjectProto {
 	//private int[] anIntArray2926;
+	
+	/**
+	 * Also called "transformIds" - These appear to be other objects that
+	 * represent this but in a different state. Eg, "Opened" and "Closed" doors
+	 * are different object, but the concept is that they're the same object in
+	 * a different state.
+	 */
 	private int[] objectIds;
 	/*
 	 * private int anInt2929; private byte aByte2930; private int anInt2931 = 0;
@@ -42,7 +50,7 @@ public final class GameObjectProto {
 	//private short[] aShortArray2965;
 	//private int anInt2966;
 	//private byte aByte2967;
-	//private int anInt2968;
+	//
 	/*
 	 * private int anInt2970; private int anInt2972; private int anInt2973;
 	 */
@@ -53,9 +61,9 @@ public final class GameObjectProto {
 	private int sizeY;
 	//private int[] anIntArray2979;
 	/*
-	 * private int anInt2980; private int anInt2981; private int anInt2983;
-	 * private int anInt2985; private int anInt2986; private int anInt2987;
-	 * private int anInt2988; private int anInt2989; private int anInt2990;
+	 * private int anInt2980; private int anInt2981; private int anInt2985;
+	 * private int anInt2986; private int anInt2987; private int anInt2988;
+	 * private int anInt2989; private int anInt2990;
 	 */
 	private int sizeX;
 	//private byte[] aByteArray2994;
@@ -63,6 +71,11 @@ public final class GameObjectProto {
 	//private int anInt2996;
 	//private int anInt2997;
 	/* private int hasOptions; */
+	
+	/* Something to do with object transforms */
+	private int anInt2983;
+	@SuppressWarnings("unused")
+	private int anInt2968;
 	
 	/**
 	 * Acceptable values appear to be 0,1 or 2. They are involved in the
@@ -111,346 +124,338 @@ public final class GameObjectProto {
 	}
 	
 	private final void readObject(RSInputStream buffer, int opcode) throws IOException {
-		do {
-			if (opcode == 1 || opcode == 5) {
-				boolean creator_Boolean = false; //A boolean from the creator class in the client 
-				if ((opcode ^ 0xffffffff) == -6 && (creator_Boolean)) method3854(buffer);
-				int i_58_ = buffer.readUnsignedByte();
-				byte[] aByteArray2994 = new byte[i_58_];
-				int[][] anIntArrayArray2951 = new int[i_58_][];
-				for (int i_59_ = 0; i_59_ < i_58_; i_59_++) {
-					aByteArray2994[i_59_] = buffer.readByte();
-					int i_60_ = buffer.readUnsignedByte();
-					anIntArrayArray2951[i_59_] = new int[i_60_];
-					for (int i_61_ = 0; i_61_ < i_60_; i_61_++)
-						anIntArrayArray2951[i_59_][i_61_] = buffer.readShort();
-				}
-				if ((opcode ^ 0xffffffff) == -6 && !creator_Boolean) method3854(buffer);
+		if (opcode == 1 || opcode == 5) {
+			boolean creator_Boolean = false; //A boolean from the creator class in the client 
+			if (opcode == 5 && creator_Boolean) method3854(buffer);
+			
+			int length = buffer.readUnsignedByte();
+			byte[] bytes = new byte[length];
+			int[][] intsints = new int[length][];
+			for (int i = 0; i < length; i++) {
+				bytes[i] = buffer.readByte();
+				int value = buffer.readUnsignedByte();
+				intsints[i] = new int[value];
+				for (int j = 0; j < value; j++)
+					intsints[i][j] = buffer.readShort();
 			}
-			else if (opcode == 2) this.name = buffer.readPJStr1();
-			else if ((opcode ^ 0xffffffff) == -15) this.sizeX = buffer.readUnsignedByte();
-			else if (opcode != 15) {
-				if ((opcode ^ 0xffffffff) != -18) {
-					if (opcode != 18) {
-						if (opcode == 19) /* this.hasOptions = */buffer.readUnsignedByte();
-						else if (opcode != 21) {
-							if ((opcode ^ 0xffffffff) == -23) {
-							}
-							else if (opcode == 23) {
-							}
-							else if ((opcode ^ 0xffffffff) != -25) {
-								if (opcode == 27) this.actionCount = 1;
-								else if (opcode != 28) {
-									if ((opcode ^ 0xffffffff) == -30) /*
-																	 * anInt2931
-																	 * =
-																	 */buffer.readByte();
-									else if ((opcode ^ 0xffffffff) != -40) {
-										if ((opcode ^ 0xffffffff) > -31 || opcode >= 35) {
-											if ((opcode ^ 0xffffffff) == -41) {
-												int length = (buffer.readUnsignedByte());
-												short[] aShortArray3003 = new short[length];
-												short[] aShortArray2965 = new short[length];
-												for (int j = 0; j < length; j++) {
-													aShortArray3003[j] = (short) (buffer.readShort());
-													aShortArray2965[j] = (short) (buffer.readShort());
-												}
-											}
-											else if ((opcode ^ 0xffffffff) != -42) {
-												if ((opcode ^ 0xffffffff) != -43) {
-													if (opcode == 62) {
-													}
-													else if (opcode != 64) {
-														if ((opcode ^ 0xffffffff) == -66) /*
-																						 * anInt2938
+			if (opcode == 5 && !creator_Boolean) method3854(buffer);
+		}
+		else if (opcode == 2) this.name = buffer.readPJStr1();
+		else if (opcode == 14) this.sizeX = buffer.readUnsignedByte();
+		else if (opcode == 19) /* this.hasOptions = */buffer.readUnsignedByte();
+		else if (opcode == 22) {}
+		else if (opcode == 23) {}
+		else if (opcode == 27) this.actionCount = 1;
+		else if (opcode == 29) /* anInt2931 = */buffer.readByte();
+		else if (opcode == 40) {
+			int length = (buffer.readUnsignedByte());
+			short[] aShortArray3003 = new short[length];
+			short[] aShortArray2965 = new short[length];
+			for (int j = 0; j < length; j++) {
+				aShortArray3003[j] = (short) (buffer.readShort());
+				aShortArray2965[j] = (short) (buffer.readShort());
+			}
+		}
+		if (opcode == 62) {}
+		if (opcode == 65) /* anInt2938 = */ buffer.readShort();
+		
+		else if (opcode != 15) {
+			if ((opcode ^ 0xffffffff) != -18) {
+				if (opcode != 18) {
+					if (opcode != 21) {
+						
+						
+						if ((opcode ^ 0xffffffff) != -25) {
+							
+							if (opcode != 28) {
+								
+								if ((opcode ^ 0xffffffff) != -40) {
+									if ((opcode ^ 0xffffffff) > -31 || opcode >= 35) {
+										
+										if ((opcode ^ 0xffffffff) != -42) {
+											if ((opcode ^ 0xffffffff) != -43) {
+												
+												if (opcode != 64) {
+													
+													if ((opcode ^ 0xffffffff) != -67) {
+														if ((opcode ^ 0xffffffff) == -68) /*
+																						 * anInt2929
 																						 * =
 																						 */buffer.readShort();
-														else if ((opcode ^ 0xffffffff) != -67) {
-															if ((opcode ^ 0xffffffff) == -68) /*
-																							 * anInt2929
+														else if ((opcode ^ 0xffffffff) != -70) {
+															if ((opcode ^ 0xffffffff) == -71) /*
+																							 * anInt2973
 																							 * =
-																							 */buffer.readShort();
-															else if ((opcode ^ 0xffffffff) != -70) {
-																if ((opcode ^ 0xffffffff) == -71) /*
-																								 * anInt2973
+																							 */buffer.readUnsignedShort(); //buffer.readUShort(false) << -836995390;
+															else if ((opcode ^ 0xffffffff) == -72) /*
+																									 * anInt2997
+																									 * =
+																									 */buffer.readUnsignedShort(); //buffer.readUShort(false) << -1352000926;
+															else if ((opcode ^ 0xffffffff) != -73) {
+																if (opcode != 73) {
+																	if (opcode != 74) {
+																		if (opcode != 75) {
+																			if ((opcode ^ 0xffffffff) != -78 && (opcode ^ 0xffffffff) != -93) {
+																				if (opcode == 78) {
+																					/*
+																					 * int
+																					 * anInt2996
+																					 * =
+																					 */buffer.readShort();
+																					/*
+																					 * int
+																					 * anInt2981
+																					 * =
+																					 */buffer.readUnsignedByte();
+																				}
+																				else if (opcode != 79) {
+																					if ((opcode ^ 0xffffffff) != -82) {
+																						if (opcode == 82) {
+																						}
+																						else if (opcode == 88) {
+																						}
+																						else if ((opcode ^ 0xffffffff) == -90) {
+																						}
+																						else if (opcode == 91) {
+																						}
+																						else if (opcode != 93) {
+																							if (opcode == 94) {
+																							}
+																							else if ((opcode ^ 0xffffffff) == -96) {
+																								/*
+																								 * int
+																								 * anInt2985
 																								 * =
-																								 */buffer.readUnsignedShort(); //buffer.readUShort(false) << -836995390;
-																else if ((opcode ^ 0xffffffff) == -72) /*
-																										 * anInt2997
-																										 * =
-																										 */buffer.readUnsignedShort(); //buffer.readUShort(false) << -1352000926;
-																else if ((opcode ^ 0xffffffff) != -73) {
-																	if (opcode != 73) {
-																		if (opcode != 74) {
-																			if (opcode != 75) {
-																				if ((opcode ^ 0xffffffff) != -78 && (opcode ^ 0xffffffff) != -93) {
-																					if (opcode == 78) {
-																						/*
-																						 * int
-																						 * anInt2996
-																						 * =
-																						 */buffer.readShort();
-																						/*
-																						 * int
-																						 * anInt2981
-																						 * =
-																						 */buffer.readUnsignedByte();
-																					}
-																					else if (opcode != 79) {
-																						if ((opcode ^ 0xffffffff) != -82) {
-																							if (opcode == 82) {
+																								 */buffer.readUnsignedShort();
 																							}
-																							else if (opcode == 88) {
+																							else if ((opcode ^ 0xffffffff) == -98) {
 																							}
-																							else if ((opcode ^ 0xffffffff) == -90) {
-																							}
-																							else if (opcode == 91) {
-																							}
-																							else if (opcode != 93) {
-																								if (opcode == 94) {
-																								}
-																								else if ((opcode ^ 0xffffffff) == -96) {
+																							else if (opcode == 98) {
+																							} //this.aBoolean3005 = true;
+																							else if ((opcode ^ 0xffffffff) != -100) {
+																								if (opcode == 100) {
 																									/*
 																									 * int
-																									 * anInt2985
+																									 * anInt2933
 																									 * =
-																									 */buffer.readUnsignedShort();
+																									 */buffer.readUnsignedByte();
+																									/*
+																									 * int
+																									 * anInt2977
+																									 * =
+																									 */buffer.readShort();
 																								}
-																								else if ((opcode ^ 0xffffffff) == -98) {
-																								}
-																								else if (opcode == 98) {
-																								} //this.aBoolean3005 = true;
-																								else if ((opcode ^ 0xffffffff) != -100) {
-																									if (opcode == 100) {
-																										/*
-																										 * int
-																										 * anInt2933
-																										 * =
-																										 */buffer.readUnsignedByte();
-																										/*
-																										 * int
-																										 * anInt2977
-																										 * =
-																										 */buffer.readShort();
-																									}
-																									else if (opcode == 101) /*
-																															 * anInt2962
-																															 * =
-																															 */buffer.readUnsignedByte();
-																									else if (opcode == 102) /*
-																															 * anInt2990
-																															 * =
-																															 */buffer.readShort();
-																									else if ((opcode ^ 0xffffffff) != -104) {
-																										if ((opcode ^ 0xffffffff) == -105) /*
-																																			 * this
-																																			 * .
-																																			 * anInt2987
-																																			 * =
-																																			 */buffer.readUnsignedByte();
-																										else if ((opcode ^ 0xffffffff) != -106) {
-																											if (opcode == 106) {
-																												int i_64_ = buffer.readUnsignedByte();
-																												int[] anIntArray2937 = new int[i_64_];
-																												int[] anIntArray2979 = new int[i_64_];
-																												/*
-																												 * int
-																												 * anInt2964
-																												 * =
-																												 * 0
-																												 * ;
-																												 */
-																												for (int i_65_ = 0; (i_65_ ^ 0xffffffff) > (i_64_ ^ 0xffffffff); i_65_++) {
-																													anIntArray2979[i_65_] = buffer.readShort();
-																													int i_66_ = buffer.readUnsignedByte();
-																													anIntArray2937[i_65_] = i_66_;
-																													/*
-																													 * anInt2964
-																													 * +=
-																													 * i_66_
-																													 * ;
-																													 */
-																												}
-																											}
-																											else if ((opcode ^ 0xffffffff) != -108) {
-																												if (opcode < 150 || (opcode ^ 0xffffffff) <= -156) {
-																													if (opcode == 160) {
-																														int i_67_ = buffer.readUnsignedByte();
-																														int[] anIntArray2934 = new int[i_67_];
-																														for (int i_68_ = 0; (i_68_ ^ 0xffffffff) > (i_67_ ^ 0xffffffff); i_68_++)
-																															anIntArray2934[i_68_] = buffer.readShort();
-																													}
-																													else if (opcode == 162) {
-																														/*
-																														 * int
-																														 * anInt2985
+																								else if (opcode == 101) /*
+																														 * anInt2962
 																														 * =
-																														 */buffer.readInt();
-																													}
-																													else if (opcode == 163) {
-																														/*
-																														 * byte
-																														 * aByte2930
+																														 */buffer.readUnsignedByte();
+																								else if (opcode == 102) /*
+																														 * anInt2990
 																														 * =
-																														 */buffer.readByte();
-																														/*
-																														 * byte
-																														 * aByte2942
-																														 * =
-																														 */buffer.readByte();
-																														/*
-																														 * byte
-																														 * aByte2967
-																														 * =
-																														 */buffer.readByte();
-																														/*
-																														 * byte
-																														 * aByte2932
-																														 * =
-																														 */buffer.readByte();
-																													}
-																													else if (opcode == 164) /*
-																																			 * anInt2940
-																																			 * =
-																																			 */buffer.readUnsignedShort();
-																													else if ((opcode ^ 0xffffffff) != -166) {
-																														if ((opcode ^ 0xffffffff) != -167) {
-																															if ((opcode ^ 0xffffffff) != -168) {
-																																if ((opcode ^ 0xffffffff) == -169) {
-																																}
-																																else if (opcode == 169) {
-																																}
-																																else if ((opcode ^ 0xffffffff) != -171) {
-																																	if ((opcode ^ 0xffffffff) != -172) {
-																																		if (opcode == 173) {
-																																			/*
-																																			 * int
-																																			 * anInt3006
-																																			 * =
-																																			 */buffer.readShort();
-																																			/*
-																																			 * int
-																																			 * anInt2950
-																																			 * =
-																																			 */buffer.readShort();
-																																		}
-																																		else if ((opcode ^ 0xffffffff) == -178) {
-																																		}
-																																		else if ((opcode ^ 0xffffffff) == -179) /*
-																																												 * this
-																																												 * .
-																																												 * anInt2970
-																																												 * =
-																																												 */buffer.readUnsignedByte();
-																																		else if (opcode == 249) {
-																																			int i_69_ = buffer.readUnsignedByte();
-																																			/*
-																																			 * if
-																																			 * (
-																																			 * aClass377_2944
-																																			 * ==
-																																			 * null
-																																			 * )
-																																			 * {
-																																			 * int
-																																			 * i_70_
-																																			 * =
-																																			 * Class48
-																																			 * .
-																																			 * method453
-																																			 * (
-																																			 * 423660257
-																																			 * ,
-																																			 * i_69_
-																																			 * )
-																																			 * ;
-																																			 * aClass377_2944
-																																			 * =
-																																			 * new
-																																			 * Class377
-																																			 * (
-																																			 * i_70_
-																																			 * )
-																																			 * ;
-																																			 * }
-																																			 */
-																																			for (int i_71_ = 0; i_71_ < i_69_; i_71_++) {
-																																				boolean bool = buffer.readUnsignedByte() == 1;
-																																				buffer.read24BitInt();
-																																				//RSStream stream;
-																																				if (!bool) buffer.readInt(); //stream = new Class98_Sub34(buffer.readInt(-2));
-																																				else buffer.readPJStr1(); //stream = new Class98_Sub15(buffer.readRS2String((byte) 84));
-																																				//aClass377_2944.copyTo(stream, i_72_, -1);
-																																			}
-																																		}
-																																	}
-																																	else /*
+																														 */buffer.readShort();
+																								else if ((opcode ^ 0xffffffff) != -104) {
+																									if ((opcode ^ 0xffffffff) == -105) /*
 																																		 * this
 																																		 * .
-																																		 * anInt2953
+																																		 * anInt2987
 																																		 * =
-																																		 */buffer.readSmart();
+																																		 */buffer.readUnsignedByte();
+																									else if ((opcode ^ 0xffffffff) != -106) {
+																										if (opcode == 106) {
+																											int i_64_ = buffer.readUnsignedByte();
+																											int[] anIntArray2937 = new int[i_64_];
+																											int[] anIntArray2979 = new int[i_64_];
+																											/*
+																											 * int
+																											 * anInt2964
+																											 * =
+																											 * 0
+																											 * ;
+																											 */
+																											for (int i_65_ = 0; (i_65_ ^ 0xffffffff) > (i_64_ ^ 0xffffffff); i_65_++) {
+																												anIntArray2979[i_65_] = buffer.readShort();
+																												int i_66_ = buffer.readUnsignedByte();
+																												anIntArray2937[i_65_] = i_66_;
+																												/*
+																												 * anInt2964
+																												 * +=
+																												 * i_66_
+																												 * ;
+																												 */
+																											}
+																										}
+																										else if ((opcode ^ 0xffffffff) != -108) {
+																											if (opcode < 150 || (opcode ^ 0xffffffff) <= -156) {
+																												if (opcode == 160) {
+																													int i_67_ = buffer.readUnsignedByte();
+																													int[] anIntArray2934 = new int[i_67_];
+																													for (int i_68_ = 0; (i_68_ ^ 0xffffffff) > (i_67_ ^ 0xffffffff); i_68_++)
+																														anIntArray2934[i_68_] = buffer.readShort();
+																												}
+																												else if (opcode == 162) {
+																													/*
+																													 * int
+																													 * anInt2985
+																													 * =
+																													 */buffer.readInt();
+																												}
+																												else if (opcode == 163) {
+																													/*
+																													 * byte
+																													 * aByte2930
+																													 * =
+																													 */buffer.readByte();
+																													/*
+																													 * byte
+																													 * aByte2942
+																													 * =
+																													 */buffer.readByte();
+																													/*
+																													 * byte
+																													 * aByte2967
+																													 * =
+																													 */buffer.readByte();
+																													/*
+																													 * byte
+																													 * aByte2932
+																													 * =
+																													 */buffer.readByte();
+																												}
+																												else if (opcode == 164) /*
+																																		 * anInt2940
+																																		 * =
+																																		 */buffer.readUnsignedShort();
+																												else if ((opcode ^ 0xffffffff) != -166) {
+																													if ((opcode ^ 0xffffffff) != -167) {
+																														if ((opcode ^ 0xffffffff) != -168) {
+																															if ((opcode ^ 0xffffffff) == -169) {
+																															}
+																															else if (opcode == 169) {
+																															}
+																															else if ((opcode ^ 0xffffffff) != -171) {
+																																if ((opcode ^ 0xffffffff) != -172) {
+																																	if (opcode == 173) {
+																																		/*
+																																		 * int
+																																		 * anInt3006
+																																		 * =
+																																		 */buffer.readShort();
+																																		/*
+																																		 * int
+																																		 * anInt2950
+																																		 * =
+																																		 */buffer.readShort();
+																																	}
+																																	else if ((opcode ^ 0xffffffff) == -178) {
+																																	}
+																																	else if ((opcode ^ 0xffffffff) == -179) /*
+																																											 * this
+																																											 * .
+																																											 * anInt2970
+																																											 * =
+																																											 */buffer.readUnsignedByte();
+																																	else if (opcode == 249) {
+																																		int i_69_ = buffer.readUnsignedByte();
+																																		/*
+																																		 * if
+																																		 * (
+																																		 * aClass377_2944
+																																		 * ==
+																																		 * null
+																																		 * )
+																																		 * {
+																																		 * int
+																																		 * i_70_
+																																		 * =
+																																		 * Class48
+																																		 * .
+																																		 * method453
+																																		 * (
+																																		 * 423660257
+																																		 * ,
+																																		 * i_69_
+																																		 * )
+																																		 * ;
+																																		 * aClass377_2944
+																																		 * =
+																																		 * new
+																																		 * Class377
+																																		 * (
+																																		 * i_70_
+																																		 * )
+																																		 * ;
+																																		 * }
+																																		 */
+																																		for (int i_71_ = 0; i_71_ < i_69_; i_71_++) {
+																																			boolean bool = buffer.readUnsignedByte() == 1;
+																																			buffer.read24BitInt();
+																																			//RSStream stream;
+																																			if (!bool) buffer.readInt(); //stream = new Class98_Sub34(buffer.readInt(-2));
+																																			else buffer.readPJStr1(); //stream = new Class98_Sub15(buffer.readRS2String((byte) 84));
+																																			//aClass377_2944.copyTo(stream, i_72_, -1);
+																																		}
+																																	}
 																																}
 																																else /*
 																																	 * this
 																																	 * .
-																																	 * anInt2986
+																																	 * anInt2953
 																																	 * =
 																																	 */buffer.readSmart();
 																															}
 																															else /*
 																																 * this
 																																 * .
-																																 * anInt2945
+																																 * anInt2986
 																																 * =
-																																 */buffer.readShort();
+																																 */buffer.readSmart();
 																														}
 																														else /*
-																															 * anInt2989
+																															 * this
+																															 * .
+																															 * anInt2945
 																															 * =
-																															 */buffer.readUnsignedShort();
+																															 */buffer.readShort();
 																													}
 																													else /*
-																														 * anInt2988
+																														 * anInt2989
 																														 * =
 																														 */buffer.readUnsignedShort();
 																												}
-																												else {
-																													this.options[opcode - 150] = buffer.readPJStr1();
-																													//if (!this.creator.aBoolean2516) this.options[-150 + opcode] = null;
-																												}
+																												else /*
+																													 * anInt2988
+																													 * =
+																													 */buffer.readUnsignedShort();
 																											}
-																											else /*
-																												 * this
-																												 * .
-																												 * anInt2958
-																												 * =
-																												 */buffer.readShort();
+																											else {
+																												this.options[opcode - 150] = buffer.readPJStr1();
+																												//if (!this.creator.aBoolean2516) this.options[-150 + opcode] = null;
+																											}
 																										}
-																										else {
-																										} //this.aBoolean2976 = true;
+																										else /*
+																											 * this
+																											 * .
+																											 * anInt2958
+																											 * =
+																											 */buffer.readShort();
 																									}
 																									else {
-																									}
+																									} //this.aBoolean2976 = true;
 																								}
 																								else {
-																									/*
-																									 * this
-																									 * .
-																									 * anInt3002
-																									 * =
-																									 */buffer.readUnsignedByte();
-																									/*
-																									 * this
-																									 * .
-																									 * anInt3008
-																									 * =
-																									 */buffer.readShort();
 																								}
 																							}
 																							else {
 																								/*
-																								 * anInt2985
+																								 * this
+																								 * .
+																								 * anInt3002
+																								 * =
+																								 */buffer.readUnsignedByte();
+																								/*
+																								 * this
+																								 * .
+																								 * anInt3008
 																								 * =
 																								 */buffer.readShort();
 																							}
@@ -459,167 +464,145 @@ public final class GameObjectProto {
 																							/*
 																							 * anInt2985
 																							 * =
-																							 * 256
-																							 * *
-																							 */buffer.readUnsignedByte();
+																							 */buffer.readShort();
 																						}
 																					}
 																					else {
 																						/*
-																						 * this
-																						 * .
-																						 * anInt2949
+																						 * anInt2985
 																						 * =
-																						 */buffer.readShort();
-																						/*
-																						 * this
-																						 * .
-																						 * anInt2972
-																						 * =
-																						 */buffer.readShort();
-																						/*
-																						 * this
-																						 * .
-																						 * anInt2981
-																						 * =
+																						 * 256
+																						 * *
 																						 */buffer.readUnsignedByte();
-																						int i_73_ = buffer.readUnsignedByte();
-																						int[] anIntArray2926 = new int[i_73_];
-																						for (int i_74_ = 0; (i_73_ ^ 0xffffffff) < (i_74_ ^ 0xffffffff); i_74_++)
-																							anIntArray2926[i_74_] = buffer.readShort();
 																					}
 																				}
 																				else {
 																					/*
-																					 * anInt2983
+																					 * this
+																					 * .
+																					 * anInt2949
 																					 * =
 																					 */buffer.readShort();
 																					/*
-																					 * if
-																					 * (
-																					 * (
-																					 * anInt2983
-																					 * ^
-																					 * 0xffffffff
-																					 * )
-																					 * ==
-																					 * -
-																					 * 65536
-																					 * )
-																					 * anInt2983
-																					 * =
-																					 * -
-																					 * 1
-																					 * ;
-																					 */
-																					/*
-																					 * anInt2968
+																					 * this
+																					 * .
+																					 * anInt2972
 																					 * =
 																					 */buffer.readShort();
 																					/*
-																					 * if
-																					 * (
-																					 * anInt2968
-																					 * ==
-																					 * 65535
-																					 * )
-																					 * anInt2968
+																					 * this
+																					 * .
+																					 * anInt2981
 																					 * =
-																					 * -
-																					 * 1
-																					 * ;
-																					 */
-																					int i_75_ = -1;
-																					if (opcode == 92) {
-																						i_75_ = buffer.readShort();
-																						if (i_75_ == 65535) i_75_ = -1;
-																					}
-																					int i_76_ = buffer.readUnsignedByte();
-																					this.objectIds = new int[i_76_ + 2];
-																					for (int i_77_ = 0; i_76_ >= i_77_; i_77_++) {
-																						this.objectIds[i_77_] = buffer.readShort();
-																						if (this.objectIds[i_77_] == 65535) this.objectIds[i_77_] = -1;
-																					}
-																					this.objectIds[1 + i_76_] = i_75_;
+																					 */buffer.readUnsignedByte();
+																					int i_73_ = buffer.readUnsignedByte();
+																					int[] anIntArray2926 = new int[i_73_];
+																					for (int i_74_ = 0; (i_73_ ^ 0xffffffff) < (i_74_ ^ 0xffffffff); i_74_++)
+																						anIntArray2926[i_74_] = buffer.readShort();
 																				}
 																			}
-																			else /*
-																				 * this
-																				 * .
-																				 * anInt2975
-																				 * =
-																				 */buffer.readUnsignedByte();
+																			else {
+																				// Opcode 77 or 92
+																				anInt2983 = buffer.readShort();
+																				if ((anInt2983 ^ 0xffffffff) == -65536) {
+																					anInt2983 = -1;
+																				}
+																				int anInt2968 = buffer.readShort();
+																				if (anInt2968 == 65535) {
+																					anInt2968 = -1;
+																				}
+																				int i_75_ = -1;
+																				if (opcode == 92) {
+																					i_75_ = buffer.readShort();
+																					if (i_75_ == 65535) {
+																						i_75_ = -1;
+																					}
+																				}
+																				
+																				int i_76_ = buffer.readUnsignedByte();
+																				this.objectIds = new int[i_76_ + 2];
+																				for (int i_77_ = 0; i_76_ >= i_77_; i_77_++) {
+																					this.objectIds[i_77_] = buffer.readShort() & 0xFFFF;
+																					if (this.objectIds[i_77_] == 65535) this.objectIds[i_77_] = -1;
+																				}
+																				this.objectIds[1 + i_76_] = i_75_;
+																			}
 																		}
-																		else this.clippingFlag = true;
+																		else /*
+																			 * this
+																			 * .
+																			 * anInt2975
+																			 * =
+																			 */buffer.readUnsignedByte();
 																	}
-																	else {
-																	}
+																	else this.clippingFlag = true;
 																}
-																else /*
-																	 * anInt2946
-																	 * =
-																	 */buffer.readUnsignedShort(); //buffer.readUShort(false) << -784917758;
+																else {
+																}
 															}
 															else /*
-																 * this.anInt2948
+																 * anInt2946
 																 * =
-																 */buffer.readUnsignedByte();
+																 */buffer.readUnsignedShort(); //buffer.readUShort(false) << -784917758;
 														}
-														else /* anInt2954 = */buffer.readShort();
+														else /*
+															 * this.anInt2948
+															 * =
+															 */buffer.readUnsignedByte();
 													}
-													else {
-													}
+													else /* anInt2954 = */buffer.readShort();
 												}
 												else {
-													int i_78_ = (buffer.readUnsignedByte());
-													byte[] aByteArray2955 = new byte[i_78_];
-													for (int i_79_ = 0; ((i_78_ ^ 0xffffffff) < (i_79_ ^ 0xffffffff)); i_79_++)
-														aByteArray2955[i_79_] = (buffer.readByte());
 												}
 											}
 											else {
-												int i_80_ = (buffer.readUnsignedByte());
-												short[] aShortArray2974 = new short[i_80_];
-												short[] aShortArray2995 = new short[i_80_];
-												for (int i_81_ = 0; i_80_ > i_81_; i_81_++) {
-													aShortArray2995[i_81_] = (short) (buffer.readShort());
-													aShortArray2974[i_81_] = (short) (buffer.readShort());
-												}
+												int i_78_ = (buffer.readUnsignedByte());
+												byte[] aByteArray2955 = new byte[i_78_];
+												for (int i_79_ = 0; ((i_78_ ^ 0xffffffff) < (i_79_ ^ 0xffffffff)); i_79_++)
+													aByteArray2955[i_79_] = (buffer.readByte());
 											}
 										}
-										else this.options[opcode + -30] = (buffer.readPJStr1());
+										else {
+											int i_80_ = (buffer.readUnsignedByte());
+											short[] aShortArray2974 = new short[i_80_];
+											short[] aShortArray2995 = new short[i_80_];
+											for (int i_81_ = 0; i_80_ > i_81_; i_81_++) {
+												aShortArray2995[i_81_] = (short) (buffer.readShort());
+												aShortArray2974[i_81_] = (short) (buffer.readShort());
+											}
+										}
 									}
-									else /* anInt2980 = */buffer.readByte() /* 5 */;
+									else this.options[opcode + -30] = (buffer.readPJStr1());
 								}
-								else /* this.anInt2966 = */buffer.readUnsignedByte() /*
-																					 * <<
-																					 * -
-																					 * 69774750
-																					 */;
+								else /* anInt2980 = */buffer.readByte() /* 5 */;
 							}
-							else {
-								/* this.anInt2941 = */buffer.readShort();
-								/*
-								 * if ((this.anInt2941 ^ 0xffffffff) == -65536)
-								 * this.anInt2941 = -1;
-								 */
-							}
+							else /* this.anInt2966 = */buffer.readUnsignedByte() /*
+																				 * <<
+																				 * -
+																				 * 69774750
+																				 */;
 						}
 						else {
+							/* this.anInt2941 = */buffer.readShort();
+							/*
+							 * if ((this.anInt2941 ^ 0xffffffff) == -65536)
+							 * this.anInt2941 = -1;
+							 */
 						}
 					}
-					else this.isSolid = false; //Opcode 18
+					else {
+					}
 				}
-				else {
-					//Opcode 17
-					this.isSolid = false;
-					this.actionCount = 0;
-				}
+				else this.isSolid = false; //Opcode 18
 			}
-			else this.sizeY = buffer.readUnsignedByte();
-			//method3857(33);
-			break;
-		} while (false);
+			else {
+				//Opcode 17
+				this.isSolid = false;
+				this.actionCount = 0;
+			}
+		}
+		else this.sizeY = buffer.readUnsignedByte();
+		//method3857(33);
 	}
 	
 	final void setup() {
@@ -644,7 +627,6 @@ public final class GameObjectProto {
 		proto.id = id;
 		
 		RSInputStream in = new RSInputStream(new ByteBufferInputStream(bb));
-		
 		proto.readObject(in);
 		if (bb.remaining() > 0) {
 			throw new RuntimeException("Remaining(): " + bb.remaining());
@@ -654,11 +636,7 @@ public final class GameObjectProto {
 			proto.isSolid = true;
 			proto.actionCount = 0;
 		}
-		if (proto.getOption(0) == null) proto.options[0] = "";
-		if (proto.getOption(1) == null) proto.options[1] = "";
-		if (proto.getOption(2) == null) proto.options[2] = "";
-		if (proto.getOption(3) == null) proto.options[3] = "";
-		if (proto.getOption(4) == null) proto.options[4] = "";
+		
 		return proto;
 	}
 	
@@ -745,6 +723,14 @@ public final class GameObjectProto {
 	
 	@Override
 	public String toString() {
-		return "Solid: " + (isSolid ? "T" : "F") + ", AC: " + actionCount + ", ClipFlag: " + (clippingFlag ? "T" : "F");
+		return ReflectUtil.describe(this);
+	}
+	
+	public int[] getAliases() {
+		return this.objectIds;
+	}
+	
+	public void setOption(int index, String option) {
+		this.options[index] = option;
 	}
 }

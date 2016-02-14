@@ -3,6 +3,7 @@ package org.maxgamer.rs.io;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * A scanner which ignores all lines that contain standard java comments.
@@ -27,7 +28,13 @@ public class CommentScanner{
 	 * @throws IOException 
 	 */
 	public CommentScanner(File f) throws IOException{
-		FileInputStream in = new FileInputStream(f);
+		this(new FileInputStream(f));
+	}
+	
+	public CommentScanner(InputStream in) throws IOException{
+		if(in == null){
+			throw new NullPointerException("InputStream may not be null");
+		}
 		this.buffer = new char[in.available()];
 		
 		int b;
@@ -104,11 +111,17 @@ public class CommentScanner{
 			StringBuilder sb = new StringBuilder();
 			char c;
 			while(true){
-				//c = (char) buffer.readByte();
 				c = buffer[index++];
+				
+				if(c == '\n'){
+					// Exclude newline
+					return sb;
+				}
+				
 				sb.append(c);
 				
-				if(c == '\n' || index >= buffer.length){
+				if(index >= buffer.length){
+					// Include last char
 					return sb;
 				}
 			}

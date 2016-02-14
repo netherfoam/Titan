@@ -1,11 +1,12 @@
 package org.maxgamer.rs.model.map.path;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * @author netherfoam
  */
-public class Path {
+public class Path implements Iterable<Direction>{
 	private boolean fail;
 	private ArrayList<Direction> directions;
 	
@@ -107,5 +108,27 @@ public class Path {
 	public Direction get(int index) {
 		//We pretend we're a backwards queue, so we should return in reverse order
 		return directions.get(directions.size() - 1 - index);
+	}
+
+	@Override
+	public Iterator<Direction> iterator() {
+		return new Iterator<Direction>(){
+			int i = directions.size() - 1;
+			
+			@Override
+			public boolean hasNext() {
+				return i >= 0;
+			}
+
+			@Override
+			public Direction next() {
+				return directions.get(i--);
+			}
+
+			@Override
+			public void remove() {
+				directions.remove(i+1);
+			}
+		};
 	}
 }

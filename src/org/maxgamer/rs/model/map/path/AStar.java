@@ -243,10 +243,7 @@ public class AStar implements PathFinder {
 
 		StopWatch w = Core.getTimings().start(this.getClass().getSimpleName() + "-pathfinder");
 		try {
-			PriorityQueue<Node> open = new PriorityQueue<Node>(128); // TODO:
-																		// Guesstimate
-																		// a
-																		// size.
+			PriorityQueue<Node> open = new PriorityQueue<Node>(128); // TODO: Guesstimate a size.
 			Node top = new Node(null, null, start, getClosest(start, min, max));
 			open.add(top);
 
@@ -265,8 +262,7 @@ public class AStar implements PathFinder {
 							continue; // We've already inspected this node.
 						}
 					} catch (IndexOutOfBoundsException e) {
-						continue; // Out of bounds. We treat it as if we can't
-									// reach it.
+						continue; // Out of bounds. We treat it as if we can't reach it.
 					}
 
 					int cFrom = d.conflictFrom(n.location);

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
@@ -105,59 +106,68 @@ public class MapStructure {
 	
 	public int type() throws IOException {
 		ByteBuffer buffer = ByteBuffer.allocate(1);
-		this.channel.read(buffer, 0);
-		buffer.flip();
-		int type = buffer.get() & 0xFF;
-		return type;
+		try{
+			this.channel.read(buffer, 0);
+			buffer.flip();
+			int type = buffer.get() & 0xFF;
+			return type;
+		}
+		catch(BufferUnderflowException e){
+			throw new IOException(e.getMessage());
+		}
 	}
 	
 	public WorldMap read() throws IOException{
-		WorldMap map;
-		
-		int type = type();
-		
-		String name = this.file.getName().substring(0, this.file.getName().lastIndexOf('.'));
-		
-		if(type == TYPE_STANDARD){
-			map = new StandardMap(name);
-		}
-		else if(type == TYPE_DYNAMIC){
-			ByteBuffer buffer = ByteBuffer.allocate(2);
-			this.channel.read(buffer, 1);
-			buffer.flip();
+		try{
+			WorldMap map;
 			
-			int width = (buffer.get() & 0xFF) + 1;
-			int height = (buffer.get() & 0xFF) + 1;
+			int type = type();
 			
-			Chunk[][][] chunks = new Chunk[width][height][4];
-			for(int i = 0; i < chunks.length; i++){
-				for(int j = 0; j < chunks[i].length; j++){
-					ByteBuffer bb = ByteBuffer.allocate(RECORD_SIZE);
-					this.channel.read(bb, 3 + (i * chunks.length + j) * RECORD_SIZE);
-					bb.flip();
-					
-					for(int k = 0; k < chunks[i][j].length; k++){
-						int cx = bb.get() & 0xFF;
-						int cy = bb.get() & 0xFF;
-						int cz = bb.get() & 0xFF;
+			String name = this.file.getName().substring(0, this.file.getName().lastIndexOf('.'));
+			
+			if(type == TYPE_STANDARD){
+				map = new StandardMap(name);
+			}
+			else if(type == TYPE_DYNAMIC){
+				ByteBuffer buffer = ByteBuffer.allocate(2);
+				this.channel.read(buffer, 1);
+				buffer.flip();
+				
+				int width = (buffer.get() & 0xFF) + 1;
+				int height = (buffer.get() & 0xFF) + 1;
+				
+				Chunk[][][] chunks = new Chunk[width][height][4];
+				for(int i = 0; i < chunks.length; i++){
+					for(int j = 0; j < chunks[i].length; j++){
+						ByteBuffer bb = ByteBuffer.allocate(RECORD_SIZE);
+						this.channel.read(bb, 3 + (i * chunks.length + j) * RECORD_SIZE);
+						bb.flip();
 						
-						if(cx == 0xFF && cy == 0xFF && cz == 0xFF){
-							//Null chunk here
-							continue;
+						for(int k = 0; k < chunks[i][j].length; k++){
+							int cx = bb.get() & 0xFF;
+							int cy = bb.get() & 0xFF;
+							int cz = bb.get() & 0xFF;
+							
+							if(cx == 0xFF && cy == 0xFF && cz == 0xFF){
+								//Null chunk here
+								continue;
+							}
+							
+							assert cz >= 0 && cz < 4 : "Z axis must be 0-3 inclusive, given " + cz;
+							
+							chunks[i][j][k] = new Chunk(cx, cy, cz);
 						}
-						
-						assert cz >= 0 && cz < 4 : "Z axis must be 0-3 inclusive, given " + cz;
-						
-						chunks[i][j][k] = new Chunk(cx, cy, cz);
 					}
 				}
+				map = new DynamicMap(name, chunks);
 			}
-			map = new DynamicMap(name, chunks);
+			else { /* TODO: Substandardmap */
+				throw new NotImplementedException();
+			}
+			return map;
 		}
-		else { /* TODO: Substandardmap */
-			throw new NotImplementedException();
+		catch(BufferUnderflowException e){
+			throw new IOException(e.getMessage());
 		}
-		
-		return map;
 	}
 }

@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.model.javascript.interaction.InteractionListener;
 import org.maxgamer.rs.model.skill.prayer.PrayerListener;
+import org.maxgamer.rs.structure.timings.StopWatch;
 
 public class EventManager {
 	private HashMap<EventPriority, LinkedList<HandlerExecutor>> listeners;
@@ -136,6 +137,8 @@ public class EventManager {
 			throw new NullPointerException("Event may not be null!");
 		}
 		
+		StopWatch watch = Core.getTimings().start(event.getClass().getSimpleName());
+		
 		boolean cancellable = event instanceof Cancellable;
 		
 		for (EventPriority priority : EventPriority.values()) {
@@ -167,6 +170,8 @@ public class EventManager {
 				}
 			}
 		}
+		
+		watch.stop();
 	}
 	
 	/**

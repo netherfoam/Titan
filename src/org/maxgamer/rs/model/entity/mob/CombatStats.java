@@ -134,7 +134,6 @@ public abstract class CombatStats {
 			value *= 1 + (1 - (getOwner().getHealth() / (double) getOwner().getMaxHealth()));
 		else if (getOwner().getEquipment().isWearingSet("void melee"))
 			value *= 1.1;
-		System.out.println(getOwner().getEquipment().isWearingSet("dharok"));
 		return (int) value;
 	}
 	

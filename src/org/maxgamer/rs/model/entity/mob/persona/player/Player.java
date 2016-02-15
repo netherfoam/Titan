@@ -236,6 +236,7 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 	
 	@Override
 	protected void onLoad() {
+		register("music", this.music);
 		this.getProtocol().login();
 		
 		ConfigSection config = getConfig().getSection("location");
@@ -263,12 +264,11 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 		getSession().setHandler(new GamePacketHandler(session, this));
 		
 		super.onLoad();
+		register("friends", this.friends);
+		register("notes", this.notes);
 		
 		// We may now load objects which send packets when constructing them
 		// to the player safely without interfering with the login procedure.
-		register("friends", this.friends);
-		register("notes", this.notes);
-		register("music", this.music);
 		
 		getPersonaOptions().add(PersonaOptions.FOLLOW, false);
 		getPersonaOptions().add(PersonaOptions.TRADE, false);

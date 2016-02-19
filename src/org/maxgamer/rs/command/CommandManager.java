@@ -1,6 +1,7 @@
 package org.maxgamer.rs.command;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -45,6 +46,19 @@ public class CommandManager {
 		}
 		names.add(command);
 		commands.put(command, action);
+		
+		// Register any aliases used for the command
+		CmdName annotation = action.getClass().getAnnotation(CmdName.class);
+		if(annotation != null){
+			for(String alias : annotation.names()){
+				alias = alias.toLowerCase();
+				
+				if(commands.get(alias) == null){
+					names.add(alias);
+					commands.put(alias, action);
+				}
+			}
+		}
 	}
 	
 	/**
@@ -57,7 +71,21 @@ public class CommandManager {
 			command = command.toLowerCase();
 		}
 		names.remove(command);
-		commands.remove(command);
+		Command c = commands.remove(command);
+		if(c == null) return;
+		
+		// Register any aliases used for the command
+		CmdName annotation = c.getClass().getAnnotation(CmdName.class);
+		if(annotation != null){
+			for(String alias : annotation.names()){
+				alias = alias.toLowerCase();
+				
+				if(commands.get(alias) == c){
+					names.remove(alias);
+					commands.remove(alias);
+				}
+			}
+		}
 	}
 	
 	/**

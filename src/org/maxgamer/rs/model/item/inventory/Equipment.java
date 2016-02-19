@@ -1,13 +1,10 @@
 package org.maxgamer.rs.model.item.inventory;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.entity.mob.Bonus;

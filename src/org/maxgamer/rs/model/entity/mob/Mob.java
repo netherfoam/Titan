@@ -21,6 +21,7 @@ import org.maxgamer.rs.model.events.mob.MobItemOnItemEvent;
 import org.maxgamer.rs.model.events.mob.MobItemOnObjectEvent;
 import org.maxgamer.rs.model.events.mob.MobLoadEvent;
 import org.maxgamer.rs.model.events.mob.MobTeleportEvent;
+import org.maxgamer.rs.model.events.mob.MobTeleportEvent.TeleportCause;
 import org.maxgamer.rs.model.events.mob.MobUnloadEvent;
 import org.maxgamer.rs.model.events.mob.MobUseGroundItemEvent;
 import org.maxgamer.rs.model.events.mob.MobUseItemEvent;
@@ -538,7 +539,18 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 * @param dest the location to teleport to
 	 * @thread main
 	 */
-	public boolean teleport(Location to) {
+	public boolean teleport(Location to){
+		return teleport(to, TeleportCause.SERVER);
+	}
+	
+	/**
+	 * Teleports this mob to the given location
+	 * 
+	 * @param dest the location to teleport
+	 * @param cause the reason for the teleport
+	 * @thread main
+	 */
+	public boolean teleport(Location to, TeleportCause cause) {
 		if (to == null) {
 			throw new NullPointerException("Cannot teleport a mob to a NULL location.");
 		}
@@ -547,7 +559,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 		}
 		
 		if (getLocation() != null) {
-			MobTeleportEvent event = new MobTeleportEvent(this, this.getLocation(), to);
+			MobTeleportEvent event = new MobTeleportEvent(this, this.getLocation(), to, cause);
 			event.call();
 			if (event.isCancelled()) {
 				return false;

@@ -5,14 +5,25 @@ import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.map.Location;
 
 public class MobTeleportEvent extends MobEvent implements Cancellable {
+	public static enum TeleportCause{
+		SPELL,
+		SERVER
+	}
+	
 	private final Location from;
 	private Location to;
 	private boolean cancel = false;
+	private TeleportCause cause;
 
-	public MobTeleportEvent(Mob mob, Location fromLocation, Location toLocation) {
+	public MobTeleportEvent(Mob mob, Location fromLocation, Location toLocation, TeleportCause cause) {
 		super(mob);
 		this.from = fromLocation;
 		this.to = toLocation;
+		this.cause = cause;
+	}
+	
+	public TeleportCause getCause(){
+		return cause;
 	}
 
 	public Location getFrom() {

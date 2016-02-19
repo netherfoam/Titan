@@ -2,6 +2,8 @@ package org.maxgamer.rs.model.entity.mob.combat.mage;
 
 import org.maxgamer.rs.model.action.Action;
 import org.maxgamer.rs.model.entity.mob.Mob;
+import org.maxgamer.rs.model.events.mob.MobTeleportEvent;
+import org.maxgamer.rs.model.events.mob.MobTeleportEvent.TeleportCause;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.map.Location;
 
@@ -19,6 +21,12 @@ public class TeleportSpell extends Spell {
 	}
 	
 	public void cast(final Mob source) {
+		MobTeleportEvent fake = new MobTeleportEvent(source, source.getLocation(), target, TeleportCause.SPELL);
+		fake.call();
+		if(fake.isCancelled()){
+			return;
+		}
+		
 		if (this.hasRequirements(source) == false || this.takeConsumables(source) == false) {
 			return;
 		}
@@ -30,7 +38,7 @@ public class TeleportSpell extends Spell {
 				displayCast(source);
 				
 				wait(2);
-				source.teleport(target);
+				source.teleport(target, TeleportCause.SPELL);
 				wait(4);
 				source.getUpdateMask().setAnimation(null, 25);
 			}

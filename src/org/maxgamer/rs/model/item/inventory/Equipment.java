@@ -2,7 +2,9 @@ package org.maxgamer.rs.model.item.inventory;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -13,6 +15,7 @@ import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.item.EquipmentSet;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.item.WieldType;
+import org.maxgamer.rs.structure.configs.ConfigSection;
 import org.maxgamer.rs.structure.configs.FileConfig;
 
 /**
@@ -46,23 +49,34 @@ public class Equipment extends Container {
 		});
 	}
 
-	@SuppressWarnings({ "rawtypes" })
 	public static void load() throws Exception {
 		Log.info("Loading Equipment Sets...");
 		FileConfig f = new FileConfig(new File("./config/equipment_sets.yml"));
 		f.reload();
-		for (Entry<String, Object> entry : f.entrySet()) {
-			List<Map> equipmentList = f.getList(entry.getKey(), Map.class);
-			EquipmentSet set = new EquipmentSet(entry.getKey());
-			for (Map<String, ArrayList<Integer>> wieldTypeMap : equipmentList) {
-				for (Entry<String, ArrayList<Integer>> e : wieldTypeMap.entrySet()) {
-					ItemStack[] stack = new ItemStack[e.getValue().size()];
-					for (int i = 0; i < e.getValue().size(); i++)
-						stack[i] = ItemStack.create(e.getValue().get(i));
-					set.setStack(WieldType.valueOf(e.getKey().toUpperCase()), stack);
+		
+		for(String name : f.getKeys()){
+			EquipmentSet set = new EquipmentSet(name);
+			
+			ConfigSection setConfig = f.getSection(name);
+			for(String type : setConfig.getKeys()){
+				WieldType w;
+				try{
+					w = WieldType.valueOf(type.toUpperCase());
 				}
+				catch(IllegalArgumentException e){
+					Log.warning("WieldType " + type + " is not found. Please use one of " + Arrays.toString(WieldType.values()));
+					continue;
+				}
+				
+				List<Integer> options = setConfig.getList(type, Integer.class, new LinkedList<Integer>());
+				ItemStack[] items = new ItemStack[options.size()];
+				for(int i = 0; i < options.size(); i++){
+					items[i] = ItemStack.create(options.get(i));
+				}
+				set.setStack(w, items);
 			}
-			equipmentSets.put(entry.getKey(), set);
+			
+			equipmentSets.put(name, set);
 		}
 		Log.info("Loaded " + equipmentSets.size() + " Equipment Sets.");
 	}

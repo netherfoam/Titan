@@ -114,7 +114,6 @@ public class Music implements YMLSerializable {
 			boolean unlocked = Boolean.parseBoolean("" + e.getValue());
 			unlockedTracks[musicId] = unlocked;
 		}
-		refreshMusicConfiguration();
 	}
 	
 	public boolean isSelectivePlaying() {

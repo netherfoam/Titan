@@ -4,10 +4,12 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
@@ -15,6 +17,7 @@ import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.structure.configs.ConfigSection;
 import org.maxgamer.rs.structure.configs.FileConfig;
+import org.maxgamer.rs.structure.dependency.Graph;
 
 /**
  * @author netherfoam
@@ -60,10 +63,75 @@ public class ModuleLoader {
 			}
 		});
 		
-		for (File f : files) {
-			Log.info("Loading module " + f.getName());
+		HashMap<String, File> names = new HashMap<String, File>();
+		HashMap<String, ConfigSection> moduleYMLs = new HashMap<String, ConfigSection>();
+		for(File f : files){
 			try {
-				load(f);
+				ConfigSection info = readModuleYML(f);
+				String name = info.getString("name");
+				
+				if(names.containsKey(name)){
+					Log.warning("There are two modules called " + name + "! One is from " + f + ", the other is from " + names.get(name) + ". Skipping " + f);
+					continue;
+				}
+				
+				names.put(name, f);
+				moduleYMLs.put(name, info);
+			}
+			catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		Log.debug("Graphing dependencies...");
+		Graph<String> dependencies = new Graph<String>();
+		for(String name : names.keySet()){
+			ConfigSection config = moduleYMLs.get(name);
+			
+			List<String> depends = config.getList("depends", String.class);
+			if(depends != null){
+				for(String s : depends){
+					File required = names.get(s);
+					if(required == null){
+						Log.warning("Couldn't find a module called " + s + ". The module " + name + " depends on it. Can't load " + name);
+						continue;
+					}
+					dependencies.addDependency(s, name);
+				}
+			}
+		}
+		
+		ArrayList<String> deps = dependencies.generateDependencies();
+		Log.debug("Dependency tree generated!");
+		
+		for(String name : names.keySet()){
+			if(deps.contains(name) == false){
+				deps.add(0, name);
+			}
+		}
+		
+		for(String s : deps){
+			File f = names.get(s);
+			try {
+				if(f == null){
+					Log.warning("Couldn't find module " + s);
+					continue;
+				}
+				
+				boolean load = true;
+				
+				ConfigSection info = moduleYMLs.get(s);
+				for(String d : info.getList("depends", String.class, Collections.<String>emptyList())){
+					if(getModule(d) == null){
+						Log.warning("Missing dependency for " + s + " (depends " + d + ")");
+						load = false;
+						break;
+					}
+				}
+				
+				if(load){
+					load(f);
+				}
 			}
 			catch (Throwable e) {
 				Log.info("Exception loading module " + f.getName());
@@ -78,6 +146,36 @@ public class ModuleLoader {
 		Log.info("Modules Loaded! Utilising ~" + (endMem - startMem) / (1024 * 1024) + "MB. Took " + (endTime - startTime) + "ms.");
 	}
 	
+	private ConfigSection readModuleYML(File f) throws IOException{
+		JarFile jar = new JarFile(f);
+		
+		try{
+			ModuleClassLoader cl = ModuleLoader.CLASS_LOADER;
+			cl.addURL(f.toURI().toURL());
+			
+			ZipEntry e = jar.getEntry("module.yml");
+			if (e == null) {
+				throw new IOException(f.getName() + ": JAR file does not contain a module.yml file in the root!");
+			}
+			
+			InputStream in = jar.getInputStream(e);
+			ConfigSection cfg = new ConfigSection(in);
+			
+			if(cfg.getString("name", "").isEmpty()){
+				throw new IOException("module.yml is missing name field!");
+			}
+			
+			if(cfg.getString("class", "").isEmpty()){
+				throw new IOException("module.yml is missing class field!");
+			}
+			
+			return cfg;
+		}
+		finally{
+			jar.close();
+		}
+	}
+	
 	/**
 	 * Loads the given file as a module and returns it. This method supresses
 	 * and logs any error messages and if it returns null, there was an error.
@@ -87,6 +185,7 @@ public class ModuleLoader {
 	 * @throws Throwable 
 	 */
 	public Module load(File f) throws Throwable {
+		Log.info("Loading " + f.getName());
 		JarFile jar = null;
 		try {
 			jar = new JarFile(f);
@@ -144,6 +243,8 @@ public class ModuleLoader {
 			
 			try {
 				m.load();
+				ModuleLoadEvent event = new ModuleLoadEvent(m);
+				event.call();
 			}
 			catch (Throwable t) {
 				Log.severe("Error calling module load() on " + m.getName() + " (" + f.getName() + ").");
@@ -222,6 +323,9 @@ public class ModuleLoader {
 	 */
 	public boolean unload(Module m) {
 		try {
+			ModuleUnloadEvent event = new ModuleUnloadEvent(m);
+			event.call();
+			
 			m.unload();
 			m.getMeta().getLoader().close();
 			return true;

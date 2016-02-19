@@ -9,6 +9,8 @@ public class StopWatch {
 	private long start;
 	private long end = 0;
 	
+	private long total = 0;
+	
 	protected StopWatch(String alias, Timings src) {
 		this.alias = alias;
 		this.src = src;
@@ -31,11 +33,21 @@ public class StopWatch {
 	 */
 	public long getTime() {
 		if (end == 0) {
-			return System.nanoTime() - start;
+			return System.nanoTime() - start + total;
 		}
 		else {
-			return end - start;
+			return end - start + total;
 		}
+	}
+	
+	public void pause(){
+		total = getTime();
+		start = -1;
+	}
+	
+	public void resume(){
+		if(start != -1) throw new IllegalStateException("StopWatch is not paused!");
+		start = System.nanoTime();
 	}
 	
 	public String getAlias() {

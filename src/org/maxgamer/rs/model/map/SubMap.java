@@ -6,7 +6,6 @@ import java.nio.ByteBuffer;
 
 import org.maxgamer.rs.cache.MapCache;
 import org.maxgamer.rs.cache.format.Landscape;
-import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.events.world.ChunkLoadEvent;
 
 public class SubMap extends WorldMap{
@@ -19,8 +18,6 @@ public class SubMap extends WorldMap{
 		//Region x,y coordinates. These are tile# >> 6
 		int rx = x >> 3;
 		int ry = y >> 3;
-		
-		Log.debug("Requested chunk load at " + x + ", " + y + ", " + z);
 		
 		for (int i = 0; i < 8; i++) {
 			for (int j = 0; j < 8; j++) {
@@ -70,9 +67,6 @@ public class SubMap extends WorldMap{
 		}
 		catch (IOException e) {
 			throw e;
-		}
-		finally{
-			Log.debug("Result: " + getChunk(x, y, z));
 		}
 	}
 	

@@ -139,6 +139,7 @@ public class EventManager {
 		
 		StopWatch watch = Core.getTimings().start(event.getClass().getSimpleName());
 		
+		StopWatch overhead = Core.getTimings().start(getClass().getSimpleName() + " Overhead");
 		boolean cancellable = event instanceof Cancellable;
 		
 		for (EventPriority priority : EventPriority.values()) {
@@ -162,16 +163,19 @@ public class EventManager {
 					continue;
 				}
 				
+				overhead.pause();
 				try{
 					h.getMethod().invoke(h.getTarget(), event);
 				}
 				catch(Throwable t){
 					t.printStackTrace();
 				}
+				overhead.resume();
 			}
 		}
 		
 		watch.stop();
+		overhead.stop();
 	}
 	
 	/**

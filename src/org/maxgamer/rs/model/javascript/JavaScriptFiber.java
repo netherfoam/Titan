@@ -118,31 +118,13 @@ public class JavaScriptFiber {
 		return factory.enterContext();
 	}
 	
-	/**
-	 * Invokes the given method with the given parameters in this JavaScriptFiber
-	 * @param method the method to invoke
-	 * @param params the parameters
-	 * @return the result of the call, may be null.
-	 */
-	public JavaScriptCall invoke(String method, Object... params) throws NoSuchMethodException {
+	public JavaScriptCall invoke(Function function, Object... params){
 		JavaScriptCall call = new JavaScriptCall(this);
 		try{
 			JavaScriptContext ctx = factory.enterContext();
 			ctx.setCall(call);
 			
-			Object o = this.scope.get(method, scope);
-			
-			if(o == Function.NOT_FOUND){
-				throw new NoSuchMethodException("Method not found: " + method + "(...)");
-			}
-			
-			if(o instanceof Function == false){
-				throw new RuntimeException(o + " is not of type " + Function.class.getCanonicalName() + ", cannot call " + method + "()");
-			}
-			
-			Function func = (Function) this.scope.get(method, scope);
-			
-			Object result = ctx.callFunctionWithContinuations(func, this.scope, params);
+			Object result = ctx.callFunctionWithContinuations(function, this.scope, params);
 			call.setResult(result);
 			return call;
 		}
@@ -153,6 +135,28 @@ public class JavaScriptFiber {
 			Context.exit();
 		}
 		return call;
+	}
+	
+	/**
+	 * Invokes the given method with the given parameters in this JavaScriptFiber
+	 * @param method the method to invoke
+	 * @param params the parameters
+	 * @return the result of the call, may be null.
+	 */
+	public JavaScriptCall invoke(String method, Object... params) throws NoSuchMethodException {
+		Object o = this.scope.get(method, scope);
+		
+		if(o == Function.NOT_FOUND){
+			throw new NoSuchMethodException("Method not found: " + method + "(...)");
+		}
+		
+		if(o instanceof Function == false){
+			throw new RuntimeException(o + " is not of type " + Function.class.getCanonicalName() + ", cannot call " + method + "()");
+		}
+		
+		Function func = (Function) this.scope.get(method, scope);
+		
+		return invoke(func, params);
 	}
 	
 	/**

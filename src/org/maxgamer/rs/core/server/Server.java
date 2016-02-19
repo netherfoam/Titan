@@ -106,81 +106,81 @@ import org.mozilla.javascript.ContinuationPending;
  * @author netherfoam
  */
 public class Server {
-	private MapManager			maps;
-
+	private MapManager maps;
+	
 	/**
 	 * The network object this server runs off
 	 */
-	private RS2Server			network;
-
+	private RS2Server network;
+	
 	/**
 	 * The ticker, this is responsible for calling tick() on various subscribed
 	 * Tickable objects
 	 */
-	private ServerTicker		ticker;
-
+	private ServerTicker ticker;
+	
 	/**
 	 * The player's login lobby
 	 */
-	private Lobby				lobby;
-
+	private Lobby lobby;
+	
 	/**
 	 * A task which saves the server periodically.
 	 */
-	private AutoSave			autosave;
-
+	private AutoSave autosave;
+	
 	/**
 	 * The module manager which also holds references to all of the currently
 	 * loaded modules
 	 */
-	private ModuleLoader		modules;
-
+	private ModuleLoader modules;
+	
 	/**
 	 * The command manager for the server, which holds all commands and allows
 	 * for registering and unregistering of commands.
 	 */
-	private CommandManager		commands;
-
+	private CommandManager commands;
+	
 	/**
 	 * The Event manager for the server, which holds all active event listener
 	 * registrations, and allows for events to be called.
 	 */
-	private EventManager		events;
-
+	private EventManager events;
+	
 	/**
 	 * 2047 is the max number of players. 2046 is the max number of *other*
 	 * players. The client represents playerId 0 as a null player.
 	 */
-	private PersonaList			personas	= new PersonaList(2047);		//2047 is the max players
-
+	private PersonaList personas = new PersonaList(2047); //2047 is the max players
+	
 	/**
 	 * 32767 is (Possibly?) the max number of NPCs. NPCs are stored separately
 	 * to players.
 	 */
-	private EntityList<NPC>		npcs		= new EntityList<NPC>(32767);
-
+	private EntityList<NPC> npcs = new EntityList<NPC>(32767);
+	
 	/**
 	 * The primary server thread wrapper
 	 */
-	private ServerThread		thread;
-
+	private ServerThread thread;
+	
 	/**
 	 * The GroundItemManager, this manages all items that are lying on the
 	 * ground. It is not for gameobjects, just items.
 	 */
-	private GroundItemManager	groundItems;
-
-	private LogonConnection		logon;
-
-	private ConfigSection		config;
-
-	private InteractionManager	interactions;
-
+	private GroundItemManager groundItems;
+	
+	private LogonConnection logon;
+	
+	private ConfigSection config;
+	
+	private InteractionManager interactions;
+	
 	/**
 	 * The epoch time in milliseconds that the server was constructed.
 	 */
-	private long				started;
-
+	private long started;
+	
 	/**
 	 * Creates a new server.
 	 * @param port The port to run the server on. This must be >= 0.
@@ -189,59 +189,57 @@ public class Server {
 	 * @throws ConnectionException
 	 */
 	public Server(ConfigSection cfg) throws IOException, ConnectionException {
-		if (cfg == null)
-			cfg = new ConfigSection(); //We will use default values.
+		if (cfg == null) cfg = new ConfigSection(); //We will use default values.
 		this.config = cfg;
-
+		
 		//We construct this immediately, it may be required immediately.
 		this.thread = new ServerThread(this);
-
+		
 		//Immediately opens the port, but does not necessarily begin accepting/reading/writing
 		this.network = new RS2Server(config.getInt("port"), this);
-
+		
 		//TODO: ConfigSetup.logon() if file not found
 		//TODO: Copy the .dist file across automatically
 		FileConfig logon = new FileConfig(new File("config", "logon.yml"));
 		logon.reload();
-
+		
 		this.logon = new LogonConnection(logon);
 		this.started = System.currentTimeMillis();
 	}
-
+	
 	public synchronized InteractionManager getInteractions() {
 		if (interactions == null) {
 			interactions = new InteractionManager();
 		}
 		return interactions;
 	}
-
+	
 	public long getStartTime() {
 		return this.started;
 	}
-
+	
 	public String getRegion() {
 		return config.getString("region", "");
 	}
-
+	
 	public String getActivity() {
 		return config.getString("activity", "");
 	}
-
+	
 	public String getIP() {
 		return config.getString("ip", "127.0.0.1");
 	}
-
+	
 	public int getFlags() {
 		return config.getInt("flags");
 	}
-
+	
 	public int getWorldId() {
 		int id = logon.getWorldId();
-		if (id == -1)
-			throw new IllegalStateException("Server not yet initialized.");
+		if (id == -1) throw new IllegalStateException("Server not yet initialized.");
 		return id;
 	}
-
+	
 	/**
 	 * Fetches the Map Manager
 	 * @return the Map Manager
@@ -250,15 +248,15 @@ public class Server {
 		if (this.maps == null) {
 			this.maps = new MapManager(new File("maps"));
 			getEvents().register(this.maps);
-
-			// This costs around 50mb of RAM.
+			
 			WorldMap map = this.maps.get("mainland");
 			if (map == null) {
 				try {
 					map = new StandardMap("mainland");
 					this.maps.persist(map);
 					this.maps.save(map);
-				} catch (IOException e) {
+				}
+				catch (IOException e) {
 					e.printStackTrace();
 					System.exit(1);
 				}
@@ -266,7 +264,7 @@ public class Server {
 		}
 		return this.maps;
 	}
-
+	
 	/**
 	 * Loads this server and starts it so that players can begin connecting.
 	 * @throws IOException if there is an issue with the config or map
@@ -278,63 +276,66 @@ public class Server {
 			public void run() {
 				try {
 					Server.this.lobby = new Lobby();
-
+					
 					// We should initialize everything before loading user content
 					// Eg commands, events, modules
 					Log.info("Loading Map...");
 					getMaps();
 					Log.info("...Map Loaded!");
-
+					
 					Server.this.modules = new ModuleLoader();
 					Server.this.ticker = new ServerTicker(Server.this);
 					Server.this.groundItems = new GroundItemManager();
-
+					
 					// Preload our event system
 					getEvents();
-
+					
 					Log.debug("Loading Commands...");
 					getCommands();
 					Log.debug("Loading Modules...");
 					Server.this.modules.load();
 					Log.debug("Modules Loaded!");
-
+					
 					Server.this.logon.start();
-
+					
 					//SpawnManager.loadAll();
-
+					
 					//Autosave
 					int interval = Core.getWorldConfig().getInt("autosave-interval", 10000);
 					if (interval > 0) {
 						Server.this.autosave = new AutoSave(interval);
 						Core.submit(Server.this.autosave, interval, true);
 					}
-
+					
 					File startup = new File("startup.js");
 					if (startup.exists()) {
 						JavaScriptFiber js = new JavaScriptFiber(Core.CLASS_LOADER);
 						try {
 							js.parse(startup);
-						} catch (ContinuationPending e) {
+						}
+						catch (ContinuationPending e) {
 							//TODO: Allow them.
 							Log.warning("Can't use continuations in startup.js");
-						} catch (IOException e) {
+						}
+						catch (IOException e) {
 							e.printStackTrace();
 						}
 					}
-
+					
 					Server.this.thread.submit(ticker);
 					//Note that Server.this doesn't start the network, that is done by the
 					//logon server when a connection is established. The logon server
 					//will also drop the connection if the logon connection is lost
 					Log.info("Server initialized!");
 					getThread().resetUsage();
-				} catch (Throwable t) {
+				}
+				catch (Throwable t) {
 					t.printStackTrace();
 				}
 			}
 		});
 		this.thread.start();
-
+		
 		Runnable maskUpdate = new Runnable() {
 			@Override
 			public void run() {
@@ -346,8 +347,7 @@ public class Server {
 					for (Persona p : Server.this.getPersonas()) {
 						if (p instanceof Player) {
 							Player pl = (Player) p;
-							if (pl.isLoaded() == false)
-								continue;
+							if (pl.isLoaded() == false) continue;
 							//The way NIO works is the data is queued to be written,
 							//instead of actually being written to the client.
 							//Thus this is actually much faster because this thread isn't
@@ -355,7 +355,7 @@ public class Server {
 							pl.getProtocol().sendUpdates();
 						}
 					}
-
+					
 					//Reset our masks - Personas
 					for (Persona p : Server.this.getPersonas()) {
 						//Generally the server is not doing anything here,
@@ -363,16 +363,18 @@ public class Server {
 						p.getUpdateMask().reset();
 						p.getModel().setChanged(false);
 					}
-
+					
 					//Reset our masks - NPCs
 					for (NPC n : Server.this.getNPCs()) {
 						n.getUpdateMask().reset();
 						n.getModel().setChanged(false);
 					}
-				} catch (Exception e) {
+				}
+				catch (Exception e) {
 					e.printStackTrace();
 					Log.warning("Error processing mask updates.");
-				} finally {
+				}
+				finally {
 					update.stop();
 				}
 				Core.submit(this, Core.getWorldConfig().getInt("update-interval", 30), false);
@@ -380,7 +382,7 @@ public class Server {
 		};
 		Core.submit(maskUpdate, Core.getWorldConfig().getInt("update-interval", 30), false);
 	}
-
+	
 	/**
 	 * Fetches the client with the given UUID. This searches the currently
 	 * online players, and then the lobby players. If none is found with the
@@ -392,25 +394,24 @@ public class Server {
 		for (Persona p : personas) {
 			if (p instanceof Client) {
 				Client c = (Client) p;
-
+				
 				if (c.getUUID() == uuid) {
 					return c;
 				}
 			}
 		}
-
+		
 		for (LobbyPlayer player : lobby.getPlayers()) {
-			if (player.getUUID() == uuid)
-				return player;
+			if (player.getUUID() == uuid) return player;
 		}
-
+		
 		return null; //Not found
 	}
-
+	
 	public LogonConnection getLogon() {
 		return logon;
 	}
-
+	
 	/**
 	 * Fetches the given client by name. This searches currently online players
 	 * first, and then the lobby players. By nature, this method cannot return
@@ -423,15 +424,15 @@ public class Server {
 		if (p != null && p instanceof Client) {
 			return (Client) p;
 		}
-
+		
 		LobbyPlayer pl = lobby.getPlayer(name, autocomplete);
 		if (pl != null) {
 			return pl;
 		}
-
+		
 		return null; //Not found
 	}
-
+	
 	/**
 	 * Fetches the command manager which allows registration of and dispatching
 	 * of commands.
@@ -441,7 +442,7 @@ public class Server {
 		if (commands == null) {
 			Log.info("Loading commands...");
 			commands = new CommandManager(events);
-
+			
 			/**
 			 * Loads the command manager and all of its commands.
 			 */
@@ -511,7 +512,7 @@ public class Server {
 			commands.register("version", new Version());
 			commands.register("despawnobject", new DespawnObject());
 			commands.register("pcol", new ParticleColour());
-
+			
 			ConfigSection config = Core.getWorldConfig().getSection("commands", null);
 			if (config != null) {
 				for (String alias : config.getKeys()) {
@@ -519,16 +520,16 @@ public class Server {
 					if (command == null) {
 						continue;
 					}
-
+					
 					commands.register(alias, command);
 				}
 			}
-
+			
 			Log.info("...Loaded commands!");
 		}
 		return commands;
 	}
-
+	
 	/**
 	 * Fetches the GroundItemManager for the server. You generally shouldn't
 	 * need to use this
@@ -537,7 +538,7 @@ public class Server {
 	public GroundItemManager getGroundItems() {
 		return groundItems;
 	}
-
+	
 	/**
 	 * Returns the EventManager for the server which allows registration of
 	 * event listeners and calling of events.
@@ -552,7 +553,7 @@ public class Server {
 		}
 		return events;
 	}
-
+	
 	/**
 	 * Unloads all modules, calls a new ServerShutdownEvent, shuts down the
 	 * network and save's all player data.
@@ -563,29 +564,29 @@ public class Server {
 			JavaScriptFiber js = new JavaScriptFiber(Core.CLASS_LOADER);
 			try {
 				js.parse(shutdown);
-			} catch (ContinuationPending e) {
+			}
+			catch (ContinuationPending e) {
 				Log.warning("Can't throw continuations in shutdown.js!");
-			} catch (IOException e) {
+			}
+			catch (IOException e) {
 				Log.warning("Failed to run shutdown.js: " + e.getClass().getSimpleName() + "(" + e.getMessage() + ")");
 			}
 		}
-
+		
 		ServerShutdownEvent e = new ServerShutdownEvent(this);
 		e.call();
-
+		
 		maps.save();
-
-		if (logon.isRunning())
-			logon.stop(); //Saves all players
+		
+		if (logon.isRunning()) logon.stop(); //Saves all players
 		modules.unload();
-
-		if (network.isRunning())
-			network.stop();
+		
+		if (network.isRunning()) network.stop();
 		thread.shutdown();
-
+		
 		save(); //Also saves all players, but fails since logon is closed
 	}
-
+	
 	/**
 	 * Fetches the player's login lobby
 	 * @return the player's login lobby
@@ -593,17 +594,16 @@ public class Server {
 	public Lobby getLobby() {
 		return lobby;
 	}
-
+	
 	public Collection<Client> getClients() {
 		ArrayList<Client> clients = new ArrayList<Client>(lobby.size() + personas.getCount());
 		for (Persona p : personas) {
-			if (p instanceof Client)
-				clients.add((Client) p);
+			if (p instanceof Client) clients.add((Client) p);
 		}
 		clients.addAll(lobby.getPlayers());
 		return clients;
 	}
-
+	
 	/**
 	 * Fetches a list of all player indexes on the server.
 	 * @return a list of all player indexes on the server.
@@ -611,7 +611,7 @@ public class Server {
 	public PersonaList getPersonas() {
 		return personas;
 	}
-
+	
 	/**
 	 * Fetches a list of all NPC indexes on the server.
 	 * @return a list of all NPC indexes on the server.
@@ -619,7 +619,7 @@ public class Server {
 	public EntityList<NPC> getNPCs() {
 		return npcs;
 	}
-
+	
 	/**
 	 * Fetches the given player by name, case insensitive. This method does not
 	 * autocomplete. It only works for online players.
@@ -630,7 +630,7 @@ public class Server {
 	public Persona getPersona(String name) {
 		return personas.getPersona(name);
 	}
-
+	
 	/**
 	 * Fetches the network handler for the server
 	 * @return the network handler for the server
@@ -638,7 +638,7 @@ public class Server {
 	public RS2Server getNetwork() {
 		return network;
 	}
-
+	
 	/**
 	 * Returns the Server Tick handler, which is used for subscribing and
 	 * unsubscribing Tickable objects to tick() notifications.
@@ -647,7 +647,7 @@ public class Server {
 	public ServerTicker getTicker() {
 		return ticker;
 	}
-
+	
 	/**
 	 * Fetches the ConfigSection for the server. This is under a section labeled
 	 * "server" in the config file.
@@ -656,30 +656,30 @@ public class Server {
 	public ConfigSection getConfig() {
 		return Core.getWorldConfig().getSection("server");
 	}
-
+	
 	/**
 	 * Saves all currently online players to disk.
 	 */
 	public void save() {
-		int failures = this.maps.save();
+		int failures = getMaps().save();
 		if (failures > 0) {
 			Log.warning("Failed to save " + failures + " maps.");
 		}
-
+		
 		Core.submit(new Runnable() {
 			@Override
 			public void run() {
 				if (Core.getServer().getClients().isEmpty() == false) {
 					Core.getServer().getLogon().getAPI().save(Core.getServer().getClients());
 				}
-				int errors = maps.save();
+				int errors = getMaps().save();
 				if (errors != 0) {
 					Log.warning(errors + " errors occured while saving worlds.");
 				}
 			}
 		}, true);
 	}
-
+	
 	/**
 	 * Highlights the given locations to all nearby players for the given
 	 * duration
@@ -689,14 +689,14 @@ public class Server {
 		if (duration < 0) {
 			throw new IllegalArgumentException("Duration must be >= 0");
 		}
-
+		
 		for (Location l : locations) {
 			for (Viewport view : l.getNearby(Viewport.class, 0)) {
 				Player p = view.getOwner();
 				p.getProtocol().sendGroundItem(l, ItemStack.create(995, 5000));
 			}
 		}
-
+		
 		//this.getTicker().submit(duration, new Tickable(){
 		new Tickable() {
 			@Override
@@ -710,7 +710,7 @@ public class Server {
 			}
 		}.queue(duration);
 	}
-
+	
 	/**
 	 * The plugin system that loads/unloads modules at runtime.
 	 * @return the module system manager
@@ -718,11 +718,11 @@ public class Server {
 	public ModuleLoader getModules() {
 		return modules;
 	}
-
+	
 	public ServerThread getThread() {
 		return thread;
 	}
-
+	
 	public int getTicks() {
 		return getTicker().getTicks();
 	}

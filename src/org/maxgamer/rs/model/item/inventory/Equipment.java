@@ -46,7 +46,7 @@ public class Equipment extends Container {
 		});
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "rawtypes" })
 	public static void load() throws Exception {
 		Log.info("Loading Equipment Sets...");
 		FileConfig f = new FileConfig(new File("./config/equipment_sets.yml"));

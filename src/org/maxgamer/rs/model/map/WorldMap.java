@@ -1,6 +1,10 @@
 package org.maxgamer.rs.model.map;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Iterator;
 
@@ -12,6 +16,7 @@ import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;
 import org.maxgamer.rs.model.entity.mob.persona.player.ViewDistance;
 import org.maxgamer.rs.model.map.area.AreaManager;
+import org.maxgamer.rs.model.map.spawns.NPCSpawn;
 import org.maxgamer.rs.structure.areagrid.AreaGrid;
 import org.maxgamer.rs.structure.areagrid.Cube;
 import org.maxgamer.rs.structure.areagrid.MBR;
@@ -20,7 +25,7 @@ import org.maxgamer.rs.structure.timings.StopWatch;
 /**
  * @author netherfoam
  */
-public abstract class WorldMap {
+public abstract class WorldMap implements MBR {
 	/**
 	 * The number of tiles in a chunk. This is hard coded to be eight.
 	 */
@@ -120,6 +125,24 @@ public abstract class WorldMap {
 		w.stop();
 		areas = new AreaManager(this);
 		Core.getServer().getEvents().register(areas);
+	}
+	
+	public void init(){
+		try{
+			Connection con = Core.getWorldDatabase().getConnection();
+			PreparedStatement ps = con.prepareStatement("SELECT * FROM npc_spawns WHERE map = ?");
+			ps.setString(1, getName());
+			
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()){
+				NPCSpawn spawn = new NPCSpawn(rs.getInt("id"));
+				spawn.reload(rs);
+				spawn.spawn();
+			}
+		}
+		catch(SQLException e){
+			e.printStackTrace();
+		}
 	}
 	
 	public final Position offset(){
@@ -533,5 +556,25 @@ public abstract class WorldMap {
 		Core.getServer().getEvents().unregister(this.areas);
 		this.chunks = null;
 		this.entities = null;
+	}
+	
+	@Override
+	public int getDimensions(){
+		return 3;
+	}
+	
+	@Override
+	public int getDimension(int axis){
+		switch(axis){
+			case 0: return width();
+			case 1: return height();
+			case 2: return 4;
+		}
+		throw new IllegalArgumentException("given axis " + axis);
+	}
+	
+	@Override
+	public int getMin(int axis){
+		return 0;
 	}
 }

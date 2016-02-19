@@ -40,6 +40,6 @@ function grounds(radius){
 	return selected;
 }
 
-function selected(){
+function selection(){
 	return selected;
 }

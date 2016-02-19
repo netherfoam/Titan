@@ -2,9 +2,6 @@ package org.maxgamer.rs.model.map;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -129,6 +126,9 @@ public class MapManager implements EventListener, Iterable<WorldMap>{
 				try {
 					map = MapStructure.load(folder, name).read();
 					worlds.put(name, map);
+					
+					/* Load all of the NPC spawns */
+					map.init();
 				}
 				catch (IOException e) {
 					e.printStackTrace();
@@ -190,7 +190,7 @@ public class MapManager implements EventListener, Iterable<WorldMap>{
 		}
 		
 		// TODO: This can be optimised by grouping chunks and then doing that selection instead of doing 16,000 odd queries for loading all of F2P
-		
+		/*
 		try{
 			Connection con = Core.getWorldDatabase().getConnection();
 			PreparedStatement ps = con.prepareStatement("SELECT * FROM npc_spawns WHERE map = ? AND x BETWEEN ? AND ? AND y BETWEEN ? AND ? AND z = ?");
@@ -215,7 +215,7 @@ public class MapManager implements EventListener, Iterable<WorldMap>{
 		}
 		catch(SQLException ex){
 			ex.printStackTrace();
-		}
+		}*/
 	}
 	
 	@EventHandler(priority = EventPriority.HIGH, consumer=false, skipIfCancelled=true)

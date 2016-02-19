@@ -1,5 +1,5 @@
-include("ai/movement.js");
+var tasks;
 
-function mine(location, types){
-	trav
+function queue(func, priority){
+	tasks.queue(func, priority);
 }

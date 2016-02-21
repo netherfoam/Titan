@@ -91,25 +91,23 @@ public class DamageLog {
 	 * @param d the damage
 	 */
 	public void damage(final Mob from, final Damage d) {
+		ArrayList<Damage> list = hits.get(from);
+		if (list == null) {
+			list = new ArrayList<Damage>();
+			hits.put(from, list);
+		}
+		
+		list.add(d);
 		new FastTickable(0) {
 			@Override
 			public void tick() {
-				ArrayList<Damage> list = hits.get(from);
-				if (list == null) {
-					list = new ArrayList<Damage>();
-					hits.put(from, list);
-				}
-				
 				if (getOwner().getHealth() < d.getHit())
 					d.setHit(getOwner().getHealth());
-				
 				//Fix miss attacks
 				if (d.getHit() <= 0)
 					d.setType(DamageType.MISS);
-				
-				list.add(d);
-				getOwner().getUpdateMask().addHit(from, d);
 				getOwner().setHealth(getOwner().getHealth() - d.getHit());
+				getOwner().getUpdateMask().addHit(from, d);
 				
 				int anim = getOwner().getCombatStats().getDefenceAnimation();
 				if (anim > 0 && getOwner().getUpdateMask().getAnimation() == null)

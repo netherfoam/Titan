@@ -3,6 +3,7 @@ package org.maxgamer.rs.model.entity.mob.combat;
 import org.maxgamer.rs.lib.Erratic;
 import org.maxgamer.rs.model.entity.mob.CombatStats;
 import org.maxgamer.rs.model.entity.mob.Mob;
+import org.maxgamer.rs.model.events.mob.MobDamageRollEvent;
 
 /**
  * @author netherfoam
@@ -40,9 +41,10 @@ public class MeleeAttack extends Attack {
 	
 	@Override
 	public boolean prepare(Mob target, AttackResult data) {
-		Damage d = MeleeAttack.roll(attacker, target);
+		MobDamageRollEvent event = new MobDamageRollEvent(this, attacker, target, 1.0, 1.0);
+		event.call();
+		Damage d = MeleeAttack.roll(attacker, target, event.getAccuracyModifier(), event.getMaxHitModifier());
 		data.add(d);
-		
 		return true;
 	}
 	

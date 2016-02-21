@@ -4,7 +4,14 @@ dharok:
   body: [4720]
   weapon: [4718]
   legs: [4722]
-
+  
+#Guthan the Infested equipment set
+guthan:
+  hat: [4724]
+  body: [4728]
+  weapon: [4726]
+  legs: [4730]
+  
 #Void Melee equipment set
 void melee:
   hat: [11665]

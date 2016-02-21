@@ -30,6 +30,12 @@ public class Music implements YMLSerializable {
 	 */
 	public Music(Player p) {
 		this.p = p;
+		
+		unlockedTracks[377] = true; //Scape Hunter unlocked automatically
+		unlockedTracks[150] = true; //Scape Main unlocked automatically
+		unlockedTracks[103] = true; //Scape Original unlocked automatically
+		unlockedTracks[153] = true; //Scape Santa unlocked automatically
+		unlockedTracks[152] = true; //Scape Scared unlocked automatically
 	}
 	
 	/**

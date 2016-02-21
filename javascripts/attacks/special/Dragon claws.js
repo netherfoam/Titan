@@ -16,8 +16,6 @@ function prepare(attacker, target, damage) {
 	} else {
 		d2 = new Damage(d1.getHit() / 2, d1.getType(), target);
 	}
-	d1.setHitDelay(1);
-	d2.setHitDelay(1);
 
 	if (d2.getHit() == 0) {
 		d3 = MeleeAttack.roll(attacker, target);
@@ -26,8 +24,8 @@ function prepare(attacker, target, damage) {
 	}
 
 	d4 = new Damage(d3.getHit() / 2, d3.getType(), target);
-	d3.setHitDelay(2);
-	d4.setHitDelay(2);
+	d3.setHitDelay(1);
+	d4.setHitDelay(1);
 
 	damage.add(d1);
 	damage.add(d2);
@@ -38,6 +36,7 @@ function prepare(attacker, target, damage) {
 function perform(attacker, target, damage) {
 	attacker.animate(10961);
 	attacker.graphics(1950);
+	wait(1);
 	damage.apply(attacker);
 }
 

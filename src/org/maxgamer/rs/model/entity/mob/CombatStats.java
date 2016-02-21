@@ -127,14 +127,7 @@ public abstract class CombatStats {
 		double prayerModifier = owner instanceof Persona ? ((Persona) owner).getPrayer().getMultiplier(SkillType.STRENGTH) : 1D;
 
 		parser.addVariable("effective_str", (strengthLevel * prayerModifier) + 8.0);
-		
-		double value = parser.getValue();
-		
-		if (getOwner().getEquipment().isWearingSet("dharok"))
-			value *= 1 + (1 - (getOwner().getHealth() / (double) getOwner().getMaxHealth()));
-		else if (getOwner().getEquipment().isWearingSet("void melee"))
-			value *= 1.1;
-		return (int) value;
+		return (int) parser.getValue();
 	}
 	
 	/**

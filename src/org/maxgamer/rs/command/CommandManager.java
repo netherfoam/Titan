@@ -1,7 +1,6 @@
 package org.maxgamer.rs.command;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -14,7 +13,7 @@ import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.events.server.CommandEvent;
 import org.maxgamer.rs.structure.TrieSet;
-
+	
 /**
  * @author netherfoam
  */

@@ -1,10 +1,10 @@
 /**
- * This is the magic shortbow attack.
+ * This is the Saradomin Godsword special attack (Healing Blade)
  *
- * @author Dirk Jamieson
- * @date 2 Feb 2016
+ * @author Albert Beaupre
+ * @date 20 Feb 2016
  */
-importClass(org.maxgamer.rs.model.entity.mob.combat.RangeAttack);
+importClass(org.maxgamer.rs.model.entity.mob.combat.MeleeAttack);
 
 /**
  * Optional - Generate the damage that should be dealt to the target via the damage object.
@@ -15,10 +15,7 @@ importClass(org.maxgamer.rs.model.entity.mob.combat.RangeAttack);
  * 		   without dealing damage. Not dealing any damage will have the same effect.
  */
 function prepare(attacker, target, damage){
-	for(var i = 0; i < 2; i++) {
-		var d = RangeAttack.roll(attacker, target);
-		damage.add(d);
-	}
+	damage.add(MeleeAttack.roll(attacker, target, 2.0, 1.10));
 }
 
 /**
@@ -30,9 +27,14 @@ function prepare(attacker, target, damage){
  * the attacker has no responsibility to continue the action.
  */
 function perform(attacker, target, damage){
-	attacker.animate(attacker.getCombatStats().getAttackAnimation());
+	attacker.animate(7071);
+	attacker.graphics(2109);
 	wait(1);
 	damage.apply(attacker);
+	
+	var d = damage.getDamage(target);
+	if (d > 10)
+		attacker.heal(d / 2);
 }
 
 /**
@@ -42,13 +44,10 @@ function perform(attacker, target, damage){
  */
 function takeConsumables(attacker){
 	var e = attacker.getAttackEnergy();
-	if (e < 55) {
+	if (e < 50) {
 		attacker.sendMessage("You do not have enough special attack energy.");
 		return false;
 	}
-	attacker.setAttackEnergy(e - 55);
-
-	// TODO: Take from the player's ammo
-
+	attacker.setAttackEnergy(e - 50);
 	return true;
 }

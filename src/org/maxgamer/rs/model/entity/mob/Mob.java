@@ -107,7 +107,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 		return follow.getTarget();
 	}
 	
-	public void setTarget(Mob target) {
+	public Mob setTarget(Mob target) {
 		if (target != null) {
 			getDamage().setLastTarget(target);
 			// New target is not null
@@ -117,6 +117,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 		else {
 			getActions().clear();
 		}
+		return this;
 	}
 	
 	/**
@@ -124,8 +125,9 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 * 
 	 * @param pos the position to face
 	 */
-	public void face(Position pos) {
+	public Mob face(Position pos) {
 		setFacing(Facing.face(pos));
+		return this;
 	}
 	
 	/**
@@ -134,8 +136,9 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 * 
 	 * @param mob the mob to face
 	 */
-	public void face(Mob mob) {
+	public Mob face(Mob mob) {
 		setFacing(Facing.face(mob));
+		return this;
 	}
 	
 	/**
@@ -144,8 +147,9 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 * @param entity the entity to face. If the entity moves, this will not
 	 *        update the facing.
 	 */
-	public void face(Entity entity) {
+	public Mob face(Entity entity) {
 		setFacing(Facing.face(entity));
+		return this;
 	}
 	
 	/**
@@ -159,17 +163,19 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 		return this.facing;
 	}
 	
-	public void setFacing(Facing fac) {
+	public Mob setFacing(Facing fac) {
 		this.facing = fac;
 		this.getUpdateMask().setFacing(true);
+		return this;
 	}
 	
-	public void setFaction(Faction faction) {
+	public Mob setFaction(Faction faction) {
 		if (faction == null) {
 			faction = Factions.NONE;
 		}
 		
 		this.faction = faction;
+		return this;
 	}
 	
 	public final Faction getFaction() {
@@ -183,8 +189,9 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 * @param text the text to create
 	 * @thread any
 	 */
-	public void say(String text) {
+	public Mob say(String text) {
 		getUpdateMask().setSay(text);
+		return this;
 	}
 	
 	/**
@@ -464,8 +471,8 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 * 
 	 * @param emo the animation id
 	 */
-	public void animate(int emo) {
-		animate(emo, 5);
+	public Mob animate(int emo) {
+		return animate(emo, 5);
 	}
 	
 	/**
@@ -478,8 +485,8 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 * @param priority the priority of the animation. Higher priority animations
 	 *        will override lower ones.
 	 */
-	public void animate(int emo, int priority) {
-		animate(new Animation(emo), priority);
+	public Mob animate(int emo, int priority) {
+		return animate(new Animation(emo), priority);
 	}
 	
 	/**
@@ -492,8 +499,9 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 * @param priority the priority of the animation. Higher priority animations
 	 *        will override lower ones.
 	 */
-	public void animate(Animation anim, int priority) {
+	public Mob animate(Animation anim, int priority) {
 		getUpdateMask().setAnimation(anim, priority);
+		return this;
 	}
 	
 	/**
@@ -502,8 +510,9 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 * 
 	 * @param gfx the id of the graphics to use
 	 */
-	public void graphics(int gfx) {
+	public Mob graphics(int gfx) {
 		getUpdateMask().setGraphics(new Graphics(gfx));
+		return this;
 	}
 	
 	/**
@@ -595,7 +604,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 * @param hp the new health for the mob.
 	 * @thread main
 	 */
-	public void setHealth(int hp) {
+	public Mob setHealth(int hp) {
 		if (Core.getServer().getThread().isServerThread() == false) {
 			throw new IllegalThreadException("Must be invoked in main thread");
 		}
@@ -616,6 +625,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 		}
 		
 		this.health = hp;
+		return this;
 	}
 	
 	/**
@@ -624,8 +634,9 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 * @param hp the health to add to this mobs health
 	 * @return the amount of health gained
 	 */
-	public void heal(int hp) {
+	public Mob heal(int hp) {
 		heal(hp, 0);
+		return this;
 	}
 	
 	/**
@@ -689,11 +700,12 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 * 
 	 * @thread main
 	 */
-	public void restore() {
+	public Mob restore() {
 		if (Core.getServer().getThread().isServerThread() == false) {
 			throw new IllegalThreadException("Must be invoked in main thread");
 		}
 		setHealth(getMaxHealth());
+		return this;
 	}
 	
 	/**
@@ -720,8 +732,9 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 * 
 	 * @thread any
 	 */
-	public void hide() {
+	public Mob hide() {
 		this.hidden = true;
+		return this;
 	}
 	
 	/**
@@ -731,8 +744,9 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 * 
 	 * @thread any
 	 */
-	public void show() {
+	public Mob show() {
 		this.hidden = false;
+		return this;
 	}
 	
 	/**
@@ -741,7 +755,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 * 
 	 * @thread main
 	 */
-	public void respawn() {
+	public Mob respawn() {
 		if (Core.getServer().getThread().isServerThread() == false) {
 			throw new IllegalThreadException("Must be invoked in main thread");
 		}
@@ -750,6 +764,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 		getDamage().reset();
 		restore();
 		if (isHidden()) show();
+		return this;
 	}
 	
 	/**
@@ -788,8 +803,9 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 * 
 	 * @param retal true if this mob should retaliate when hit.
 	 */
-	public void setRetaliate(boolean retal) {
+	public Mob setRetaliate(boolean retal) {
 		this.retaliate = retal;
+		return this;
 	}
 	
 	/**

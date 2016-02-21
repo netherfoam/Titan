@@ -311,15 +311,17 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 	}
 	
 	@Override
-	public void setRunEnergy(int energy) {
+	public Player setRunEnergy(int energy) {
 		super.setRunEnergy(energy);
 		getProtocol().sendRunEnergy(getRunEnergy());
+		return this;
 	}
 	
 	@Override
-	public void setRunning(boolean run) {
+	public Player setRunning(boolean run) {
 		super.setRunning(run);
 		this.getProtocol().sendConfig(173, isRunning() ? 1 : 0);
+		return this;
 	}
 	
 	@Override
@@ -356,7 +358,7 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 	}
 	
 	@Override
-	public void setSpellbook(Spellbook book) {
+	public Player setSpellbook(Spellbook book) {
 		if (book == null) {
 			throw new NullPointerException("Spellbook may not be null");
 		}
@@ -369,10 +371,11 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 		}
 		
 		super.setSpellbook(book);
+		return this;
 	}
 	
 	@Override
-	public void setAutocast(CombatSpell spell) {
+	public Player setAutocast(CombatSpell spell) {
 		super.setAutocast(spell);
 		
 		if (spell == null) {
@@ -381,6 +384,7 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 		else {
 			getProtocol().sendConfig(108, spell.getAutocastId());
 		}
+		return this;
 	}
 	
 	/**
@@ -411,8 +415,9 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 	 * 
 	 * @param loaded whether the player has finished or not.
 	 */
-	public void setLoaded(boolean loaded) {
+	public Player setLoaded(boolean loaded) {
 		this.isLoaded = loaded;
+		return this;
 	}
 	
 	@Override
@@ -514,12 +519,13 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 	 * 
 	 * @param rights the rights for the persona
 	 */
-	public void setRights(int rights) {
+	public Player setRights(int rights) {
 		if (rights < 0) {
 			throw new IllegalArgumentException("Rights must be >= 0");
 		}
 		this.rights = rights;
 		Core.getServer().getLogon().getAPI().updateRights(getName(), getRights());
+		return this;
 	}
 	
 	/**
@@ -563,7 +569,7 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 	 * @param d the new view distance
 	 * @throws NullPointerException if the distance is null
 	 */
-	public void setViewDistance(ViewDistance d) {
+	public Player setViewDistance(ViewDistance d) {
 		if (d == null) {
 			throw new NullPointerException("ViewDistance may not be null");
 		}
@@ -572,6 +578,7 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 			this.viewDistance = d;
 			getProtocol().sendMap();
 		}
+		return this;
 	}
 	
 	/**
@@ -674,9 +681,10 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 	}
 	
 	@Override
-	public void setHealth(int hp) {
+	public Player setHealth(int hp) {
 		super.setHealth(hp);
 		getProtocol().sendConfig(1240, Math.min(getHealth() << 1, Short.MAX_VALUE));
+		return this;
 	}
 	
 	/**
@@ -689,24 +697,27 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 	}
 	
 	@Override
-	public void setRetaliate(boolean retaliate) {
+	public Player setRetaliate(boolean retaliate) {
 		super.setRetaliate(retaliate);
 		// Overrides so that we may inform the client of the change
 		getProtocol().sendConfig(172, retaliate ? 0 : 1); // 1 to disable retaliate
+		return this;
 	}
 	
 	@Override
-	public void setAttackStyle(AttackStyle style) {
+	public Player setAttackStyle(AttackStyle style) {
 		super.setAttackStyle(style);
 		
 		getProtocol().sendConfig(43, style.getSlot() > 0 ? style.getSlot() - 1 : -1);
+		return this;
 	}
 	
 	@Override
-	public void setAttackEnergy(int e){
+	public Player setAttackEnergy(int e){
 		super.setAttackEnergy(e);
 		
 		this.getProtocol().sendConfig(300, getAttackEnergy() * 10);
+		return this;
 	}
 	
 	public Notes getNotes() {

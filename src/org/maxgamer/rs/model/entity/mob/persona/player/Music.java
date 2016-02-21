@@ -14,18 +14,13 @@ public class Music implements YMLSerializable {
 	/**
 	 * The maximum amount of music that can be unlocked by a player.
 	 */
-	public static final int MAX_MUSIC = 967;
+	public static final int MAX_MUSIC = 600;
 	
-	private boolean[] unlockedTracks = new boolean[MAX_MUSIC]; // The flags to
-																// check if the
-																// player has
-																// unlocked a
-																// certain track
+	private boolean[] unlockedTracks = new boolean[MAX_MUSIC]; // The flags to check if the player has unlocked a certain track
 	private final Player p; // The player who uses this music
 	
 	private boolean selectivePlaying; // The music is being played by selection
-	private int currentTrackPlaying; // The music id of the current track being
-										// played
+	private int currentTrackPlaying; // The music id of the current track being played
 	
 	/**
 	 * Constructs a new {@code Music} from the specified {@link Player}
@@ -41,7 +36,7 @@ public class Music implements YMLSerializable {
 	 * Refreshes the music configuration values.
 	 */
 	public void refreshMusicConfiguration() {
-		int[] MUSIC_CONFIGS = { 20, 21, 22, 23, 24, 25, 255, 298, 311, 346, 414, 464, 598, 662, 721, 906, 1009, 1104, 1136, 1180, 1202, 1381, 1394, 1434, 1596, 1618, 1619, 1620, 1621, 1622, 1623, 1624, 1625, 1626, 1865, 1864, 2246, 2019, 2430 };
+		int[] MUSIC_CONFIGS = { 20, 21, 22, 23, 24, 25, 298, 311, 346, 414, 464, 598, 662, 721, 906, 1009, 1104, 1136, 1180, 1202, 1381, 1394, 1434 };
 		int totalPos = 0, endSpot = 32;
 		while ((totalPos * 32) + endSpot < unlockedTracks.length) {
 			int config = 0;
@@ -65,9 +60,11 @@ public class Music implements YMLSerializable {
 	 */
 	public void playMusicTrack(int musicId, boolean selective) {
 		if (!unlockedTracks[musicId]) {
-			p.getCheats().log(1, p.getName() + " attempted to play an unlocked music track.");
+			p.getCheats().log(1, p.getName() + " attempted to play a locked music track.");
 			return;
 		}
+		if (currentTrackPlaying != musicId)
+			p.sendMessage("<col=ff0000>Now Playing: " + getName(musicId));
 		setSelectivePlaying(selective);
 		currentTrackPlaying = musicId;
 		p.getProtocol().playMusic(100, 50, musicId);
@@ -89,13 +86,17 @@ public class Music implements YMLSerializable {
 	 */
 	public void unlockMusicTrack(int musicId) {
 		if (!unlockedTracks[musicId]) {
-			String musicName = ClientScriptSettings.getSettings(1345).getStringValue(musicId);
-			p.sendMessage("<col=ff0000>You have unlocked a new music track: " + (musicName == null ? "UNKNOWN TRACK (" + musicId + ")" : musicName) + ".");
+			String name = getName(musicId);
+			p.sendMessage("<col=ff0000>You have unlocked a new music track: " + (name == null ? "UNKNOWN TRACK (" + musicId + ")" : name) + ".");
 		}
 		unlockedTracks[musicId] = true;
 		refreshMusicConfiguration();
 		
 		if (!selectivePlaying) playMusicTrack(musicId, false);
+	}
+	
+	public static String getName(int track) {
+		return ClientScriptSettings.getSettings(1345).getStringValue(track);
 	}
 	
 	@Override

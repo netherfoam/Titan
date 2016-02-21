@@ -10,6 +10,7 @@ public class Damage {
 	private DamageType type;
 	private Mob target;
 	private boolean max;
+	private int hitDelay;
 	
 	public Damage(int hit, DamageType type, Mob target) {
 		if (hit < 0) throw new IllegalArgumentException("Damage hit must be >= 0, given " + hit);
@@ -20,12 +21,14 @@ public class Damage {
 		this.target = target;
 	}
 	
-	public void setType(DamageType type) {
+	public Damage setType(DamageType type) {
 		this.type = type;
+		return this;
 	}
 	
-	public void setHit(int hit) {
+	public Damage setHit(int hit) {
 		this.hit = hit;
+		return this;
 	}
 	
 	public int getHit() {
@@ -36,8 +39,9 @@ public class Damage {
 		return max;
 	}
 	
-	public void setMax(boolean max) {
+	public Damage setMax(boolean max) {
 		this.max = max;
+		return this;
 	}
 	
 	public DamageType getType() {
@@ -46,5 +50,14 @@ public class Damage {
 	
 	public Mob getTarget() {
 		return target;
+	}
+
+	public int getHitDelay() {
+		return hitDelay;
+	}
+
+	public Damage setHitDelay(int hitDelay) {
+		this.hitDelay = hitDelay;
+		return this;
 	}
 }

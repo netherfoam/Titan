@@ -29,9 +29,8 @@ public class AttackResult implements Iterable<Damage> {
 	 * @param attacker The mob who is attacking.
 	 */
 	public void apply(Mob attacker) {
-		for (Damage d : damages) {
+		for (Damage d : damages)
 			d.getTarget().getDamage().damage(attacker, d);
-		}
 	}
 	
 	/**

@@ -5,27 +5,29 @@
 importClass(org.maxgamer.rs.model.entity.mob.combat.MeleeAttack);
 importClass(org.maxgamer.rs.model.entity.mob.combat.Damage);
 
-function prepare(attacker, target, damage){
+function prepare(attacker, target, damage) {
 	// This isn't right, but it will do for us.
 	var d1, d2, d3, d4;
 
 	var d1 = MeleeAttack.roll(attacker, target);
-	
-	if(d1.getHit() == 0){
+
+	if (d1.getHit() == 0) {
 		d2 = MeleeAttack.roll(attacker, target);
-	}
-	else{
+	} else {
 		d2 = new Damage(d1.getHit() / 2, d1.getType(), target);
 	}
+	d1.setHitDelay(1);
+	d2.setHitDelay(1);
 
-	if(d2.getHit() == 0){
+	if (d2.getHit() == 0) {
 		d3 = MeleeAttack.roll(attacker, target);
-	}
-	else{
+	} else {
 		d3 = new Damage(d2.getHit() / 2, d2.getType(), target);
 	}
 
 	d4 = new Damage(d3.getHit() / 2, d3.getType(), target);
+	d3.setHitDelay(2);
+	d4.setHitDelay(2);
 
 	damage.add(d1);
 	damage.add(d2);
@@ -33,18 +35,18 @@ function prepare(attacker, target, damage){
 	damage.add(d4);
 }
 
-function perform(attacker, target, damage){
+function perform(attacker, target, damage) {
 	attacker.animate(10961);
 	attacker.graphics(1950);
 	damage.apply(attacker);
 }
 
-function takeConsumables(attacker){
+function takeConsumables(attacker) {
 	var e = attacker.getAttackEnergy();
-	if(e < 50){
+	if (e < 50) {
+		attacker.sendMessage("You do not have enough special attack energy.");
 		return false;
 	}
 	attacker.setAttackEnergy(e - 50);
-
 	return true;
 }

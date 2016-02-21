@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.maxgamer.rs.core.Core;
+import org.maxgamer.rs.core.server.ServerTicker;
+import org.maxgamer.rs.core.tick.FastTickable;
 import org.maxgamer.rs.model.entity.mob.Mob;
 
 /**
@@ -88,33 +90,37 @@ public class DamageLog {
 	 * @param from the mob who is damaging us, may be null for unknown
 	 * @param d the damage
 	 */
-	public void damage(Mob from, Damage d) {
-		ArrayList<Damage> list = hits.get(from);
-		if (list == null) {
-			list = new ArrayList<Damage>();
-			hits.put(from, list);
-		}
-		
-		//Fix miss attacks
-		if (d.getHit() <= 0) {
-			boolean max = d.isMax();
-			d = new Damage(d.getHit(), DamageType.MISS, d.getTarget());
-			if (max) d.setMax(max);
-		}
-		
-		list.add(d);
-		getOwner().getUpdateMask().addHit(from, d);
-		
-		getOwner().setHealth(getOwner().getHealth() - d.getHit());
-		
-		int anim = getOwner().getCombatStats().getDefenceAnimation();
-		if (anim > 0 && getOwner().getUpdateMask().getAnimation() == null) {
-			getOwner().animate(anim, 5);
-		}
-		
-		if (from != null) {
-			this.setLastAttacker(from);
-		}
+	public void damage(final Mob from, final Damage d) {
+		new FastTickable(0) {
+			@Override
+			public void tick() {
+				ArrayList<Damage> list = hits.get(from);
+				if (list == null) {
+					list = new ArrayList<Damage>();
+					hits.put(from, list);
+				}
+				
+				if (getOwner().getHealth() < d.getHit())
+					d.setHit(getOwner().getHealth());
+				
+				//Fix miss attacks
+				if (d.getHit() <= 0)
+					d.setType(DamageType.MISS);
+				
+				list.add(d);
+				getOwner().getUpdateMask().addHit(from, d);
+				getOwner().setHealth(getOwner().getHealth() - d.getHit());
+				
+				int anim = getOwner().getCombatStats().getDefenceAnimation();
+				if (anim > 0 && getOwner().getUpdateMask().getAnimation() == null)
+					getOwner().animate(anim, 5);
+				
+				if (from != null)
+					setLastAttacker(from);
+				cancel();
+			}
+			
+		}.queue(d.getHitDelay() * ServerTicker.TICK_DURATION);
 	}
 	
 	/**

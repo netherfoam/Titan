@@ -16,8 +16,9 @@ importClass(org.maxgamer.rs.model.entity.mob.combat.MeleeAttack);
  * 		   without dealing damage. Not dealing any damage will have the same effect.
  */
 function prepare(attacker, target, damage){
-	for(var i = 0; i < 2; i++){
+	for(var i = 0; i < 2; i++) {
 		var d = MeleeAttack.roll(attacker, target);
+		d.setHitDelay(i);
 		damage.add(d);
 	}
 }
@@ -43,7 +44,8 @@ function perform(attacker, target, damage){
  */
 function takeConsumables(attacker){
 	var e = attacker.getAttackEnergy();
-	if(e < 25){
+	if (e < 25) {
+		attacker.sendMessage("You do not have enough special attack energy.");
 		return false;
 	}
 	attacker.setAttackEnergy(e - 25);

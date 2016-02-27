@@ -2,6 +2,7 @@ package org.maxgamer.rs.model.minigame;
 
 import org.maxgamer.rs.core.server.WorldFullException;
 import org.maxgamer.rs.core.tick.Tickable;
+import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.npc.NPC;
 import org.maxgamer.rs.model.map.Location;
 import org.maxgamer.rs.structure.configs.ConfigSection;
@@ -105,9 +106,9 @@ public class MiniGameNPC<M extends MiniGame> extends NPC {
 	}
 	
 	@Override
-	public void respawn() {
+	public Mob respawn() {
 		if (!tickable.isQueued()) tickable.queue(1);
-		super.respawn();
+		return super.respawn();
 	}
 	
 	public ConfigSection getConfigs() {

@@ -261,14 +261,14 @@ public class NPC extends Mob implements Interactable {
 	}
 	
 	@Override
-	public void respawn() {
+	public Mob respawn() {
 		Location l = getSpawn();
 		if (l != null) {
 			// Set the location to the spawn if it is available.
 			setLocation(l);
 		}
 		
-		super.respawn();
+		return super.respawn();
 	}
 	
 	@Override

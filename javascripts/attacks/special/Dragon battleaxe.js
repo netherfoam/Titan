@@ -23,7 +23,8 @@ function prepare(attacker, target, damage){
 
 function takeConsumables(attacker){
 	var e = attacker.getAttackEnergy();
-	if(e < 50){
+	if (e < 50) {
+		attacker.sendMessage("You do not have enough special attack energy.");
 		return false;
 	}
 	attacker.setAttackEnergy(e - 50);

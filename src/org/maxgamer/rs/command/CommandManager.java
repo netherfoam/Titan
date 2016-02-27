@@ -13,7 +13,7 @@ import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.events.server.CommandEvent;
 import org.maxgamer.rs.structure.TrieSet;
-
+	
 /**
  * @author netherfoam
  */

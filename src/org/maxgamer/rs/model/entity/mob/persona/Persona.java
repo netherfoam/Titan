@@ -344,7 +344,7 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 	 * 
 	 * @param spell the spell, this may be null
 	 */
-	public void setAutocast(CombatSpell spell) {
+	public Persona setAutocast(CombatSpell spell) {
 		this.autocast = spell;
 		if (spell != null) {
 			this.setAttackStyle(new AttackStyle(-1, "Magic", Bonus.ATK_MAGIC, SkillType.MAGIC));
@@ -358,6 +358,7 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 				this.setAttackStyle(wep.getDefinition().getAttackStyle(1));
 			}
 		}
+		return this;
 	}
 	
 	/**
@@ -366,12 +367,13 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 	 * @param energy the new amount of special attack energy.
 	 * @throws IllegalArgumentException if the given amount is not between 0 and 100 inclusive
 	 */
-	public void setAttackEnergy(int energy){
+	public Persona setAttackEnergy(int energy){
 		if(energy < 0 || energy > 100){
 			throw new IllegalArgumentException("Energy must be 0 to 100 inclusive, given " + energy);
 		}
 		
 		this.attackEnergy = energy;
+		return this;
 	}
 	
 	/**
@@ -389,9 +391,10 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 	 * 
 	 * @param model the model
 	 */
-	public void setModel(MobModel model) {
+	public Persona setModel(MobModel model) {
 		this.model = model;
 		this.model.setChanged(true);
+		return this;
 	}
 	
 	/**
@@ -404,12 +407,13 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 		return this.autocast;
 	}
 	
-	public void setRunEnergy(int energy) {
+	public Persona setRunEnergy(int energy) {
 		if (energy > 100 || energy < 0) throw new IllegalArgumentException("Energy must be <= 100 and >= 0");
 		if (energy <= 0) {
 			this.setRunning(false);
 		}
 		this.runEnergy = energy;
+		return this;
 	}
 	
 	public int getRunEnergy() {
@@ -422,12 +426,13 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 	 * 
 	 * @param book the new spellbook
 	 */
-	public void setSpellbook(Spellbook book) {
+	public Persona setSpellbook(Spellbook book) {
 		if (book == null) {
 			throw new NullPointerException("Spellbook may not be null");
 		}
 		
 		this.spellbook = book;
+		return this;
 	}
 	
 	/**
@@ -485,11 +490,12 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 	 * 
 	 * @param style the new style, not null.
 	 */
-	public void setAttackStyle(AttackStyle style) {
+	public Persona setAttackStyle(AttackStyle style) {
 		if (style == null) {
 			throw new NullPointerException("AttackStyle may not be null");
 		}
 		this.attackStyle = style;
+		return this;
 	}
 	
 	public boolean move(Path path) {
@@ -605,8 +611,9 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 	 * 
 	 * @param run true if this Mob should start running
 	 */
-	public void setRunning(boolean run) {
+	public Persona setRunning(boolean run) {
 		this.run = run;
+		return this;
 	}
 	
 	/**
@@ -754,8 +761,9 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 	}
 	
 	@Override
-	public void setHealth(int health) {
+	public Persona setHealth(int health) {
 		super.setHealth(health);
+		return this;
 	}
 	
 	/**
@@ -919,7 +927,7 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 	}
 	
 	@Override
-	public void restore() {
+	public Persona restore() {
 		super.restore();
 		this.setRunEnergy(100);
 		this.setAttackEnergy(100);
@@ -927,6 +935,7 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 		for (SkillType t : SkillType.values()) {
 			getSkills().setModifier(t, 0);
 		}
+		return this;
 	}
 	
 	private Attack nextAttack;

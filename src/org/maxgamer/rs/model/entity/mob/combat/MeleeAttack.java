@@ -3,20 +3,25 @@ package org.maxgamer.rs.model.entity.mob.combat;
 import org.maxgamer.rs.lib.Erratic;
 import org.maxgamer.rs.model.entity.mob.CombatStats;
 import org.maxgamer.rs.model.entity.mob.Mob;
+import org.maxgamer.rs.model.events.mob.MobDamageRollEvent;
 
 /**
  * @author netherfoam
  */
 public class MeleeAttack extends Attack {
 	public static Damage roll(Mob attacker, Mob target) {
+		return roll(attacker, target, 1.0, 1.0);
+	}
+	
+	public static Damage roll(Mob attacker, Mob target, double accuracyModifier, double maxHitModifier) {
 		int atkType = attacker.getAttackStyle().getBonusType();
 		
 		CombatStats srcStats = attacker.getCombatStats();
 		CombatStats vicStats = target.getCombatStats();
 		
-		double accuracy = Erratic.getGaussian(0.5, srcStats.getMeleeHitRating());
+		double accuracy = Erratic.getGaussian(0.5, srcStats.getMeleeHitRating()) * accuracyModifier;
 		double defence = Erratic.getGaussian(0.5, vicStats.getMeleeDefenceRating(atkType));
-		int max = srcStats.getMeleePower();
+		int max = (int) (srcStats.getMeleePower() * maxHitModifier);
 		
 		if (accuracy > defence) {
 			int hit = (int) Math.min(target.getHealth(), Erratic.getGaussian(accuracy / (accuracy + defence), max));
@@ -36,9 +41,10 @@ public class MeleeAttack extends Attack {
 	
 	@Override
 	public boolean prepare(Mob target, AttackResult data) {
-		Damage d = MeleeAttack.roll(attacker, target);
+		MobDamageRollEvent event = new MobDamageRollEvent(this, attacker, target, 1.0, 1.0);
+		event.call();
+		Damage d = MeleeAttack.roll(attacker, target, event.getAccuracyModifier(), event.getMaxHitModifier());
 		data.add(d);
-		
 		return true;
 	}
 	

@@ -98,7 +98,7 @@ public class DamageLog {
 		}
 		
 		list.add(d);
-		new FastTickable(0) {
+		new FastTickable() {
 			@Override
 			public void tick() {
 				if (getOwner().getHealth() < d.getHit())
@@ -118,7 +118,7 @@ public class DamageLog {
 				cancel();
 			}
 			
-		}.queue(d.getHitDelay() * ServerTicker.TICK_DURATION);
+		}.queue(d.getHitDelay() * ServerTicker.getTickDuration());
 	}
 	
 	/**

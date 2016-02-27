@@ -119,7 +119,7 @@ public class JavaScriptFiber {
 	}
 	
 	public JavaScriptCall invoke(Function function, Object... params){
-		JavaScriptCall call = new JavaScriptCall(this);
+		JavaScriptCall call = new JavaScriptCall(this, function.toString());
 		try{
 			JavaScriptContext ctx = factory.enterContext();
 			ctx.setCall(call);
@@ -205,7 +205,7 @@ public class JavaScriptFiber {
 		JavaScriptContext context = factory.enterContext();
 		
 		NativeFunction script = null;
-		JavaScriptCall call = new JavaScriptCall(this);
+		JavaScriptCall call = new JavaScriptCall(this, name);
 		context.setCall(call);
 		
 		try{
@@ -246,7 +246,7 @@ public class JavaScriptFiber {
 		}
 		
 		Context context = factory.enterContext();
-		JavaScriptCall call = new JavaScriptCall(null);
+		JavaScriptCall call = new JavaScriptCall(null, path);
 		
 		try{
 			/* Sets interpreted mode, allowing us to pause the script during execution */
@@ -362,6 +362,9 @@ public class JavaScriptFiber {
 			/* Resumes the script. This runs until the script finishes or is paused again. */
 			Object result = context.resumeContinuation(call.getState().getContinuation(), this.scope, response);
 			call.setResult(result);
+		}
+		catch(TimeoutError e){
+			Log.debug(call + " took too long to complete!");
 		}
 		catch (ContinuationPending pending) {
 			/* Script was paused, it will be resumed later. */

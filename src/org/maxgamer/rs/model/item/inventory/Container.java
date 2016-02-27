@@ -175,6 +175,10 @@ public abstract class Container implements Cloneable, Iterable<ItemStack>, YMLSe
 		this.listeners.remove(l);
 	}
 	
+	public boolean hasListener(ContainerListener l) {
+		return this.listeners.contains(l);
+	}
+	
 	/**
 	 * Sets the item at the given slot to the given item. This should be used
 	 * instead of setItem (which is protected), due to the transaction API which
@@ -400,7 +404,7 @@ public abstract class Container implements Cloneable, Iterable<ItemStack>, YMLSe
 	 * Deletes all items in this inventory.
 	 */
 	public final synchronized void clear() {
-		for (int slot = 0; slot < this.getSize(); slot++) {
+		for (int slot = this.getSize() - 1; slot >= 0; slot--) {
 			ItemStack it = this.get(slot);
 			if (it != null) {
 				this.set(slot, null);
@@ -415,7 +419,7 @@ public abstract class Container implements Cloneable, Iterable<ItemStack>, YMLSe
 	/**
 	 * Shuffles all items to the start of the container.
 	 */
-	public final void shift() {
+	public void shift() {
 		// The slot to put the next item into.
 		int slot = 0;
 		int i;
@@ -840,6 +844,19 @@ public abstract class Container implements Cloneable, Iterable<ItemStack>, YMLSe
 			}
 		}
 		return true;
+	}
+	
+	/**
+	 * The total grand exchange value for this container.
+	 * @return The total grand exchange value for this container.
+	 */
+	public final int value(){
+		int worth = 0;
+		for(ItemStack item : this){
+			if(item == null) continue;
+			worth += item.getDefinition().getValue();
+		}
+		return worth;
 	}
 	
 	/**

@@ -71,6 +71,7 @@ import org.maxgamer.rs.command.commands.Tphere;
 import org.maxgamer.rs.command.commands.Vendor;
 import org.maxgamer.rs.command.commands.Version;
 import org.maxgamer.rs.command.commands.Whisper;
+import org.maxgamer.rs.command.commands.WhoIs;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.core.tick.Tickable;
 import org.maxgamer.rs.event.EventManager;
@@ -511,6 +512,7 @@ public class Server {
 			commands.register("version", new Version());
 			commands.register("despawnobject", new DespawnObject());
 			commands.register("pcol", new ParticleColour());
+			commands.register("whois", new WhoIs());
 			
 			ConfigSection config = Core.getWorldConfig().getSection("commands", null);
 			if (config != null) {

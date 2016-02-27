@@ -492,4 +492,12 @@ public class SkillSet implements YMLSerializable {
 		}
 		return value;
 	}
+
+	public int getTotal() {
+		int total = 0;
+		for(Skill s : this.skills.values()){
+			total += s.getLevel();
+		}
+		return total;
+	}
 }

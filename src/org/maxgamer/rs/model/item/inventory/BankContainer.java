@@ -19,14 +19,16 @@ public class BankContainer extends Container {
 	@Override
 	protected void setItem(int slot, ItemStack item) {
 		items[slot] = item;
-		if(item == null){
-			this.shift();
-		}
 	}
 	
 	@Override
 	public ItemStack get(int slot) {
 		return items[slot];
+	}
+	
+	@Override
+	public void shift(){
+		super.shift();
 	}
 	
 	@Override

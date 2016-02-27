@@ -9,11 +9,15 @@ function talkTo(player, npc){
 		chat(player, "No thanks.");
 	} else if (opt == 2) {
 		chat(player,  "Can you teleport me to the rune essence?");
-		npc.say("Senventior Disthine Molenko!");
-		npc.face(player);
-		npc.graphics(343);
-		npc.animate(1818);
-		wait(3);
-		player.teleport(new Location(Core.getServer().getMap(), 2911, 4832, 0));
+		teleport(player, npc);
 	}
+}
+
+function teleport(player, npc){
+	npc.say("Senventior Disthine Molenko!");
+	npc.face(player);
+	npc.graphics(343);
+	npc.animate(1818);
+	wait(3);
+	player.teleport(new Location(2911, 4832, 0));
 }

@@ -6,9 +6,15 @@ public class JavaScriptCall{
 	private JavaScriptFiber fiber;
 	private ContinuationPending state;
 	private Object result;
+	private String name;
 	
-	public JavaScriptCall(JavaScriptFiber fiber){
+	public JavaScriptCall(JavaScriptFiber fiber, String name){
 		this.fiber = fiber;
+		this.name = name;
+	}
+	
+	public String getFunction(){
+		return name;
 	}
 	
 	public JavaScriptFiber getFiber(){

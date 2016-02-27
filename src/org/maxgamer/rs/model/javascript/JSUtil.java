@@ -16,14 +16,14 @@ public class JSUtil {
 	public static void wait(final JavaScriptFiber fiber, int ticks){
 		final JavaScriptCall state = fiber.context().getCall();
 		
-		FastTickable t = new FastTickable(ServerTicker.TICK_DURATION) {
+		FastTickable t = new FastTickable() {
 			@Override
 			public void tick() {
 				fiber.unpause(state, null);
 			}
 		};
 		
-		t.queue(ServerTicker.TICK_DURATION * ticks);
+		t.queue(ServerTicker.getTickDuration() * ticks);
 		
 		fiber.pause();
 	}

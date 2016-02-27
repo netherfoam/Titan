@@ -281,10 +281,7 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 					long drop = Math.min(item.getAmount(), item.getStackSize());
 					GroundItemStack g = new GroundItemStack(item.setAmount(drop), owner, 50, 250);
 					g.setLocation(getCenter());
-					item = item.setAmount(item.getAmount() - drop); // Will
-																	// eventually
-																	// set item
-																	// to NULL
+					item = item.setAmount(item.getAmount() - drop); // Will eventually set item to NULL
 				}
 			}
 			
@@ -952,6 +949,8 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 			return nextAttack;
 		}
 		
+		final ItemStack weapon = getEquipment().get(WieldType.WEAPON);
+		
 		// TODO: Decide whether to use a magic, range or melee attack.
 		ItemStack item = getEquipment().get(WieldType.WEAPON);
 		if (item != null) {
@@ -961,7 +960,11 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 					@Override
 					public boolean run(Mob target){
 						nextAttack = null;
-						return super.run(target);
+						
+						if(weapon == getEquipment().get(WieldType.WEAPON)){
+							return super.run(target);
+						}
+						return false;
 					}
 				};
 				return nextAttack;
@@ -973,7 +976,11 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 			@Override
 			public boolean run(Mob target){
 				nextAttack = null;
-				return super.run(target);
+				
+				if(weapon == getEquipment().get(WieldType.WEAPON)){
+					return super.run(target);
+				}
+				return false;
 			}
 		};
 		return nextAttack;

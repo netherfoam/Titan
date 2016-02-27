@@ -10,7 +10,7 @@ import org.maxgamer.rs.model.map.Location;
 /**
  * @author netherfoam
  */
-public class GroundItemStack extends Entity implements Comparable<GroundItemStack>, Interactable {
+public class GroundItemStack extends Entity implements Interactable {
 	/**
 	 * The ItemStack on the ground
 	 */
@@ -122,29 +122,6 @@ public class GroundItemStack extends Entity implements Comparable<GroundItemStac
 			if(!isPublic() && getOwner() != viewer) return false;
 		}
 		return super.isVisible(viewer);
-	}
-	
-	@Override
-	public int compareTo(GroundItemStack g2) {
-		int t2;
-		if (g2.isPublic()) {
-			t2 = g2.expires;
-		}
-		else {
-			t2 = g2.privacy;
-		}
-		
-		int t1;
-		if (this.isPublic()) {
-			t1 = this.expires;
-		}
-		else {
-			t1 = this.privacy;
-		}
-		//If we ever actually need long ticks, this will die for items
-		//who were private before at tick 0
-		//Technically, > 2b ticks is roughly 100 years of runtime.
-		return (t1 - t2);
 	}
 	
 	@Override

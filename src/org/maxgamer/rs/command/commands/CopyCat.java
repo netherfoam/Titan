@@ -22,14 +22,17 @@ public class CopyCat implements PlayerCommand {
 			return;
 		}
 		
+		p.getInventory().clear();
 		for (int i = 0; i < target.getInventory().getSize(); i++) {
 			p.getInventory().set(i, target.getInventory().get(i));
 		}
 		
+		p.getEquipment().clear();
 		for (int i = 0; i < target.getEquipment().getSize(); i++) {
 			p.getEquipment().set(i, target.getEquipment().get(i));
 		}
 		
+		p.getBank().clear();
 		for (int i = 0; i < target.getBank().getSize(); i++) {
 			p.getBank().set(i, target.getBank().get(i));
 		}

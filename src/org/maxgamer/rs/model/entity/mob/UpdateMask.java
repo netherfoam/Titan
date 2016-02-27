@@ -52,6 +52,7 @@ public class UpdateMask implements Mask {
 	}
 	
 	public void setSay(String say) {
+		assert Core.getServer().getThread().isServerThread() : "Current thread is " + Thread.currentThread() + ", must be server thread.";
 		this.say = say;
 	}
 	
@@ -71,6 +72,8 @@ public class UpdateMask implements Mask {
 	 * @param d the damage that was dealt
 	 */
 	public void addHit(Mob from, Damage d) {
+		assert Core.getServer().getThread().isServerThread() : "Current thread is " + Thread.currentThread() + ", must be server thread.";
+		
 		if (hits == null) hits = new HashMap<Mob, ArrayList<Damage>>(1);
 		ArrayList<Damage> list = hits.get(from);
 		if (list == null) {
@@ -99,6 +102,8 @@ public class UpdateMask implements Mask {
 	}
 	
 	public void setAnimation(Animation a, int priority) {
+		assert Core.getServer().getThread().isServerThread() : "Current thread is " + Thread.currentThread() + ", must be server thread.";
+		
 		if (a == null) {
 			//Stop the current animation
 			this.anim = new Animation(-1);
@@ -136,10 +141,14 @@ public class UpdateMask implements Mask {
 	}
 	
 	public void setFacing(boolean changed) {
+		assert Core.getServer().getThread().isServerThread() : "Current thread is " + Thread.currentThread() + ", must be server thread.";
+		
 		this.facing = changed;
 	}
 	
 	public void reset() {
+		assert Core.getServer().getThread().isServerThread() : "Current thread is " + Thread.currentThread() + ", must be server thread.";
+		
 		graphics = null;
 		anim = null;
 		say = null;

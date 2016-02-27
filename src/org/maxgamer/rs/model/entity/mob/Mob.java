@@ -409,7 +409,7 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 		return this.combatStats;
 	}
 	
-	public Action move(Position to) {
+	public WalkAction move(Position to) {
 		return this.move(to, new AStar(5));
 	}
 	
@@ -425,14 +425,14 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 	 *         one was not.
 	 * @thread main
 	 */
-	public Action move(Position to, PathFinder finder) {
+	public WalkAction move(Position to, PathFinder finder) {
 		if (Core.getServer().getThread().isServerThread() == false) {
 			throw new IllegalThreadException("Must be invoked in main thread");
 		}
 		
 		Path path = finder.findPath(getLocation(), to, to, getSizeX(), getSizeY());
 		
-		Action walk = new WalkAction(this, path);
+		WalkAction walk = new WalkAction(this, path);
 		getActions().clear();
 		getActions().queue(walk);
 		

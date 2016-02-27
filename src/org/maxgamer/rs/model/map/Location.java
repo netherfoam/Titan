@@ -114,6 +114,10 @@ public class Location extends Position implements MBR, Locatable {
 		this(Core.getServer().getMaps().mainland(), x, y, z);
 	}
 	
+	public Location(WorldMap map, Position p, int z){
+		this(map, p.x, p.y, z);
+	}
+	
 	/**
 	 * The flags for this location. This will throw a
 	 * {@link NullPointerException} if the map is null. The flags are a bitset,

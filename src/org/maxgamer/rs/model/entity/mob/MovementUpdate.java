@@ -1,5 +1,6 @@
 package org.maxgamer.rs.model.entity.mob;
 
+import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.lib.Calc;
 import org.maxgamer.rs.model.map.path.Direction;
 
@@ -59,6 +60,8 @@ public abstract class MovementUpdate implements Mask {
 	 * @param tele the return value of hasTeleported() after this call.
 	 */
 	public void setTeleported(boolean tele) {
+		assert Core.getServer().getThread().isServerThread() : "Current thread is " + Thread.currentThread() + ", must be server thread.";
+		
 		this.teleported = tele;
 	}
 	
@@ -75,6 +78,8 @@ public abstract class MovementUpdate implements Mask {
 	 * @param dir the direction to walk in
 	 */
 	public void setWalk(Direction dir) {
+		assert Core.getServer().getThread().isServerThread() : "Current thread is " + Thread.currentThread() + ", must be server thread.";
+		
 		if (dir == null) throw new NullPointerException("Walk direction may not be null.");
 		this.directions = new Direction[] { dir };
 	}
@@ -87,6 +92,8 @@ public abstract class MovementUpdate implements Mask {
 	 *         that case.
 	 */
 	protected void setRun(Direction dir1, Direction dir2) {
+		assert Core.getServer().getThread().isServerThread() : "Current thread is " + Thread.currentThread() + ", must be server thread.";
+		
 		if (dir1 == null || dir2 == null) throw new NullPointerException("Walk direction may not be null.");
 		this.directions = new Direction[] { dir1, dir2 };
 	}
@@ -143,6 +150,8 @@ public abstract class MovementUpdate implements Mask {
 	 * ready for new data to be placed. Called after each tick.
 	 */
 	public void reset() {
+		assert Core.getServer().getThread().isServerThread() : "Current thread is " + Thread.currentThread() + ", must be server thread.";
+		
 		this.directions = null;
 		this.teleported = false;
 	}

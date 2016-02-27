@@ -7,7 +7,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.core.server.ServerTicker;
 import org.maxgamer.rs.core.tick.FastTickable;
 import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.entity.mob.Mob;
@@ -32,7 +31,7 @@ public class ActionQueue extends FastTickable {
 	 * @throws NullPointerException if owner is null
 	 */
 	public ActionQueue(Mob owner) {
-		super(ServerTicker.TICK_DURATION); //600ms
+		super(); 
 		if (owner == null) throw new NullPointerException("ActionQueue owner mob may not be null.");
 		this.owner = owner;
 	}
@@ -458,7 +457,7 @@ public class ActionQueue extends FastTickable {
 				//Trim the last ", " off.
 				sb.replace(sb.length() - 2, sb.length(), "");
 			}
-			sb.append("}");
+			sb.append("}, running=" + this.isQueued());
 			
 			return sb.toString();
 		}

@@ -16,7 +16,15 @@ import org.maxgamer.rs.structure.timings.StopWatch;
  */
 public class ServerTicker implements Runnable {
 	/** The pause between ticks in milliseconds. */
-	public static final int TICK_DURATION = 600;
+	private static int TICK_DURATION = 600;
+	
+	public static int getTickDuration(){
+		return TICK_DURATION;
+	}
+	
+	public static void setTickDuration(int duration){
+		TICK_DURATION = Math.max(0, duration);
+	}
 	
 	/** Number of ticks passed */
 	private int ticks;
@@ -144,11 +152,11 @@ public class ServerTicker implements Runnable {
 		//tick in 563ms, not 600ms. (37 + 563 = 600)
 		int duration = (int) tickTimer.getTime() / 1000000;
 		
-		if (duration > TICK_DURATION) {
+		if (duration > getTickDuration()) {
 			Log.info("Warning, tick took " + duration + "ms to finish");
 		}
 		
-		int schedule = TICK_DURATION - duration;
+		int schedule = getTickDuration() - duration;
 		if (schedule < 0) schedule = 0;
 		tickTimer.stop();
 		

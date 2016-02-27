@@ -35,11 +35,6 @@ public class ItemStack implements Comparable<ItemStack>, YMLSerializable, Intera
 		}
 	}
 	
-	/*
-	 * public static ItemStack forName(String case_sensitive){ ItemProto proto =
-	 * ItemProto.forName(case_sensitive); }
-	 */
-	
 	public static ItemStack create(ConfigSection s) {
 		return ItemStack.create(s.getInt("id"), s.getLong("amount", 1), s.getInt("health", 0));
 	}

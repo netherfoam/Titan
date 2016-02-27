@@ -258,21 +258,21 @@ public class Harvestable {
 	 * and then shows it after the given respawnTicks have passed. The data
 	 * value is set to -1 again (Reset)
 	 * 
-	 * @param g
+	 * @param original
 	 *            the object to replenish
 	 */
-	public void replenish(final GameObject g) {
-		if (g == null) {
+	public void replenish(final GameObject original) {
+		if (original == null) {
 			throw new NullPointerException("Replenish target may not be null");
 		}
-		g.hide();
+		original.hide();
 
 		DynamicGameObject rep = null;
 
 		if (replaceObjectId >= 0) {
-			rep = new DynamicGameObject(replaceObjectId, g.getType());
-			rep.setFacing(g.getFacing());
-			rep.setLocation(g.getLocation());
+			rep = new DynamicGameObject(replaceObjectId, original.getType());
+			rep.setFacing(original.getFacing());
+			rep.setLocation(original.getLocation());
 		}
 
 		final DynamicGameObject frep = rep;
@@ -286,8 +286,8 @@ public class Harvestable {
 					}
 
 					// Reset data
-					g.setData(-1);
-					g.show();
+					original.setData(-1);
+					original.show();
 				}
 			}.queue(respawnTicks);
 		}

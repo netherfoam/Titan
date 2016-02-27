@@ -285,7 +285,6 @@ public class Server {
 					
 					Server.this.modules = new ModuleLoader();
 					Server.this.ticker = new ServerTicker(Server.this);
-					Server.this.groundItems = new GroundItemManager();
 					
 					// Preload our event system
 					getEvents();
@@ -535,7 +534,12 @@ public class Server {
 	 * need to use this
 	 * @return the ground item manager
 	 */
-	public GroundItemManager getGroundItems() {
+	public synchronized GroundItemManager getGroundItems() {
+		if(this.groundItems == null){
+			this.groundItems = new GroundItemManager();
+			this.groundItems.queue(1);
+		}
+		
 		return groundItems;
 	}
 	

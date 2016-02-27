@@ -292,6 +292,22 @@ public class ModuleLoader {
 	}
 	
 	/**
+	 * Fetches the module by the given type. Note that this adds a hard
+	 * dependency in your module project.
+	 * @param type the type
+	 * @return the module
+	 */
+	@SuppressWarnings("unchecked")
+	public <M extends Module> M getModule(Class<M> type){
+		for(Module m : this.modules.values()){
+			if(type.isInstance(m)){
+				return (M) m;
+			}
+		}
+		return null;
+	}
+	
+	/**
 	 * Fetches a module by file. This is a linear lookup, and returns the module
 	 * which was loaded from the given file (for example, getJar() == file).
 	 * @param file The file a module was loaded from

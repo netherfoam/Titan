@@ -11,7 +11,7 @@ public class RSEvent extends Event {
 	/** Calls this action through the ActionManager. Convenience method */
 	public void call() {
 		if (this.isAsync() == false && Core.getServer().getThread().isServerThread() == false) {
-			throw new IllegalThreadException("Events must be called from the Server thread");
+			throw new IllegalThreadException("Events must be called from the Server thread, current thread is " + Thread.currentThread().toString());
 		}
 		Core.getServer().getEvents().callEvent(this);
 	}

@@ -216,7 +216,7 @@ public abstract class Action {
 	 * @return true if this Action completed without being interrupted
 	 */
 	public boolean isComplete(){
-		return fiber.isTerminated();
+		return fiber != null && fiber.isTerminated();
 	}
 	
 }

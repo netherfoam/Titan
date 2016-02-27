@@ -2,6 +2,7 @@ package org.maxgamer.rs.model.action;
 
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.combat.AttackAction;
+import org.maxgamer.rs.model.map.Location;
 import org.maxgamer.rs.model.map.path.Path;
 import org.maxgamer.rs.model.map.path.PathFinder;
 import org.maxgamer.rs.model.map.path.ProjectilePathFinder;
@@ -72,8 +73,11 @@ public class CombatFollow extends Follow {
 	@Override
 	public void onCancel(){
 		super.onCancel();
-		if(getOwner().getTarget() != null){
+		if(getTarget() != null){
+			Location face = getTarget().getLocation();
+			
 			getOwner().setTarget(null);
+			getOwner().face(face);
 		}
 	}
 }

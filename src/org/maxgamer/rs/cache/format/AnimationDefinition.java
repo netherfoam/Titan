@@ -11,7 +11,7 @@ import org.maxgamer.rs.io.ByteBufferInputStream;
  * @author netherfoam
  */
 public class AnimationDefinition {
-	public static final int FRAMES_PER_TICK = 24 * 600 / ServerTicker.TICK_DURATION;
+	public static final int FRAMES_PER_TICK = 24 * 600 / ServerTicker.getTickDuration();
 	
 	int anInt807;
 	int[] anIntArray808;

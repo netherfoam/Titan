@@ -1,6 +1,7 @@
 package org.maxgamer.rs.core.tick;
 
 import org.maxgamer.rs.core.Core;
+import org.maxgamer.rs.core.server.ServerTicker;
 
 /**
  * @author netherfoam
@@ -25,11 +26,9 @@ public abstract class FastTickable {
 	}
 	
 	private long lastRun = 0;
-	private int cycleMs;
 	private RunRequest req;
 	
-	public FastTickable(int cycleMs) {
-		this.cycleMs = cycleMs;
+	public FastTickable() {
 	}
 	
 	public boolean isQueued() {
@@ -46,7 +45,7 @@ public abstract class FastTickable {
 		}
 		
 		long waited = System.currentTimeMillis() - lastRun;
-		long delay = cycleMs - waited;
+		long delay = ServerTicker.getTickDuration() - waited;
 		if (delay < minimumDelayMs) delay = minimumDelayMs;
 		this.req = new RunRequest(this);
 		Core.submit(req, delay, false);
@@ -60,9 +59,9 @@ public abstract class FastTickable {
 	
 	private void run() {
 		long now = System.currentTimeMillis();
-		if (now < lastRun + cycleMs) {
-			throw new RuntimeException("May not run FastTickable, as the Cycle time has not expired. Still have to wait " + (cycleMs + lastRun - now) + "ms.");
-		}
+		/*if (now < lastRun + ServerTicker.getTickDuration()) {
+			throw new RuntimeException("May not run FastTickable, as the Cycle time has not expired. Still have to wait " + (ServerTicker.getTickDuration() + lastRun - now) + "ms.");
+		}*/
 		
 		this.lastRun = now;
 		try {

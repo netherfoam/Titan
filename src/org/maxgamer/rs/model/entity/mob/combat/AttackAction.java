@@ -58,7 +58,11 @@ public class AttackAction extends Action {
 		long warmup = Core.getServer().getTicks() - getOwner().getDamage().getLastAttack();
 		
 		while(++warmup < getAttack().getWarmupTicks()){
-			assert getOwner().getActions().after(this) instanceof CombatFollow : "AttackAction tried to yield to CombatFollow but instead tried to yield to " + getOwner().getActions().after(this);
+			if(getOwner().getActions().after(this) instanceof CombatFollow == false){
+				getOwner().face(getTarget() == null ? null : getTarget().getLocation());
+				return;
+			}
+			//assert getOwner().getActions().after(this) instanceof CombatFollow || getOwner().getActions().after(this) == null : "AttackAction tried to yield to CombatFollow but instead tried to yield to " + getOwner().getActions().after(this);
 			this.yield();
 			wait(1);
 			
@@ -68,7 +72,10 @@ public class AttackAction extends Action {
 			
 			//If we're still warming up, allow the mob to move closer if necessary
 			if(inRange() == false){
-				assert getOwner().getActions().after(this) instanceof CombatFollow : "AttackAction tried to yield to CombatFollow but instead tried to yield to " + getOwner().getActions().after(this);
+				if(getOwner().getActions().after(this) instanceof CombatFollow == false){
+					getOwner().face(getTarget() == null ? null : getTarget().getLocation());
+					return;
+				}
 				this.yield(); //Assumably, yield to CombatFollow
 				wait(1);
 				continue;
@@ -79,7 +86,10 @@ public class AttackAction extends Action {
 		
 		//Now we have to wait until we're close enough!
 		while(getTarget() != null && inRange() == false){
-			assert getOwner().getActions().after(this) instanceof CombatFollow : "AttackAction tried to yield to CombatFollow but instead tried to yield to " + getOwner().getActions().after(this);
+			if(getOwner().getActions().after(this) instanceof CombatFollow == false){
+				getOwner().face(getTarget() == null ? null : getTarget().getLocation());
+				return;
+			}
 			this.yield(); //Assumably, yield to CombatFollow
 			wait(1);
 		}

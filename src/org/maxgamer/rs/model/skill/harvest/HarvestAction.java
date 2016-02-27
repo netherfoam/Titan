@@ -55,12 +55,7 @@ public class HarvestAction extends Action {
 			}
 		}
 
-		while (true) {
-			if (target.getData() <= 0) {
-				// We are done
-				return;
-			}
-
+		while (target.isVisible(getOwner()) && target.getData() > 0) {
 			getOwner().getUpdateMask().setAnimation(tool.getAnimation(), 3);
 
 			harvestTime--;

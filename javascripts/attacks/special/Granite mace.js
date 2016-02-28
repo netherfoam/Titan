@@ -1,6 +1,5 @@
 importClass(org.maxgamer.rs.model.entity.mob.combat.MeleeAttack);
-importClass(org.maxgamer.rs.model.entity.mob.persona.Persona);
-importClass(org.maxgamer.rs.model.skill.prayer.PrayerGroup);
+importClass(org.maxgamer.rs.model.entity.mob.persona.player.Player);
 importClass(org.maxgamer.rs.model.skill.prayer.PrayerType);
 /**
  * Optional - Generate the damage that should be dealt to the target via the damage object.
@@ -11,8 +10,7 @@ importClass(org.maxgamer.rs.model.skill.prayer.PrayerType);
  * 		   without dealing damage. Not dealing any damage will have the same effect.
  */
 function prepare(attacker, target, damage){
-	damage.add(MeleeAttack.roll(attacker, target, 1.15, 1.0));
-
+	damage.add(MeleeAttack.roll(attacker, target, 1.0, 1.0));
 }
 
 /**
@@ -24,19 +22,9 @@ function prepare(attacker, target, damage){
  * the attacker has no responsibility to continue the action.
  */
 function perform(attacker, target, damage){
-	attacker.animate(12031);
-	attacker.graphics(347);//TODO: Not correct, but close
-	if (target instanceof Persona) {
-		target.say("Boohoohoo...Why...");
-		var prayers = [PrayerType.PROTECT_FROM_MAGIC, PrayerType.PROTECT_FROM_MELEE, PrayerType.PROTECT_FROM_MISSILES];
-		target.getPrayer().setEnabled(false, prayers);
-	} else {
-		target.say("Nope");
-	}
-	//TODO: 5 seconds unable to use prot prayers 
+	attacker.animate(6147);
+	//TODO: Correct graphics
 	damage.apply(attacker);
-
-
 }
 
 /**
@@ -46,11 +34,14 @@ function perform(attacker, target, damage){
  */
 function takeConsumables(attacker){
 	var e = attacker.getAttackEnergy();
-	if (e < 55) {
+	if (e < 50) {
 		attacker.sendMessage("You do not have enough special attack energy.");
 		return false;
 	}
-	attacker.setAttackEnergy(e - 55);
-
+	attacker.setAttackEnergy(e - 50);
 	return true;
+}
+
+function getWarmupTicks(attacker){
+	return 2;
 }

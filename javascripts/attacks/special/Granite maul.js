@@ -40,3 +40,7 @@ function takeConsumables(attacker){
 	attacker.setAttackEnergy(e - 50);
 	return true;
 }
+
+function getWarmupTicks(attacker){
+	return 2;
+}

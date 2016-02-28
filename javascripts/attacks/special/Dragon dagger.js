@@ -17,7 +17,7 @@ importClass(org.maxgamer.rs.model.entity.mob.combat.MeleeAttack);
  */
 function prepare(attacker, target, damage){
 	for(var i = 0; i < 2; i++) {
-		var d = MeleeAttack.roll(attacker, target);
+		var d = MeleeAttack.roll(attacker, target, 1.05, 1.05);
 		d.setHitDelay(i);
 		damage.add(d);
 	}

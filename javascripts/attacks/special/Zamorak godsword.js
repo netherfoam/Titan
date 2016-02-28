@@ -15,7 +15,8 @@ importClass(org.maxgamer.rs.model.entity.mob.combat.MeleeAttack);
  * 		   without dealing damage. Not dealing any damage will have the same effect.
  */
 function prepare(attacker, target, damage){
-	damage.add(MeleeAttack.roll(attacker, target, 2.0, 1.10));
+	var r = Math.floor(Math.random() * (1.75 - 1.0 + 1)) + 1.0;
+	damage.add(MeleeAttack.roll(attacker, target, 2.0, r));
 }
 
 /**

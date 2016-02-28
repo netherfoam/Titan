@@ -11,7 +11,7 @@ importClass(org.maxgamer.rs.model.skill.SkillType);
  * 		   without dealing damage. Not dealing any damage will have the same effect.
  */
 function prepare(attacker, target, damage){
-	damage.add(MeleeAttack.roll(attacker, target, 1.0, 1.0));
+	damage.add(MeleeAttack.roll(attacker, target, 1.1, 1.0));
 }
 
 /**
@@ -23,14 +23,10 @@ function prepare(attacker, target, damage){
  * the attacker has no responsibility to continue the action.
  */
 function perform(attacker, target, damage){
-	attacker.animate(2876);
-	attacker.graphics(479);
+	attacker.animate(2068);
+	attacker.graphics(274);
 	wait(1);
 	damage.apply(attacker);
-    if (target instanceof Player) {
-		target.getSkills().setModifier(SkillType.ATTACK, (int) (target.getSkills().getModifier(SkillType.ATTACK) * .1));
-		target.getSkills().setModifier(SkillType.DEFENCE, (int) (target.getSkills().getModifier(SkillType.DEFENCE) * .1));
-	}//TODO: Not working
 }
 
 /**
@@ -40,10 +36,10 @@ function perform(attacker, target, damage){
  */
 function takeConsumables(attacker){
 	var e = attacker.getAttackEnergy();
-	if (e < 100) {
+	if (e < 25) {
 		attacker.sendMessage("You do not have enough special attack energy.");
 		return false;
 	}
-	attacker.setAttackEnergy(e - 100);
+	attacker.setAttackEnergy(e - 25);
 	return true;
 }

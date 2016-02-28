@@ -9,8 +9,7 @@ importClass(org.maxgamer.rs.model.entity.mob.persona.player.Player);
  * 		   without dealing damage. Not dealing any damage will have the same effect.
  */
 function prepare(attacker, target, damage){
-	var r = Math.floor(Math.random() * (1.50 - 1.0 + 1)) + 1.0;
-	damage.add(MeleeAttack.roll(attacker, target, 1.0, r));
+	damage.add(MeleeAttack.roll(attacker, target, 1.0, 1.0));
 }
 
 /**

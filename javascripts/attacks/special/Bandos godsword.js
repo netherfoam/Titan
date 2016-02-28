@@ -16,7 +16,7 @@ importClass(org.maxgamer.rs.model.entity.mob.combat.MeleeAttack);
  */
 function prepare(attacker, target, damage){
 	var r = Math.floor(Math.random() * (2.0 - 1.0 + 1)) + 1.0;
-	damage.add(MeleeAttack.roll(attacker, target, 2.0, r));
+	damage.add(MeleeAttack.roll(attacker, target, 1.0, r));
 	//TODO: Drain one of cb stats by 10% of damage
 }
 

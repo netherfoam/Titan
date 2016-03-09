@@ -6,7 +6,7 @@ importClass(org.maxgamer.rs.model.entity.mob.combat.MeleeAttack);
 importClass(org.maxgamer.rs.model.skill.SkillType);
 
 function prepare(attacker, target, damage){
-	attacker.animate(1833);
+	attacker.animate(1056);
 	attacker.graphics(246);
 
 	var skills = attacker.getSkills();
@@ -19,6 +19,8 @@ function prepare(attacker, target, damage){
 	
 	var gain = (-loss / 4 + 10) / skills.getLevel(SkillType.STRENGTH) + 1;
 	skills.buff(SkillType.STRENGTH, gain);
+	
+	attacker.say("Raarrrrrgggggghhhhhhh!");
 }
 
 function takeConsumables(attacker){

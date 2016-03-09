@@ -15,7 +15,7 @@ importClass(org.maxgamer.rs.model.entity.mob.combat.MeleeAttack);
  * 		   without dealing damage. Not dealing any damage will have the same effect.
  */
 function prepare(attacker, target, damage){
-	damage.add(MeleeAttack.roll(attacker, target, 2.0, 1.10));
+	damage.add(MeleeAttack.roll(attacker, target, 1.0, 1.0));
 }
 
 /**
@@ -33,8 +33,10 @@ function perform(attacker, target, damage){
 	damage.apply(attacker);
 	
 	var d = damage.getDamage(target);
-	if (d > 10)
+	if (d > 10) {
 		attacker.heal(d / 2);
+		attacker.getSkills().restore(SkillType.PRAYER, d / 40);
+	}
 }
 
 /**

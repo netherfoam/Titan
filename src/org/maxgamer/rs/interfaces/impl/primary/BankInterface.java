@@ -246,6 +246,7 @@ public class BankInterface extends PrimaryInterface {
 		this.getPlayer().getWindow().open(this.side);
 		this.sendTabConfig();
 		
+		this.getPlayer().getBank().shift();
 		for (int i = 0; i < this.getPlayer().getBank().getSize(); i++) {
 			ItemStack item = this.getPlayer().getBank().get(i);
 			if (item == null) {
@@ -259,6 +260,10 @@ public class BankInterface extends PrimaryInterface {
 			public void onSet(Container c, int slot, ItemStack old) {
 				assert (BankInterface.this.isOpen()); //Should always be true if called
 				BankInterface.this.getPlayer().getProtocol().setItem(BANK_CONTAINER_ID, false, c.get(slot), slot);
+				
+				// If this bank doesn't need shifting, this will have no effect.
+				// If it does need shifting, this will be called recursively.
+				getPlayer().getBank().shift();
 			}
 		};
 		

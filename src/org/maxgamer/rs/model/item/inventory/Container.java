@@ -441,6 +441,7 @@ public abstract class Container implements Cloneable, Iterable<ItemStack>, YMLSe
 			this.set(slot++, this.get(i));
 		}
 		
+		// All of the items above 'slot' have now been moved, so set them all to null
 		for (i = slot; i < this.getSize(); i++) {
 			this.set(i, null);
 		}

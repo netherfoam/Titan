@@ -106,10 +106,7 @@ public abstract class Pane extends Window {
 
 		Integer key = Integer.valueOf(iface.getChildId());
 		if (interfaces.get(key) != iface) {
-			// TODO: this won't work with adding
-			// and deleting friends in the clan
-			// interface!
-			throw new IllegalArgumentException("That interface is not opened! " + iface);
+			// Interface has already been replaced
 		} else {
 			interfaces.remove(key);
 		}

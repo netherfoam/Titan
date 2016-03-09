@@ -365,6 +365,7 @@ public class JavaScriptFiber {
 		}
 		catch(TimeoutError e){
 			Log.debug(call + " took too long to complete!");
+			call.terminate();
 		}
 		catch (ContinuationPending pending) {
 			/* Script was paused, it will be resumed later. */

@@ -258,7 +258,7 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 				all.remove(item.setAmount(1));
 				if (all.get(index) == null || all.get(index).getAmount() == 0) index++;
 				keep--;
-				keepContainer.add(item.setAmount(1).setHealth(keep));
+				keepContainer.add(item.setAmount(1));
 			}
 			getInventory().clear();
 			getEquipment().clear();
@@ -898,10 +898,8 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 			throw new RuntimeException("This player has already been destroyed.");
 		}
 		
-		for (Persona p : Core.getServer().getPersonas()) {// TODO: optimise
-															// this, add some
-															// sort of check for
-															// lobbyplayers?
+		// TODO: optimise this, add some sort of check for lobbyplayers?
+		for (Persona p : Core.getServer().getPersonas()) {
 			if (p instanceof Player) {
 				Player other = (Player) p;
 				
@@ -941,20 +939,14 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 	private Attack nextAttack;
 	@Override
 	public Attack nextAttack() {
-		if(nextAttack != null){
+		if(nextAttack != null && !nextAttack.isFinished()){
 			return nextAttack;
 		}
 		
 		if (autocast != null) {
 			// TODO: If the player hasn't got the runes, should autocast be
 			// cancelled?
-			nextAttack = new MagicAttack(this, autocast){
-				@Override
-				public boolean run(Mob target){
-					nextAttack = null;
-					return super.run(target);
-				}
-			};
+			nextAttack = new MagicAttack(this, autocast);
 			return nextAttack;
 		}
 		
@@ -968,8 +960,6 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 				nextAttack = new RangeAttack(this){
 					@Override
 					public boolean run(Mob target){
-						nextAttack = null;
-						
 						if(weapon == getEquipment().get(WieldType.WEAPON)){
 							return super.run(target);
 						}

@@ -106,13 +106,18 @@ public abstract class Module {
 	 * to/resource.png
 	 * 
 	 * @param name the name of the file to write
+	 * @param overwrite true to overwrite an existing file, false if existing files should not be overwritten
 	 * @throws IOException if the file is not found, or an error occurs writing to disk
 	 */
-	public final File saveResource(String name) throws IOException{
+	public final File saveResource(String name, boolean overwrite) throws IOException{
 		InputStream stream = getResource(name);
 		if(stream == null) throw new FileNotFoundException("File " + name + " not found in JAR");
 		
 		File dest = new File(getFolder(), name);
+		
+		// Don't overwrite files if not requested
+		if(dest.exists() && !overwrite) return dest;
+		
 		dest.getParentFile().mkdirs();
 		dest.createNewFile();
 		
@@ -125,6 +130,18 @@ public abstract class Module {
 		out.close();
 		stream.close();
 		return dest;
+	}
+
+	/**
+	 * Saves the given resource from the JAR to the corresponding directory in the plugin's data folder.
+	 * Example, if the resource "path/to/resource.png" is saved, the result is modules/MODULE_NAME/path/
+	 * to/resource.png
+	 * 
+	 * @param name the name of the file to write
+	 * @throws IOException if the file is not found, or an error occurs writing to disk
+	 */
+	public final File saveResource(String name) throws IOException{
+		return saveResource(name, true);
 	}
 	
 	/**

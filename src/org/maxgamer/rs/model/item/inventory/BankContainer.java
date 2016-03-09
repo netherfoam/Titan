@@ -27,11 +27,6 @@ public class BankContainer extends Container {
 	}
 	
 	@Override
-	public void shift(){
-		super.shift();
-	}
-	
-	@Override
 	public int getSize() {
 		return items.length;
 	}

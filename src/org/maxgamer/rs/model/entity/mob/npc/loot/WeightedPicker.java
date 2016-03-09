@@ -30,8 +30,9 @@ public class WeightedPicker<T extends Weighted> {
 	@SafeVarargs
 	public WeightedPicker(T... options) {
 		this();
-		for (T w : options)
+		for (T w : options) {
 			this.add(w);
+		}
 	}
 
 	/**
@@ -43,8 +44,9 @@ public class WeightedPicker<T extends Weighted> {
 	 */
 	public WeightedPicker(Collection<T> options) {
 		this();
-		for (T w : options)
+		for (T w : options){
 			this.add(w);
+		}
 	}
 
 	/**

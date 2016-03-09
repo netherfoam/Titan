@@ -45,7 +45,7 @@ public class ItemsOnDeathInterface extends PrimaryInterface {
 			if (all.get(index) == null || all.get(index).getAmount() == 0)
 				index++;
 			keep--;
-			keepContainer.add(item.setAmount(1).setHealth(keep));
+			keepContainer.add(item.setAmount(1));
 		}
 
 		int skull = player.getModel().isSkulled() ? 1 : 0;

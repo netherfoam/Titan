@@ -232,12 +232,12 @@ public abstract class WorldMap implements MBR {
 	
 	public void load(MBR m) throws IOException {
 		StopWatch w = Core.getTimings().start("worldmap-load");
-		for (int i = 0; i < m.getDimension(0); i++) {
-			for (int j = 0; j < m.getDimension(1); j++) {
-				int x = (i + m.getMin(0)) >> 8;
-				int y = (j + m.getMin(1)) >> 8;
+		for (int i = 0; i < (m.getDimension(0) + 7) / 8; i++) {
+			for (int j = 0; j < (m.getDimension(1) + 7) / 8; j++) {
+				int x = i + (m.getMin(0) + 7) / 8;
+				int y = j + (m.getMin(1) + 7) / 8;
 					
-				check(i, j);
+				check(x, y);
 				
 				for (int z = 0; z < 4; z++) {
 					try {

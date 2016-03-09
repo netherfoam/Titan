@@ -29,6 +29,11 @@ public class CombatStyles extends SideInterface {
 	}
 	
 	public JavaScriptAttack attack(){
+		if(attack != null){
+			if(attack.isFinished()){
+				attack = null;
+			}
+		}
 		return attack;
 	}
 	
@@ -36,7 +41,7 @@ public class CombatStyles extends SideInterface {
 	public void onClick(int option, int buttonId, int slotId, int itemId) {
 		switch (buttonId) {
 			case 4:
-				if(this.attack != null){
+				if(this.attack != null && !this.attack.isFinished()){
 					this.attack = null;
 					getPlayer().getProtocol().sendConfig(SPECIAL_TOGGLE_CONFIG, 0);
 					return;
@@ -73,7 +78,6 @@ public class CombatStyles extends SideInterface {
 					this.attack = new JavaScriptAttack(getPlayer(), -1, -1, file, type){
 						@Override
 						public boolean run(Mob target){
-							if(attack == this) attack = null;
 							getPlayer().getProtocol().sendConfig(SPECIAL_TOGGLE_CONFIG, 0);
 							return super.run(target);
 						}

@@ -9,6 +9,7 @@ import org.maxgamer.rs.model.entity.mob.Graphics;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;
 import org.maxgamer.rs.model.events.mob.MobAttackEvent;
+import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.skill.SkillType;
 
 /**
@@ -23,6 +24,9 @@ public abstract class Attack {
 	protected Graphics graphics;
 	protected AttackStyle style;
 	
+	private boolean finished = false;
+	private ItemStack weapon;
+	
 	public Attack(Mob attacker, int emote, int graphics) {
 		this(attacker, new Animation(emote), new Graphics(graphics));
 	}
@@ -35,6 +39,7 @@ public abstract class Attack {
 		this.emote = emote;
 		this.graphics = graphics;
 		this.style = attacker.getAttackStyle();
+		this.weapon = attacker.getEquipment().getWeapon();
 	}
 	
 	/**
@@ -50,9 +55,22 @@ public abstract class Attack {
 	 * @return true if successful, false if not
 	 */
 	public boolean run(Mob target) {
+		if(this.isFinished()){
+			throw new IllegalStateException(this + " has already finished. It cannot be run again.");
+		}
+		
 		AttackResult damage = new AttackResult();
 		
 		try {
+			if(attacker.getEquipment().getWeapon() != this.weapon){
+				// TODO: Possible issue with health's implementation here, as matches() is health sensitive
+				// So this may return a false positive 
+				if(this.weapon == null || this.weapon.matches(attacker.getEquipment().getWeapon()) == false){
+					// We've changed weapons at some point
+					return false;
+				}
+			}
+			
 			if (this.prepare(target, damage) == false) {
 				return false; //Can't prepare, no attack.
 			}
@@ -84,21 +102,26 @@ public abstract class Attack {
 			}
 		}
 		
-		if(damage.getDamages().isEmpty() == false){
-			if (emote != null && emote.getId() >= 0) {
-				attacker.getUpdateMask().setAnimation(emote, 20);
+		try{
+			if(damage.getDamages().isEmpty() == false){
+				if (emote != null && emote.getId() >= 0) {
+					attacker.getUpdateMask().setAnimation(emote, 20);
+				}
+				
+				if (graphics != null && graphics.getId() >= 0) {
+					attacker.getUpdateMask().setGraphics(graphics);
+				}
+				
+				this.perform(target, damage);
+				return true;
 			}
-			
-			if (graphics != null && graphics.getId() >= 0) {
-				attacker.getUpdateMask().setGraphics(graphics);
+			else{
+				/* No hits were dealt */
+				return false;
 			}
-			
-			this.perform(target, damage);
-			return true;
 		}
-		else{
-			/* No hits were dealt */
-			return false;
+		finally{
+			this.finished = true;
 		}
 	}
 	
@@ -129,6 +152,14 @@ public abstract class Attack {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Returns true if this attack has been performed.
+	 * @return true if this attack has been performed.
+	 */
+	public boolean isFinished(){
+		return this.finished;
 	}
 	
 	/**

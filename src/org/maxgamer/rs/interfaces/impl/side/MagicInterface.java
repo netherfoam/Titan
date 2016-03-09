@@ -99,13 +99,7 @@ public class MagicInterface extends SideInterface {
 		}
 		
 		TargetSpell t = (TargetSpell) s;
-		this.nextAttack = new MagicAttack(getPlayer(), t){
-			@Override
-			public boolean run(Mob target){
-				if(nextAttack == this) nextAttack = null;
-				return super.run(target);
-			}
-		};
+		this.nextAttack = new MagicAttack(getPlayer(), t);
 		getPlayer().setTarget(target);
 	}
 	
@@ -139,6 +133,11 @@ public class MagicInterface extends SideInterface {
 	}
 	
 	public MagicAttack attack(){
+		if(this.nextAttack != null){
+			if(this.nextAttack.isFinished()){
+				this.nextAttack = null;
+			}
+		}
 		return this.nextAttack;
 	}
 }

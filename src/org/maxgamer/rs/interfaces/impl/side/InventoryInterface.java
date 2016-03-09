@@ -42,15 +42,8 @@ public class InventoryInterface extends SideInterface {
 
 	public InventoryInterface(Player p) {
 		// 206 (fixed) or 91 (full)
-		super(p, (short) (p.getSession().getScreenSettings().getDisplayMode() < 2 ? 206 : 91)); // Container
-																								// ID
-																								// is
-																								// 93,
-																								// but
-																								// Interface
-																								// ID
-																								// is
-																								// 149
+		// Container ID is 93, but Interface ID is 149
+		super(p, (short) (p.getSession().getScreenSettings().getDisplayMode() < 2 ? 206 : 91)); 
 		setChildId(INTERFACE_ID);
 	}
 
@@ -67,9 +60,8 @@ public class InventoryInterface extends SideInterface {
 		for (int i = 0; i < this.getPlayer().getInventory().getSize(); i++) {
 			ItemStack item = getPlayer().getInventory().get(i);
 			if (item == null)
-				continue; // We only show items we have. TOOD: This could be
-							// optimized by sending an array of slots and items
-							// at once
+				// We only show items we have. TODO: This could be optimized by sending an array of slots and items at once
+				continue; 
 			getPlayer().getProtocol().setItem(CONTAINER_ID, false, item, i);
 		}
 
@@ -151,7 +143,7 @@ public class InventoryInterface extends SideInterface {
 
 		if (option == item.getInventoryOptions().length) {
 			// Examine
-			player.sendMessage(item.getId() + ": " + item.getExamine());
+			player.sendMessage(item.getId() + (item.getHealth() != 0 ? "(Health:" + item.getHealth() + ")" : "") + ": " + item.getExamine());
 			return;
 		}
 

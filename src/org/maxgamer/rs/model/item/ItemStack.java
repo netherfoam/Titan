@@ -163,7 +163,7 @@ public class ItemStack implements Comparable<ItemStack>, YMLSerializable, Intera
 	
 	@Override
 	public String toString() {
-		return getDefinition().getName() + "(" + getId() + ") x" + getAmount() + " health=" + health;
+		return getDefinition().getName() + "(" + getId() + ") x" + getAmount() + (health == 0 ? "" : " health=" + health);
 	}
 	
 	@Override

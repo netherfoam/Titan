@@ -93,12 +93,6 @@ public final class FriendsList implements YMLSerializable {
 		//This we don't need to search our online players.
 		RemoteWorld remote = null;
 		for (RemoteWorld server : Core.getServer().getLogon().getAPI().getWorlds()) {
-			/*
-			 * if (server.contains(name)) { remote = server; RemoteClient c =
-			 * server.get(name); if (c != null) { name = c.getName(); //Correct
-			 * case } break; }
-			 */
-			
 			if (server.isOnline(name)) {
 				remote = server;
 				break;
@@ -244,7 +238,7 @@ public final class FriendsList implements YMLSerializable {
 		if (friends != null) {
 			for (String s : friends.getKeys()) {
 				String name = friends.getString(s);
-				addFriend(name);
+				if(isFriend(name) == false) addFriend(name);
 			}
 		}
 		

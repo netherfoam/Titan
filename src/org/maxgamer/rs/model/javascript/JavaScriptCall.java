@@ -48,4 +48,9 @@ public class JavaScriptCall{
 	public void terminate(){
 		setState(null);
 	}
+	
+	@Override
+	public String toString(){
+		return getFunction() + "(..)";
+	}
 }

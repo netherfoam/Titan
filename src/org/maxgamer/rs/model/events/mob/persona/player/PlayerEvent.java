@@ -15,4 +15,12 @@ public class PlayerEvent extends PersonaEvent {
 	public Player getMob() {
 		return (Player) super.getMob();
 	}
+	
+	/**
+	 * An alias for getMob()
+	 * @return
+	 */
+	public Player getPlayer(){
+		return getMob();
+	}
 }

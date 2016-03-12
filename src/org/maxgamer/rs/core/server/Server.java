@@ -675,6 +675,9 @@ public class Server {
 		Core.submit(new Runnable() {
 			@Override
 			public void run() {
+				ServerSaveEvent e = new ServerSaveEvent();
+				e.call();
+				
 				if (Core.getServer().getClients().isEmpty() == false) {
 					Core.getServer().getLogon().getAPI().save(Core.getServer().getClients());
 				}

@@ -347,17 +347,15 @@ public class ItemProto extends Definition {
 	 */
 	public AttackStyle getAttackStyle(int slot) {
 		if ((slot < 1 || slot > 4) && slot != -1) {
-			throw new IllegalArgumentException(
-					"Slot must be between 1 and 4 inclusive.");
+			throw new IllegalArgumentException("Slot must be between 1 and 4 inclusive.");
 		}
 		if (clientScriptData == null) {
-			return new AttackStyle(1, "Punch", Bonus.ATK_CRUSH,
-					SkillType.ATTACK);
+			return new AttackStyle(1, "Punch", Bonus.ATK_CRUSH, SkillType.ATTACK);
 		}
 		Object o = clientScriptData.get(686);
-		if (o == null)
-			return new AttackStyle(1, "Punch", Bonus.ATK_CRUSH,
-					SkillType.ATTACK);
+		if (o == null) {
+			return new AttackStyle(1, "Punch", Bonus.ATK_CRUSH, SkillType.ATTACK);
+		}
 		Integer v = (Integer) o; // 686 is the ID of the Combat Styles data
 		return AttackStyle.getStyle(v.intValue(), slot);
 	}

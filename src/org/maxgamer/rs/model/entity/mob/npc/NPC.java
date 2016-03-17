@@ -7,7 +7,7 @@ import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.core.server.WorldFullException;
 import org.maxgamer.rs.model.action.WanderAction;
 import org.maxgamer.rs.model.entity.Interactable;
-import org.maxgamer.rs.model.entity.mob.Bonus;
+import org.maxgamer.rs.model.entity.mob.Bonuses;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.MobModel;
 import org.maxgamer.rs.model.entity.mob.MovementUpdate;
@@ -389,23 +389,23 @@ public class NPC extends Mob implements Interactable {
 	@Override
 	public AttackStyle getAttackStyle() {
 		if (getDefinition().isMagic()) {
-			return new AttackStyle(1, "Magic", Bonus.ATK_MAGIC);
+			return new AttackStyle(1, "Magic", Bonuses.ATK_MAGIC);
 		}
 		if (getDefinition().isRange()) {
-			return new AttackStyle(1, "Accurate", Bonus.ATK_RANGE);
+			return new AttackStyle(1, "Accurate", Bonuses.ATK_RANGE);
 		}
 		
 		// Find our best bonus type and use it
-		int[] options = new int[] { Bonus.ATK_STAB, Bonus.ATK_SLASH, Bonus.ATK_CRUSH };
+		int[] options = new int[] { Bonuses.ATK_STAB, Bonuses.ATK_SLASH, Bonuses.ATK_CRUSH };
 		String[] names = new String[] { "Stab", "Slash", "Crush" };
 		
-		int max = getDefinition().getBonus(options[0]);
+		int max = getDefinition().getBonuses().getBonus(options[0]);
 		int bestStyle = 0;
 		
 		for (int i = 1; i < options.length; i++) {
-			if (getDefinition().getBonus(options[i]) > max) {
+			if (getDefinition().getBonuses().getBonus(options[i]) > max) {
 				bestStyle = i;
-				max = getDefinition().getBonus(options[i]);
+				max = getDefinition().getBonuses().getBonus(options[i]);
 			}
 		}
 		return new AttackStyle(bestStyle + 1, names[bestStyle], bestStyle);

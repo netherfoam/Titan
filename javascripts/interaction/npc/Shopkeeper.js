@@ -4,7 +4,7 @@ function talkTo(player, npc){
 	var opt = option(["Yes, please. What are you selling?", "How should I use your shop?", "What happened to your building?", "No, thanks."]);
 	if (opt == 0) {
 		chat(player, "Yes, please. What are you selling?");
-		//TODO: Open correct shop.
+		trade(player, npc);
 	} else if (opt == 1) {
 		chat(player, "How should I use your shop?");
 		chat(npc, "I'm glad you ask! The shop has two sections to it: 'Main stock' and 'Free sample items'.");
@@ -23,11 +23,15 @@ function talkTo(player, npc){
 		var opt = option(["Yes, please.", "No, thanks."]);
 		if (opt == 0) {
 			chat(player, "Yes, please.");
-			//TODO: Open correct shop.
+			trade(player, npc);
 		} else if (opt == 1) {
 			chat(player, "No, thanks.");
 		}
 	} else if (opt == 3) {
 		chat(player, "No, thanks.");
 	}
+}
+
+function trade(player, npc){
+	vendor("General Store");
 }

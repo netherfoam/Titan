@@ -19,16 +19,10 @@ public class ServerThreadTask implements Future<Void>, Runnable {
 	private Runnable r;
 	private int state = STATE_WAIT;
 	private Object lock = new Object();
-	private boolean async;
 	
-	public ServerThreadTask(Runnable r, boolean async) {
+	public ServerThreadTask(Runnable r) {
 		if (r == null) throw new NullPointerException("Runnable may not be null for a ServerThreadTask!");
 		this.r = r;
-		this.async = async;
-	}
-	
-	public boolean isASync() {
-		return async;
 	}
 	
 	public void run() {

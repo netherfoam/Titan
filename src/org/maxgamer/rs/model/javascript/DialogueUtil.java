@@ -1,15 +1,18 @@
 package org.maxgamer.rs.model.javascript;
 
+import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.interfaces.impl.chat.IntRequestInterface;
 import org.maxgamer.rs.interfaces.impl.chat.ItemPickerDialogue;
 import org.maxgamer.rs.interfaces.impl.chat.StringRequestInterface;
 import org.maxgamer.rs.interfaces.impl.dialogue.ForkDialogue;
 import org.maxgamer.rs.interfaces.impl.dialogue.SpeechDialogue;
 import org.maxgamer.rs.interfaces.impl.dialogue.ThoughtDialogue;
+import org.maxgamer.rs.interfaces.impl.primary.VendorInterface;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.npc.NPC;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.item.ItemStack;
+import org.maxgamer.rs.model.item.vendor.VendorContainer;
 
 public class DialogueUtil {
 	public static void chat(final JavaScriptFiber fiber, Player recipient, Mob speaker, String message, int emote) {
@@ -115,6 +118,37 @@ public class DialogueUtil {
 		};
 		recipient.getWindow().open(req);
 		fiber.pause();
+	}
+	
+	public static void openVendor(final JavaScriptFiber fiber, Player recipient, VendorContainer container) {
+		final JavaScriptCall call = fiber.context().getCall();
+		
+		recipient.getWindow().open(new VendorInterface(recipient, container){
+			@Override
+			public void onClose(){
+				super.onClose();
+				fiber.unpause(call, null);
+			}
+		});
+		fiber.pause();
+	}
+	
+	public static void openVendor(final JavaScriptFiber fiber, Player recipient, String shop) {
+		VendorContainer container = Core.getServer().getVendors().get(shop);
+		if(container == null){
+			throw new IllegalArgumentException("No such shop exists with name '" + shop + "'");
+		}
+		
+		openVendor(fiber, recipient, container);
+	}
+	
+	public static void openVendor(final JavaScriptFiber fiber, Player recipient, int shop) {
+		VendorContainer container = Core.getServer().getVendors().get(shop);
+		if(container == null){
+			throw new IllegalArgumentException("No such shop exists with ID " + shop + "");
+		}
+		
+		openVendor(fiber, recipient, container);
 	}
 	
 	private DialogueUtil() {

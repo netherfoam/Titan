@@ -64,6 +64,27 @@ public class BankInterface extends PrimaryInterface {
 			this.noted = !this.noted;
 		}
 		
+		if(buttonId == 33){
+			// Deposit inventory
+			for(ItemStack item : this.getPlayer().getInventory()){
+				if(item == null) continue;
+				ContainerState inv = this.getPlayer().getInventory().getState();
+				ContainerState bank = this.getPlayer().getBank().getState();
+				try{
+					inv.remove(item);
+					bank.add(item);
+					
+					inv.apply();
+					bank.apply();
+				}
+				catch(ContainerException e){
+					// No space
+					continue;
+				}
+			}
+			return;
+		}
+		
 		if (buttonId == 93) {
 			ItemStack item = this.getPlayer().getBank().get(slotId);
 			if (item == null) {

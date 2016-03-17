@@ -6,12 +6,18 @@ import org.maxgamer.rs.interfaces.SettingsBuilder;
 import org.maxgamer.rs.interfaces.SideInterface;
 import org.maxgamer.rs.interfaces.Window;
 import org.maxgamer.rs.lib.log.Log;
+import org.maxgamer.rs.model.action.WalkAction;
+import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.events.mob.persona.player.PlayerItemOnItemEvent;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.item.inventory.Container;
 import org.maxgamer.rs.model.item.inventory.ContainerListener;
 import org.maxgamer.rs.model.item.inventory.Inventory;
+import org.maxgamer.rs.model.map.path.AStar;
+import org.maxgamer.rs.model.map.path.Path;
+
+import co.paralleluniverse.fibers.SuspendExecution;
 
 /**
  * @author netherfoam
@@ -23,15 +29,11 @@ public class InventoryInterface extends SideInterface {
 
 	static {
 		INTERFACE_CONFIG = new SettingsBuilder();
-		INTERFACE_CONFIG.setSecondaryOption(0, true); // These correspond to the
-														// opcode we get
+		INTERFACE_CONFIG.setSecondaryOption(0, true); // These correspond to the opcode we get
 		INTERFACE_CONFIG.setSecondaryOption(1, true);
 		INTERFACE_CONFIG.setSecondaryOption(2, true);
 		INTERFACE_CONFIG.setSecondaryOption(6, true);
-		INTERFACE_CONFIG.setSecondaryOption(7, true); // Eg, clicking the 7th
-														// option will result in
-														// the option 7 opcode
-														// being sent
+		INTERFACE_CONFIG.setSecondaryOption(7, true); // Eg, clicking the 7th option will result in the option 7 opcode being sent
 		INTERFACE_CONFIG.setSecondaryOption(9, true);
 		INTERFACE_CONFIG.setUseOnSettings(true, true, true, true, false, true);
 		INTERFACE_CONFIG.setInterfaceDepth(1);
@@ -144,11 +146,12 @@ public class InventoryInterface extends SideInterface {
 		if (option == item.getInventoryOptions().length) {
 			// Examine
 			player.sendMessage(item.getId() + (item.getHealth() != 0 ? "(Health:" + item.getHealth() + ")" : "") + ": " + item.getExamine());
+			player.sendMessage("Noted: " + item.isNoted());
 			return;
 		}
 
 		if (option > item.getInventoryOptions().length) {
-			Log.debug("Bad option: " + option + ", available are " + Arrays.toString(item.getInventoryOptions()));
+			Log.warning("Bad option: " + option + ", available are " + Arrays.toString(item.getInventoryOptions()));
 			return;
 		}
 
@@ -160,10 +163,46 @@ public class InventoryInterface extends SideInterface {
 
 		player.use(item, slot, s);
 	}
+	
+	public void onClick(final Mob target, int buttonId, int slotId, int itemId, boolean run) {
+		final ItemStack item = this.getPlayer().getInventory().get(slotId);
+		if(item == null){
+			getPlayer().getCheats().log(5, "Player attempted to use a null item on " + target);
+			return;
+		}
+		if(item.getId() != itemId){
+			getPlayer().getCheats().log(5, "Player attempted to use itemId " + itemId + ", but slot " + slotId + " is " + item.getId());
+			return;
+		}
+		
+		AStar finder = new AStar(5);
+		Path path = finder.findPath(getPlayer(), target);
+		if(path.hasFailed() == false){
+			if(path.isEmpty() == false){
+				path.removeLast();
+			}
+			
+			if(path.isEmpty() == false){
+				WalkAction walk = new WalkAction(getPlayer(), path){
+					@Override
+					public void run() throws SuspendExecution{
+						super.run();
+						getPlayer().use(item, target);
+					}
+				};
+				getPlayer().getActions().queue(walk);
+			}
+			else{
+				getPlayer().use(item, target);
+			}
+		}
+		else{
+			getPlayer().sendMessage("I can't reach that!");
+		}
+	}
 
 	@Override
 	public void onUse(Window to, int fromButtonId, int fromItemId, int fromSlot, int toButtonId, int toItemId, int toSlot) {
-
 		PlayerItemOnItemEvent event = new PlayerItemOnItemEvent(player, fromButtonId, fromItemId, fromSlot, toButtonId, toItemId, toSlot);
 		event.call();
 	}

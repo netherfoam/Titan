@@ -175,7 +175,10 @@ public class ServerThread implements Executor {
 	}
 	
 	public Future<Void> submit(Runnable r) {
-		ServerThreadTask t = new ServerThreadTask(r, false);
+		if(r instanceof ServerTicker){
+			Log.debug("submitted serverticker");
+		}
+		ServerThreadTask t = new ServerThreadTask(r);
 		synchronized (this.queue) {
 			this.queue.add(r);
 			this.queue.notify();

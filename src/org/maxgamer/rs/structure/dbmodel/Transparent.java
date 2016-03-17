@@ -35,6 +35,12 @@ public class Transparent{
 	 */
 	private final Object[] identifiers; //The current values in the DB for the keys.
 	
+	public Transparent(){
+		this.TABLE = null;
+		this.keys = null;
+		this.identifiers = null;
+	}
+	
 	/**
 	 * Constructs a new Transparent object
 	 * @param table the name of the table the object belongs to
@@ -61,6 +67,9 @@ public class Transparent{
 	 * @throws SQLException
 	 */
 	public void insert(Connection con) throws SQLException{
+		if(TABLE == null){
+			throw new IllegalStateException("This Transparent object wasn't initialised with a table!");
+		}
 		try{
 			HashSet<Field> fields = this.getFields();
 			
@@ -135,6 +144,10 @@ public class Transparent{
 	 * @throws SQLException
 	 */
 	public void update(Connection con) throws SQLException{
+		if(TABLE == null){
+			throw new IllegalStateException("This Transparent object wasn't initialised with a table!");
+		}
+		
 		try{
 			HashSet<Field> fields = this.getFields();
 			StringBuilder sb = new StringBuilder("UPDATE " + TABLE + " SET ");
@@ -230,6 +243,10 @@ public class Transparent{
 	 * @throws SQLException
 	 */
 	public void delete(Connection con) throws SQLException{
+		if(TABLE == null){
+			throw new IllegalStateException("This Transparent object wasn't initialised with a table!");
+		}
+		
 		StringBuilder sb = new StringBuilder("DELETE FROM " + TABLE + " WHERE ");
 		int i = 0;
 		
@@ -267,10 +284,12 @@ public class Transparent{
 				f.set(this, o);
 				
 				//Now we must update our identifiers
-				for(int i = 0; i < this.keys.length; i++){
-					String key = this.keys[i];
-					if(key.equals(f.getName())){
-						this.identifiers[i] = o;
+				if(keys != null){
+					for(int i = 0; i < this.keys.length; i++){
+						String key = this.keys[i];
+						if(key.equals(f.getName())){
+							this.identifiers[i] = o;
+						}
 					}
 				}
 			}

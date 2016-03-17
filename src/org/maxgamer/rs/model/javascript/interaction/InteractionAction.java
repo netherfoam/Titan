@@ -2,6 +2,7 @@ package org.maxgamer.rs.model.javascript.interaction;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.action.Action;
@@ -18,12 +19,23 @@ public class InteractionAction extends Action{
 	private Interactable target;
 	private File file;
 	private JavaScriptCall call;
+	private Object[] args;
 	
-	public InteractionAction(Mob mob, Interactable target, File jsFile, String function) {
+	@Override
+	public String toString(){
+		return "InteractionAction [function=" + function + ",target=" + target + ",file=" + file + ",call=" + call + ",args=" + Arrays.toString(args);
+	}
+	
+	public InteractionAction(Mob mob, Interactable target, File jsFile, String function, Object[] args) {
 		super(mob);
 		this.target = target;
 		this.function = function;
 		this.file = jsFile;
+		this.args = args;
+	}
+	
+	public InteractionAction(Mob mob, Interactable target, File jsFile, String function){
+		this(mob, target, jsFile, function, new Object[]{mob, target});
 	}
 
 	@Override
@@ -53,7 +65,7 @@ public class InteractionAction extends Action{
 		}
 		
 		try {
-			call = fiber.invoke(function, getOwner(), target);
+			call = fiber.invoke(function, args);
 		}
 		catch (NoSuchMethodException e) {
 			Log.debug("File " + file + " exists, but the function " + function + "() does not.");

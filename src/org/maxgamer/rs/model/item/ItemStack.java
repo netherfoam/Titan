@@ -4,7 +4,7 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 
 import org.maxgamer.rs.model.entity.Interactable;
-import org.maxgamer.rs.model.item.weapon.Weapon;
+import org.maxgamer.rs.model.item.weapon.Equipment;
 import org.maxgamer.rs.structure.YMLSerializable;
 import org.maxgamer.rs.structure.configs.ConfigSection;
 
@@ -93,8 +93,8 @@ public class ItemStack implements Comparable<ItemStack>, YMLSerializable, Intera
 		return ItemStack.create(id, 1);
 	}
 	
-	public ItemProto getDefinition() {
-		ItemProto proto = ItemProto.getDefinition(id);
+	public ItemDefinition getDefinition() {
+		ItemDefinition proto = ItemDefinition.getDefinition(id);
 		
 		return proto;
 	}
@@ -107,7 +107,7 @@ public class ItemStack implements Comparable<ItemStack>, YMLSerializable, Intera
 		return ItemStack.create(getDefinition().toCharges(charges).getId(), getAmount(), getHealth());
 	}
 	
-	public Weapon getWeapon() {
+	public Equipment getWeapon() {
 		return getDefinition().getWeapon();
 	}
 	

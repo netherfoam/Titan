@@ -12,7 +12,7 @@ import org.maxgamer.rs.cache.IDX;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.definition.Definition;
 import org.maxgamer.rs.lib.BufferUtils;
-import org.maxgamer.rs.structure.dbmodel.FixedArraySerializer;
+import org.maxgamer.rs.model.entity.mob.Bonuses;
 import org.maxgamer.rs.structure.dbmodel.Mapping;
 
 /**
@@ -46,7 +46,7 @@ public class NPCDefinition extends Definition {
 		d = NPCDefinition.decode(id, bb);
 		definitions.put(id, d);
 		
-		PreparedStatement ps = Core.getWorldDatabase().getConnection().prepareStatement("SELECT * FROM npc_definitions WHERE id = ?");
+		PreparedStatement ps = Core.getWorldDatabase().getConnection().prepareStatement("SELECT * FROM NPC WHERE id = ?");
 		ps.setInt(1, id);
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()) d.reload(rs);
@@ -728,7 +728,7 @@ public class NPCDefinition extends Definition {
 	//Serverside values
 	
 	protected NPCDefinition(int id) {
-		super("npc_definitions", "id", id);
+		super("NPC", "id", id);
 		this.id = id;
 		/*
 		 * aBoolean3172 = true; aBoolean3169 = true; aBoolean3196 = false;
@@ -747,82 +747,86 @@ public class NPCDefinition extends Definition {
 	//Values stored in the database. These are not always guaranteed
 	//to be correct or sane since they are not official data.
 	@Mapping
-	private int groupId;
-	@Mapping(serializer=FixedArraySerializer.class)
-	private int[] bonus;
+	private int group_id;
+	private Bonuses bonuses;
 	@Mapping
-	private boolean poisonImmune;
+	private boolean poison_immune;
 	@Mapping
-	private boolean isMagic;
+	private boolean is_magic;
 	@Mapping
-	private boolean isRange;
+	private boolean is_range;
 	@Mapping
-	private boolean isMelee;
+	private boolean is_melee;
 	@Mapping
-	private boolean isAggressive;
+	private boolean aggressive;
 	@Mapping
 	private boolean walk;
 	@Mapping
-	private int projectileId;
+	private int projectile;
 	@Mapping
-	private int endGraphics;
+	private int end_graphics;
 	@Mapping
-	private int startGraphics;
+	private int start_graphics;
 	@Mapping
-	private int attackAnimation;
+	private int attack_animation;
 	@Mapping
-	private int defenceAnimation;
+	private int defence_animation;
 	@Mapping
-	private int deathAnimation;
+	private int death_animation;
 	@Mapping
-	private int respawnDelay;
+	private int respawn_delay;
 	@Mapping
-	private int maxHealth;
+	private int health;
 	
 	@Mapping
-	private int attackLevel;
+	private int attack;
 	@Mapping
-	private int strengthLevel;
+	private int strength;
 	@Mapping
-	private int defenceLevel;
+	private int defence;
 	@Mapping
-	private int rangeLevel;
+	private int range;
 	@Mapping
-	private int magicLevel;
+	private int magic;
 	@Mapping
-	private int attackDelay;
+	private int attack_delay;
 	
 	@Mapping
 	private String examine;
 	
-	
-	
-	public int getGroupId() {
-		return groupId;
+	@Override
+	public void reload(ResultSet rs) throws SQLException {
+		super.reload(rs);
+		this.bonuses = new Bonuses();
+		this.bonuses.reload(rs);
 	}
 	
-	public int getBonus(int type) {
-		return bonus[type];
+	public int getGroupId() {
+		return group_id;
+	}
+	
+	public Bonuses getBonuses(){
+		return bonuses;
 	}
 	
 	public boolean isPoisonable() {
-		return !poisonImmune;
+		return !poison_immune;
 	}
 	
 	public boolean isMagic() {
-		return isMagic;
+		return is_magic;
 	}
 	
 	public boolean isRange() {
-		return isRange;
+		return is_range;
 	}
 	
 	public boolean isMelee() {
-		return isMelee;
+		return is_melee;
 	}
 	
 	public boolean isAggressive() {
-		return isAggressive;
+		return aggressive;
 	}
 	
 	public boolean canWalk() {
@@ -830,55 +834,55 @@ public class NPCDefinition extends Definition {
 	}
 	
 	public int getProjectileId() {
-		return projectileId;
+		return projectile;
 	}
 	
 	public int getEndGraphics() {
-		return endGraphics;
+		return end_graphics;
 	}
 	
 	public int getStartGraphics() {
-		return startGraphics;
+		return start_graphics;
 	}
 	
 	public int getAttackAnimation() {
-		return attackAnimation;
+		return attack_animation;
 	}
 	
 	public int getDefenceAnimation() {
-		return defenceAnimation;
+		return defence_animation;
 	}
 	
 	public int getDeathAnimation() {
-		return deathAnimation;
+		return death_animation;
 	}
 	
 	public int getRespawnDelayTicks() {
-		return respawnDelay;
+		return respawn_delay;
 	}
 	
 	public int getMaxHealth() {
-		return maxHealth;
+		return health;
 	}
 	
 	public int getRangeLevel() {
-		return rangeLevel;
+		return range;
 	}
 	
 	public int getMagicLevel() {
-		return this.magicLevel;
+		return magic;
 	}
 	
 	public int getDefenceLevel() {
-		return this.defenceLevel;
+		return defence;
 	}
 	
 	public int getStrengthLevel() {
-		return this.strengthLevel;
+		return strength;
 	}
 	
 	public int getAttackLevel() {
-		return this.attackLevel;
+		return attack;
 	}
 	
 	public String getExamine() {
@@ -965,6 +969,6 @@ public class NPCDefinition extends Definition {
 	}
 	
 	public int getAttackDelay() {
-		return this.attackDelay;
+		return this.attack_delay;
 	}
 }

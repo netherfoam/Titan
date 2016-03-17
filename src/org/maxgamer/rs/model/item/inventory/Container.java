@@ -7,7 +7,7 @@ import java.util.LinkedList;
 
 import org.maxgamer.rs.lib.IntList;
 import org.maxgamer.rs.lib.log.Log;
-import org.maxgamer.rs.model.item.ItemProto;
+import org.maxgamer.rs.model.item.ItemDefinition;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.structure.YMLSerializable;
 import org.maxgamer.rs.structure.configs.ConfigSection;
@@ -780,7 +780,7 @@ public abstract class Container implements Cloneable, Iterable<ItemStack>, YMLSe
 		if (id < 0) {
 			throw new IllegalArgumentException("May not search a container for a null item.");
 		}
-		long maxSize = ItemProto.getDefinition(id).getMaxStack();
+		long maxSize = ItemDefinition.getDefinition(id).getMaxStack();
 		
 		int numStacks = (int) (amt / maxSize);
 		if (amt % maxSize > 0) numStacks++; // Leftovers stack.

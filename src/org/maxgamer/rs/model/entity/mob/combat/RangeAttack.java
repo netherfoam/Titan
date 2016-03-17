@@ -17,6 +17,8 @@ import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.item.WieldType;
 import org.maxgamer.rs.model.item.inventory.Container;
 import org.maxgamer.rs.model.item.inventory.ContainerException;
+import org.maxgamer.rs.structure.dbmodel.Mapping;
+import org.maxgamer.rs.structure.dbmodel.Transparent;
 
 /**
  * @author netherfoam
@@ -28,16 +30,16 @@ public class RangeAttack extends Attack {
 		private RangeWeapon() {
 		} //Private constructor 
 		
-		private HashMap<RangeAmmo, Integer> ammos = new HashMap<RangeAmmo, Integer>(4);
+		private HashMap<Ammo, Integer> ammos = new HashMap<Ammo, Integer>(4);
 		
-		public HashMap<RangeAmmo, Integer> getAmmo() {
-			return new HashMap<RangeAmmo, Integer>(ammos);
+		public HashMap<Ammo, Integer> getAmmo() {
+			return new HashMap<Ammo, Integer>(ammos);
 		}
 		
 		public boolean isAmmo(ItemStack item) {
 			if (item == null) throw new NullPointerException("Item may not be null");
-			for (RangeAmmo a : ammos.keySet()) {
-				if (a.itemId == item.getId()) {
+			for (Ammo a : ammos.keySet()) {
+				if (a.item_id == item.getId()) {
 					return true;
 				}
 			}
@@ -45,49 +47,50 @@ public class RangeAttack extends Attack {
 		}
 	}
 	
-	public static class RangeAmmo {
-		public final int itemId;
-		public final int graphicsId; //TODO: Use this
-		public final int projectileId;
-		
-		public RangeAmmo(int item, int gfx, int projectile) {
-			this.itemId = item;
-			this.graphicsId = gfx;
-			this.projectileId = projectile;
-		}
+	public static class Ammo extends Transparent{
+		@Mapping
+		public int item_id;
+		@Mapping
+		public int graphics; //TODO: Use this
+		@Mapping
+		public int projectile;
+		@Mapping
+		public int height;
 	}
 	
 	private static HashMap<Integer, RangeWeapon> weapons;
-	private static HashMap<Integer, RangeAmmo> ammos;
+	private static HashMap<Integer, Ammo> ammos;
 	
 	public static void init() throws SQLException {
 		weapons = new HashMap<Integer, RangeWeapon>(256);
-		ammos = new HashMap<Integer, RangeAmmo>(3000);
+		ammos = new HashMap<Integer, Ammo>(3000);
 		Connection con = Core.getWorldDatabase().getConnection();
 		
-		PreparedStatement ps = con.prepareStatement("SELECT * FROM item_ammo");
+		PreparedStatement ps = con.prepareStatement("SELECT * FROM Ammo");
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
-			RangeAmmo a = new RangeAmmo(rs.getInt("itemId"), rs.getInt("graphicsId"), rs.getInt("projectileId"));
-			ammos.put(a.itemId, a);
+			Ammo a = new Ammo();
+			a.reload(rs);
+			ammos.put(a.item_id, a);
 		}
 		
-		ps = con.prepareStatement("SELECT * FROM item_range_weapons");
+		ps = con.prepareStatement("SELECT * FROM ItemAmmo");
 		rs = ps.executeQuery();
 		while (rs.next()) {
-			Integer weapon = rs.getInt("weaponId");
+			Integer weapon = rs.getInt("item_id");
 			
-			RangeAmmo a = ammos.get(rs.getInt("ammoId"));
+			Ammo a = ammos.get(rs.getInt("ammo_id"));
 			if (a == null) {
-				Log.debug("WeaponId " + rs.getInt("weaponId") + " uses ammoId " + rs.getInt("ammoId") + " as ammo, but that ammo is not defined in the database. It is being defined now.");
-				PreparedStatement insert = con.prepareStatement("INSERT INTO item_ammo (itemId, graphicsId, graphicsHeight, projectileId) VALUES (?, ?, ?, ?)");
+				Log.debug("WeaponId " + rs.getInt("weaponId") + " uses item ID #" + rs.getInt("ammoId") + " as ammo, but that ammo is not defined in the database. It is being defined now.");
+				PreparedStatement insert = con.prepareStatement("INSERT INTO Ammo (item_id, graphics, height, projectile) VALUES (?, ?, ?, ?)");
 				insert.setInt(1, rs.getInt("ammoId"));
 				insert.setInt(2, -1);
 				insert.setInt(3, 0);
 				insert.setInt(4, -1);
 				insert.execute();
-				a = new RangeAmmo(rs.getInt("ammoId"), -1, -1);
-				ammos.put(a.itemId, a);
+				a = new Ammo();
+				a.item_id = rs.getInt("item_id");
+				ammos.put(a.item_id, a);
 			}
 			
 			RangeWeapon wep = weapons.get(weapon);
@@ -129,7 +132,7 @@ public class RangeAttack extends Attack {
 	}
 	
 	//TODO: Is this necessary?
-	private RangeAmmo projectile;
+	private Ammo projectile;
 	
 	public RangeAttack(Mob attacker) {
 		super(attacker, attacker.getCombatStats().getAttackAnimation(), -1);
@@ -146,7 +149,7 @@ public class RangeAttack extends Attack {
 	@Override
 	public void perform(final Mob target, final AttackResult damage) {
 		if (projectile != null) {
-			Projectile.create(projectile.projectileId, attacker.getLocation(), target).launch();
+			Projectile.create(projectile.projectile, attacker.getLocation(), target).launch();
 		}
 		
 		//Core.getServer().getTicker().submit(1, new Tickable(){;
@@ -172,8 +175,8 @@ public class RangeAttack extends Attack {
 			RangeWeapon rwep = weapons.get(wep.getId());
 			
 			if (rwep != null && rwep.ammos.isEmpty() == false) {
-				for (RangeAmmo item : rwep.ammos.keySet()) {
-					if (equip.contains(ItemStack.create(item.itemId))) {
+				for (Ammo item : rwep.ammos.keySet()) {
+					if (equip.contains(ItemStack.create(item.item_id))) {
 						projectile = item;
 					}
 				}
@@ -184,7 +187,7 @@ public class RangeAttack extends Attack {
 				}
 				
 				try {
-					equip.remove(ItemStack.create(projectile.itemId));
+					equip.remove(ItemStack.create(projectile.item_id));
 				}
 				catch (ContainerException e) {
 					//Attack failed, no ammo?

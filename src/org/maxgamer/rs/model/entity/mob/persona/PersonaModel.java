@@ -55,7 +55,7 @@ public class PersonaModel extends MobModel implements YMLSerializable {
 				out.writeByte(0);
 			}
 			else {
-				out.writeShort(0x8000 | item.getWeapon().getWornModel());
+				out.writeShort(0x8000 | item.getWeapon().getModel());
 			}
 		}
 		
@@ -64,7 +64,7 @@ public class PersonaModel extends MobModel implements YMLSerializable {
 			out.writeShort(FLAG_MODEL_ONLY | look[2]); // Torso/Chest
 		}
 		else {
-			out.writeShort(FLAG_EQUIP_ONLY | chest.getWeapon().getWornModel());
+			out.writeShort(FLAG_EQUIP_ONLY | chest.getWeapon().getModel());
 		}
 		
 		ItemStack shield = e.get(WieldType.SHIELD);
@@ -72,13 +72,13 @@ public class PersonaModel extends MobModel implements YMLSerializable {
 			out.writeByte(0); // Shield
 		}
 		else {
-			out.writeShort(FLAG_EQUIP_ONLY | shield.getWeapon().getWornModel());
+			out.writeShort(FLAG_EQUIP_ONLY | shield.getWeapon().getModel());
 		}
 		
 		/*
 		 * If we're wearing a full body that hides arms, we notify the client
 		 */
-		if (chest == null || chest.getWeapon() == null || chest.getWeapon().isFullBody() == false) {
+		if (chest == null || chest.getWeapon() == null || chest.getWeapon().isFull() == false) {
 			out.writeShort(FLAG_MODEL_ONLY | look[3]); // Arms
 		}
 		else {
@@ -90,11 +90,11 @@ public class PersonaModel extends MobModel implements YMLSerializable {
 			out.writeShort(FLAG_MODEL_ONLY | look[5]); // Legs
 		}
 		else {
-			out.writeShort(FLAG_EQUIP_ONLY | legs.getWeapon().getWornModel());
+			out.writeShort(FLAG_EQUIP_ONLY | legs.getWeapon().getModel());
 		}
 		
 		ItemStack hat = e.get(WieldType.HAT);
-		if (hat == null || hat.getWeapon() == null || hat.getWeapon().isFullHat() == false) { // TODO: Zamarok/Saradomin hats (4042, 4041) do
+		if (hat == null || hat.getWeapon() == null || hat.getWeapon().isFull() == false) { // TODO: Zamarok/Saradomin hats (4042, 4041) do
 																								// weird
 																								// things
 			out.writeShort(FLAG_MODEL_ONLY | look[0]); // Hat
@@ -108,7 +108,7 @@ public class PersonaModel extends MobModel implements YMLSerializable {
 			out.writeShort(FLAG_MODEL_ONLY | look[4]); // Hands
 		}
 		else {
-			out.writeShort(FLAG_EQUIP_ONLY | hands.getWeapon().getWornModel());
+			out.writeShort(FLAG_EQUIP_ONLY | hands.getWeapon().getModel());
 		}
 		
 		ItemStack feet = e.get(WieldType.BOOTS);
@@ -116,10 +116,10 @@ public class PersonaModel extends MobModel implements YMLSerializable {
 			out.writeShort(FLAG_MODEL_ONLY | look[6]); // Feet
 		}
 		else {
-			out.writeShort(FLAG_EQUIP_ONLY | feet.getWeapon().getWornModel());
+			out.writeShort(FLAG_EQUIP_ONLY | feet.getWeapon().getModel());
 		}
 		
-		if (hat == null || hat.getWeapon() == null || hat.getWeapon().isFullMask() == false) {
+		if (hat == null || hat.getWeapon() == null || hat.getWeapon().isFull() == false) {
 			out.writeShort(FLAG_MODEL_ONLY | look[1]); // Beard
 		}
 		else {

@@ -36,3 +36,7 @@ function string(question){
 function number(question){
 	return DialogueUtil.readNumber(fiber, player, question);
 }
+
+function vendor(name){
+	return DialogueUtil.openVendor(fiber, player, name);
+}

@@ -2,7 +2,7 @@ package org.maxgamer.rs.network.io.packet.player;
 
 import org.maxgamer.rs.model.action.WalkAction;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
-import org.maxgamer.rs.model.item.ItemProto;
+import org.maxgamer.rs.model.item.ItemDefinition;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.item.ground.GroundItemStack;
 import org.maxgamer.rs.model.map.Location;
@@ -77,7 +77,7 @@ public class GroundItemOptionsHandler implements PacketProcessor<Player> {
 				break;
 			case EXAMINE: //TODO: Should we move this to a different handler?
 				itemId = packet.readShort();
-				ItemProto proto = ItemProto.getDefinition(itemId);
+				ItemDefinition proto = ItemDefinition.getDefinition(itemId);
 				player.sendMessage(proto.getExamine());
 				
 				return; //Return, not break

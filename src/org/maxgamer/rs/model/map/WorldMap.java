@@ -130,7 +130,7 @@ public abstract class WorldMap implements MBR {
 	public void init(){
 		try{
 			Connection con = Core.getWorldDatabase().getConnection();
-			PreparedStatement ps = con.prepareStatement("SELECT * FROM npc_spawns WHERE map = ?");
+			PreparedStatement ps = con.prepareStatement("SELECT * FROM NPCSpawn WHERE map = ?");
 			ps.setString(1, getName());
 			
 			ResultSet rs = ps.executeQuery();

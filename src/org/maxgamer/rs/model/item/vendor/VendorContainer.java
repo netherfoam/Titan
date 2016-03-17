@@ -1,8 +1,11 @@
 package org.maxgamer.rs.model.item.vendor;
 
+import org.maxgamer.rs.model.entity.mob.InventoryHolder;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.item.inventory.Container;
+import org.maxgamer.rs.model.item.inventory.ContainerException;
+import org.maxgamer.rs.model.item.inventory.ContainerState;
 import org.maxgamer.rs.model.item.inventory.StackType;
 
 /**
@@ -14,7 +17,7 @@ import org.maxgamer.rs.model.item.inventory.StackType;
  * - Items not in the default stock are slowly removed from the container
  * @author netherfoam
  */
-public abstract class VendorContainer extends Container {
+public class VendorContainer extends Container {
 	/**
 	 * The items currently available in this vendor
 	 */
@@ -27,6 +30,8 @@ public abstract class VendorContainer extends Container {
 	private long[] defaults;
 	
 	private int currencyId;
+	
+	private String name;
 	
 	/**
 	 * Constructs a new VendorContainer, with the given item array as the
@@ -44,12 +49,13 @@ public abstract class VendorContainer extends Container {
 	 */
 	public VendorContainer(String name, int flags, ItemStack[] stock, int currencyId) {
 		super(StackType.ALWAYS);
+		this.name = name;
 		
 		if (currencyId < 0) throw new IllegalArgumentException("CurrencyID must be >= 0");
 		this.currencyId = currencyId;
 		defaults = new long[stock.length];
 		if (stock.length > items.length) {
-			throw new IllegalArgumentException("A shop may only have 40 items at most for sale at any point.");
+			throw new IllegalArgumentException("A shop may only have 40 items at most for sale at any point. Requested a stock size of " + stock.length);
 		}
 		
 		for (int i = 0; i < stock.length; i++) {
@@ -62,6 +68,14 @@ public abstract class VendorContainer extends Container {
 	}
 	
 	/**
+	 * The name of this vendor, as given by the constructor.
+	 * @return The name of this vendor, as given by the constructor.
+	 */
+	public String getName(){
+		return this.name;
+	}
+	
+	/**
 	 * The specified {@code buyer} buys the specified {@code toBuy} from the
 	 * {@code slot} of this {@code VendorContainer}.
 	 * 
@@ -70,9 +84,73 @@ public abstract class VendorContainer extends Container {
 	 * @param slot the slot being bought from
 	 * @return true if the item was bought; return false otherwise
 	 */
-	public abstract boolean buy(Mob buyer, ItemStack toBuy, int slot);
+	public boolean buy(Mob buyer, ItemStack toBuy, int slot){
+		long amount = Math.min(toBuy.getAmount(), getNumberOf(toBuy));
+		if (amount <= 0) {
+			buyer.sendMessage("The vendor is out of stock.");
+			return false;
+		}
+		
+		toBuy = toBuy.setAmount(amount);
+		if (buyer instanceof InventoryHolder) {
+			ContainerState inv = ((InventoryHolder) buyer).getInventory().getState();
+			ContainerState ven = getState();
+			
+			try {
+				ItemStack cost = ItemStack.create(getCurrency(), toBuy.getAmount() * toBuy.getDefinition().getHighAlchemy());
+				if (cost != null) inv.remove(cost);
+				
+				ven.remove(slot, toBuy);
+				inv.add(toBuy);
+			}
+			catch (ContainerException e) {
+				return false;
+			}
+			
+			//We know we were successful here.
+			ven.apply();
+			inv.apply();
+			return true;
+		}
+		return false;
+	}
 	
-	public abstract boolean sell(Mob seller, ItemStack toSell, int slot);
+	public boolean sell(Mob seller, ItemStack toSell, int slot) {
+		if (seller instanceof InventoryHolder) {
+			Container inventory = ((InventoryHolder) seller).getInventory();
+			long amount = Math.min(toSell.getAmount(), inventory.getNumberOf(toSell));
+			if (amount <= 0) {
+				//This is bizare, they have tried to sell an item with 0 amount and not through a hack.
+				seller.sendMessage("You don't have enough of those.");
+				return false;
+			}
+			toSell = toSell.setAmount(amount);
+			
+			ItemStack price = ItemStack.create(getCurrency(), toSell.getAmount() * toSell.getDefinition().getLowAlchemy());
+			if (price == null) {
+				seller.sendMessage("That's not worth anything.");
+				return false;
+			}
+			
+			ContainerState inv = inventory.getState();
+			ContainerState vend = getState();
+			
+			try {
+				vend.add(toSell);
+				inv.remove(slot, toSell);
+				inv.add(price);
+			}
+			catch (ContainerException e) {
+				return false;
+			}
+			
+			//We know the transaction succeeded here
+			vend.apply();
+			inv.apply();
+			return true;
+		}
+		return false;
+	}
 	
 	/**
 	 * The ID of the ItemStack to use as currency for this vendor

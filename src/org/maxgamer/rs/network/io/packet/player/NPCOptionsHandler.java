@@ -108,9 +108,6 @@ public class NPCOptionsHandler implements PacketProcessor<Player> {
 
 		if (player.getProtocol().isVisible(target) == false) {
 			player.getCheats().log(30, "Player attempted to interact with an NPC that wasn't on screen. Target: " + target + ", given index: " + index + " + 1");
-			for (NPC n : player.getLocation().getNearby(NPC.class, 4)) {
-				player.sendMessage(n.toString());
-			}
 			return;
 		}
 		

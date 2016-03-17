@@ -9,6 +9,7 @@ import org.maxgamer.rs.model.action.CombatFollow;
 import org.maxgamer.rs.model.action.DeathAction;
 import org.maxgamer.rs.model.action.WalkAction;
 import org.maxgamer.rs.model.entity.Entity;
+import org.maxgamer.rs.model.entity.Interactable;
 import org.maxgamer.rs.model.entity.mob.combat.Attack;
 import org.maxgamer.rs.model.entity.mob.combat.AttackStyle;
 import org.maxgamer.rs.model.entity.mob.combat.DamageLog;
@@ -25,6 +26,7 @@ import org.maxgamer.rs.model.events.mob.MobTeleportEvent.TeleportCause;
 import org.maxgamer.rs.model.events.mob.MobUnloadEvent;
 import org.maxgamer.rs.model.events.mob.MobUseGroundItemEvent;
 import org.maxgamer.rs.model.events.mob.MobUseItemEvent;
+import org.maxgamer.rs.model.events.mob.MobUseItemOnMobEvent;
 import org.maxgamer.rs.model.events.mob.MobUseNPCEvent;
 import org.maxgamer.rs.model.events.mob.MobUseObjectEvent;
 import org.maxgamer.rs.model.item.ItemStack;
@@ -45,8 +47,7 @@ import org.maxgamer.rs.model.skill.SkillSet;
  * 
  * @author netherfoam
  */
-public abstract class Mob extends Entity implements EquipmentHolder {
-	
+public abstract class Mob extends Entity implements EquipmentHolder, Interactable {
 	/**
 	 * The update mask used for this mob, contains animations/movement
 	 * updates/etc
@@ -917,8 +918,10 @@ public abstract class Mob extends Entity implements EquipmentHolder {
 		return e.isConsumed();
 	}
 	
-	public boolean use(ItemStack item, NPC target) {
-		throw new RuntimeException("Not implemented");
+	public boolean use(ItemStack item, Mob target) {
+		MobUseItemOnMobEvent e = new MobUseItemOnMobEvent(this, item, target, -1);
+		e.call();
+		return e.isConsumed();
 	}
 	
 	public boolean use(final GroundItemStack item, String option) {

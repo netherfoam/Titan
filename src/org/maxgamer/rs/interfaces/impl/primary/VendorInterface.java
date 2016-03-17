@@ -3,7 +3,6 @@ package org.maxgamer.rs.interfaces.impl.primary;
 import org.maxgamer.rs.interfaces.PrimaryInterface;
 import org.maxgamer.rs.interfaces.SettingsBuilder;
 import org.maxgamer.rs.interfaces.impl.side.VendorSideInterface;
-import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.item.inventory.Container;
@@ -42,7 +41,7 @@ public class VendorInterface extends PrimaryInterface implements ContainerListen
 	@Override
 	public void onOpen() {
 		getPlayer().getProtocol().sendConfig(118, 4);
-		getPlayer().getProtocol().sendConfig(1496, 555); //Number of free items, or something? Index of end of free items? (Eg splitter value?)
+		getPlayer().getProtocol().sendConfig(1496, -1); //Number of free items, or something? Index of end of free items? (Eg splitter value?)
 		getPlayer().getProtocol().sendConfig(532, vendor.getCurrency()); //Currency ID
 		super.onOpen();
 		
@@ -91,8 +90,6 @@ public class VendorInterface extends PrimaryInterface implements ContainerListen
 	
 	@Override
 	public void onClick(int option, int buttonId, int slotId, int itemId) {
-		Log.debug("VendorInterface option: " + option);
-		
 		if (buttonId == 18 && option == 0) {
 			getPlayer().getWindow().close(this); //close() is invoked
 			return;

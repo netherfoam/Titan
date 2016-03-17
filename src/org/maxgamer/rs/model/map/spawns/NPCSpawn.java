@@ -23,7 +23,7 @@ public class NPCSpawn extends Transparent {
 	protected byte z;
 	
 	public NPCSpawn(int id) {
-		super("npc_spawns", new String[]{"id"}, new Object[]{id});
+		super("NPCSpawn", new String[]{"id"}, new Object[]{id});
 	}
 	
 	public NPCSpawn(int npc_id, Location loc){

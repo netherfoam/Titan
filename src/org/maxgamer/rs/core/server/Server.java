@@ -42,6 +42,7 @@ import org.maxgamer.rs.command.commands.Kill;
 import org.maxgamer.rs.command.commands.LogonStatus;
 import org.maxgamer.rs.command.commands.ModuleCmd;
 import org.maxgamer.rs.command.commands.Nearby;
+import org.maxgamer.rs.command.commands.Organise;
 import org.maxgamer.rs.command.commands.ParticleColour;
 import org.maxgamer.rs.command.commands.Queues;
 import org.maxgamer.rs.command.commands.RangeGear;
@@ -70,6 +71,7 @@ import org.maxgamer.rs.command.commands.Title;
 import org.maxgamer.rs.command.commands.Tphere;
 import org.maxgamer.rs.command.commands.Vendor;
 import org.maxgamer.rs.command.commands.Version;
+import org.maxgamer.rs.command.commands.Warp;
 import org.maxgamer.rs.command.commands.Whisper;
 import org.maxgamer.rs.command.commands.WhoIs;
 import org.maxgamer.rs.core.Core;
@@ -86,7 +88,9 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Viewport;
 import org.maxgamer.rs.model.events.server.ServerShutdownEvent;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.item.ground.GroundItemManager;
+import org.maxgamer.rs.model.item.vendor.VendorManager;
 import org.maxgamer.rs.model.javascript.JavaScriptFiber;
+import org.maxgamer.rs.model.javascript.TimeoutError;
 import org.maxgamer.rs.model.javascript.interaction.InteractionManager;
 import org.maxgamer.rs.model.lobby.Lobby;
 import org.maxgamer.rs.model.map.Location;
@@ -183,6 +187,11 @@ public class Server {
 	private long started;
 	
 	/**
+	 * The server-wide vendor manager. This holds references to all vendors and their current quantities in the game world
+	 */
+	private VendorManager vendors;
+	
+	/**
 	 * Creates a new server.
 	 * @param port The port to run the server on. This must be >= 0.
 	 * @param definition The WorldDefinition to use. This may not be null.
@@ -217,6 +226,10 @@ public class Server {
 	
 	public long getStartTime() {
 		return this.started;
+	}
+	
+	public VendorManager getVendors(){
+		return vendors;
 	}
 	
 	public String getRegion() {
@@ -287,6 +300,10 @@ public class Server {
 					Server.this.modules = new ModuleLoader();
 					Server.this.ticker = new ServerTicker(Server.this);
 					
+					vendors = new VendorManager();
+					vendors.init();
+					Log.debug("... Vendors loaded!");
+					
 					// Preload our event system
 					getEvents();
 					
@@ -297,8 +314,6 @@ public class Server {
 					Log.debug("Modules Loaded!");
 					
 					Server.this.logon.start();
-					
-					//SpawnManager.loadAll();
 					
 					//Autosave
 					int interval = Core.getWorldConfig().getInt("autosave-interval", 10000);
@@ -312,6 +327,9 @@ public class Server {
 						JavaScriptFiber js = new JavaScriptFiber(Core.CLASS_LOADER);
 						try {
 							js.parse(startup);
+						}
+						catch(TimeoutError e){
+							Log.warning("Startup script timed out.");
 						}
 						catch (ContinuationPending e) {
 							//TODO: Allow them.
@@ -331,6 +349,8 @@ public class Server {
 				}
 				catch (Throwable t) {
 					t.printStackTrace();
+					Log.severe("Exception was raised while booting server. Shutting down...");
+					Core.getServer().shutdown();
 				}
 			}
 		});
@@ -513,6 +533,8 @@ public class Server {
 			commands.register("despawnobject", new DespawnObject());
 			commands.register("pcol", new ParticleColour());
 			commands.register("whois", new WhoIs());
+			commands.register("warp", new Warp());
+			commands.register("organise", new Organise());
 			
 			ConfigSection config = Core.getWorldConfig().getSection("commands", null);
 			if (config != null) {
@@ -576,6 +598,9 @@ public class Server {
 			}
 			catch (IOException e) {
 				Log.warning("Failed to run shutdown.js: " + e.getClass().getSimpleName() + "(" + e.getMessage() + ")");
+			}
+			catch(TimeoutError e){
+				Log.warning(shutdown + " shutdown hook timed out!");
 			}
 		}
 		

@@ -12,7 +12,7 @@ import org.maxgamer.rs.core.tick.Tickable;
 import org.maxgamer.rs.lib.Calc;
 import org.maxgamer.rs.lib.Chat;
 import org.maxgamer.rs.lib.log.Log;
-import org.maxgamer.rs.model.entity.mob.Bonus;
+import org.maxgamer.rs.model.entity.mob.Bonuses;
 import org.maxgamer.rs.model.entity.mob.Factions;
 import org.maxgamer.rs.model.entity.mob.InventoryHolder;
 import org.maxgamer.rs.model.entity.mob.Mob;
@@ -347,7 +347,7 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 	public Persona setAutocast(CombatSpell spell) {
 		this.autocast = spell;
 		if (spell != null) {
-			this.setAttackStyle(new AttackStyle(-1, "Magic", Bonus.ATK_MAGIC, SkillType.MAGIC));
+			this.setAttackStyle(new AttackStyle(-1, "Magic", Bonuses.ATK_MAGIC, SkillType.MAGIC));
 		}
 		else {
 			ItemStack wep = getEquipment().get(WieldType.WEAPON);
@@ -920,7 +920,6 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 	
 	@Override
 	public int getClientIndex() {
-		// May be incorrect, may just be getId() + 0x8000
 		return (getSpawnIndex() + 1) | 0x8000;
 	}
 	
@@ -1039,5 +1038,20 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 		}
 		
 		return false;
+	}
+
+	@Override
+	public boolean hasOption(String option) {
+		return false;
+	}
+
+	@Override
+	public String[] getOptions() {
+		return new String[0];
+	}
+
+	@Override
+	public int getId() {
+		return getClientIndex();
 	}
 }

@@ -10,6 +10,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 
 import org.maxgamer.rs.cache.Cache;
 import org.maxgamer.rs.cache.CacheFile;
@@ -24,7 +25,7 @@ import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.lib.log.Logger.LogLevel;
 import org.maxgamer.rs.model.entity.mob.combat.RangeAttack;
 import org.maxgamer.rs.model.entity.mob.npc.NPCGroup;
-import org.maxgamer.rs.model.item.ItemProto;
+import org.maxgamer.rs.model.item.ItemDefinition;
 import org.maxgamer.rs.structure.configs.ConfigSection;
 import org.maxgamer.rs.structure.configs.FileConfig;
 import org.maxgamer.rs.structure.sql.Database;
@@ -162,7 +163,7 @@ public class Core {
 		boolean lazy = getWorldConfig().getBoolean("loading.lazy", false);
 		
 		//Loading
-		ItemProto.init();
+		ItemDefinition.init();
 		Log.info("RangeAttack Loading...");
 		RangeAttack.init();
 		Log.info("NPCGroup Loading...");
@@ -430,6 +431,11 @@ public class Core {
 		console.stop();
 		scheduler.shutdown();
 		threadPool.shutdown();
+		try {
+			threadPool.shutdown();
+			threadPool.awaitTermination(5, TimeUnit.SECONDS);
+		}
+		catch (InterruptedException e) {}
 		Log.close();
 	}
 	

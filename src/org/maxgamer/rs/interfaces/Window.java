@@ -1,5 +1,6 @@
 package org.maxgamer.rs.interfaces;
 
+import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.network.io.packet.RSOutgoingPacket;
@@ -154,9 +155,15 @@ public abstract class Window {
 	 */
 	public abstract void onClick(int option, int buttonId, int slotId, int itemId);
 
-	public void onClick(Mob target, int buttonId, int slotId, int itemId, boolean run) {}
+	public void onClick(Mob target, int buttonId, int slotId, int itemId, boolean run) {
+		Log.debug("Unhandled button on target. Button=" + buttonId + ", slot=" + slotId + ", item=" + itemId + ", target=" + target + ", run=" + run + ", owner=" + getPlayer());
+	}
 
-	public void onDrag(Window to, int fromItemId, int toItemId, int tabId, int fromSlot, int toSlot) {}
+	public void onDrag(Window to, int fromItemId, int toItemId, int tabId, int fromSlot, int toSlot) {
+		Log.debug("Unhandled drag. Target window=" + to + ", fromItem=" + fromItemId + ", toItem=" + toItemId + ", tab=" + tabId + ", fromSlot=" + fromSlot + ", toSlot=" + toSlot + ", owner=" + getPlayer());
+	}
 
-	public void onUse(Window to, int fromButtonId, int fromItemId, int fromSlot, int toButtonId, int toItemId, int toSlot) {}
+	public void onUse(Window to, int fromButtonId, int fromItemId, int fromSlot, int toButtonId, int toItemId, int toSlot) {
+		Log.debug("Unhandled drag. Target window=" + to + ", fromItem=" + fromItemId + ", toItem=" + toItemId + ",  fromSlot=" + fromSlot + ", toSlot=" + toSlot + ", owner=" + getPlayer());
+	}
 }

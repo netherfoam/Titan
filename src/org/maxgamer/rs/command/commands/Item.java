@@ -29,8 +29,8 @@ public class Item implements PlayerCommand {
 			public void run() {
 				try {
 					Connection con = Core.getWorldDatabase().getConnection();
-					PreparedStatement ps = con.prepareStatement("SELECT id, name FROM item_defs group by name order by id"); // Group by name means no
-																																// duplicate names.
+					// Group by name means no duplicate names
+					PreparedStatement ps = con.prepareStatement("SELECT id, name FROM Item GROUP BY name ORDER BY id"); 
 					ResultSet rs = ps.executeQuery();
 
 					while (rs.next()) {

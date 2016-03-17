@@ -99,7 +99,7 @@ public abstract class CombatStats {
 	 */
 	public int getMagicHitRating() {
 		JEP parser = getJep("formula.magic.hit", SkillType.MAGIC);
-		parser.addVariable("equip_bonus", getOwner().getEquipment().getBonus(Bonus.ATK_MAGIC));
+		parser.addVariable("equip_bonus", getOwner().getEquipment().getBonus(Bonuses.ATK_MAGIC));
 		
 		return (int) parser.getValue();
 	}
@@ -110,7 +110,7 @@ public abstract class CombatStats {
 	 */
 	public int getRangeHitRating() {
 		JEP parser = getJep("formula.range.hit", SkillType.ATTACK);
-		parser.addVariable("equip_bonus", getOwner().getEquipment().getBonus(Bonus.ATK_RANGE));
+		parser.addVariable("equip_bonus", getOwner().getEquipment().getBonus(Bonuses.ATK_RANGE));
 		
 		return (int) parser.getValue();
 	}
@@ -121,7 +121,7 @@ public abstract class CombatStats {
 	 */
 	public int getMeleePower() {
 		JEP parser = getJep("formula.melee.power", SkillType.STRENGTH);
-		parser.addVariable("equip_bonus", getOwner().getEquipment().getBonus(Bonus.POW_STRENGTH));
+		parser.addVariable("equip_bonus", getOwner().getEquipment().getBonus(Bonuses.POW_STRENGTH));
 		
 		int strengthLevel = getOwner().getSkills().getLevel(SkillType.STRENGTH, true);
 		double prayerModifier = owner instanceof Persona ? ((Persona) owner).getPrayer().getMultiplier(SkillType.STRENGTH) : 1D;
@@ -136,7 +136,7 @@ public abstract class CombatStats {
 	 */
 	public int getRangePower() {
 		JEP parser = getJep("formula.range.power", SkillType.RANGE);
-		parser.addVariable("equip_bonus", getOwner().getEquipment().getBonus(Bonus.POW_RANGE));
+		parser.addVariable("equip_bonus", getOwner().getEquipment().getBonus(Bonuses.POW_RANGE));
 		return (int) parser.getValue();
 	}
 	
@@ -147,7 +147,7 @@ public abstract class CombatStats {
 	public int getMeleeDefenceRating(int fromType) {
 		if (fromType < 0 || fromType > 2) throw new IllegalArgumentException("Bad fromType given for defensive calculation, given " + fromType);
 		JEP parser = getJep("formula.melee.defence", SkillType.DEFENCE);
-		parser.addVariable("equip_bonus", getOwner().getEquipment().getBonus(fromType + Bonus.DEF_STAB));
+		parser.addVariable("equip_bonus", getOwner().getEquipment().getBonus(fromType + Bonuses.DEF_STAB));
 		
 		return (int) parser.getValue();
 	}
@@ -158,7 +158,7 @@ public abstract class CombatStats {
 	 */
 	public int getMagicDefenceRating() {
 		JEP parser = getJep("formula.magic.defence", SkillType.MAGIC);
-		parser.addVariable("equip_bonus", getOwner().getEquipment().getBonus(Bonus.DEF_MAGIC));
+		parser.addVariable("equip_bonus", getOwner().getEquipment().getBonus(Bonuses.DEF_MAGIC));
 		
 		return (int) parser.getValue();
 	}
@@ -169,7 +169,7 @@ public abstract class CombatStats {
 	 */
 	public int getRangeDefenceRating() {
 		JEP parser = getJep("formula.range.defence", SkillType.RANGE);
-		parser.addVariable("equip_bonus", getOwner().getEquipment().getBonus(Bonus.DEF_RANGE));
+		parser.addVariable("equip_bonus", getOwner().getEquipment().getBonus(Bonuses.DEF_RANGE));
 		
 		return (int) parser.getValue();
 	}

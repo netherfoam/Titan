@@ -40,7 +40,7 @@ public class Scheduler extends Timer {
 		if (r == null) throw new NullPointerException("Runnable may not be null");
 		if (delayMs < 0) throw new IllegalArgumentException("Delay must be >= 0ms, given " + delayMs);
 		
-		final ServerThreadTask task = new ServerThreadTask(r, async);
+		final ServerThreadTask task = new ServerThreadTask(r);
 		this.schedule(new TimerTask() {
 			@Override
 			public void run() {

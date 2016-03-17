@@ -16,16 +16,22 @@ public class InteractionManager{
 	public File get(Interactable entity, String option){
 		Class<?> clazz = entity.getClass();
 		
+		String entityName = entity.getName();
+		if(entityName.matches("[A-Za-z0-9 \\-_]*$") == false){
+			// Eg.  An 'Amulet of glory (4)' becomes 'Amulet of glory', with the special characters trimmed, and excess spaces removed.
+			entityName = entityName.replaceAll("[^A-Za-z0-9\\-_ ].*", "").trim();
+		}
+		
 		// We exhaust all superclass options as well as the base class
 		while(clazz != Object.class){
-			String name = clazz.getSimpleName().toLowerCase();
+			String className = clazz.getSimpleName().toLowerCase();
 			
-			File f = new File(INTERACTION_FOLDER + File.separator + name, entity.getName() + ".js");
+			File f = new File(INTERACTION_FOLDER + File.separator + className, entityName + ".js");
 			if(f.exists()){
 				return f;
 			}
 			
-			f = new File(INTERACTION_FOLDER + File.separator + name , option + ".js");
+			f = new File(INTERACTION_FOLDER + File.separator + className , option + ".js");
 			if(f.exists()){
 				return f;
 			}

@@ -122,6 +122,7 @@ public class ServerTicker implements Runnable {
 		
 		while (taskIt.hasNext()) {
 			task = taskIt.next();
+			
 			try {
 				task.getTick().run();
 			}

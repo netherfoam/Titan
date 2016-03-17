@@ -2,6 +2,7 @@ package org.maxgamer.rs.network.io.packet.player;
 
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.interfaces.Interface;
+import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.network.io.packet.RSIncomingPacket;
@@ -16,6 +17,7 @@ public class SpellOnMobHandler implements PacketProcessor<Player> {
 	
 	@Override
 	public void process(Player p, RSIncomingPacket in) throws Exception {
+		Log.debug("SpellOnMobHandler");
 		int buttonId;
 		int interfaceId;
 		int slot;

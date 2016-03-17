@@ -7,7 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.maxgamer.rs.lib.log.Log;
-import org.maxgamer.rs.model.entity.mob.Bonus;
+import org.maxgamer.rs.model.entity.mob.Bonuses;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.item.EquipmentSet;
 import org.maxgamer.rs.model.item.ItemStack;
@@ -31,7 +31,7 @@ public class Equipment extends Container {
 
 	public Equipment(Mob owner) {
 		items = new ItemStack[SIZE];
-		bonus = new int[Bonus.COUNT];
+		bonus = new int[Bonuses.COUNT];
 		this.owner = owner;
 		this.addListener(new ContainerListener() {
 			@Override
@@ -99,14 +99,14 @@ public class Equipment extends Container {
 	protected void setItem(int slot, ItemStack item) {
 		ItemStack old = items[slot];
 		if (old != null && old.getWeapon() != null) {
-			for (int i = 0; i < Bonus.COUNT; i++) {
+			for (int i = 0; i < Bonuses.COUNT; i++) {
 				bonus[i] -= old.getWeapon().getBonus(i);
 			}
 		}
 		items[slot] = item;
 
 		if (item != null && item.getWeapon() != null) {
-			for (int i = 0; i < Bonus.COUNT; i++) {
+			for (int i = 0; i < Bonuses.COUNT; i++) {
 				bonus[i] += item.getWeapon().getBonus(i);
 			}
 		}

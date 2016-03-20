@@ -11,6 +11,7 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
 import org.maxgamer.rs.model.events.mob.MobTeleportEvent.TeleportCause;
 import org.maxgamer.rs.model.map.Location;
+import org.maxgamer.rs.structure.TrieSet;
 import org.maxgamer.rs.structure.dbmodel.Mapping;
 import org.maxgamer.rs.structure.dbmodel.Transparent;
 
@@ -31,6 +32,7 @@ public class Warp implements PlayerCommand{
 		}
 	}
 	
+	private TrieSet autocomplete = new TrieSet();
 	private HashMap<String, Destination> destinations = new HashMap<String, Destination>();
 	
 	public Warp(){
@@ -41,6 +43,7 @@ public class Warp implements PlayerCommand{
 				Destination d = new Destination();
 				d.reload(rs);
 				destinations.put(d.name.toLowerCase(), d);
+				autocomplete.add(d.name.toLowerCase());
 			}
 		}
 		catch(SQLException e){
@@ -49,9 +52,9 @@ public class Warp implements PlayerCommand{
 	}
 
 	@Override
-	public void execute(Player sender, String[] args) throws Exception {
+	public void execute(Player p, String[] args) throws Exception {
 		if(args.length < 1){
-			sender.sendMessage("Usage: ::warp [target]");
+			p.sendMessage("Usage: ::warp [target]");
 			StringBuilder sb = new StringBuilder(this.destinations.size() * 12);
 			for(Destination d : this.destinations.values()){
 				sb.append(d.name + ", ");
@@ -60,18 +63,59 @@ public class Warp implements PlayerCommand{
 				// Trim off the last ", "
 				sb = sb.replace(sb.length() - 2, sb.length(), "");
 			}
-			sender.sendMessage("Destinations: " + sb.toString());
+			p.sendMessage("Destinations: " + sb.toString());
 			return;
 		}
 		
-		Destination d = destinations.get(args[0].toLowerCase());
+		if(args[0].equalsIgnoreCase("add")){
+			if(args.length < 2){
+				p.sendMessage("Usage ::warp add [name of warp]");
+				return;
+			}
+			
+			Destination dest = new Destination();
+			Location l = p.getLocation();
+			dest.x = l.x;
+			dest.y = l.y;
+			dest.z = l.z;
+			
+			dest.name = args[1];
+			for(int i = 2; i < args.length; i++) dest.name += " " + args[i];
+			
+			try{
+				dest.insert(Core.getWorldDatabase().getConnection());
+			}
+			catch(SQLException e){
+				p.sendMessage("Failed to save warp! " + e.getMessage());
+				return;
+			}
+			
+			this.destinations.put(dest.name.toLowerCase(), dest);
+			autocomplete.add(dest.name.toLowerCase());
+			
+			p.sendMessage("Saved the warp as ::warp " + dest.name);
+			
+			return;
+		}
+		
+		String name = args[0];
+		for(int i = 1; i < args.length; i++) name += " " + args[i];
+		
+		Destination d = destinations.get(name.toLowerCase());
 		if(d == null){
-			sender.sendMessage("No such destination. Do ::warp for a list of destinations.");
-			return;
+			String completed = autocomplete.nearestKey(name.toLowerCase());
+			if(completed != null){
+				d = destinations.get(completed);
+			}
+			
+			if(d == null){
+				p.sendMessage("No such destination '" + name + "'. Do ::warp for a list of destinations.");
+				return;
+			}
 		}
 		
-		sender.teleport(new Location(d.x, d.y, d.z), TeleportCause.SERVER);
-		sender.sendMessage("Warped to " + d.name);
+		p.teleport(new Location(d.x, d.y, d.z), TeleportCause.SERVER);
+		p.sendMessage("Warped to " + d.name);
 	}
 
 	@Override

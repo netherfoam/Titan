@@ -4,9 +4,13 @@ function talkTo(player, npc){
 	var opt = option(["Yes, please.", "No, I prefer to bash things close up."]);
 	if (opt == 0) {
 		chat(player, "Yes, please.");
-		//TODO: Open correct shop.
+		trade(player, npc);
 	} else if (opt == 1) {
 		chat(player, "No, I prefer to bash things close up.");
 		chat(npc, "Humph, philistine.");
 	}
+}
+
+function trade(player, npc){
+	vendor("Lowe's Archery Emporium");
 }

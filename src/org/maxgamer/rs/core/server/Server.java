@@ -758,6 +758,7 @@ public class Server {
 	}
 	
 	public int getTicks() {
+		if(getTicker() == null) return 0;
 		return getTicker().getTicks();
 	}
 }

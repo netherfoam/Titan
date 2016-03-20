@@ -16,12 +16,14 @@ import org.maxgamer.rs.structure.Util;
  * @author netherfoam
  */
 public class Status implements GenericCommand {
+	private int lastTick = Core.getServer().getTicks();
+	private long lastPrint = System.currentTimeMillis();
 	
 	@Override
 	public void execute(CommandSender s, String[] args) {
 		s.sendMessage("-- Server Status at " + new Date().toString() + "--");
 		s.sendMessage("Players: " + Core.getServer().getPersonas().getCount() + "/" + Core.getServer().getPersonas().getMax() + ", NPCs: " + Core.getServer().getNPCs().getCount() + "/" + Core.getServer().getNPCs().getMax());
-		s.sendMessage("Primary Thread Load: " + String.format("%.2f", (Core.getServer().getThread().getUsage() * 100)) + "%, Active Threads: " + Thread.activeCount());
+		Log.info("Primary Thread Load: " + String.format("%.2f", (Core.getServer().getThread().getUsage() * 100)) + "%, " + ", Ticks/sec: " + ((double) (Core.getServer().getTicks() - lastTick) / (double) ((System.currentTimeMillis() - lastPrint) / 1000.0)) + ", Active Threads: " + Thread.activeCount());
 		s.sendMessage("RAM (JVM): " + (Runtime.getRuntime().totalMemory() / 1024 / 1024) + "MB, RAM (Used): " + ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024 / 1024) + "MB");
 		long period = 0;
 		int up = 0;
@@ -42,6 +44,8 @@ public class Status implements GenericCommand {
 			}
 		}
 		Log.info("Total level of all players: " + total + ", Uptime: " + Util.toDuration(System.currentTimeMillis() - Core.getServer().getStartTime()));
+		lastPrint = System.currentTimeMillis();
+		lastTick = Core.getServer().getTicks();
 	}
 	
 	@Override

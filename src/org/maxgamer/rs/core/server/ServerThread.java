@@ -29,6 +29,8 @@ public class ServerThread implements Executor {
 	private long working = 0;
 	
 	private long lastPrint = 0;
+	private int lastTicks = 0;
+	
 	private FiberScheduler fex;
 	
 	public ServerThread(Server server) {
@@ -142,7 +144,7 @@ public class ServerThread implements Executor {
 					if (lastPrint + 120000 < System.currentTimeMillis()) {
 						Log.info("-- Server Status at " + new Date().toString() + "--");
 						Log.info("Players: " + Core.getServer().getPersonas().getCount() + "/" + Core.getServer().getPersonas().getMax() + ", NPCs: " + Core.getServer().getNPCs().getCount() + "/" + Core.getServer().getNPCs().getMax());
-						Log.info("Primary Thread Load: " + String.format("%.2f", (getUsage() * 100)) + "%, Active Threads: " + Thread.activeCount());
+						Log.info("Primary Thread Load: " + String.format("%.2f", (getUsage() * 100)) + "%, " + ", Ticks/sec: " + ((double) (Core.getServer().getTicks() - lastTicks) / (double) ((System.currentTimeMillis() - lastPrint) / 1000.0)) + ", Active Threads: " + Thread.activeCount());
 						Log.info("RAM (JVM): " + (Runtime.getRuntime().totalMemory() / 1024 / 1024) + "MB, RAM (Used): " + ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024 / 1024) + "MB");
 						long period = 0;
 						int up = 0;
@@ -165,6 +167,7 @@ public class ServerThread implements Executor {
 						
 						Log.info("Total level of all players: " + total + ", Uptime: " + Util.toDuration(System.currentTimeMillis() - getServer().getStartTime()));
 						lastPrint = System.currentTimeMillis();
+						lastTicks = Core.getServer().getTicks();
 					}
 				}
 			}

@@ -12,6 +12,7 @@
 
 # Temporary files created by sublime-text
 *~
+*.sh
 
 Titan.jar
 

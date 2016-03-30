@@ -10,7 +10,7 @@ import org.maxgamer.rs.structure.dbmodel.Transparent;
 
 public class NPCSpawn extends Transparent {
 	@Mapping
-	protected String id;
+	protected int id;
 	@Mapping
 	protected int npc_id;
 	@Mapping
@@ -22,12 +22,13 @@ public class NPCSpawn extends Transparent {
 	@Mapping
 	protected byte z;
 	
-	public NPCSpawn(int id) {
+	public NPCSpawn(long id) {
 		super("NPCSpawn", new String[]{"id"}, new Object[]{id});
 	}
 	
 	public NPCSpawn(int npc_id, Location loc){
-		super("npc_spawns", new String[]{"id"}, new Object[]{UUID.randomUUID().toString()});
+		super("NPCSpawn", new String[]{"id"}, new Object[]{UUID.randomUUID().getLeastSignificantBits()});
+		this.npc_id = npc_id;
 		this.x = (short) loc.x;
 		this.y = (short) loc.y;
 		this.z = (byte) loc.z;

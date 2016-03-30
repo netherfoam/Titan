@@ -97,6 +97,11 @@ public abstract class Follow extends Action {
 		getOwner().face(getTarget());
 		
 		while (isFollowing()) {
+			if(getOwner().getUpdateMask().getMovement().getDirection() != -1){
+				wait(1);
+				continue;
+			}
+			
 			if (getOwner().getLocation().equals(getTarget().getLocation())) {
 				//Whoops, we're ontop of our target!
 				Direction[] dirs = Directions.ALL;

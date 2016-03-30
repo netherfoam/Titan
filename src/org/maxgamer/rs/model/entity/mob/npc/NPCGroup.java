@@ -92,6 +92,16 @@ public class NPCGroup {
 				
 				g = new NPCGroup(id, loots);
 				groups.put(id, g);
+				
+				ps = con.prepareStatement("SELECT * FROM NPCGroupLootGuarantee WHERE group_id = ?");
+				ps.setInt(1, g.id);
+				rs = ps.executeQuery();
+				while (rs.next()) {
+					ItemStack.create(rs.getInt("item_id"));
+					CommonLootItem loot = new CommonLootItem(rs.getInt("item_id"), 100, rs.getInt("amount"), rs.getInt("amount"));
+					g.loot.add(loot, true);
+				}
+				rs.close();
 			}
 			catch (SQLException e) {
 				throw new RuntimeException(e);

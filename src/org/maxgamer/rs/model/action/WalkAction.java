@@ -40,8 +40,7 @@ public class WalkAction extends Action {
 			}
 			
 			if (m.hasChanged()) {
-				//TODO: This is still occasionally triggered, 27/01/2015, Netherfoam
-				//throw new IllegalStateException("Movement update mask has already changed dir " + m.getDirection() + ", tele " + m.hasTeleported() + ", ActionQueue: " + getOwner().getActions().toString());
+				// This is still occasionally triggered
 				wait(1);
 				continue;
 			}
@@ -53,7 +52,9 @@ public class WalkAction extends Action {
 			}
 			
 			done = getOwner().move(this.path);
-			wait(1);
+			if(!done){
+				wait(1);
+			}
 		}
 	}
 	

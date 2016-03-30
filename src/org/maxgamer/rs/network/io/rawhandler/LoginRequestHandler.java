@@ -195,13 +195,6 @@ public class LoginRequestHandler extends RawHandler {
 			if (in != null) in.close();
 		}
 		
-		//if(Core.getServer().getLogon().request(request) == false){
 		Core.getServer().getLogon().getAPI().authenticate(getSession(), name, pass, uuid, toLobby);
-		/*
-		 * Log.info(
-		 * "LoginServer has not yet responded to previous join request, so the request has been declined."
-		 * ); try{ getSession().write(AuthResult.SYSTEM_UNAVAILABLE.getCode());
-		 * } finally{ getSession().close(true); }
-		 */
 	}
 }

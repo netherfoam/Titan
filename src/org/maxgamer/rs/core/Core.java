@@ -31,6 +31,7 @@ import org.maxgamer.rs.structure.configs.FileConfig;
 import org.maxgamer.rs.structure.sql.Database;
 import org.maxgamer.rs.structure.sql.MySQLC3P0Core;
 import org.maxgamer.rs.structure.sql.SQLiteCore;
+import org.maxgamer.rs.structure.timings.NullTimings;
 import org.maxgamer.rs.structure.timings.Timings;
 import org.maxgamer.rs.tools.ConfigSetup;
 
@@ -441,7 +442,12 @@ public class Core {
 	
 	public synchronized static Timings getTimings() {
 		if (timings == null) {
-			timings = new Timings();
+			if(getWorldConfig().getBoolean("timings")){
+				timings = new Timings();
+			}
+			else{
+				timings = new NullTimings();
+			}
 		}
 		return timings;
 	}

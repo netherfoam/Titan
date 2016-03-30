@@ -108,6 +108,7 @@ public class LogonAPI {
 		out.writePJStr1(name);
 		out.writePJStr1(pass);
 		out.writePJStr1(session.getIP().getAddress().getHostAddress());
+		out.writeInt(clientUUID);
 		try {
 			logon.write(out);
 			return true;

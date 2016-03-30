@@ -696,6 +696,7 @@ public class NPCDefinition extends Definition {
 		return d;
 	}
 	
+	@Mapping
 	private int id;
 	/*
 	 * int anInt3164 = -1; private short[] aShortArray3166; int anInt3167;
@@ -714,6 +715,7 @@ public class NPCDefinition extends Definition {
 	 * anInt3212; short aShort3213; int anInt3214; byte aByte3215; int
 	 * anInt3216;
 	 */
+	@Mapping
 	private String name = "null";
 	private int combatLevel = -1;
 	/*

@@ -91,12 +91,14 @@ import org.maxgamer.rs.model.item.ground.GroundItemManager;
 import org.maxgamer.rs.model.item.vendor.VendorManager;
 import org.maxgamer.rs.model.javascript.JavaScriptFiber;
 import org.maxgamer.rs.model.javascript.TimeoutError;
+import org.maxgamer.rs.model.javascript.interaction.InteractionListener;
 import org.maxgamer.rs.model.javascript.interaction.InteractionManager;
 import org.maxgamer.rs.model.lobby.Lobby;
 import org.maxgamer.rs.model.map.Location;
 import org.maxgamer.rs.model.map.MapManager;
 import org.maxgamer.rs.model.map.StandardMap;
 import org.maxgamer.rs.model.map.WorldMap;
+import org.maxgamer.rs.model.skill.prayer.PrayerListener;
 import org.maxgamer.rs.module.ModuleLoader;
 import org.maxgamer.rs.network.Client;
 import org.maxgamer.rs.network.LobbyPlayer;
@@ -111,6 +113,10 @@ import org.mozilla.javascript.ContinuationPending;
  * @author netherfoam
  */
 public class Server {
+	/**
+	 * The {@link MapManager} for instances of WorldMaps.  This holds the primary world "mainland", as well
+	 * as any other persistant worlds. It does not hold maps which are temporary, such as Pest Control arenas.
+	 */
 	private MapManager maps;
 	
 	/**
@@ -254,6 +260,12 @@ public class Server {
 		return id;
 	}
 	
+	public void broadcast(String message){
+		for(Persona p : this.getPersonas()){
+			p.sendMessage(message);
+		}
+	}
+	
 	/**
 	 * Fetches the Map Manager
 	 * @return the Map Manager
@@ -297,7 +309,7 @@ public class Server {
 					getMaps();
 					Log.info("...Map Loaded!");
 					
-					Server.this.modules = new ModuleLoader();
+					Server.this.modules = new ModuleLoader(new File("modules"), "class");
 					Server.this.ticker = new ServerTicker(Server.this);
 					
 					vendors = new VendorManager();
@@ -576,7 +588,9 @@ public class Server {
 		if (events == null) {
 			Log.debug("Loading EventManager...");
 			events = new EventManager();
-			events.reload();
+			events.register(new PrayerListener());
+			events.register(new InteractionListener(Core.getServer().getInteractions()));
+			
 			Log.debug("...Loaded EventManager!");
 		}
 		return events;

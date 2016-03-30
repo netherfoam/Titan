@@ -1,8 +1,8 @@
 package org.maxgamer.rs.module;
 
-import org.maxgamer.rs.model.events.RSEvent;
+import org.maxgamer.rs.event.Event;
 
-public class ModuleEvent extends RSEvent{
+public class ModuleEvent extends Event{
 	private Module module;
 	
 	public ModuleEvent(Module module){

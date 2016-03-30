@@ -13,6 +13,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+import org.maxgamer.rs.lib.log.Log;
+
 /**
  * A class which helps in retrieving simple rows from a database, changing them,
  * and then updating them. This usually works for only simple models involving
@@ -59,6 +61,59 @@ public class Transparent{
 		this.TABLE = table;
 		this.keys = keys.clone();
 		this.identifiers = values == null ? new Object[keys.length] : values.clone();
+		
+		if(values != null){
+			// Set the key value fields automatically
+			//for(String fName : this.keys){
+			for(int i = 0; i < keys.length; i++){
+				String fName = keys[i];
+				Object o = values[i];
+				
+				try {
+					Field f = this.getClass().getDeclaredField(fName);
+					Mapping a = f.getAnnotation(Mapping.class);
+					if(a == null){
+						throw new NoSuchFieldException("Field '" + fName + "' was found, but missing @Mapping attribute");
+					}
+					f.setAccessible(true);
+					
+					if(f.getType().isPrimitive()){
+						Class<?> type = f.getType();
+						Number n = (Number) o;
+						
+						if(type == byte.class){
+							f.set(this, n.byteValue());
+						}
+						else if(type == char.class){
+							f.set(this, (char) n.byteValue());
+						}
+						else if(type == short.class){
+							f.set(this, n.shortValue());
+						}
+						else if(type == int.class){
+							f.set(this, n.intValue());
+						}
+						else if(type == long.class){
+							f.set(this, n.longValue());
+						}
+						else if(type == float.class){
+							f.set(this, n.floatValue());
+						}
+						else if(type == double.class){
+							f.set(this, n.doubleValue());
+						}
+						else{
+							throw new RuntimeException("I don't know what kind of primitive you are, " + f.getType() + " on " + f);
+						}
+					}
+					else{
+						f.set(this, o);
+					}
+				} catch (Exception e) {
+					throw new RuntimeException("field: " + fName, e);
+				}
+			}
+		}
 	}
 	
 	/**
@@ -248,23 +303,29 @@ public class Transparent{
 		}
 		
 		StringBuilder sb = new StringBuilder("DELETE FROM " + TABLE + " WHERE ");
-		int i = 0;
-		
-		String k = keys[i];
-		sb.append(k + " = ?");
-		
-		while(i < keys.length){
-			k = keys[i++];
-			sb.append(" AND " + k + " = ?");
+		try{
+			int i = 0;
+			
+			String k = keys[i++];
+			sb.append(k + " = ?");
+			
+			while(i < keys.length){
+				k = keys[i++];
+				sb.append(" AND " + k + " = ?");
+			}
+			sb.append(" LIMIT 1");
+			
+			PreparedStatement ps = con.prepareStatement(sb.toString());
+			for(i = 0; i < keys.length; i++){
+				ps.setObject(i + 1, identifiers[i]);
+			}
+			
+			ps.execute();
 		}
-		sb.append(" LIMIT 1");
-		
-		PreparedStatement ps = con.prepareStatement(sb.toString());
-		for(i = 0; i < keys.length; i++){
-			ps.setObject(i + 1, identifiers[i]);
+		catch(SQLException e){
+			Log.info("Keys: " + Arrays.toString(keys) + ", values: " + Arrays.toString(identifiers) + ", SQL: " + sb.toString());
+			throw e;
 		}
-		
-		ps.execute();
 	}
 	
 	/**

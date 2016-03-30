@@ -12,10 +12,13 @@ import org.maxgamer.rs.logonv4.LSOutgoingPacket;
 import org.maxgamer.rs.logonv4.Opcode;
 import org.maxgamer.rs.logonv4.OpcodeDecoder;
 import org.maxgamer.rs.logonv4.Profile;
+import org.maxgamer.rs.model.events.session.AuthRequestEvent;
 import org.maxgamer.rs.network.AuthResult;
 import org.maxgamer.rs.network.io.stream.RSInputBuffer;
 
 /**
+ * Decodes packets received from the Game Server.
+ * 
  * @author netherfoam
  */
 public class GameDecoder extends OpcodeDecoder<LSIncomingPacket> implements Handler {
@@ -31,6 +34,7 @@ public class GameDecoder extends OpcodeDecoder<LSIncomingPacket> implements Hand
 		String name = in.readPJStr1();
 		String pass = in.readPJStr1();
 		String ip = in.readPJStr1();
+		int clientUUID = in.readInt();
 		
 		LSOutgoingPacket out = new LSOutgoingPacket(3);
 		AuthResult result = AuthResult.SUCCESS;
@@ -89,6 +93,10 @@ public class GameDecoder extends OpcodeDecoder<LSIncomingPacket> implements Hand
 				e.printStackTrace();
 				break;
 			}
+			
+			AuthRequestEvent auth = new AuthRequestEvent(result, ip, name, clientUUID);
+			auth.call();
+			result = auth.getResult();
 		} while (false);
 		
 		out.writeByte(result.getCode());

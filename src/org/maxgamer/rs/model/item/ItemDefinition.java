@@ -61,9 +61,7 @@ public class ItemDefinition extends Definition {
 		if (proto == null) {
 			try {
 				Connection con = Core.getWorldDatabase().getConnection();
-				PreparedStatement ps = con
-						.prepareStatement("SELECT * from Item d LEFT JOIN Equipment w ON d.id = w.id WHERE d.id = "
-								+ id);
+				PreparedStatement ps = con.prepareStatement("SELECT * from Item d LEFT JOIN Equipment w ON d.id = w.id WHERE d.id = " + id);
 				ResultSet rs = ps.executeQuery();
 				if (rs.next()) {
 					proto = new ItemDefinition(id);

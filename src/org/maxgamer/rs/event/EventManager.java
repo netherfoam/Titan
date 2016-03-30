@@ -5,18 +5,17 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.model.javascript.interaction.InteractionListener;
-import org.maxgamer.rs.model.skill.prayer.PrayerListener;
 import org.maxgamer.rs.structure.timings.StopWatch;
 
 public class EventManager {
 	private HashMap<EventPriority, LinkedList<HandlerExecutor>> listeners;
 	
+	public EventManager(){
+		reload();
+	}
+	
 	public synchronized void reload(){
 		listeners = new HashMap<EventPriority, LinkedList<HandlerExecutor>>(EventPriority.values().length);
-		
-		this.register(new PrayerListener());
-		this.register(new InteractionListener(Core.getServer().getInteractions()));
 	}
 	
 	/**

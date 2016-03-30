@@ -8,6 +8,8 @@ import org.maxgamer.rs.logonv4.Profile;
 import org.maxgamer.rs.network.io.stream.RSInputBuffer;
 
 /**
+ * Validates a connection from a potential Game Server by a password. This must be done in order to prevent any unauthorised access.
+ * 
  * @author netherfoam
  */
 public class AuthHandler implements Handler {

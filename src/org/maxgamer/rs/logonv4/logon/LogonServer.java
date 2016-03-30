@@ -5,15 +5,15 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
-import java.util.Scanner;
 
 import org.maxgamer.rs.command.CommandManager;
-import org.maxgamer.rs.command.CommandSender;
 import org.maxgamer.rs.command.commands.Stop;
+import org.maxgamer.rs.event.EventManager;
 import org.maxgamer.rs.lib.Files;
 import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.logonv4.LSOutgoingPacket;
 import org.maxgamer.rs.logonv4.ProfileManager;
+import org.maxgamer.rs.module.ModuleLoader;
 import org.maxgamer.rs.structure.ServerHost;
 import org.maxgamer.rs.structure.configs.ConfigSection;
 import org.maxgamer.rs.structure.configs.FileConfig;
@@ -27,44 +27,13 @@ import org.maxgamer.rs.tools.ConfigSetup;
  * @author netherfoam
  */
 public class LogonServer extends ServerHost<WorldHost> {
-	public static void main(String[] args) throws IOException, ConnectionException {
-		final CommandManager cm = new CommandManager(null);
-		LogonServer.init(cm);
-		
-		final Thread reader = new Thread("Logon-Console") {
-			@Override
-			public void run() {
-				Scanner sc = new Scanner(System.in);
-				while (sc.hasNextLine()) {
-					final String line = sc.nextLine();
-					
-					cm.handle(new CommandSender() {
-						
-						@Override
-						public void sendMessage(String msg) {
-							System.out.println(msg);
-						}
-						
-						@Override
-						public String getName() {
-							return "Console";
-						}
-					}, CommandManager.COMMAND_PREFIX + line);
-				}
-				sc.close();
-			}
-		};
-		reader.setDaemon(true);
-		reader.start();
-	}
-	
 	private static LogonServer LOGON;
 	
 	public static LogonServer getLogon() {
 		return LOGON;
 	}
 	
-	public static void init(CommandManager commands) throws IOException, ConnectionException {
+	public static void init(CommandManager commands, EventManager events) throws IOException, ConnectionException {
 		File cfgFile = new File("config", "logon.yml");
 		
 		boolean isNew = false;
@@ -100,6 +69,9 @@ public class LogonServer extends ServerHost<WorldHost> {
 		}
 		
 		LOGON = new LogonServer(config);
+		LOGON.events = events;
+		LOGON.commands = commands;
+		
 		LOGON.start();
 		commands.register("stop", new Stop());
 	}
@@ -114,11 +86,21 @@ public class LogonServer extends ServerHost<WorldHost> {
 	 */
 	private ProfileManager profiles;
 	
+	private EventManager events;
+	
+	private CommandManager commands;
+	
+	private ModuleLoader modules;
+	
+	private Database database;
+	
 	public LogonServer(ConfigSection config) throws IOException, ConnectionException {
 		super(config.getInt("port", 2709));
 		this.hostPass = config.getString("pass");
 		
-		Database world;
+		// TODO:
+		this.modules = new ModuleLoader(new File("modules"), "logon");
+		
 		try {
 			//Database initialization
 			ConfigSection c = config.getSection("database");
@@ -126,12 +108,12 @@ public class LogonServer extends ServerHost<WorldHost> {
 			
 			//Logon Database
 			if (type.equalsIgnoreCase("mysql")) {
-				Log.debug("World using MySQL Database.");
-				world = new Database(new MySQLC3P0Core(c.getString("host", "localhost"), c.getString("user", "root"), c.getString("pass", ""), c.getString("database", "titan"), c.getString("port", "3306")));
+				Log.debug("Logon using MySQL Database.");
+				database = new Database(new MySQLC3P0Core(c.getString("host", "localhost"), c.getString("user", "root"), c.getString("pass", ""), c.getString("database", "titan"), c.getString("port", "3306")));
 			}
 			else {
-				Log.debug("World using SQLite Database: " + c.getString("file", "sql" + File.separator + "profiles.db"));
-				world = new Database(new SQLiteCore(new File(c.getString("file", "sql" + File.separator + "profiles.db"))));
+				Log.debug("Logon using SQLite Database: " + c.getString("file", "sql" + File.separator + "profiles.db"));
+				database = new Database(new SQLiteCore(new File(c.getString("file", "sql" + File.separator + "profiles.db"))));
 			}
 			Log.debug("Database connection established.");
 		}
@@ -142,7 +124,19 @@ public class LogonServer extends ServerHost<WorldHost> {
 			return;
 		}
 		
-		this.profiles = new ProfileManager(world);
+		this.profiles = new ProfileManager(database);
+	}
+	
+	public EventManager getEvents(){
+		return events;
+	}
+	
+	public CommandManager getCommands(){
+		return commands;
+	}
+	
+	public Database getDatabase(){
+		return this.database;
 	}
 	
 	public boolean isOnline(String player) {
@@ -154,6 +148,8 @@ public class LogonServer extends ServerHost<WorldHost> {
 	
 	@Override
 	public void start() {
+		this.modules.load();
+		
 		super.start();
 		Log.debug("Starting logon...");
 		Thread pinger = new Thread("Logon.LogonServer.Pinger Thread") {

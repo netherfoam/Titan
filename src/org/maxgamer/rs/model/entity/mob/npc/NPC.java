@@ -35,7 +35,7 @@ import org.maxgamer.rs.model.skill.SkillType;
  * @author netherfoam
  */
 public class NPC extends Mob implements Interactable {
-	private String uuid;
+	private long uuid;
 	
 	/**
 	 * The index in the array of NPC's the server holds, of this NPC
@@ -73,7 +73,7 @@ public class NPC extends Mob implements Interactable {
 	 * @throws WorldFullException
 	 */
 	public NPC(int defId, Location l) throws WorldFullException{
-		this(defId, UUID.randomUUID().toString(), l);
+		this(defId, (int) UUID.randomUUID().getLeastSignificantBits(), l);
 	}
 	/**
 	 * Constructs a new NPC from the given ID. This loads the definition ID from
@@ -85,7 +85,7 @@ public class NPC extends Mob implements Interactable {
 	 * @param defId the definition id for the NPC
 	 * @throws WorldFullException
 	 */
-	public NPC(int defId, String uuid, Location l) throws WorldFullException {
+	public NPC(int defId, int uuid, Location l) throws WorldFullException {
 		super(1, 1);
 		try {
 			this.definition = NPCDefinition.getDefinition(defId);
@@ -122,7 +122,7 @@ public class NPC extends Mob implements Interactable {
 	 * on the fly will have randomly generated UUID's.
 	 * @return the unique string representing this NPC.
 	 */
-	public String getUUID(){
+	public long getUUID(){
 		return uuid;
 	}
 	

@@ -10,7 +10,6 @@ import java.util.Iterator;
 
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.core.server.WorldFullException;
-import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.entity.Entity;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;
@@ -135,7 +134,7 @@ public abstract class WorldMap implements MBR {
 			
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()){
-				NPCSpawn spawn = new NPCSpawn(rs.getInt("id"));
+				NPCSpawn spawn = new NPCSpawn(rs.getLong("id"));
 				spawn.reload(rs);
 				spawn.spawn();
 			}
@@ -158,10 +157,7 @@ public abstract class WorldMap implements MBR {
 				this.chunks[cx - this.min_chunk.x][cy - this.min_chunk.y] = new Chunk[4];
 			}
 		}
-		catch(Exception e){
-			Log.debug("cx: " + cx + ", cy: " + cy /*", w: " + this.chunks.length + " h: " + this.chunks[0].length*/);
-			e.printStackTrace();
-		}
+		catch(IndexOutOfBoundsException e){}
 	}
 	
 	public boolean isLoaded(int cx, int cy, int z) {
@@ -212,8 +208,8 @@ public abstract class WorldMap implements MBR {
 		
 		for (int i = (x - LOAD_RADIUS - 7) >> 3; i < (x + LOAD_RADIUS + 7) >> 3; i++) {
 			for (int j = (y - LOAD_RADIUS - 7) >> 3; j < (y + LOAD_RADIUS + 7) >> 3; j++) {
-				check(i, j);
 				try {
+					check(i, j);
 					for (int z = 0; z < 4; z++) {
 						Chunk c = chunks[i - this.min_chunk.x][j - this.min_chunk.y][z];
 						if (c == null || c.isLoaded() == false) {

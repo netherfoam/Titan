@@ -265,4 +265,12 @@ public final class FriendsList implements YMLSerializable {
 			p.getProtocol().sendUnlockFriendsList();
 		}
 	}
+	
+	public boolean isFriendsFull(){
+		return this.friends.size() >= MAX_FRIENDS;
+	}
+	
+	public boolean isIgnoresFull(){
+		return this.friends.size() >= MAX_FRIENDS;
+	}
 }

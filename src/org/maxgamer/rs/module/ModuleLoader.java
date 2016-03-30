@@ -23,19 +23,27 @@ import org.maxgamer.rs.structure.dependency.Graph;
  * @author netherfoam
  */
 public class ModuleLoader {
-	/** The folder where modules are loaded from */
-	public static final File MODULE_FOLDER = new File("modules");
 	public static final ModuleClassLoader CLASS_LOADER = new ModuleClassLoader(Core.CLASS_LOADER);
 	
 	/** Currently loaded modules */
 	private HashMap<String, Module> modules;
 	
+	/** The folder where modules are loaded from */
+	private File folder;
+	
+	private String field;
+	
 	/**
 	 * Constructs a new Module loader class. This class loads modules from the
 	 * modules/ folder. This does not call load(), which can be done later.
 	 */
-	public ModuleLoader() {
+	public ModuleLoader(File folder, String field) {
+		if(folder == null){
+			throw new NullPointerException("Folder may not be null.");
+		}
 		this.modules = new HashMap<String, Module>();
+		this.folder = folder;
+		this.field = field;
 	}
 	
 	/**
@@ -48,11 +56,11 @@ public class ModuleLoader {
 		
 		long startMem = r.totalMemory() - r.freeMemory();
 		
-		if (MODULE_FOLDER.exists() == false) {
-			MODULE_FOLDER.mkdirs();
+		if (folder.exists() == false) {
+			folder.mkdirs();
 		}
 		
-		File[] files = MODULE_FOLDER.listFiles(new FilenameFilter() {
+		File[] files = folder.listFiles(new FilenameFilter() {
 			@Override
 			public boolean accept(File parent, String name) {
 				if (name.endsWith(".jar")) {
@@ -165,10 +173,6 @@ public class ModuleLoader {
 				throw new IOException("module.yml is missing name field!");
 			}
 			
-			if(cfg.getString("class", "").isEmpty()){
-				throw new IOException("module.yml is missing class field!");
-			}
-			
 			return cfg;
 		}
 		finally{
@@ -185,7 +189,6 @@ public class ModuleLoader {
 	 * @throws Throwable 
 	 */
 	public Module load(File f) throws Throwable {
-		Log.info("Loading " + f.getName());
 		JarFile jar = null;
 		try {
 			jar = new JarFile(f);
@@ -207,9 +210,10 @@ public class ModuleLoader {
 			}
 			
 			in.close();
-			String str = cfg.getString("class");
+			String str = cfg.getString(this.field);
 			if (str == null) {
-				throw new IOException(f.getName() + ": JAR module.yml must contain a valid field 'class' to load.");
+				//throw new IOException(f.getName() + ": JAR module.yml must contain a valid field '" + this.field + "' to load.");
+				return null;
 			}
 			
 			Class<?> clazz = cl.loadClass(str);
@@ -222,6 +226,8 @@ public class ModuleLoader {
 			if (parent != Module.class) {
 				throw new IOException(f.getName() + ": Class specified in module.yml in JAR file must extend Module class.");
 			}
+			
+			Log.info("Loading " + f.getName());
 			
 			Module m;
 			try {
@@ -243,8 +249,9 @@ public class ModuleLoader {
 			
 			try {
 				m.load();
-				ModuleLoadEvent event = new ModuleLoadEvent(m);
-				event.call();
+				// TODO: Reimplement this
+				/*ModuleLoadEvent event = new ModuleLoadEvent(m);
+				event.call();*/
 			}
 			catch (Throwable t) {
 				Log.severe("Error calling module load() on " + m.getName() + " (" + f.getName() + ").");
@@ -339,8 +346,9 @@ public class ModuleLoader {
 	 */
 	public boolean unload(Module m) {
 		try {
-			ModuleUnloadEvent event = new ModuleUnloadEvent(m);
-			event.call();
+			// TODO: Reimplement this
+			/*ModuleUnloadEvent event = new ModuleUnloadEvent(m);
+			event.call();*/
 			
 			m.unload();
 			m.getMeta().getLoader().close();

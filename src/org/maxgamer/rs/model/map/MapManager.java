@@ -77,7 +77,7 @@ public class MapManager implements EventListener, Iterable<WorldMap>{
 			throw new IllegalArgumentException("Map is not persisted!");
 		}
 		
-		NPCSpawn spawn = new NPCSpawn(npc.getId());
+		NPCSpawn spawn = new NPCSpawn(npc.getUUID());
 		try{
 			spawn.delete(Core.getWorldDatabase().getConnection());
 		}

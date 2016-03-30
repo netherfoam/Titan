@@ -52,6 +52,16 @@ public abstract class Module {
 	protected abstract void unload() throws Exception;
 	
 	/**
+	 * Fetches the data folder for this plugin. This folder may or may not exist
+	 * yet, but will be modules/getName().toLowerCase()
+	 * @return
+	 */
+	public final File getFolder() {
+		File f = new File("modules", getName().toLowerCase());
+		return f;
+	}
+	
+	/**
 	 * The name of this module
 	 * @return
 	 */
@@ -66,28 +76,6 @@ public abstract class Module {
 	 */
 	public final FileConfig getConfig() {
 		return meta.getConfig();
-	}
-	
-	/**
-	 * Fetches the data folder for this plugin. This folder may or may not exist
-	 * yet, but will be modules/getName().toLowerCase()
-	 * @return
-	 */
-	public final File getFolder() {
-		File f = new File("modules", getName().toLowerCase());
-		return f;
-	}
-	
-	public final Server getServer(){
-		return Core.getServer();
-	}
-	
-	public final EventManager getEvents(){
-		return getServer().getEvents();
-	}
-	
-	public final CommandManager getCommands(){
-		return getServer().getCommands();
 	}
 	
 	/**
@@ -155,6 +143,18 @@ public abstract class Module {
 	
 	public ModuleMeta getMeta() {
 		return meta;
+	}
+	
+	public final Server getServer(){
+		return Core.getServer();
+	}
+	
+	public final EventManager getEvents(){
+		return getServer().getEvents();
+	}
+	
+	public final CommandManager getCommands(){
+		return getServer().getCommands();
 	}
 	
 	public ModuleLoader getLoader(){

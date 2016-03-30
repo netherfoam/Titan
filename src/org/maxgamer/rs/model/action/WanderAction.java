@@ -49,14 +49,25 @@ public class WanderAction extends Action {
 	 * @return the path not null, possibly empty under extreme circumstances
 	 */
 	private Path doPath() {
-		//Move them to a random nearby tile within a 13x13 area with them at the center. Make sure it is reachable.
-		int dx = Erratic.nextInt(-radius, radius);
-		int dy = Erratic.nextInt(-radius, radius);
-		PathFinder finder = new AStar(radius);
-		Path p = finder.findPath(getOwner().getLocation(), center.add(dx, dy), center.add(dx, dy), getOwner().getSizeX(), getOwner().getSizeY());
+		// Move them to a random nearby tile within a 13x13 area with them at the center. Make sure it is reachable. If the start is indoors,
+		// then don't wander outdoors. It's still possible for mobs to wander outdoors, but much less likely.
+		boolean isIndoors = getOwner().getSpawn().isIndoors();
 		
-		dx = 0;
-		dy = 0;
+		Location dest = null;
+		int tries = 0;
+		do{
+			int dx = Erratic.nextInt(-radius, radius);
+			int dy = Erratic.nextInt(-radius, radius);
+			
+			dest = center.add(dx, dy);
+			tries++;
+		}while (dest.isIndoors() != isIndoors && tries < 10);
+		
+		PathFinder finder = new AStar(radius);
+		Path p = finder.findPath(getOwner().getLocation(), dest, dest, getOwner().getSizeX(), getOwner().getSizeY());
+		
+		int dx = 0;
+		int dy = 0;
 		
 		//Now ensure our path doesn't walk outside the zone. If it does, trim off
 		//any parts that would cause us to walk out of the zone.
@@ -65,6 +76,17 @@ public class WanderAction extends Action {
 			dx += d.dx;
 			dy += d.dy;
 			
+			Location loc = getOwner().getLocation().add(dx, dy);
+			if(tries < 10 && loc.isIndoors() != isIndoors){
+				// So we've gone outdoors accidentally
+				while (p.size() >= i && i > 0) {
+					//So delete any parts (including the last direction we checked)
+					//of the path outside of the radius.
+					p.removeLast();
+				}
+				break;
+			}
+			
 			if (dx >= radius || dx <= -radius || dy >= radius || dy <= -radius) {
 				//So our path takes us out of our required zone.
 				while (p.size() >= i) {
@@ -72,6 +94,7 @@ public class WanderAction extends Action {
 					//of the path outside of the radius.
 					p.removeLast();
 				}
+				break;
 			}
 		}
 		

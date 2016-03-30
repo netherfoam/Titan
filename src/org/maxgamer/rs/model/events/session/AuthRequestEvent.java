@@ -1,27 +1,34 @@
 package org.maxgamer.rs.model.events.session;
 
-import org.maxgamer.rs.model.events.RSEvent;
+import org.maxgamer.rs.logonv4.logon.LSEvent;
 import org.maxgamer.rs.network.AuthResult;
-import org.maxgamer.rs.network.Client;
 
 /**
  * @author netherfoam
  */
-public class AuthRequestEvent extends RSEvent {
-	private Client c;
+public class AuthRequestEvent extends LSEvent {
 	private AuthResult result;
+	private String ip;
+	private String name;
+	private int uuid;
 	
-	public AuthRequestEvent(Client c, AuthResult result) {
-		this.c = c;
+	public AuthRequestEvent(AuthResult result, String ip, String name, int clientUUID) {
 		this.result = result;
+		this.ip = ip;
+		this.name = name;
+		this.uuid = clientUUID;
 	}
 	
-	/**
-	 * May be null if auth was failed
-	 * @return
-	 */
-	public Client getClient() {
-		return c;
+	public String getName(){
+		return name;
+	}
+	
+	public int getClientUUID(){
+		return uuid;
+	}
+	
+	public String getIP() {
+		return ip;
 	}
 	
 	public AuthResult getResult() {

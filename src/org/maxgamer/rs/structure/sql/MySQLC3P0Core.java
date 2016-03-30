@@ -131,7 +131,7 @@ public class MySQLC3P0Core implements DatabaseCore {
 	public Connection getNewConnection() {
 		try {
 			Connection con = pool.getConnection();
-			if (con.isValid(5)) {
+			if (con.isValid(5) == false) {
 				con.close();
 				con = pool.getConnection();
 			}

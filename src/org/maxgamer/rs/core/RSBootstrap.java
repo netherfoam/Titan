@@ -25,7 +25,7 @@ public class RSBootstrap {
 			}
 			
 			if(gameOnly == false){
-				LogonServer.init(Core.getServer().getCommands());
+				LogonServer.init(Core.getServer().getCommands(), Core.getServer().getEvents());
 			}
 			
 			Core.getConsole(); //Initializes console

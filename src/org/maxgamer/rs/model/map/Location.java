@@ -130,6 +130,22 @@ public class Location extends Position implements MBR, Locatable {
 	}
 	
 	/**
+	 * Returns true if this location has a roof over it.
+	 * @return true if this location has a roof over it.
+	 */
+	public boolean isIndoors(){
+		return (getFlags() & Chunk.FLAG_ROOF) != 0;
+	}
+	
+	/**
+	 * Returns true if this location is on a bridge
+	 * @return true if this location is on a bridge
+	 */
+	public boolean isBridge(){
+		return (getFlags() & Chunk.FLAG_BRIDGE) != 0; 
+	}
+	
+	/**
 	 * The clip for this location. This will throw {@link NullPointerException}
 	 * if the map is null. The clip is a 32 bit int mask. See {@link ClipMasks}
 	 * for a list of clip masks by name. If this area of the map is not loaded,

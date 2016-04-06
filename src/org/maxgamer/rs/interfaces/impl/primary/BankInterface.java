@@ -113,11 +113,14 @@ public class BankInterface extends PrimaryInterface {
 					this.getPlayer().getWindow().open(new IntRequestInterface(this.player, "Withdraw how many?") {
 						@Override
 						public void onInput(long value) {
-							//TODO: If noted, inventory check needs to be different.
-							value = Calc.minl(value, this.getPlayer().getBank().getNumberOf(stack), getPlayer().getInventory().getSpaceFor(stack));
-							ItemStack item = stack.setAmount(value);
+							ItemStack take = stack;
+							ItemStack give = stack;
+							if(noted) give = give.getNoted();
 							
-							if (item == null) { //Will become null if amount <= 0
+							//TODO: If noted, inventory check needs to be different.
+							value = Calc.minl(value, this.getPlayer().getBank().getNumberOf(take), getPlayer().getInventory().getSpaceFor(give));
+							
+							if (value <= 0) { //Will become null if amount <= 0
 								return;
 							}
 							
@@ -125,12 +128,8 @@ public class BankInterface extends PrimaryInterface {
 							ContainerState inv = this.getPlayer().getInventory().getState();
 							
 							try {
-								bank.remove(item);
-								
-								if (BankInterface.this.noted && item.isNoteable()) {
-									item = item.getNoted();
-								}
-								inv.add(item);
+								bank.remove(take);
+								inv.add(give);
 								bank.shift();
 							}
 							catch (ContainerException e) {
@@ -160,22 +159,24 @@ public class BankInterface extends PrimaryInterface {
 				return;
 			}
 			
-			//TODO: If noted, inventory check needs to be different.
-			long amount = Calc.minl(item.getAmount(), this.getPlayer().getBank().getNumberOf(item), getPlayer().getInventory().getSpaceFor(item));
+			ItemStack take = item;
+			ItemStack give = item;
+			if(noted) give = give.getNoted();
+			
+			long amount = Calc.minl(take.getAmount(), this.getPlayer().getBank().getNumberOf(take), getPlayer().getInventory().getSpaceFor(give));
 			if (amount <= 0) {
 				return;
 			}
-			item = item.setAmount(amount);
+			
+			give = give.setAmount(amount);
+			take = take.setAmount(amount);
 			
 			ContainerState bank = this.getPlayer().getBank().getState();
 			ContainerState inv = this.getPlayer().getInventory().getState();
 			
 			try {
-				bank.remove(item);
-				if (this.noted && item.isNoteable()) {
-					item = item.getNoted();
-				}
-				inv.add(item);
+				bank.remove(take);
+				inv.add(give);
 				bank.shift();
 			}
 			catch (ContainerException e) {

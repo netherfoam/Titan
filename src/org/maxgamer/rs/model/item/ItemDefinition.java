@@ -361,6 +361,7 @@ public class ItemDefinition extends Definition {
 
 	public boolean isNoted() {
 		if(unnoted) return false;
+		if(getMaxStack() <= 1) return false;
 		
 		try{
 			// The item immediately before this item should be the unnoted version. If it is,

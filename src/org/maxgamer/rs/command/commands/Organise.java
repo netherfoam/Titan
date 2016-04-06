@@ -30,8 +30,11 @@ public class Organise implements PlayerCommand {
 			if(item == null) continue;
 			checksum += (item.getAmount());
 			
-			String[] parts = item.getName().split(" ");
+			String[] parts = item.getName().toLowerCase().split(" ");
 			for(String part : parts){
+				if(part.equals("of")) continue; // Unrelated
+				if(part.contains("(") && part.contains(")")) continue; // Quantifier
+				
 				ArrayList<ItemStack> group = words.get(part);
 				if(group == null){
 					group = new ArrayList<ItemStack>();

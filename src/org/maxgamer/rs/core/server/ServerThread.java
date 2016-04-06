@@ -123,11 +123,10 @@ public class ServerThread implements Executor {
 						ServerThread.this.queue.clear();
 					}
 					
-					//for(Runnable r : tasks){
-					for (int i = 0; i < tasks.size(); i++) {
+					int size = tasks.size();
+					for(int i = 0; i < size; i++) {
 						Runnable r = tasks.get(i);
 						try {
-							//Log.debug("Running task " + r);
 							r.run();
 						}
 						catch (Throwable t) {
@@ -178,9 +177,6 @@ public class ServerThread implements Executor {
 	}
 	
 	public Future<Void> submit(Runnable r) {
-		if(r instanceof ServerTicker){
-			Log.debug("submitted serverticker");
-		}
 		ServerThreadTask t = new ServerThreadTask(r);
 		synchronized (this.queue) {
 			this.queue.add(r);

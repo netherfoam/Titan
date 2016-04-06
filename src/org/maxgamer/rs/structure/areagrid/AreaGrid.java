@@ -203,12 +203,17 @@ public class AreaGrid<T> {
 		if(clazz == null) throw new NullPointerException("Class may not be null");
 		this.validate(query);
 		
-		int X = (Math.max(query.getMin(0), 0)) >> this.bits;
-		int Y = (Math.max(query.getMin(1), 0)) >> this.bits;
+		int qMinX = query.getMin(0);
+		int qMinY = query.getMin(1);
+		int qMaxX = query.getMin(0) + query.getDimension(0);
+		int qMaxY = query.getMin(1) + query.getDimension(1);
+		
+		int X = (Math.max(qMinX, 0)) >> this.bits;
+		int Y = (Math.max(qMinY, 0)) >> this.bits;
 		
 		//We want to reuse the bits that were dropped off from above, and add them here.
-		int dx = ((query.getMin(0) & ((1 << this.bits) - 1)) + (query.getDimension(0)) >> this.bits);
-		int dy = ((query.getMin(1) & ((1 << this.bits) - 1)) + (query.getDimension(1)) >> this.bits);
+		int dx = ((qMinX & ((1 << this.bits) - 1)) + (query.getDimension(0)) >> this.bits);
+		int dy = ((qMinY & ((1 << this.bits) - 1)) + (query.getDimension(1)) >> this.bits);
 		
 		dx = Math.min(this.grid.length - X - 1, dx);
 		
@@ -231,18 +236,18 @@ public class AreaGrid<T> {
 						for (Item i : g.getObjects()) {
 							MBR o = i.mbr;
 							//Version 2.0
-							//We use <= query.getMin(0) because the boundaries TOUCH but do not overlap!
-							if (o.getMin(0) + o.getDimension(0) <= query.getMin(0)) {
+							//We use <= qMinX because the boundaries TOUCH but do not overlap!
+							if (o.getMin(0) + o.getDimension(0) <= qMinX) {
 								continue; //o's max is lower than query's min
 							}
-							if (o.getMin(0) >= query.getMin(0) + query.getDimension(0)) {
+							if (o.getMin(0) >= qMaxX) {
 								continue; //o's min is higher than query's max
 							}
 							
-							if (o.getMin(1) + o.getDimension(1) <= query.getMin(1)) {
+							if (o.getMin(1) + o.getDimension(1) <= qMinY) {
 								continue; //o's max is lower than query's min
 							}
-							if (o.getMin(1) >= query.getMin(1) + query.getDimension(1)) {
+							if (o.getMin(1) >= qMaxY) {
 								continue; //o's min is higher than query's max
 							}
 							

@@ -1,8 +1,11 @@
 package org.maxgamer.rs.model.map.spawns;
 
+import java.io.FileNotFoundException;
+import java.sql.SQLException;
 import java.util.UUID;
 
 import org.maxgamer.rs.core.Core;
+import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.entity.mob.npc.NPC;
 import org.maxgamer.rs.model.map.Location;
 import org.maxgamer.rs.structure.dbmodel.Mapping;
@@ -45,7 +48,24 @@ public class NPCSpawn extends Transparent {
 			throw new IllegalStateException("Map not found: " + map + ", cannot spawn NPC.");
 		}
 		
-		NPC npc = new NPC(npc_id, id, l);
+		NPC npc;
+		try{
+			npc = new NPC(npc_id, id, l);
+		}
+		catch(RuntimeException e){
+			if(e.getCause() instanceof FileNotFoundException){
+				Log.warning("NPC missing from cache. I'll delete it for you. ID: " + id + ", NPC_ID: " + npc_id + " at " + l);
+				try {
+					this.delete(Core.getWorldDatabase().getConnection());
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+				return null;
+			}
+			else{
+				throw e;
+			}
+		}
 		npc.setSpawn(l);
 		return npc;
 	}

@@ -1,5 +1,7 @@
 package org.maxgamer.rs.model.item.inventory;
 
+import java.util.ConcurrentModificationException;
+
 import org.maxgamer.rs.model.item.ItemStack;
 
 /**
@@ -20,6 +22,10 @@ public class ContainerState extends Container {
 	 */
 	private boolean[] updates;
 	
+	private int originalModCount;
+	
+	private boolean applied = false;
+	
 	/**
 	 * Creates a new container state for the given container.
 	 * @param c the container
@@ -29,6 +35,7 @@ public class ContainerState extends Container {
 		this.c = c;
 		this.items = c.getItems();
 		this.updates = new boolean[items.length];
+		this.originalModCount = c.modCount;
 	}
 	
 	/**
@@ -44,6 +51,13 @@ public class ContainerState extends Container {
 	 * clears the internal set of updates.
 	 */
 	public synchronized boolean apply() {
+		if(this.applied){
+			throw new IllegalStateException("This ContainerState has already been applied.");
+		}
+		if(this.originalModCount != c.modCount){
+			throw new ConcurrentModificationException("The original container has been modified " + (c.modCount - this.originalModCount) + " times. Container state cannot be applied.");
+		}
+		
 		boolean change = false;
 		for (int i = 0; i < updates.length; i++) {
 			if (updates[i]) {
@@ -52,6 +66,9 @@ public class ContainerState extends Container {
 				change = true;
 			}
 		}
+		// Don't allow re-application
+		this.applied = true;
+		
 		return change;
 	}
 	

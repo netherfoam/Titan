@@ -29,6 +29,12 @@ public abstract class Container implements Cloneable, Iterable<ItemStack>, YMLSe
 	private LinkedList<ContainerListener> listeners = new LinkedList<ContainerListener>();
 	
 	/**
+	 * Modification container. Incremented every time a modification is made to this container's contents.
+	 * This is used to prevent concurrent modification by ContainerState's. Eg like Java Collections does.
+	 */
+	protected int modCount = 0;
+	
+	/**
 	 * Constructors & Item Stacking
 	 */
 	
@@ -196,6 +202,7 @@ public abstract class Container implements Cloneable, Iterable<ItemStack>, YMLSe
 		}
 		
 		this.setItem(slot, item);
+		modCount++;
 		
 		for (ContainerListener l : listeners) {
 			try {

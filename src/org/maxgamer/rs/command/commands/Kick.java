@@ -4,7 +4,9 @@ import org.maxgamer.rs.command.CommandSender;
 import org.maxgamer.rs.command.GenericCommand;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;
+import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
+import org.maxgamer.rs.model.events.mob.persona.player.PlayerLeaveWorldEvent;
 
 /**
  * @author netherfoam
@@ -23,6 +25,15 @@ public class Kick implements GenericCommand {
 		if (target == null) {
 			sender.sendMessage("No such player found: " + args[0]);
 			return;
+		}
+		
+		if(target instanceof Player){
+			// TODO: This is hacky.
+			PlayerLeaveWorldEvent e = new PlayerLeaveWorldEvent((Player) target);
+			e.call();
+			if (e.isCancelled()) {
+				return;
+			}
 		}
 		
 		target.destroy();

@@ -91,9 +91,6 @@ public class NPC extends Mob implements Interactable {
 			this.definition = NPCDefinition.getDefinition(defId);
 		}
 		catch (Exception e) {
-			if (e instanceof RuntimeException) {
-				throw (RuntimeException) e;
-			}
 			throw new RuntimeException(e);
 		}
 		

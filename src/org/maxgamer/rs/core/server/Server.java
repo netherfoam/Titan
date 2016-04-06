@@ -363,6 +363,7 @@ public class Server {
 					t.printStackTrace();
 					Log.severe("Exception was raised while booting server. Shutting down...");
 					Core.getServer().shutdown();
+					System.exit(1);
 				}
 			}
 		});

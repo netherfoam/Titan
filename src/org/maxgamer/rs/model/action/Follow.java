@@ -71,11 +71,15 @@ public abstract class Follow extends Action {
 	 */
 	public abstract void onWait();
 	
+	public boolean isFollowing(){
+		return this.isFollowing(getBreakDistance());
+	}
+	
 	/**
 	 * Returns true if this follow is currently valid.
 	 * @return true if this follow is valid, false otherwise.
 	 */
-	public boolean isFollowing() {
+	public boolean isFollowing(int distance) {
 		if (getTarget() == null || getTarget().isDead()) return false;
 		if (getOwner().isDead()) return false;
 		
@@ -83,7 +87,7 @@ public abstract class Follow extends Action {
 		
 		if (d == null || getTarget() == null) return false;
 		
-		if (d.near(getOwner().getLocation(), getBreakDistance()) == false) return false;
+		if(d.near(getOwner().getLocation(), distance) == false) return false;
 		
 		return true;
 	}
@@ -96,7 +100,13 @@ public abstract class Follow extends Action {
 		
 		getOwner().face(getTarget());
 		
-		while (isFollowing()) {
+		// This is used to so far starting a follow from far away doesn't immediately break, but will break if the
+		// target suddenly becomes too far away.
+		int maxDistance = Math.max(getTarget().getLocation().distanceSq(getOwner().getLocation()), getBreakDistance());
+		
+		while (isFollowing(maxDistance)) {
+			maxDistance = Math.max(getTarget().getLocation().distanceSq(getOwner().getLocation()), getBreakDistance());
+			
 			if(getOwner().getUpdateMask().getMovement().getDirection() != -1){
 				wait(1);
 				continue;

@@ -24,7 +24,7 @@ public class CacheFile{
 	 */
 	public static ByteBuffer getRaw(int idx, FileChannel index, FileChannel data, int fileId) throws IOException{
 		int size;
-		if((fileId + 1) * ReferenceTable.IDX_BLOCK_LEN > data.size()){
+		if((fileId + 1) * ReferenceTable.IDX_BLOCK_LEN > index.size()){
 			/* End of file, this is a bad fileId requested */
 			/* Note that this doesn't catch all no such file requests. */
 			throw new FileNotFoundException();

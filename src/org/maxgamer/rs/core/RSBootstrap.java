@@ -33,6 +33,7 @@ public class RSBootstrap {
 		catch (Exception e) {
 			e.printStackTrace();
 			Log.severe("Error starting core.");
+			System.exit(1);
 		}
 	}
 	

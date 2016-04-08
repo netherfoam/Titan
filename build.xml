@@ -51,14 +51,13 @@
 		</jar>
 	</target>
 	
-	<target name="release" depends="jar">
+	<target name="release" depends="compile">
 		<buildnumber file="build.num"/>
 		
 		<exec executable="hostname" outputproperty="computer.hostname"/>
 		<jar jarfile="Titan.jar" basedir="bin">
 			<zipgroupfileset dir="lib">
 				<include name="*.jar" />
-				<exclude name="kryo-2.22-all.jar" />
 			</zipgroupfileset>
 			
 			<manifest>

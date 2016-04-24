@@ -3,7 +3,7 @@ function talkTo(player, npc){
 	var opt = option(["I'd like to access my bank account, please.", "I'd like to check my PIN settings.", "I'd like to see my collection box.", "What is this place?"], "What would you like to say?");
 	if (opt == 0) {
 		chat(player, "I'd like to access my bank account, please.");
-		//TODO: Open pin before opening bank.
+		bank(player, npc);
 	} else if (opt == 1) {
 		chat(player, "I'd like to check my PIN settings.");
 		//TODO: Open PIN Settings tab.
@@ -23,4 +23,10 @@ function talkTo(player, npc){
 			chat(npc, "They acted if we didn't know what town we were in or something.");
 		}
 	}
+}
+
+function bank(player, npc){
+	//TODO: Open pin before opening bank.
+	var iface = new org.maxgamer.rs.interfaces.impl.primary.BankInterface(player);
+	player.getWindow().open(iface);
 }

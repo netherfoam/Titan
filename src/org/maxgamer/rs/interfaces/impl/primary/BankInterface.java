@@ -123,6 +123,8 @@ public class BankInterface extends PrimaryInterface {
 							if (value <= 0) { //Will become null if amount <= 0
 								return;
 							}
+							take = take.setAmount(value);
+							give = give.setAmount(value);
 							
 							ContainerState bank = this.getPlayer().getBank().getState();
 							ContainerState inv = this.getPlayer().getInventory().getState();

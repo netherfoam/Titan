@@ -146,6 +146,7 @@ public abstract class PickerDialogue<T> extends Dialogue {
 				iit.remove();
 				
 				if(this.isOpen()){
+					// TODO: This is removing the wrong item from the UI
 					getPlayer().getProtocol().sendBConfig(CONFIG_IDS[items.size() - 1], 0);
 					getPlayer().getProtocol().sendGlobalString(NAME_IDS[items.size() - 1], "");
 				}
@@ -167,6 +168,11 @@ public abstract class PickerDialogue<T> extends Dialogue {
 			Option item = items.get(i);
 			getPlayer().getProtocol().sendBConfig(CONFIG_IDS[i], item.icon);
 			getPlayer().getProtocol().sendGlobalString(NAME_IDS[i], item.name);
+		}
+		// Reset any old ID's
+		for(int i = items.size(); i < CONFIG_IDS.length; i++){
+			getPlayer().getProtocol().sendBConfig(CONFIG_IDS[i], -1);
+			getPlayer().getProtocol().sendGlobalString(NAME_IDS[i], "");
 		}
 		
 		//Sets the maximum amount the user can select
@@ -196,17 +202,18 @@ public abstract class PickerDialogue<T> extends Dialogue {
 	@Override
 	public void onClick(int option, int buttonId, int slotId, int itemId) {
 		Option item;
+		int index = buttonId - 14;
+		
+		// Options above 7 need have different button ID's
+		if(index >= 7){
+			index -= 4;
+		}
+		
 		try {
-			int index = buttonId - 14;
-			
-			// Options above 7 need have different button ID's
-			if(index >= 7){
-				index -= 4;
-			}
 			item = items.get(index);
 		}
 		catch (IndexOutOfBoundsException e) {
-			getPlayer().getCheats().log(2, "Attempted to select an item which does not exist");
+			getPlayer().getCheats().log(2, "Attempted to select an item which does not exist, index " + index);
 			return;
 		}
 		

@@ -105,7 +105,7 @@ public abstract class Follow extends Action {
 		int maxDistance = Math.max(getTarget().getLocation().distanceSq(getOwner().getLocation()), getBreakDistance());
 		
 		while (isFollowing(maxDistance)) {
-			maxDistance = Math.max(getTarget().getLocation().distanceSq(getOwner().getLocation()), getBreakDistance());
+			maxDistance = Math.max(maxDistance, getBreakDistance());
 			
 			if(getOwner().getUpdateMask().getMovement().getDirection() != -1){
 				wait(1);

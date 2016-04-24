@@ -1,5 +1,7 @@
 package org.maxgamer.rs.interfaces.impl.dialogue;
 
+import java.util.Arrays;
+
 import org.maxgamer.rs.lib.Chat;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 
@@ -43,7 +45,7 @@ public abstract class ThoughtDialogue extends Dialogue {
 	 */
 	public void setLines(String... lines){
 		if(lines.length < 1 || lines.length > MAX_LINES){
-			throw new IllegalArgumentException("Given " + lines.length + " lines but must display 1-5 lines!");
+			throw new IllegalArgumentException("Given " + lines.length + "lines! Text would be \n" + Arrays.toString(lines) + "\nBut must display 1-4 lines!");
 		}
 		
 		for(int i = 0; i < lines.length; i++){

@@ -153,7 +153,7 @@ public class ServerTicker implements Runnable {
 		//tick in 563ms, not 600ms. (37 + 563 = 600)
 		int duration = (int) tickTimer.getTime() / 1000000;
 		
-		if (duration > getTickDuration()) {
+		if (duration > getTickDuration() && getTickDuration() >= 600) {
 			Log.info("Warning, tick took " + duration + "ms to finish");
 		}
 		

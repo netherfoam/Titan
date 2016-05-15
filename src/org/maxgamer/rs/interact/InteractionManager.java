@@ -11,6 +11,7 @@ import org.maxgamer.rs.model.action.Action;
 import org.maxgamer.rs.model.entity.Entity;
 import org.maxgamer.rs.model.entity.Interactable;
 import org.maxgamer.rs.model.entity.mob.Mob;
+import org.maxgamer.rs.model.entity.mob.facing.Facing;
 
 import co.paralleluniverse.fibers.SuspendExecution;
 
@@ -47,9 +48,14 @@ public class InteractionManager {
 	public void interact(final Mob source, final Interactable target, final Object... bag) {
 		// TODO: There's got to be a way of adding @Interact(instant=true|false), so that the server appears more responsive
 		
-		if(target instanceof Entity && ((Entity) target).isDestroyed()){
-			// A sanity check to ensure that nobody makes interactions with removed entities
-			throw new IllegalArgumentException("Attempted to interact " + source + " with " + target + " bag is " + Arrays.toString(bag) + ", but target is destroyed.");
+		if(target instanceof Entity){
+			if(((Entity) target).isDestroyed()){
+				// A sanity check to ensure that nobody makes interactions with removed entities
+				throw new IllegalArgumentException("Attempted to interact " + source + " with " + target + " bag is " + Arrays.toString(bag) + ", but target is destroyed.");
+			}
+			else {
+				source.setFacing(Facing.face((Entity) target));
+			}
 		}
 		
 		// Invoke this inside an Action, so that it may throw SuspendExecution

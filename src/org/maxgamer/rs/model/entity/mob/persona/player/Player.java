@@ -487,9 +487,7 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 	
 	@Override
 	public void sendMessage(String string) {
-		if (string == null) {
-			throw new NullPointerException("Message may not be null!");
-		}
+		super.sendMessage(string);
 		
 		int pos = 0;
 		while (pos < string.length()) {

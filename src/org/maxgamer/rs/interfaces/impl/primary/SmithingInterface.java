@@ -1,11 +1,14 @@
 package org.maxgamer.rs.interfaces.impl.primary;
 
+import java.util.HashMap;
+import java.util.Map.Entry;
+
 import org.maxgamer.rs.interfaces.PrimaryInterface;
 import org.maxgamer.rs.interfaces.impl.chat.IntRequestInterface;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.item.ItemStack;
 
-public abstract class SmithingInterface extends PrimaryInterface {
+public abstract class SmithingInterface<T> extends PrimaryInterface {
 	public static final int POS_DAGGER = 0;
 	public static final int POS_HATCHET = 1;
 	public static final int POS_MACE = 2;
@@ -46,29 +49,42 @@ public abstract class SmithingInterface extends PrimaryInterface {
         }
 	}
 	
-	private ItemStack[] items = new ItemStack[MAX_ITEMS];
+	private class Option {
+		private ItemStack icon;
+		private T t;
+		private Option(T t, ItemStack icon){
+			this.t = t;
+			this.icon = icon;
+		}
+	}
+	
+	private HashMap<Integer, Option> items = new HashMap<Integer, Option>();
 	
 	public SmithingInterface(Player p) {
 		super(p);
 		setChildId(INTERFACE_ID);
 	}
 	
-	public void set(int pos, ItemStack item){
-		items[pos] = item;
+	public void set(int pos, T t, ItemStack icon){
+		items.put(pos, new Option(t, icon));
 		
 		if(isOpen()){
-			getPlayer().getProtocol().sendItemOnInterface(getChildId(), CHILD_IDS[pos], item);
+			getPlayer().getProtocol().sendItemOnInterface(getChildId(), CHILD_IDS[pos], icon);
 		}
 	}
 	
-	public ItemStack get(int pos){
-		return items[pos];
+	public T get(int pos){
+		Option o = items.get(pos);
+		if(o == null) return null;
+		return o.t;
 	}
 	
 	@Override
 	public void onOpen(){
-		for(int i = 0; i < items.length; i++){
-			getPlayer().getProtocol().sendItemOnInterface(getChildId(), CHILD_IDS[i], items[i]);
+		for(Entry<Integer, Option> entry : items.entrySet()){
+			Option o = entry.getValue();
+			if(o != null) getPlayer().getProtocol().sendItemOnInterface(getChildId(), CHILD_IDS[entry.getKey()], o.icon);
+			else getPlayer().getProtocol().sendItemOnInterface(getChildId(), CHILD_IDS[entry.getKey()], null);
 			// Intesting note for the future:
 			// You can change the names of items from "mace" "sword" etc using this:
 			// setString(CHILD_IDS[i]+1, items[i].getName());
@@ -87,34 +103,35 @@ public abstract class SmithingInterface extends PrimaryInterface {
 		final int pos = (buttonId - 21) / 8;
 		int remainder = (buttonId - 21) % 8;
 		
-		if(items[pos] == null){
+		if(items.get(pos) == null){
 			getPlayer().getCheats().log(5, "Attempted to make an item from a NULL position in smithing interface");
 			return;
 		}
 		
+		getPlayer().getWindow().close(this);
+		
 		if(remainder == 0){
 			//Make all
-			select(items[pos].setAmount(MAKE_ALL)); 
+			select(items.get(pos).t, MAKE_ALL); 
 		}
 		else if(remainder == 1){
 			//Make X
 			getPlayer().getWindow().open(new IntRequestInterface(getPlayer(), "How many would you like to make?") {
 				@Override
 				public void onInput(long value) {
-					select(items[pos].setAmount(value));
+					select(items.get(pos).t, value);
 				}
 			});
 		}
 		else if(remainder == 2){
 			//Make 5
-			select(items[pos].setAmount(5));
+			select(items.get(pos).t, 5);
 		}
 		else if(remainder == 3){
 			//Make 1
-			select(items[pos].setAmount(1));
+			select(items.get(pos).t, 1);
 		}
-		
 	}
 	
-	public abstract void select(ItemStack item);
+	public abstract void select(T t, long quantity);
 }

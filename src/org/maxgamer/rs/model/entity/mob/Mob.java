@@ -841,17 +841,27 @@ public abstract class Mob extends Entity implements EquipmentHolder, Interactabl
 	 */
 	public abstract boolean has(ItemStack... items);
 	
-	public void sendMessage(String msg) {
+	/**
+	 * Send the given message to this Mob. This is a convenience method for players, but may be
+	 * intercepted by bots or AI NPC's later on too.
+	 * @param string the message to send
+	 */
+	public void sendMessage(String string) {
 		// Empty
+		if (string == null) {
+			throw new NullPointerException("Message may not be null!");
+		}
 	}
 	
-	//TODO: Document
+	/**
+	 * Interacts this Mob with the given target object and parameters.
+	 * 
+	 * @param target the object the Mob is interacting with (Player/NPC/Mob/ItemStack/GroundItemStack/GameObject)
+	 * @param bag the options they've combined the target with (Eg "Drop", or an NPC, or a slot they used)
+	 * @return true
+	 */
 	public boolean use(Interactable target, Object... bag){
 		Core.getServer().getInteractions().interact(this, target, bag);
 		return true;
-	}
-	//TODO: Document
-	public boolean use(Interactable target, String option){
-		return this.use(target, new Object[]{option});
 	}
 }

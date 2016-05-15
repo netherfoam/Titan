@@ -25,6 +25,8 @@ public class ActionQueue extends FastTickable {
 	/** The list of actions the owner wishes to execute in order */
 	private LinkedList<Action> queue = new LinkedList<Action>(); //FIFO queue
 	
+	private Action current;
+	
 	/**
 	 * Constructs a new ActionQueue for the given mob.
 	 * @param owner the mob who this queue will belong to.
@@ -43,6 +45,14 @@ public class ActionQueue extends FastTickable {
 	 */
 	public Mob getOwner() {
 		return owner;
+	}
+	
+	/**
+	 * The currently executing Action, may be null.
+	 * @return The currently executing Action, may be null.
+	 */
+	public Action current() {
+		return this.current;
 	}
 	
 	/**
@@ -342,6 +352,7 @@ public class ActionQueue extends FastTickable {
 			
 			Action w = queue.getFirst();
 			try {
+				current = w;
 				w.tick(); //W will end itself when its done.
 			}
 			catch (Exception e) {
@@ -351,6 +362,7 @@ public class ActionQueue extends FastTickable {
 				Log.warning("Error ticking ActionQueue for Mob " + owner + ". Action: " + w);
 				e.printStackTrace();
 			}
+			current = null;
 			
 			//We do not know if we will finish, so we queue again anyway.
 			this.queue();
@@ -398,7 +410,9 @@ public class ActionQueue extends FastTickable {
 				return; //There's nothing to yield to here.
 			}
 			
+			Action old = current;
 			try {
+				current = w;
 				//Performed inside of synchronization block.
 				w.tick(); //w will end itself when its finished
 			}
@@ -409,6 +423,7 @@ public class ActionQueue extends FastTickable {
 				Log.warning("Error ticking ActionQueue for Mob " + owner + ". Action: " + w);
 				e.printStackTrace();
 			}
+			current = old;
 		}
 	}
 	

@@ -9,7 +9,6 @@ import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.action.WalkAction;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
-import org.maxgamer.rs.model.events.mob.persona.player.PlayerItemOnItemEvent;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.item.inventory.Container;
 import org.maxgamer.rs.model.item.inventory.ContainerListener;
@@ -22,7 +21,7 @@ import co.paralleluniverse.fibers.SuspendExecution;
 /**
  * @author netherfoam
  */
-public class InventoryInterface extends SideInterface {
+public class InventoryInterface extends SideInterface { // TODO: Add 'ContainerInterface' for InventoryInterface/BankInterface/EquipmentInterface/etc because they're all similar in protocol
 	private static final SettingsBuilder INTERFACE_CONFIG;
 	public static final short INTERFACE_ID = 149;
 	public static final int CONTAINER_ID = 93;
@@ -161,7 +160,7 @@ public class InventoryInterface extends SideInterface {
 			return;
 		}
 
-		player.use(item, slot, s);
+		player.use(item, s, slot);
 	}
 	
 	public void onClick(final Mob target, int buttonId, int slotId, int itemId, boolean run) {
@@ -187,13 +186,13 @@ public class InventoryInterface extends SideInterface {
 					@Override
 					public void run() throws SuspendExecution{
 						super.run();
-						getPlayer().use(item, target);
+						getPlayer().use(target, item);
 					}
 				};
 				getPlayer().getActions().queue(walk);
 			}
 			else{
-				getPlayer().use(item, target);
+				getPlayer().use(target, item);
 			}
 		}
 		else{
@@ -203,8 +202,10 @@ public class InventoryInterface extends SideInterface {
 
 	@Override
 	public void onUse(Window to, int fromButtonId, int fromItemId, int fromSlot, int toButtonId, int toItemId, int toSlot) {
-		PlayerItemOnItemEvent event = new PlayerItemOnItemEvent(player, fromButtonId, fromItemId, fromSlot, toButtonId, toItemId, toSlot);
-		event.call();
+		ItemStack source = this.getPlayer().getInventory().get(fromSlot);
+		ItemStack target = this.getPlayer().getInventory().get(toSlot);
+		
+		this.getPlayer().use(source, target);
 	}
 
 	@Override

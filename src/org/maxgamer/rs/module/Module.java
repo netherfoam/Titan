@@ -10,6 +10,7 @@ import org.maxgamer.rs.command.CommandManager;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.core.server.Server;
 import org.maxgamer.rs.event.EventManager;
+import org.maxgamer.rs.interact.InteractionManager;
 import org.maxgamer.rs.structure.configs.FileConfig;
 
 /**
@@ -151,6 +152,10 @@ public abstract class Module {
 	
 	public final EventManager getEvents(){
 		return getServer().getEvents();
+	}
+	
+	public final InteractionManager getInteractions(){
+		return getServer().getInteractions();
 	}
 	
 	public final CommandManager getCommands(){

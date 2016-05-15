@@ -50,24 +50,24 @@ public class AreaManager implements EventListener{
 		}
 	}
 	
-	@EventHandler(consumer = false, skipIfCancelled = true, priority = EventPriority.MONITOR)
+	@EventHandler(skipIfCancelled = true, priority = EventPriority.MONITOR)
 	public void onMove(MobMoveEvent e) {
 		move(e.getMob(), e.getFrom(), e.getTo(), AreaChangeState.WALK);
 	}
 	
-	@EventHandler(consumer = false, skipIfCancelled = true, priority = EventPriority.MONITOR)
+	@EventHandler(skipIfCancelled = true, priority = EventPriority.MONITOR)
 	public void onTeleport(MobTeleportEvent e) {
 		move(e.getMob(), e.getFrom(), e.getTo(), AreaChangeState.TELEPORT);
 	}
 	
-	@EventHandler(consumer = false, skipIfCancelled = true, priority = EventPriority.MONITOR)
+	@EventHandler(skipIfCancelled = true, priority = EventPriority.MONITOR)
 	public void onQuit(PlayerLeaveWorldEvent e){
 		for(Area a : areas.get(e.getMob().getLocation(), 4)){
 			a.onLeave(e.getMob(), AreaChangeState.SERVER);
 		}
 	}
 	
-	@EventHandler(consumer = false, skipIfCancelled = true, priority = EventPriority.MONITOR)
+	@EventHandler(skipIfCancelled = true, priority = EventPriority.MONITOR)
 	public void onJoin(PlayerEnterWorldEvent e){
 		for(Area a : areas.get(e.getMob().getLocation(), 4)){
 			a.onEnter(e.getMob(), AreaChangeState.SERVER);

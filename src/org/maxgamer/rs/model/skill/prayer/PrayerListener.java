@@ -17,7 +17,7 @@ import org.maxgamer.rs.model.events.mob.MobAttackEvent;
 @AutoRegister
 public class PrayerListener implements EventListener {
 	
-	@EventHandler(priority = EventPriority.LOWEST, consumer=false, skipIfCancelled=true)
+	@EventHandler(priority = EventPriority.LOWEST, skipIfCancelled=true)
 	public void onAttack(MobAttackEvent e) {
 		Mob target = e.getTarget();
 		Damage d = e.getDamage();

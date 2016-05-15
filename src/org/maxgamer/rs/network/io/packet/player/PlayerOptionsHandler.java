@@ -78,6 +78,6 @@ public class PlayerOptionsHandler implements PacketProcessor<Player> {
 			return;
 		}
 		
-		player.use(target, player.getPersonaOptions().get(option));
+		player.use(target, player.getPersonaOptions().get(option).getText());
 	}
 }

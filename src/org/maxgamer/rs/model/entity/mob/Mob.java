@@ -14,28 +14,16 @@ import org.maxgamer.rs.model.entity.mob.combat.Attack;
 import org.maxgamer.rs.model.entity.mob.combat.AttackStyle;
 import org.maxgamer.rs.model.entity.mob.combat.DamageLog;
 import org.maxgamer.rs.model.entity.mob.facing.Facing;
-import org.maxgamer.rs.model.entity.mob.npc.NPC;
-import org.maxgamer.rs.model.entity.mob.persona.Persona;
-import org.maxgamer.rs.model.entity.mob.persona.PersonaOption;
 import org.maxgamer.rs.model.events.mob.MobDeathEvent;
-import org.maxgamer.rs.model.events.mob.MobItemOnItemEvent;
-import org.maxgamer.rs.model.events.mob.MobItemOnObjectEvent;
 import org.maxgamer.rs.model.events.mob.MobLoadEvent;
 import org.maxgamer.rs.model.events.mob.MobTeleportEvent;
 import org.maxgamer.rs.model.events.mob.MobTeleportEvent.TeleportCause;
 import org.maxgamer.rs.model.events.mob.MobUnloadEvent;
-import org.maxgamer.rs.model.events.mob.MobUseGroundItemEvent;
-import org.maxgamer.rs.model.events.mob.MobUseItemEvent;
-import org.maxgamer.rs.model.events.mob.MobUseItemOnMobEvent;
-import org.maxgamer.rs.model.events.mob.MobUseNPCEvent;
-import org.maxgamer.rs.model.events.mob.MobUseObjectEvent;
 import org.maxgamer.rs.model.item.ItemStack;
-import org.maxgamer.rs.model.item.ground.GroundItemStack;
 import org.maxgamer.rs.model.item.inventory.Equipment;
 import org.maxgamer.rs.model.map.ClipMasks;
 import org.maxgamer.rs.model.map.Location;
 import org.maxgamer.rs.model.map.Position;
-import org.maxgamer.rs.model.map.object.GameObject;
 import org.maxgamer.rs.model.map.path.AStar;
 import org.maxgamer.rs.model.map.path.Path;
 import org.maxgamer.rs.model.map.path.PathFinder;
@@ -857,77 +845,13 @@ public abstract class Mob extends Entity implements EquipmentHolder, Interactabl
 		// Empty
 	}
 	
-	//TODO: Document these methods.
-	public boolean use(ItemStack item, int slot, String option) {
-		MobUseItemEvent e = new MobUseItemEvent(this, item, option, slot);
-		e.call();
-		
-		return e.isConsumed();
+	//TODO: Document
+	public boolean use(Interactable target, Object... bag){
+		Core.getServer().getInteractions().interact(this, target, bag);
+		return true;
 	}
-	
-	public boolean use(ItemStack item, String option) {
-		return this.use(item, -1, option);
+	//TODO: Document
+	public boolean use(Interactable target, String option){
+		return this.use(target, new Object[]{option});
 	}
-	
-	public boolean use(GameObject g, String option) {
-		int i = 0;
-		for (String s : g.getOptions()) {
-			if (s != null && s.equals(option)) {
-				return use(g, i);
-			}
-			
-			i++;
-		}
-		throw new IllegalArgumentException("No option available: '" + option + "' on " + g);
-	}
-	
-	public boolean use(GameObject g, int option) {
-		if (option < 0 || option >= g.getDefiniton().getOptions().length) {
-			throw new IllegalArgumentException("Cannot invoke option " + option);
-		}
-		if (g.getDefiniton().getOption(option) == null) {
-			throw new IllegalArgumentException("Cannot invoke option " + option + " ( no such option )");
-		}
-		
-		this.face(g);
-		MobUseObjectEvent e = new MobUseObjectEvent(this, g, option);
-		e.call();
-		
-		return e.isConsumed();
-	}
-	
-	public void use(Persona player, PersonaOption option) {
-		option.run(this, player);
-	}
-	
-	public boolean use(NPC npc, String option) {
-		MobUseNPCEvent e = new MobUseNPCEvent(this, npc, option);
-		e.call();
-		return e.isConsumed();
-	}
-	
-	public boolean use(ItemStack item, GameObject object) {
-		MobItemOnObjectEvent e = new MobItemOnObjectEvent(this, object, item);
-		e.call();
-		return e.isConsumed();
-	}
-	
-	public boolean use(ItemStack item, ItemStack target) {
-		MobItemOnItemEvent e = new MobItemOnItemEvent(this, item, target);
-		e.call();
-		return e.isConsumed();
-	}
-	
-	public boolean use(ItemStack item, Mob target) {
-		MobUseItemOnMobEvent e = new MobUseItemOnMobEvent(this, item, target, -1);
-		e.call();
-		return e.isConsumed();
-	}
-	
-	public boolean use(final GroundItemStack item, String option) {
-		MobUseGroundItemEvent e = new MobUseGroundItemEvent(this, item, option);
-		e.call();
-		return e.isConsumed();
-	}
-	
 }

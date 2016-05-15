@@ -79,7 +79,6 @@ public class GameObjectHandler implements PacketProcessor<Player> {
 					
 					if (p.getRights() >= Rights.MOD) {
 						p.sendMessage("ID: " + id);
-						Log.debug(def.toString());
 					}
 					
 					if (def == null) {
@@ -98,10 +97,8 @@ public class GameObjectHandler implements PacketProcessor<Player> {
 				return;
 		}
 		
-		Log.debug("ID: " + id + ", X: " + x + ", Y: " + y);
 		if (p.getRights() >= Rights.MOD) {
-			GameObjectProto def = GameObject.getDefinition(id);
-			Log.debug(def.toString());
+			Log.debug("ID: " + id + ", X: " + x + ", Y: " + y);
 		}
 		id = id & 0xFFFF; // Signed
 		final int opt = option;
@@ -142,13 +139,13 @@ public class GameObjectHandler implements PacketProcessor<Player> {
 							super.run();
 							
 							// Then use the object
-							p.use(g, opt);
+							p.use(g, g.getOptions()[opt]);
 						}
 					};
 					p.getActions().queue(walk);
 				}
 				else {
-					p.use(g, opt);
+					p.use(g, g.getOptions()[opt]);
 				}
 				
 				return;

@@ -48,17 +48,6 @@ public class HandlerExecutor{
 	}
 	
 	/**
-	 * Returns true if this EventListener is an Event consumer. Event
-	 * consuming events won't be notified if the Event has already been
-	 * consumed.
-	 * @return true if the EventListener is a consumer.
-	 */
-	public boolean isConsumer(){
-		EventHandler meta = getMethod().getAnnotation(EventHandler.class);
-		return meta.consumer();
-	}
-	
-	/**
 	 * Returns true if this EventListener should be skipped if the Event is
 	 * cancelled. By default, this is true. When this is false, the EventListener
 	 * will still be notified with events that have been cancelled.

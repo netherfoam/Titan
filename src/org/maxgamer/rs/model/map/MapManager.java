@@ -183,7 +183,7 @@ public class MapManager implements EventListener, Iterable<WorldMap>{
 		MapStructure.save(folder, map);
 	}
 	
-	@EventHandler(priority = EventPriority.LOW, consumer=false, skipIfCancelled=true)
+	@EventHandler(priority = EventPriority.LOW, skipIfCancelled=true)
 	public void onLoad(ChunkLoadEvent e){
 		if(isPersisted(e.getMap()) == false){
 			return;
@@ -218,7 +218,7 @@ public class MapManager implements EventListener, Iterable<WorldMap>{
 		}*/
 	}
 	
-	@EventHandler(priority = EventPriority.HIGH, consumer=false, skipIfCancelled=true)
+	@EventHandler(priority = EventPriority.HIGH, skipIfCancelled=true)
 	public void onUnload(ChunkUnloadEvent e){
 		if(isPersisted(e.getMap()) == false){
 			return;

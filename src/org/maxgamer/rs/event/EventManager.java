@@ -148,11 +148,6 @@ public class EventManager {
 			}
 			
 			for(HandlerExecutor h : list){
-				if(event.isConsumed() && h.isConsumer()){
-					/* Skip consumers when the event is already consumed or the event is cancelled */
-					continue;
-				}
-				
 				if(cancellable && h.isSkipIfCancelled() && ((Cancellable) event).isCancelled()){
 					/* Skip event handlers which don't want cancelled events */
 					continue;

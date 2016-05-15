@@ -77,6 +77,7 @@ import org.maxgamer.rs.command.commands.WhoIs;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.core.tick.Tickable;
 import org.maxgamer.rs.event.EventManager;
+import org.maxgamer.rs.interact.InteractionManager;
 import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.logonv4.game.LogonConnection;
 import org.maxgamer.rs.model.entity.EntityList;
@@ -91,8 +92,6 @@ import org.maxgamer.rs.model.item.ground.GroundItemManager;
 import org.maxgamer.rs.model.item.vendor.VendorManager;
 import org.maxgamer.rs.model.javascript.JavaScriptFiber;
 import org.maxgamer.rs.model.javascript.TimeoutError;
-import org.maxgamer.rs.model.javascript.interaction.InteractionListener;
-import org.maxgamer.rs.model.javascript.interaction.InteractionManager;
 import org.maxgamer.rs.model.lobby.Lobby;
 import org.maxgamer.rs.model.map.Location;
 import org.maxgamer.rs.model.map.MapManager;
@@ -185,6 +184,9 @@ public class Server {
 	
 	private ConfigSection config;
 	
+	/**
+	 * The interactions manager for the server
+	 */
 	private InteractionManager interactions;
 	
 	/**
@@ -223,6 +225,12 @@ public class Server {
 		this.started = System.currentTimeMillis();
 	}
 	
+	/**
+	 * The interactions for the server. These are a convenient method of writing Actions without having to create
+	 * a new class for each one. This lazily initializes the manager, if it's not yet ready.
+	 * 
+	 * @return the {@link InteractionManager}
+	 */
 	public synchronized InteractionManager getInteractions() {
 		if (interactions == null) {
 			interactions = new InteractionManager();
@@ -590,7 +598,6 @@ public class Server {
 			Log.debug("Loading EventManager...");
 			events = new EventManager();
 			events.register(new PrayerListener());
-			events.register(new InteractionListener(Core.getServer().getInteractions()));
 			
 			Log.debug("...Loaded EventManager!");
 		}

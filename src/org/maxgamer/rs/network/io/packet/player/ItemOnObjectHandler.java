@@ -82,16 +82,16 @@ public class ItemOnObjectHandler implements PacketProcessor<Player> {
 							super.run();
 							
 							// Then use the object
-							player.use(item, g);
+							player.use(g, item);
 						}
 					};
 					player.getActions().queue(walk);
 				}
 				else {
-					player.use(item, g);
+					player.use(g, item);
 				}
 				
-				player.use(item, g);
+				player.use(g, item);
 			}
 		}
 	}

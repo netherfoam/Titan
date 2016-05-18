@@ -244,6 +244,17 @@ public class Game637Protocol extends GameProtocol {
 		return localNpcs.contains(n);
 	}
 	
+	public void sendOption(int slot, String option, boolean top) {
+		if(option == null) option = "null";
+		
+		RSOutgoingPacket out = new RSOutgoingPacket(120);
+		out.writeShortA(top ? 42 : 65535); //Sprite ID for the option.. What?
+		out.writeByteS(top ? 1 : 0); //Boolean, if true it will appear above Walk Here.
+		out.writePJStr1(option); //Option text
+		out.writeByteS(slot); //The slot for the option.
+		p.write(out);
+	}
+	
 	/**
 	 * Requests the client invoke the given client script.
 	 * 

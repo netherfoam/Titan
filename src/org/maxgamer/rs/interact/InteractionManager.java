@@ -94,8 +94,11 @@ public class InteractionManager {
 				}
 				
 				if(successes.size() > 1){
-					Log.warning("There were multiple handlers that accepted the interaction between " + source + " => " + target + " with bag " + bag);
+					Log.warning("There were multiple handlers that accepted the interaction between " + source + " => " + target + " with bag " + Arrays.toString(bag));
 					Log.warning("They were " + successes.toString() + ". This would indicate that one of them should throw a NotHandledException.");
+				}
+				else if(successes.isEmpty()){
+					Log.debug("Unhandled interaction between " + source + " => " + target + " with bag " + Arrays.toString(bag) + ".");
 				}
 			}
 			

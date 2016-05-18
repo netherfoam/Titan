@@ -38,7 +38,6 @@ import org.maxgamer.rs.command.commands.Item;
 import org.maxgamer.rs.command.commands.ItemScriptDump;
 import org.maxgamer.rs.command.commands.JSCommand;
 import org.maxgamer.rs.command.commands.Kick;
-import org.maxgamer.rs.command.commands.Kill;
 import org.maxgamer.rs.command.commands.LogonStatus;
 import org.maxgamer.rs.command.commands.ModuleCmd;
 import org.maxgamer.rs.command.commands.Nearby;
@@ -514,7 +513,6 @@ public class Server {
 			commands.register("item", new Item());
 			commands.register("itemscriptdump", new ItemScriptDump());
 			commands.register("kick", new Kick());
-			commands.register("kill", new Kill());
 			commands.register("list", new org.maxgamer.rs.command.commands.List());
 			commands.register("logonstatus", new LogonStatus());
 			commands.register("modulecmd", new ModuleCmd());

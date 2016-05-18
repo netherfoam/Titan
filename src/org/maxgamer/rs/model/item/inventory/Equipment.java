@@ -19,33 +19,10 @@ import org.maxgamer.rs.structure.configs.FileConfig;
  * @author netherfoam
  */
 public class Equipment extends Container {
-
-	private static HashMap<String, EquipmentSet> equipmentSets = new HashMap<String, EquipmentSet>();
-
+	private static final HashMap<String, EquipmentSet> SETS = new HashMap<String, EquipmentSet>();
+	
 	public static final int SIZE = 14;
-
-	private EquipmentSet currentSet;
-	private ItemStack[] items;
-	private Mob owner;
-	private int[] bonus;
-
-	public Equipment(Mob owner) {
-		items = new ItemStack[SIZE];
-		bonus = new int[Bonuses.COUNT];
-		this.owner = owner;
-		this.addListener(new ContainerListener() {
-			@Override
-			public void onSet(Container c, int slot, ItemStack old) {
-				for (EquipmentSet set : equipmentSets.values()) {
-					if (set.isWearingSet(Equipment.this)) {
-						currentSet = set;
-						break;
-					} else currentSet = null;
-				}
-			}
-		});
-	}
-
+	
 	public static void load() throws Exception {
 		Log.info("Loading Equipment Sets...");
 		FileConfig f = new FileConfig(new File("./config/equipment_sets.yml"));
@@ -73,11 +50,42 @@ public class Equipment extends Container {
 				set.setStack(w, items);
 			}
 			
-			equipmentSets.put(name, set);
+			SETS.put(name, set);
 		}
-		Log.info("Loaded " + equipmentSets.size() + " Equipment Sets.");
+		Log.info("Loaded " + SETS.size() + " Equipment Sets.");
 	}
 
+	private EquipmentSet currentSet;
+	private ItemStack[] items;
+	private Mob owner;
+	private int[] bonus;
+
+	/**
+	 * Creates a new Equipment set
+	 * @param owner the owner of the set
+	 */
+	public Equipment(Mob owner) {
+		this.items = new ItemStack[SIZE];
+		this.bonus = new int[Bonuses.COUNT];
+		this.owner = owner;
+		
+		this.addListener(new ContainerListener() {
+			@Override
+			public void onSet(Container c, int slot, ItemStack old) {
+				for (EquipmentSet set : SETS.values()) {
+					if (set.isWearingSet(Equipment.this)) {
+						currentSet = set;
+						break;
+					} else currentSet = null;
+				}
+			}
+		});
+	}
+
+	/**
+	 * The owner of the Equipment set
+	 * @return The owner of the Equipment set
+	 */
 	public Mob getOwner() {
 		return owner;
 	}
@@ -112,30 +120,40 @@ public class Equipment extends Container {
 		}
 	}
 
+	/**
+	 * Alias for set(int, ItemStack)
+	 * @param type the WieldType
+	 * @param item the ItemStack
+	 */
 	public void set(WieldType type, ItemStack item) {
+		if(type == null) throw new NullPointerException("WieldType may not be null");
+		
 		this.set(type.getSlot(), item);
 	}
 
 	public ItemStack get(WieldType type) {
+		if(type == null) throw new NullPointerException("WieldType may not be null");
+		
 		return this.get(type.getSlot());
 	}
 
-	public static boolean isWearingSet(String setName, Container equipment) {
-		EquipmentSet set = equipmentSets.get(setName);
-		if (set == null)
-			return false;
-		return set.isWearingSet(equipment);
-	}
-
+	/**
+	 * Returns true if the given set name is being worn. Case insensitive.
+	 * @param setName the name of the set
+	 * @return true if it is worn, false if it is not.
+	 */
 	public boolean isWearingSet(String setName) {
 		if (currentSet == null) {
-			EquipmentSet set = equipmentSets.get(setName);
-			if (set == null)
+			EquipmentSet set = SETS.get(setName);
+			if (set == null) {
 				return false;
+			}
+			
 			if (set.isWearingSet(this)) {
 				this.currentSet = set;
 				return true;
 			}
+			
 			return false;
 		}
 		return currentSet.getName().equalsIgnoreCase(setName);

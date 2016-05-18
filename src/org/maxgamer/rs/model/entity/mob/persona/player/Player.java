@@ -35,7 +35,6 @@ import org.maxgamer.rs.model.entity.mob.combat.mage.CombatSpell;
 import org.maxgamer.rs.model.entity.mob.combat.mage.MagicAttack;
 import org.maxgamer.rs.model.entity.mob.combat.mage.Spellbook;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;
-import org.maxgamer.rs.model.entity.mob.persona.PersonaOptions;
 import org.maxgamer.rs.model.events.mob.persona.player.PlayerDestroyEvent;
 import org.maxgamer.rs.model.events.mob.persona.player.PlayerEnterWorldEvent;
 import org.maxgamer.rs.model.events.mob.persona.player.PlayerLeaveWorldEvent;
@@ -202,7 +201,6 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 		
 		this.panes = new PaneSet(this);
 		this.cheatLog = new CheatLog(this);
-		this.personaOptions = new PlayerOptions(this);
 		this.friends = new FriendsList(this);
 		this.notes = new Notes(this);
 		this.music = new Music(this);
@@ -270,9 +268,9 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 		// We may now load objects which send packets when constructing them
 		// to the player safely without interfering with the login procedure.
 		
-		getPersonaOptions().add(PersonaOptions.FOLLOW, false);
-		getPersonaOptions().add(PersonaOptions.TRADE, false);
-		getPersonaOptions().add(PersonaOptions.INSPECT, false);
+		this.addOption("Follow");
+		this.addOption("Trade");
+		this.addOption("Inspect");
 		
 		getWindow().open(new PrayerOrbInterface(this));
 		getWindow().open(new PrayerInterface(this));
@@ -732,5 +730,32 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 		config.set("playtime", getPlaytime());
 		config.set("created", created);
 		return config;
+	}
+	
+	public void addOption(String option, boolean priority) {
+		super.addOption(option);
+		
+		for(int i = 0; i < this.personaOptions.length; i++){
+			if(this.personaOptions[i] != null && this.personaOptions[i].equals(option)) {
+				getProtocol().sendOption(i+1, option, priority);
+				return;
+			}
+		}
+	}
+	
+	@Override
+	public void addOption(String option) {
+		this.addOption(option, false);
+	}
+	
+	@Override
+	public void removeOption(String option) {
+		for(int i = 0; i < this.personaOptions.length; i++){
+			if(this.personaOptions[i] != null && this.personaOptions[i].equals(option)) {
+				getProtocol().sendOption(i+1, null, false);
+				this.personaOptions[i] = null;
+				return;
+			}
+		}
 	}
 }

@@ -127,7 +127,7 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 	 * The right-click options available on all surrounding players to this
 	 * Persona.
 	 */
-	protected PersonaOptions personaOptions;
+	protected String[] personaOptions = new String[8];
 	
 	/**
 	 * A map of <Key, Serializable> which are attached to this persona. These
@@ -187,7 +187,6 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 		
 		this.name = name;
 		this.setFaction(Factions.PLAYER);
-		this.personaOptions = new PersonaOptions(this);
 		this.model = new PersonaModel(this);
 		this.skills = new SkillSet(this);
 		this.combatStats = new PersonaCombatStats(this);
@@ -647,17 +646,6 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 	}
 	
 	/**
-	 * The PersonaOptions for this Persona, not null. This is for managing the
-	 * Right-Click options available to the Persona when Right-Clicking another
-	 * player.
-	 * 
-	 * @return the PersonaOptions available when right clicking a player.
-	 */
-	public PersonaOptions getPersonaOptions() {
-		return personaOptions;
-	}
-	
-	/**
 	 * This registers the given serializable object with this Persona. If the
 	 * config has already been loaded, then the deserialize() method is called
 	 * on the given object, using the ConfigSection available in this Persona's
@@ -1003,7 +991,7 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 	
 	@Override
 	public void onUnload() {
-		Log.debug("unloaded " + this);
+		
 	}
 	
 	@Override
@@ -1042,12 +1030,39 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 
 	@Override
 	public boolean hasOption(String option) {
+		for(String s : this.personaOptions){
+			if(s == option || (s != null && option != null && s.equals(option))) {
+				return true;
+			}
+		}
 		return false;
 	}
 
 	@Override
 	public String[] getOptions() {
-		return new String[0];
+		return this.personaOptions.clone();
+	}
+	
+	public void addOption(String option){
+		if(this.hasOption(option)) return; 
+		
+		for(int i = 0; i < this.personaOptions.length; i++){
+			if(this.personaOptions[i] == null){
+				this.personaOptions[i] = option;
+				return;
+			}
+		}
+		
+		throw new IllegalStateException("Options are full!");
+	}
+	
+	public void removeOption(String option) {
+		for(int i = 0; i < this.personaOptions.length; i++){
+			if(this.personaOptions[i] != null && this.personaOptions[i].equals(option)){
+				this.personaOptions[i] = null;
+				return;
+			}
+		}
 	}
 
 	@Override

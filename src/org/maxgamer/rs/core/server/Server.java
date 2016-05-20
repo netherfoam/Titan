@@ -343,8 +343,9 @@ public class Server {
 					
 					File startup = new File("startup.js");
 					if (startup.exists()) {
-						JavaScriptFiber js = new JavaScriptFiber(Core.CLASS_LOADER);
+						JavaScriptFiber js = null;
 						try {
+							js = new JavaScriptFiber(Core.CLASS_LOADER);
 							js.parse(startup);
 						}
 						catch(TimeoutError e){

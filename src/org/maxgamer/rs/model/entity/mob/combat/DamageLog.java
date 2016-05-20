@@ -125,12 +125,12 @@ public class DamageLog {
 	 * Returns an unmodifiable list of hits that the given mob has dealt to the
 	 * owner of this damage counter. The given mob may be null.
 	 * @param from the mob dealing damage, may be null
-	 * @return the unmodifiable list, may be null
+	 * @return the unmodifiable list
 	 */
 	public List<Damage> getHits(Mob from) {
 		ArrayList<Damage> list = hits.get(from);
 		if (list == null) {
-			return null;
+			return Collections.<Damage>emptyList();
 		}
 		
 		return Collections.unmodifiableList(list);

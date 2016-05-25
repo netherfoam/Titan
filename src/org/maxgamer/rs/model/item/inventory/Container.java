@@ -204,7 +204,7 @@ public abstract class Container implements Cloneable, Iterable<ItemStack>, YMLSe
 		this.setItem(slot, item);
 		modCount++;
 		
-		for (ContainerListener l : listeners) {
+		for (ContainerListener l : new ArrayList<ContainerListener>(this.listeners)) {
 			try {
 				l.onSet(this, slot, old);
 			}

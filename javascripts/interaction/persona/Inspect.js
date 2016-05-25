@@ -6,5 +6,5 @@ function inspect(p, t){
 	p.sendMessage("ActionQueue: " + t.getActions());
 	p.sendMessage("Rights: " + t.getRights() + ", Location: (" + t.getLocation().x + ", " + t.getLocation().y + ")");
 	p.sendMessage("Inventory " + t.getInventory().getTakenSlots() + "/" + t.getInventory().getSize());
-	p.sendMessage(java.util.Arrays.toString(t.getInventory().toArray()));
+	p.sendMessage(java.util.Arrays.toString(t.getInventory().getItems()));
 }

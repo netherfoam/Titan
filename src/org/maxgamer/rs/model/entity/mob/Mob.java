@@ -864,4 +864,8 @@ public abstract class Mob extends Entity implements EquipmentHolder, Interactabl
 		Core.getServer().getInteractions().interact(this, target, bag);
 		return true;
 	}
+	
+	public boolean use(ItemStack item, String option) {
+		return use((Interactable) item, option, -1);
+	}
 }

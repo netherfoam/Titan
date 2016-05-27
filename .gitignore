@@ -8,7 +8,8 @@
 /build.num
 *titan-modules/
 *titan-client/
-
+.idea/
+*.iml
 
 # Temporary files created by sublime-text
 *~

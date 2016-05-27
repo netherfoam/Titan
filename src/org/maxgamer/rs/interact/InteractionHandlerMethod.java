@@ -1,18 +1,16 @@
 package org.maxgamer.rs.interact;
 
+import co.paralleluniverse.fibers.SuspendExecution;
+import com.google.common.collect.ImmutableMap;
+import org.maxgamer.rs.lib.log.Log;
+import org.maxgamer.rs.model.entity.Interactable;
+import org.maxgamer.rs.model.entity.mob.Mob;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
-
-import org.maxgamer.rs.lib.log.Log;
-import org.maxgamer.rs.model.entity.Interactable;
-import org.maxgamer.rs.model.entity.mob.Mob;
-
-import com.google.common.collect.ImmutableMap;
-
-import co.paralleluniverse.fibers.SuspendExecution;
 
 /**
  * Internal implementation of InteractionManager, this allows us to invoke a method on an InteractionHandler.
@@ -134,7 +132,6 @@ public class InteractionHandlerMethod {
 				}
 				throw new NotHandledException();
 			}
-			
 			Object[] sorted = new Object[types.length];
 			sorted[0] = source;
 			sorted[1] = target;

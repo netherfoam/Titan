@@ -1,13 +1,12 @@
 package org.maxgamer.rs.model.action;
 
-import java.util.LinkedList;
-
+import co.paralleluniverse.fibers.Fiber;
+import co.paralleluniverse.fibers.SuspendExecution;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.entity.mob.Mob;
 
-import co.paralleluniverse.fibers.Fiber;
-import co.paralleluniverse.fibers.SuspendExecution;
+import java.util.LinkedList;
 
 /**
  * An abstract class which represents an action that a player may perform, such
@@ -101,7 +100,7 @@ public abstract class Action {
 			catch (IllegalArgumentException e) {
 				if (e.getMessage().contains("instrumented")) {
 					Log.warning("It appears that the class " + this + " has not been instrumented.");
-					Log.warning("The ClassLoader hierachy is:");
+					Log.warning("The ClassLoader hierarchy is:");
 					ClassLoader cl = this.getClass().getClassLoader();
 					StringBuilder sb = new StringBuilder(cl.getClass().getCanonicalName());
 					while (((cl = cl.getParent())) != null) {

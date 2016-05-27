@@ -2,6 +2,7 @@ package org.maxgamer.rs.model.entity.mob;
 
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.core.server.IllegalThreadException;
+import org.maxgamer.rs.interact.use.Use;
 import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.action.Action;
 import org.maxgamer.rs.model.action.ActionQueue;
@@ -857,15 +858,11 @@ public abstract class Mob extends Entity implements EquipmentHolder, Interactabl
 	 * Interacts this Mob with the given target object and parameters.
 	 * 
 	 * @param target the object the Mob is interacting with (Player/NPC/Mob/ItemStack/GroundItemStack/GameObject)
-	 * @param bag the options they've combined the target with (Eg "Drop", or an NPC, or a slot they used)
+	 * @param usage the options they've combined the target with (Eg "Drop", or an NPC, or a slot they used)
 	 * @return true
 	 */
-	public boolean use(Interactable target, Object... bag){
-		Core.getServer().getInteractions().interact(this, target, bag);
+	public boolean use(Interactable target, Use usage){
+		Core.getServer().getInteractions().interact(this, target, usage);
 		return true;
-	}
-	
-	public boolean use(ItemStack item, String option) {
-		return use((Interactable) item, option, -1);
 	}
 }

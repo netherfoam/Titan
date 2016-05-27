@@ -1,11 +1,7 @@
 package org.maxgamer.rs.interact;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-
+import co.paralleluniverse.fibers.SuspendExecution;
+import org.maxgamer.rs.interact.use.Use;
 import org.maxgamer.rs.lib.log.Log;
 import org.maxgamer.rs.model.action.Action;
 import org.maxgamer.rs.model.entity.Entity;
@@ -13,7 +9,10 @@ import org.maxgamer.rs.model.entity.Interactable;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.facing.Facing;
 
-import co.paralleluniverse.fibers.SuspendExecution;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * The public InteractionManager API. This allows developers to write code that is executed inside of Actions using
@@ -43,15 +42,15 @@ public class InteractionManager {
 	 *  
 	 * @param source the mob that is interacting
 	 * @param target the target that is being interacted with
-	 * @param bag the arguments for the interaction.
+	 * @param usage the arguments for the interaction.
 	 */
-	public void interact(final Mob source, final Interactable target, final Object... bag) {
+	public void interact(final Mob source, final Interactable target, final Use usage) {
 		// TODO: There's got to be a way of adding @Interact(instant=true|false), so that the server appears more responsive
 		
 		if(target instanceof Entity){
 			if(((Entity) target).isDestroyed()){
 				// A sanity check to ensure that nobody makes interactions with removed entities
-				throw new IllegalArgumentException("Attempted to interact " + source + " with " + target + " bag is " + Arrays.toString(bag) + ", but target is destroyed.");
+				throw new IllegalArgumentException("Attempted to interact " + source + " with " + target + " usage is " + usage.toString() + ", but target is destroyed.");
 			}
 			else {
 				source.setFacing(Facing.face((Entity) target));
@@ -79,14 +78,14 @@ public class InteractionManager {
 					}
 					try{
 						// We try and run the interaction
-						h.run(source, target, bag);
+						h.run(source, target, usage);
 						// If we're successful, great, the interaction was handled
 						// but, we cannot return in-case anyone else wants to handle the event
 						successes.add(h);
 					}
 					catch(NotHandledException e){
 						if(h.isDebug()) {
-							Log.info("Not handled.");
+							Log.info(h.toString() + " refused to handle interaction between " + source + " => " + target + " with usage " + usage + ".");
 						}
 						// That handler didn't want to handle that interaction, so we try again with any others!
 						continue;
@@ -94,11 +93,11 @@ public class InteractionManager {
 				}
 				
 				if(successes.size() > 1){
-					Log.warning("There were multiple handlers that accepted the interaction between " + source + " => " + target + " with bag " + Arrays.toString(bag));
+					Log.warning("There were multiple handlers that accepted the interaction between " + source + " => " + target + " with usage " + usage);
 					Log.warning("They were " + successes.toString() + ". This would indicate that one of them should throw a NotHandledException.");
 				}
 				else if(successes.isEmpty()){
-					Log.debug("Unhandled interaction between " + source + " => " + target + " with bag " + Arrays.toString(bag) + ".");
+					Log.debug("Unhandled interaction between " + source + " => " + target + " with usage " + usage + ".");
 				}
 			}
 			

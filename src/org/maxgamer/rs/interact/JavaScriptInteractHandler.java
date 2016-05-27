@@ -1,11 +1,8 @@
 package org.maxgamer.rs.interact;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-
-import org.maxgamer.rs.lib.log.Log;
+import co.paralleluniverse.fibers.SuspendExecution;
+import org.maxgamer.rs.interact.use.ItemOptionUse;
+import org.maxgamer.rs.interact.use.OptionUse;
 import org.maxgamer.rs.model.action.Action;
 import org.maxgamer.rs.model.entity.Entity;
 import org.maxgamer.rs.model.entity.Interactable;
@@ -14,7 +11,10 @@ import org.maxgamer.rs.model.entity.mob.facing.Facing;
 import org.maxgamer.rs.model.javascript.JavaScriptCall;
 import org.maxgamer.rs.model.javascript.JavaScriptFiber;
 
-import co.paralleluniverse.fibers.SuspendExecution;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class JavaScriptInteractHandler implements InteractionHandler{
 	/**
@@ -89,14 +89,18 @@ public class JavaScriptInteractHandler implements InteractionHandler{
 	 * Handles when we receive an interaction with a slot as well, which we discard
 	 */
 	@Interact
-	public void javascript(Mob source, Interactable target, String option, int slot) throws SuspendExecution, NotHandledException {
-		javascript(source, target, option);
+	public void javascript(Mob source, Interactable target, ItemOptionUse use) throws SuspendExecution, NotHandledException {
+		javascript(source, target, use.getOption());
+	}
+
+	@Interact
+	public void javascript(Mob source, Interactable target, OptionUse use) throws SuspendExecution, NotHandledException {
+		this.javascript(source, target, use.getOption());
 	}
 	
 	/**
 	 * Handles when we receive an interaction
 	 */
-	@Interact
 	public void javascript(Mob source, Interactable target, String option) throws SuspendExecution, NotHandledException {
 		ArrayList<File> files = this.get(target, option);
 		String function = this.toFunction(option);
@@ -147,7 +151,7 @@ public class JavaScriptInteractHandler implements InteractionHandler{
 		}
 		
 		if(files.isEmpty() == false) {
-			Log.debug("Files " + Arrays.toString(files.toArray(new File[files.size()])) + " exists, but the function " + function + "() does not.");
+			System.out.println("Files " + Arrays.toString(files.toArray(new File[files.size()])) + " exists, but the function " + function + "() does not.");
 		}
 		
 		throw new NotHandledException();

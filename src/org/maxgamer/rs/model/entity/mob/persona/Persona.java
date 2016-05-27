@@ -1,28 +1,18 @@
 package org.maxgamer.rs.model.entity.mob.persona;
 
-import java.io.IOException;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map.Entry;
-
 import org.maxgamer.rs.cache.EncryptedException;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.core.server.WorldFullException;
 import org.maxgamer.rs.core.tick.Tickable;
+import org.maxgamer.rs.interact.use.ItemOptionUse;
+import org.maxgamer.rs.interact.use.ItemTargetUse;
+import org.maxgamer.rs.interact.use.OptionUse;
 import org.maxgamer.rs.lib.Calc;
 import org.maxgamer.rs.lib.Chat;
 import org.maxgamer.rs.lib.log.Log;
-import org.maxgamer.rs.model.entity.mob.Bonuses;
-import org.maxgamer.rs.model.entity.mob.Factions;
-import org.maxgamer.rs.model.entity.mob.InventoryHolder;
-import org.maxgamer.rs.model.entity.mob.Mob;
-import org.maxgamer.rs.model.entity.mob.MobModel;
-import org.maxgamer.rs.model.entity.mob.UpdateMask;
-import org.maxgamer.rs.model.entity.mob.combat.Attack;
-import org.maxgamer.rs.model.entity.mob.combat.AttackStyle;
-import org.maxgamer.rs.model.entity.mob.combat.DamageType;
-import org.maxgamer.rs.model.entity.mob.combat.MeleeAttack;
-import org.maxgamer.rs.model.entity.mob.combat.RangeAttack;
+import org.maxgamer.rs.model.entity.Interactable;
+import org.maxgamer.rs.model.entity.mob.*;
+import org.maxgamer.rs.model.entity.mob.combat.*;
 import org.maxgamer.rs.model.entity.mob.combat.mage.CombatSpell;
 import org.maxgamer.rs.model.entity.mob.combat.mage.MagicAttack;
 import org.maxgamer.rs.model.entity.mob.combat.mage.Spellbook;
@@ -36,15 +26,7 @@ import org.maxgamer.rs.model.events.mob.persona.PersonaStartEvent;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.item.WieldType;
 import org.maxgamer.rs.model.item.ground.GroundItemStack;
-import org.maxgamer.rs.model.item.inventory.BankContainer;
-import org.maxgamer.rs.model.item.inventory.Container;
-import org.maxgamer.rs.model.item.inventory.ContainerException;
-import org.maxgamer.rs.model.item.inventory.ContainerListener;
-import org.maxgamer.rs.model.item.inventory.ContainerState;
-import org.maxgamer.rs.model.item.inventory.GenericContainer;
-import org.maxgamer.rs.model.item.inventory.Inventory;
-import org.maxgamer.rs.model.item.inventory.PersonaEquipment;
-import org.maxgamer.rs.model.item.inventory.StackType;
+import org.maxgamer.rs.model.item.inventory.*;
 import org.maxgamer.rs.model.mail.LostAndFound;
 import org.maxgamer.rs.model.map.Location;
 import org.maxgamer.rs.model.map.path.Direction;
@@ -54,6 +36,11 @@ import org.maxgamer.rs.model.skill.SkillType;
 import org.maxgamer.rs.model.skill.prayer.PrayerSet;
 import org.maxgamer.rs.structure.YMLSerializable;
 import org.maxgamer.rs.structure.configs.ConfigSection;
+
+import java.io.IOException;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 /**
  * Represents a dummy player which does not do anything. This dummy player has
@@ -1068,5 +1055,26 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 	@Override
 	public int getId() {
 		return getClientIndex();
+	}
+
+	// TODO: Document these
+	public boolean use(ItemStack item, String option) {
+		return this.use(item, option, getInventory().getSlotOf(item));
+	}
+
+	public boolean use(ItemStack item, String option, int slot) {
+		return this.use(item, new ItemOptionUse(this.getInventory(), item, slot, option));
+	}
+
+	public boolean use(Interactable target, ItemStack item) {
+		return this.use(target, item, this.getInventory().getSlotOf(item));
+	}
+
+	public boolean use(Interactable target, ItemStack item, int slot) {
+		return this.use(target, new ItemTargetUse(this.getInventory(), item, slot));
+	}
+
+	public boolean use(Interactable target, String option) {
+		return this.use(target, new OptionUse(option));
 	}
 }

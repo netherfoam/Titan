@@ -11,4 +11,9 @@ public class OptionUse implements Use {
     public String getOption() {
         return this.option;
     }
+
+    @Override
+    public String toString(){
+        return option;
+    }
 }

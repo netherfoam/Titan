@@ -28,4 +28,9 @@ public class ItemTargetUse implements Use {
     public int getSlot() {
         return slot;
     }
+
+    @Override
+    public String toString(){
+        return item.toString();
+    }
 }

@@ -34,4 +34,9 @@ public class ItemOptionUse implements Use{
     public ItemStack getItem() {
         return item;
     }
+
+    @Override
+    public String toString(){
+        return item.toString() + "#" + option;
+    }
 }

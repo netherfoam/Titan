@@ -1,6 +1,6 @@
 package org.maxgamer.rs.network.io.packet;
 
-import org.maxgamer.rs.io.ByteWriter;
+import org.maxgamer.rs.util.io.ByteWriter;
 import org.maxgamer.rs.network.io.stream.RSOutputStream;
 
 /**

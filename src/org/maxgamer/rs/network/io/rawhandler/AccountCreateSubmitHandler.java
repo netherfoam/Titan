@@ -3,8 +3,8 @@ package org.maxgamer.rs.network.io.rawhandler;
 import java.nio.ByteBuffer;
 
 import org.maxgamer.rs.cache.XTEAKey;
-import org.maxgamer.rs.lib.BufferUtils;
-import org.maxgamer.rs.lib.log.Log;
+import org.maxgamer.rs.util.BufferUtils;
+import org.maxgamer.rs.util.log.Log;
 import org.maxgamer.rs.network.Session;
 import org.maxgamer.rs.network.io.stream.RSByteBuffer;
 

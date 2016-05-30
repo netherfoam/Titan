@@ -1,4 +1,4 @@
-importClass(org.maxgamer.rs.interfaces.impl.dialogue.SpeechDialogue);
+importClass(org.maxgamer.rs.model.interfaces.impl.dialogue.SpeechDialogue);
 
 function talkTo(player, npc){
 	chat(player, "Good day.");

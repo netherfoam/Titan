@@ -138,7 +138,7 @@ public class LobbyPlayer implements Client {
 		out.writeByte((byte) 2);
 		out.writeByte((byte) 1); //full details ? 1 : 0
 		
-		//List<WorldDefinition> worlds = Core.getWorlds();
+		//Who<WorldDefinition> worlds = Core.getWorlds();
 		//Collection<RemoteServer> worlds = Core.getServer().getLogon().getRemoteServers();
 		Collection<RemoteWorld> worlds = Core.getServer().getLogon().getAPI().getWorlds();
 		

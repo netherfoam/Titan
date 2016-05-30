@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.core.tick.FastTickable;
-import org.maxgamer.rs.lib.log.Log;
+import org.maxgamer.rs.util.log.Log;
 import org.maxgamer.rs.model.entity.mob.Mob;
 
 /**

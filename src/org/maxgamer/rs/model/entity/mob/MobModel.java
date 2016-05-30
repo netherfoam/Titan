@@ -3,7 +3,7 @@ package org.maxgamer.rs.model.entity.mob;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import org.maxgamer.rs.io.OutputStreamWrapper;
+import org.maxgamer.rs.util.io.OutputStreamWrapper;
 import org.maxgamer.rs.structure.YMLSerializable;
 import org.maxgamer.rs.structure.configs.ConfigSection;
 

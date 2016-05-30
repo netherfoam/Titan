@@ -11,7 +11,7 @@ import java.util.zip.GZIPOutputStream;
 
 import org.apache.tools.bzip2.CBZip2InputStream;
 import org.apache.tools.bzip2.CBZip2OutputStream;
-import org.maxgamer.rs.io.ByteBufferInputStream;
+import org.maxgamer.rs.util.io.ByteBufferInputStream;
 
 public enum RSCompression{
 	/**

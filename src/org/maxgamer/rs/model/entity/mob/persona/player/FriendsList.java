@@ -68,7 +68,7 @@ public final class FriendsList implements YMLSerializable {
 	}
 	
 	/**
-	 * Add a friend to the List and send the friend (a check whether online or
+	 * Add a friend to the Who and send the friend (a check whether online or
 	 * not) to the player's friendslist ingame. FriendsList can't contain more
 	 * than 200 friends. This updates the client
 	 * 
@@ -151,7 +151,7 @@ public final class FriendsList implements YMLSerializable {
 	}
 	
 	/**
-	 * Add an ignore the List and send the ignore to the player ingame.
+	 * Add an ignore the Who and send the ignore to the player ingame.
 	 * IgnoresList can't contain more than 100 ignores.
 	 * 
 	 * @param name of ignore/player.
@@ -174,7 +174,7 @@ public final class FriendsList implements YMLSerializable {
 	}
 	
 	/**
-	 * Removes the friend from the List. This does not remove the player from
+	 * Removes the friend from the Who. This does not remove the player from
 	 * the client's friends list, that is done by the client automatically when
 	 * selecting "Delete Friend"
 	 * 
@@ -195,7 +195,7 @@ public final class FriendsList implements YMLSerializable {
 	}
 	
 	/**
-	 * Removes the ignore from the List. This does not remove the player from
+	 * Removes the ignore from the Who. This does not remove the player from
 	 * the client's ignore list, that is done by the client automatically when
 	 * selecting "Delete Ignore"
 	 * 

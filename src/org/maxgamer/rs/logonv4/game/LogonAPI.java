@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import org.maxgamer.rs.lib.log.Log;
+import org.maxgamer.rs.util.log.Log;
 import org.maxgamer.rs.logonv4.LSOutgoingPacket;
 import org.maxgamer.rs.network.Client;
 import org.maxgamer.rs.network.Session;

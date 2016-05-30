@@ -1,17 +1,5 @@
 package org.maxgamer.rs.core;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.Date;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
-
 import org.maxgamer.rs.cache.Cache;
 import org.maxgamer.rs.cache.CacheFile;
 import org.maxgamer.rs.cache.IDX;
@@ -20,9 +8,9 @@ import org.maxgamer.rs.cache.reference.Reference;
 import org.maxgamer.rs.cache.reference.ReferenceTable;
 import org.maxgamer.rs.command.ConsoleSender;
 import org.maxgamer.rs.core.server.Server;
-import org.maxgamer.rs.lib.Files;
-import org.maxgamer.rs.lib.log.Log;
-import org.maxgamer.rs.lib.log.Logger.LogLevel;
+import org.maxgamer.rs.util.Files;
+import org.maxgamer.rs.util.log.Log;
+import org.maxgamer.rs.util.log.Logger.LogLevel;
 import org.maxgamer.rs.model.entity.mob.combat.RangeAttack;
 import org.maxgamer.rs.model.entity.mob.npc.NPCGroup;
 import org.maxgamer.rs.model.item.ItemDefinition;
@@ -34,6 +22,14 @@ import org.maxgamer.rs.structure.sql.SQLiteCore;
 import org.maxgamer.rs.structure.timings.NullTimings;
 import org.maxgamer.rs.structure.timings.Timings;
 import org.maxgamer.rs.tools.ConfigSetup;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.Date;
+import java.util.concurrent.*;
 
 /**
  * Represents the core, responsible for running the server. Should keep this
@@ -122,6 +118,10 @@ public class Core {
 	 *         cache.
 	 */
 	public static void init(int threads, String[] args) throws Exception {
+		// This prevents Quasar from warning us about a missing JavaAgent, since we instrument as part of
+		// the build process, and using a URLClassLoader for the modules.
+		System.getProperties().setProperty("co.paralleluniverse.fibers.disableAgentWarning", "true");
+
 		getTimings(); //Force load timings
 		getWorldConfig(); //Force load worldCfg
 		

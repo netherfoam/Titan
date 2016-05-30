@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import java.util.UUID;
 
 import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.lib.log.Log;
+import org.maxgamer.rs.util.log.Log;
 import org.maxgamer.rs.model.entity.mob.npc.NPC;
 import org.maxgamer.rs.model.map.Location;
 import org.maxgamer.rs.structure.dbmodel.Mapping;

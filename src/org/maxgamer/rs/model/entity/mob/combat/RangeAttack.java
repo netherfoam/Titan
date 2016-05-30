@@ -8,8 +8,8 @@ import java.util.HashMap;
 
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.core.tick.Tickable;
-import org.maxgamer.rs.lib.Erratic;
-import org.maxgamer.rs.lib.log.Log;
+import org.maxgamer.rs.util.Erratic;
+import org.maxgamer.rs.util.log.Log;
 import org.maxgamer.rs.model.entity.mob.CombatStats;
 import org.maxgamer.rs.model.entity.mob.EquipmentHolder;
 import org.maxgamer.rs.model.entity.mob.Mob;

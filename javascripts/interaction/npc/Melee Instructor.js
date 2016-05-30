@@ -1,6 +1,6 @@
 importClass(org.maxgamer.rs.model.skill.SkillType);
 importClass(org.maxgamer.rs.model.item.ItemStack);
-importClass(org.maxgamer.rs.interfaces.impl.dialogue.SpeechDialogue);
+importClass(org.maxgamer.rs.model.interfaces.impl.dialogue.SpeechDialogue);
 
 function talkTo(player, npc){
 	chat(player, "Hello.");

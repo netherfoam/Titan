@@ -9,7 +9,7 @@ import java.nio.BufferUnderflowException;
 
 import org.maxgamer.rs.cache.RSInputStream;
 import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.lib.log.Log;
+import org.maxgamer.rs.util.log.Log;
 import org.maxgamer.rs.logonv4.LSIncomingPacket;
 import org.maxgamer.rs.logonv4.LSOutgoingPacket;
 import org.maxgamer.rs.model.events.server.LogonConnectEvent;

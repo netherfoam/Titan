@@ -6,7 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import org.maxgamer.rs.lib.log.Log;
+import org.maxgamer.rs.util.log.Log;
 import org.maxgamer.rs.logonv4.LSIncomingPacket;
 import org.maxgamer.rs.logonv4.LSOutgoingPacket;
 import org.maxgamer.rs.logonv4.Opcode;

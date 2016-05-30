@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 
-import org.maxgamer.rs.definition.GameObjectProto;
+import org.maxgamer.rs.model.map.object.GameObjectProto;
 
 public class GameObjectFactory extends FormatFactory<GameObjectProto>{
 	public GameObjectFactory() {

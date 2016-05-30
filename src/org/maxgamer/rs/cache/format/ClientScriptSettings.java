@@ -11,7 +11,7 @@ import org.maxgamer.rs.cache.reference.ChildReference;
 import org.maxgamer.rs.cache.reference.Reference;
 import org.maxgamer.rs.cache.reference.ReferenceTable;
 import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.io.ByteBufferInputStream;
+import org.maxgamer.rs.util.io.ByteBufferInputStream;
 
 public final class ClientScriptSettings {
 

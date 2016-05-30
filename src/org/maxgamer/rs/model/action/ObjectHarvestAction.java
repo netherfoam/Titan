@@ -1,7 +1,7 @@
 package org.maxgamer.rs.model.action;
 
 import org.maxgamer.rs.core.tick.Tickable;
-import org.maxgamer.rs.lib.Erratic;
+import org.maxgamer.rs.util.Erratic;
 import org.maxgamer.rs.model.entity.mob.Animation;
 import org.maxgamer.rs.model.entity.mob.Graphics;
 import org.maxgamer.rs.model.entity.mob.Mob;

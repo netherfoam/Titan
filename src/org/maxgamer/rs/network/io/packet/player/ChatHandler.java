@@ -1,7 +1,7 @@
 package org.maxgamer.rs.network.io.packet.player;
 
 import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.lib.Chat;
+import org.maxgamer.rs.util.Chat;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.events.mob.persona.player.ClanMessageEvent;

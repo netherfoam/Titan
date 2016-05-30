@@ -3,7 +3,7 @@ package org.maxgamer.rs.model.item.weapon;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.maxgamer.rs.definition.Definition;
+import org.maxgamer.rs.model.Definition;
 import org.maxgamer.rs.model.entity.mob.Bonuses;
 import org.maxgamer.rs.model.item.WieldType;
 import org.maxgamer.rs.structure.dbmodel.Mapping;

@@ -6,8 +6,8 @@ import java.nio.ByteBuffer;
 
 import org.maxgamer.rs.cache.XTEAKey;
 import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.io.InputStreamWrapper;
-import org.maxgamer.rs.lib.log.Log;
+import org.maxgamer.rs.util.io.InputStreamWrapper;
+import org.maxgamer.rs.util.log.Log;
 import org.maxgamer.rs.model.entity.mob.persona.player.ScreenSettings;
 import org.maxgamer.rs.network.AuthResult;
 import org.maxgamer.rs.network.Session;

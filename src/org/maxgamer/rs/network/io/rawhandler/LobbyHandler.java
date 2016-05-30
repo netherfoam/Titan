@@ -3,7 +3,7 @@ package org.maxgamer.rs.network.io.rawhandler;
 import java.io.IOException;
 import java.nio.BufferUnderflowException;
 
-import org.maxgamer.rs.lib.log.Log;
+import org.maxgamer.rs.util.log.Log;
 import org.maxgamer.rs.network.LobbyPlayer;
 import org.maxgamer.rs.network.Session;
 import org.maxgamer.rs.network.io.packet.RSIncomingPacket;

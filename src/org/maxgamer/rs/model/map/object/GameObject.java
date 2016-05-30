@@ -8,7 +8,6 @@ import org.maxgamer.rs.cache.Archive;
 import org.maxgamer.rs.cache.IDX;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.core.tick.Tickable;
-import org.maxgamer.rs.definition.GameObjectProto;
 import org.maxgamer.rs.model.entity.Entity;
 import org.maxgamer.rs.model.entity.Interactable;
 import org.maxgamer.rs.model.entity.mob.persona.player.Viewport;

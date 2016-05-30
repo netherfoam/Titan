@@ -2,7 +2,7 @@ package org.maxgamer.rs.command.commands;
 
 import org.maxgamer.rs.command.CmdName;
 import org.maxgamer.rs.command.PlayerCommand;
-import org.maxgamer.rs.lib.Calc;
+import org.maxgamer.rs.util.Calc;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
 import org.maxgamer.rs.model.map.Location;

@@ -2,7 +2,7 @@ package org.maxgamer.rs.logonv4.logon;
 
 import java.nio.ByteBuffer;
 
-import org.maxgamer.rs.lib.log.Log;
+import org.maxgamer.rs.util.log.Log;
 import org.maxgamer.rs.logonv4.LSOutgoingPacket;
 import org.maxgamer.rs.logonv4.Profile;
 import org.maxgamer.rs.network.io.stream.RSInputBuffer;

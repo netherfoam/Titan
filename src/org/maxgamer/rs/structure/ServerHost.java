@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import org.maxgamer.rs.lib.log.Log;
+import org.maxgamer.rs.util.log.Log;
 
 /**
  * Represents a ServerHost that holds many ServerSessions. This is for IO and

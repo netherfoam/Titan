@@ -8,7 +8,7 @@ import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
-import org.maxgamer.rs.lib.NotImplementedException;
+import org.maxgamer.rs.util.NotImplementedException;
 
 public class MapStructure {
 	public static final String EXTENSION = ".structure";

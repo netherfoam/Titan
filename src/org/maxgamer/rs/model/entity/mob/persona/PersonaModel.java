@@ -2,7 +2,7 @@ package org.maxgamer.rs.model.entity.mob.persona;
 
 import java.io.IOException;
 
-import org.maxgamer.rs.io.OutputStreamWrapper;
+import org.maxgamer.rs.util.io.OutputStreamWrapper;
 import org.maxgamer.rs.model.entity.mob.MobModel;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.item.WieldType;

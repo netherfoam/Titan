@@ -2,7 +2,7 @@ package org.maxgamer.rs.network.io.packet;
 
 import java.io.IOException;
 
-import org.maxgamer.rs.io.ByteReader;
+import org.maxgamer.rs.util.io.ByteReader;
 import org.maxgamer.rs.network.io.stream.RSByteBuffer;
 import org.maxgamer.rs.network.io.stream.RSInputBuffer;
 import org.maxgamer.rs.network.protocol.ProtocolException;

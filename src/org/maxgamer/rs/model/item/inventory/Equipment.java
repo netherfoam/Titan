@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.maxgamer.rs.lib.log.Log;
+import org.maxgamer.rs.util.log.Log;
 import org.maxgamer.rs.model.entity.mob.Bonuses;
 import org.maxgamer.rs.model.entity.mob.InventoryHolder;
 import org.maxgamer.rs.model.entity.mob.Mob;

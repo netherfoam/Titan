@@ -14,7 +14,7 @@ import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
 import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.lib.log.Log;
+import org.maxgamer.rs.util.log.Log;
 import org.maxgamer.rs.structure.configs.ConfigSection;
 import org.maxgamer.rs.structure.configs.FileConfig;
 import org.maxgamer.rs.structure.dependency.Graph;

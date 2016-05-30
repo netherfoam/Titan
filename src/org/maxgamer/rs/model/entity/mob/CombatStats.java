@@ -1,7 +1,7 @@
 package org.maxgamer.rs.model.entity.mob;
 
 import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.lib.log.Log;
+import org.maxgamer.rs.util.log.Log;
 import org.maxgamer.rs.model.entity.mob.combat.AttackStyle;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;
 import org.maxgamer.rs.model.skill.SkillType;

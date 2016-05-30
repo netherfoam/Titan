@@ -1,6 +1,7 @@
 package org.maxgamer.rs.model.javascript;
 
 import org.mozilla.javascript.ContinuationPending;
+import org.mozilla.javascript.Undefined;
 
 public class JavaScriptCall{
 	private JavaScriptFiber fiber;
@@ -42,6 +43,9 @@ public class JavaScriptCall{
 	
 	public void setResult(Object o){
 		setState(null);
+		if(o instanceof Undefined) {
+			o = null;
+		}
 		this.result = o;
 	}
 	

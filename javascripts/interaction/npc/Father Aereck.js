@@ -1,4 +1,4 @@
-importClass(org.maxgamer.rs.interfaces.impl.dialogue.SpeechDialogue);
+importClass(org.maxgamer.rs.model.interfaces.impl.dialogue.SpeechDialogue);
 
 function talkTo(player, npc){
 	chat(npc, "Welcome back to the church of holy Saradomin. What can I do for you today?");

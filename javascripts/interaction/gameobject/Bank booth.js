@@ -3,7 +3,7 @@ function use(player, booth){
 }
 
 function useQuickly(player, booth){
-	var iface = new org.maxgamer.rs.interfaces.impl.primary.BankInterface(player);
+	var iface = new org.maxgamer.rs.model.interfaces.impl.primary.BankInterface(player);
 	player.getWindow().open(iface);
 }
 

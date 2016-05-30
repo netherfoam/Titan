@@ -1,6 +1,6 @@
 package org.maxgamer.rs.model.entity.mob.persona.player;
 
-import org.maxgamer.rs.lib.Calc;
+import org.maxgamer.rs.util.Calc;
 import org.maxgamer.rs.model.map.Location;
 import org.maxgamer.rs.model.map.Position;
 import org.maxgamer.rs.model.map.WorldMap;

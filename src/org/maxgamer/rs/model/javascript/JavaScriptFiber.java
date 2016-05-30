@@ -1,24 +1,12 @@
 package org.maxgamer.rs.model.javascript;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import org.maxgamer.rs.core.Core;
+import org.maxgamer.rs.util.log.Log;
+import org.mozilla.javascript.*;
+
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map.Entry;
-
-import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.lib.log.Log;
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.ContinuationPending;
-import org.mozilla.javascript.Function;
-import org.mozilla.javascript.ImporterTopLevel;
-import org.mozilla.javascript.NativeFunction;
-import org.mozilla.javascript.Script;
-import org.mozilla.javascript.Scriptable;
-import org.mozilla.javascript.ScriptableObject;
 
 public class JavaScriptFiber {
 	public static final File SCRIPT_FOLDER = new File("javascripts");
@@ -61,7 +49,6 @@ public class JavaScriptFiber {
 	 * file raising a RuntimeException if the file can't be loaded.
 	 * can't be loaded.  This loads the Core.CLASS_LOADER instead of
 	 * allowing for a custom one.
-	 * @param file The file that contains the script that is to be run.
 	 */
 	public JavaScriptFiber(){
 		this(Core.CLASS_LOADER);
@@ -163,7 +150,7 @@ public class JavaScriptFiber {
 	 * Includes the script by the given path.  This first searches the plugin_folder/js/path
 	 * for the file, loading it if found. Else, this searches the JAR archive for the file,
 	 * loading it if found. Else, this raises a {@link FileNotFoundException}.
-	 * @param path the path to the file, without js/ prefix. Eg lib/dialogue.js or npc/doomsayer.js
+	 * @param path the path to the file, without js/ prefix. Eg util/dialogue.js or npc/doomsayer.js
 	 * @throws IOException
 	 */
 	public JavaScriptCall parse(String path) throws IOException {

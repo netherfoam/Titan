@@ -2,7 +2,7 @@ package org.maxgamer.rs.network.io.rawhandler;
 
 import java.nio.BufferUnderflowException;
 
-import org.maxgamer.rs.lib.log.Log;
+import org.maxgamer.rs.util.log.Log;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.network.Session;
 import org.maxgamer.rs.network.io.packet.PacketProcessor;

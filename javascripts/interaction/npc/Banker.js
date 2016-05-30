@@ -27,6 +27,6 @@ function talkTo(player, npc){
 
 function bank(player, npc){
 	//TODO: Open pin before opening bank.
-	var iface = new org.maxgamer.rs.interfaces.impl.primary.BankInterface(player);
+	var iface = new org.maxgamer.rs.model.interfaces.impl.primary.BankInterface(player);
 	player.getWindow().open(iface);
 }

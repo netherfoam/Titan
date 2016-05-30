@@ -1,7 +1,7 @@
 package org.maxgamer.rs.model.skill.harvest;
 
 import org.maxgamer.rs.core.tick.Tickable;
-import org.maxgamer.rs.lib.Erratic;
+import org.maxgamer.rs.util.Erratic;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.npc.loot.WeightedPicker;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;

@@ -3,7 +3,7 @@ package org.maxgamer.rs.tools;
 import java.util.regex.Pattern;
 
 import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.lib.Erratic;
+import org.maxgamer.rs.util.Erratic;
 import org.maxgamer.rs.structure.configs.FileConfig;
 
 /**

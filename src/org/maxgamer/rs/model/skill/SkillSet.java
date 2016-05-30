@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import org.maxgamer.rs.core.tick.Tickable;
-import org.maxgamer.rs.lib.Calc;
+import org.maxgamer.rs.util.Calc;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.npc.NPC;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;

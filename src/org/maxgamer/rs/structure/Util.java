@@ -7,8 +7,8 @@ import java.util.HashSet;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
-import org.maxgamer.rs.io.ByteReader;
-import org.maxgamer.rs.io.ByteWriter;
+import org.maxgamer.rs.util.io.ByteReader;
+import org.maxgamer.rs.util.io.ByteWriter;
 
 /**
  * @author netherfoam

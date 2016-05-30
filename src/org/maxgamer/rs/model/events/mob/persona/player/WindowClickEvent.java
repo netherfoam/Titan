@@ -1,7 +1,7 @@
 package org.maxgamer.rs.model.events.mob.persona.player;
 
 import org.maxgamer.rs.event.Cancellable;
-import org.maxgamer.rs.interfaces.Window;
+import org.maxgamer.rs.model.interfaces.Window;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 
 /**

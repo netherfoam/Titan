@@ -1,7 +1,7 @@
 package org.maxgamer.rs.model.entity.mob;
 
 import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.lib.Calc;
+import org.maxgamer.rs.util.Calc;
 import org.maxgamer.rs.model.map.path.Direction;
 
 /**

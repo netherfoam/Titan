@@ -1,6 +1,6 @@
 package org.maxgamer.rs.model.entity.mob.combat;
 
-import org.maxgamer.rs.lib.Erratic;
+import org.maxgamer.rs.util.Erratic;
 import org.maxgamer.rs.model.entity.mob.CombatStats;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.events.mob.MobDamageRollEvent;

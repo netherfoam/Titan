@@ -9,8 +9,8 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Scanner;
 
-import org.maxgamer.rs.io.InputStreamWrapper;
-import org.maxgamer.rs.io.OutputStreamWrapper;
+import org.maxgamer.rs.util.io.InputStreamWrapper;
+import org.maxgamer.rs.util.io.OutputStreamWrapper;
 
 /**
  * A manage class which allows XTEA keys to be stored

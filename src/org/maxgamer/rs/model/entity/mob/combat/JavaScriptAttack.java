@@ -1,14 +1,14 @@
 package org.maxgamer.rs.model.entity.mob.combat;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.maxgamer.rs.model.entity.mob.Animation;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.javascript.JavaScriptCall;
 import org.maxgamer.rs.model.javascript.JavaScriptFiber;
 import org.mozilla.javascript.EvaluatorException;
 import org.mozilla.javascript.Undefined;
+
+import java.io.File;
+import java.io.IOException;
 
 public class JavaScriptAttack extends Attack{
 	private JavaScriptFiber fiber;

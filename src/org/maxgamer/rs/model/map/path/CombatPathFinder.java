@@ -2,7 +2,7 @@ package org.maxgamer.rs.model.map.path;
 
 import java.util.ArrayList;
 
-import org.maxgamer.rs.lib.Calc;
+import org.maxgamer.rs.util.Calc;
 import org.maxgamer.rs.model.map.Location;
 import org.maxgamer.rs.model.map.Position;
 

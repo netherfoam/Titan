@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 
 import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.lib.log.Log;
+import org.maxgamer.rs.util.log.Log;
 import org.maxgamer.rs.model.entity.mob.npc.loot.CommonLootItem;
 import org.maxgamer.rs.model.entity.mob.npc.loot.Loot;
 import org.maxgamer.rs.model.item.ItemStack;

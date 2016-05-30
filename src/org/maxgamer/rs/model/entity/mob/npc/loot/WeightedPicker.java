@@ -36,6 +36,14 @@ public class WeightedPicker<T extends Weighted> {
 	}
 
 	/**
+	 * Removes all items listed in this WeightedPicker
+	 */
+	public void clear() {
+		this.options.clear();
+		this.totalWeight = 0;
+	}
+
+	/**
 	 * Constructs a new {@code WeightedPicker} from the specified
 	 * {@code options}.
 	 * 

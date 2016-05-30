@@ -10,7 +10,7 @@ import org.maxgamer.rs.command.CommandManager;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.core.server.Server;
 import org.maxgamer.rs.event.EventManager;
-import org.maxgamer.rs.interact.InteractionManager;
+import org.maxgamer.rs.model.interact.InteractionManager;
 import org.maxgamer.rs.structure.configs.FileConfig;
 
 /**

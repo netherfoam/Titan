@@ -6,7 +6,7 @@ import org.maxgamer.rs.command.CmdName;
 import org.maxgamer.rs.command.CommandSender;
 import org.maxgamer.rs.command.GenericCommand;
 import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.lib.log.Log;
+import org.maxgamer.rs.util.log.Log;
 import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
 import org.maxgamer.rs.module.Module;
 

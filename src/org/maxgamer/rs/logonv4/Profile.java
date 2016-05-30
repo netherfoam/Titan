@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 import net.crackstation.hash.PasswordHash;
 
-import org.maxgamer.rs.lib.log.Log;
+import org.maxgamer.rs.util.log.Log;
 import org.maxgamer.rs.structure.dbmodel.Mapping;
 import org.maxgamer.rs.structure.dbmodel.Transparent;
 

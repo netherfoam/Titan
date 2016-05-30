@@ -2,8 +2,8 @@ package org.maxgamer.rs.model.entity.mob.persona.player;
 
 import java.util.ArrayList;
 
-import org.maxgamer.rs.interfaces.Pane;
-import org.maxgamer.rs.interfaces.Window;
+import org.maxgamer.rs.model.interfaces.Pane;
+import org.maxgamer.rs.model.interfaces.Window;
 
 /**
  * Represents all of the currently active panes that the owner of this PaneSet

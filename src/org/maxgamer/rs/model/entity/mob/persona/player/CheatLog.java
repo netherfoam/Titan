@@ -3,7 +3,7 @@ package org.maxgamer.rs.model.entity.mob.persona.player;
 import java.util.ArrayList;
 
 import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.lib.log.Log;
+import org.maxgamer.rs.util.log.Log;
 import org.maxgamer.rs.network.Client;
 
 /**

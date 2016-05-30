@@ -5,8 +5,8 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import org.maxgamer.rs.command.PlayerCommand;
-import org.maxgamer.rs.interfaces.impl.chat.IntRequestInterface;
-import org.maxgamer.rs.interfaces.impl.primary.BookInterface;
+import org.maxgamer.rs.model.interfaces.impl.chat.IntRequestInterface;
+import org.maxgamer.rs.model.interfaces.impl.primary.BookInterface;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
 import org.maxgamer.rs.model.map.object.GameObject;

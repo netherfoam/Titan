@@ -1,14 +1,14 @@
 package org.maxgamer.rs.model.javascript;
 
 import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.interfaces.impl.chat.IntRequestInterface;
-import org.maxgamer.rs.interfaces.impl.chat.ItemPickerDialogue;
-import org.maxgamer.rs.interfaces.impl.chat.StringRequestInterface;
-import org.maxgamer.rs.interfaces.impl.dialogue.ForkDialogue;
-import org.maxgamer.rs.interfaces.impl.dialogue.SpeechDialogue;
-import org.maxgamer.rs.interfaces.impl.dialogue.ThoughtDialogue;
-import org.maxgamer.rs.interfaces.impl.primary.VendorInterface;
-import org.maxgamer.rs.lib.Chat;
+import org.maxgamer.rs.model.interfaces.impl.chat.IntRequestInterface;
+import org.maxgamer.rs.model.interfaces.impl.chat.ItemPickerDialogue;
+import org.maxgamer.rs.model.interfaces.impl.chat.StringRequestInterface;
+import org.maxgamer.rs.model.interfaces.impl.dialogue.ForkDialogue;
+import org.maxgamer.rs.model.interfaces.impl.dialogue.SpeechDialogue;
+import org.maxgamer.rs.model.interfaces.impl.dialogue.ThoughtDialogue;
+import org.maxgamer.rs.model.interfaces.impl.primary.VendorInterface;
+import org.maxgamer.rs.util.Chat;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.npc.NPC;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;

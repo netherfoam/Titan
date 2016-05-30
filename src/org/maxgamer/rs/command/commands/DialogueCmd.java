@@ -1,7 +1,7 @@
 package org.maxgamer.rs.command.commands;
 
 import org.maxgamer.rs.command.PlayerCommand;
-import org.maxgamer.rs.interfaces.impl.dialogue.SpeechDialogue;
+import org.maxgamer.rs.model.interfaces.impl.dialogue.SpeechDialogue;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
 

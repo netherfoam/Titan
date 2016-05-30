@@ -5,8 +5,8 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import org.maxgamer.rs.lib.IntList;
-import org.maxgamer.rs.lib.log.Log;
+import org.maxgamer.rs.util.IntList;
+import org.maxgamer.rs.util.log.Log;
 import org.maxgamer.rs.model.item.ItemDefinition;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.structure.YMLSerializable;

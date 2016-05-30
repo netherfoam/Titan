@@ -5,8 +5,8 @@ import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 
 import org.maxgamer.rs.cache.RSInputStream;
-import org.maxgamer.rs.io.ByteReader;
-import org.maxgamer.rs.io.CircularBuffer;
+import org.maxgamer.rs.util.io.ByteReader;
+import org.maxgamer.rs.util.io.CircularBuffer;
 import org.maxgamer.rs.network.io.stream.RSInputBuffer;
 
 /**

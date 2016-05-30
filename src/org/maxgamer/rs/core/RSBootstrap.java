@@ -3,7 +3,7 @@ package org.maxgamer.rs.core;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import org.maxgamer.rs.lib.log.Log;
+import org.maxgamer.rs.util.log.Log;
 import org.maxgamer.rs.logonv4.logon.LogonServer;
 import org.maxgamer.rs.structure.sql.Database.ConnectionException;
 

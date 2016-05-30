@@ -5,7 +5,7 @@ import java.nio.ByteBuffer;
 
 import org.maxgamer.rs.cache.RSInputStream;
 import org.maxgamer.rs.core.server.ServerTicker;
-import org.maxgamer.rs.io.ByteBufferInputStream;
+import org.maxgamer.rs.util.io.ByteBufferInputStream;
 
 /**
  * @author netherfoam

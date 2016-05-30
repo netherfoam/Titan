@@ -1,15 +1,15 @@
 package org.maxgamer.rs.model.map.path;
 
-import java.util.PriorityQueue;
-
 import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.lib.Calc;
 import org.maxgamer.rs.model.entity.Entity;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.map.Location;
 import org.maxgamer.rs.model.map.Position;
 import org.maxgamer.rs.model.map.object.GameObject;
 import org.maxgamer.rs.structure.timings.StopWatch;
+import org.maxgamer.rs.util.Calc;
+
+import java.util.PriorityQueue;
 
 /**
  * @author netherfoam
@@ -180,7 +180,7 @@ public class AStar implements PathFinder {
 	}
 	
 	public Path findPath(Mob m, GameObject to) {
-		return findPath(m.getLocation(), to.getLocation(), to.getLocation().add(to.getSizeX() - 1, to.getSizeY() - 1), to.getSizeX(), to.getSizeY(), to);
+		return findPath(m.getLocation(), to.getLocation().add(-1, -1), to.getLocation().add(to.getSizeX() - 1, to.getSizeY() - 1), m.getSizeX(), m.getSizeY(), to);
 	}
 
 	public Path findPath(Location start, Position min, Position max, int xSize, int ySize, GameObject... ignores) {

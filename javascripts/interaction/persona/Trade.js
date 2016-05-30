@@ -1,5 +1,5 @@
 importClass(org.maxgamer.rs.model.item.inventory.GenericContainer);
-importClass(org.maxgamer.rs.interfaces.impl.primary.TradeInterface);
+importClass(org.maxgamer.rs.model.interfaces.impl.primary.TradeInterface);
 
 function trade(p1, p2){
 	var mine = new GenericContainer(Inventory.SIZE, StackType.NORMAL);

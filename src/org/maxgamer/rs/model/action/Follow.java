@@ -2,7 +2,7 @@ package org.maxgamer.rs.model.action;
 
 import java.lang.ref.WeakReference;
 
-import org.maxgamer.rs.lib.Erratic;
+import org.maxgamer.rs.util.Erratic;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.MovementUpdate;
 import org.maxgamer.rs.model.map.Location;

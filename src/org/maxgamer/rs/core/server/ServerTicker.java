@@ -7,7 +7,7 @@ import java.util.LinkedList;
 import java.util.PriorityQueue;
 
 import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.lib.log.Log;
+import org.maxgamer.rs.util.log.Log;
 import org.maxgamer.rs.network.Session;
 import org.maxgamer.rs.structure.timings.StopWatch;
 

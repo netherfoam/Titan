@@ -6,8 +6,8 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
 
 import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.lib.Calc;
-import org.maxgamer.rs.lib.log.Log;
+import org.maxgamer.rs.util.Calc;
+import org.maxgamer.rs.util.log.Log;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;
 import org.maxgamer.rs.model.skill.SkillType;
 import org.maxgamer.rs.network.Session;

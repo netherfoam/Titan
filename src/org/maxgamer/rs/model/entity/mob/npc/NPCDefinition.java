@@ -10,8 +10,8 @@ import java.util.HashMap;
 import org.maxgamer.rs.cache.Archive;
 import org.maxgamer.rs.cache.IDX;
 import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.definition.Definition;
-import org.maxgamer.rs.lib.BufferUtils;
+import org.maxgamer.rs.model.Definition;
+import org.maxgamer.rs.util.BufferUtils;
 import org.maxgamer.rs.model.entity.mob.Bonuses;
 import org.maxgamer.rs.structure.dbmodel.Mapping;
 

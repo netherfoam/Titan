@@ -2,10 +2,10 @@
 var player;
 
 importClass(org.maxgamer.rs.model.javascript.DialogueUtil);
-importClass(org.maxgamer.rs.interfaces.impl.dialogue.SpeechDialogue);
+importClass(org.maxgamer.rs.model.interfaces.impl.dialogue.SpeechDialogue);
 
 function chat(speaker, message, emote){
-	emote = emote || org.maxgamer.rs.interfaces.impl.dialogue.SpeechDialogue.CALM_TALK;
+	emote = emote || org.maxgamer.rs.model.interfaces.impl.dialogue.SpeechDialogue.CALM_TALK;
 	
 	DialogueUtil.chat(fiber, player, speaker, message, emote);
 }

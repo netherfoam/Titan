@@ -2,7 +2,7 @@ package org.maxgamer.rs.logonv4;
 
 import net.openrs.util.ByteBufferUtils;
 
-import org.maxgamer.rs.io.ByteWriter;
+import org.maxgamer.rs.util.io.ByteWriter;
 import org.maxgamer.rs.network.io.stream.RSOutputStream;
 
 /**

@@ -1,15 +1,15 @@
 package org.maxgamer.rs.command.commands;
 
+import org.maxgamer.rs.command.PlayerCommand;
+import org.maxgamer.rs.model.entity.mob.persona.player.Player;
+import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
+import org.maxgamer.rs.model.interfaces.impl.chat.IntRequestInterface;
+import org.maxgamer.rs.model.interfaces.impl.primary.BookInterface;
+import org.maxgamer.rs.model.map.object.GameObject;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-
-import org.maxgamer.rs.command.PlayerCommand;
-import org.maxgamer.rs.model.interfaces.impl.chat.IntRequestInterface;
-import org.maxgamer.rs.model.interfaces.impl.primary.BookInterface;
-import org.maxgamer.rs.model.entity.mob.persona.player.Player;
-import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
-import org.maxgamer.rs.model.map.object.GameObject;
 
 public class DespawnObject implements PlayerCommand{
 	@Override
@@ -42,7 +42,7 @@ public class DespawnObject implements PlayerCommand{
 		for(int i = 0; i < 15 && i < objects.size(); i++){
 			GameObject g = objects.get(i);
 			
-			String left = i + ":" + g.getName() + "id=" + g.getId() + ",typ=" + g.getType() + ",hid=" + g.isHidden();
+			String left = i + ":" + g.getName() + ",id=" + g.getId() + ",typ=" + g.getType() + ",hid=" + g.isHidden();
 			String right = "fac=" + g.getFacing() + ",solid=" + g.isSolid() + "low=" + g.hasRangeBlockClipFlag();
 			
 			book.setLine(i, left);

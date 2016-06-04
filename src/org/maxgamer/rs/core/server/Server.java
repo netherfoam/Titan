@@ -244,6 +244,7 @@ public class Server {
 			@Override
 			public void run() {
 				try {
+					Core.getWorldDatabase().getEntityManager().flush();
 					Server.this.lobby = new Lobby();
 					
 					// We should initialize everything before loading user content
@@ -565,7 +566,7 @@ public class Server {
 		maps.save();
 		
 		if (logon.isRunning()) logon.stop(); //Saves all players
-		modules.unload();
+		if(modules != null) modules.unload();
 		
 		if (network.isRunning()) network.stop();
 		thread.shutdown();

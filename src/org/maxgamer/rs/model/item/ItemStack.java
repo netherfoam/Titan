@@ -1,12 +1,14 @@
 package org.maxgamer.rs.model.item;
 
-import java.lang.ref.WeakReference;
-import java.util.HashMap;
-
+import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.model.entity.Interactable;
 import org.maxgamer.rs.model.item.weapon.Equipment;
+import org.maxgamer.rs.repository.ItemTypeRepository;
 import org.maxgamer.rs.structure.YMLSerializable;
 import org.maxgamer.rs.structure.configs.ConfigSection;
+
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
 
 /**
  * @author netherfoam
@@ -16,9 +18,10 @@ public class ItemStack implements Comparable<ItemStack>, YMLSerializable, Intera
 	/** The generic currency in the game */
 	public static final ItemStack COINS = ItemStack.create(995);
 	
-	final private int id;
-	final private long amount;
-	final private int health;
+	private final int id;
+	private final long amount;
+	private final int health;
+	private transient ItemType definition;
 	
 	protected ItemStack(int id, long amount, int health) {
 		this.id = id;
@@ -93,10 +96,12 @@ public class ItemStack implements Comparable<ItemStack>, YMLSerializable, Intera
 		return ItemStack.create(id, 1);
 	}
 	
-	public ItemDefinition getDefinition() {
-		ItemDefinition proto = ItemDefinition.getDefinition(id);
-		
-		return proto;
+	public ItemType getDefinition() {
+		if(this.definition == null) {
+			this.definition = Core.getWorldDatabase().getRepository(ItemTypeRepository.class).find(this.id);
+		}
+
+		return this.definition;
 	}
 	
 	public int getCharges() {

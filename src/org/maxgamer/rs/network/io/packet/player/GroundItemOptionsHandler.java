@@ -1,8 +1,9 @@
 package org.maxgamer.rs.network.io.packet.player;
 
+import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.model.action.WalkAction;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
-import org.maxgamer.rs.model.item.ItemDefinition;
+import org.maxgamer.rs.model.item.ItemType;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.item.ground.GroundItemStack;
 import org.maxgamer.rs.model.map.Location;
@@ -12,6 +13,7 @@ import org.maxgamer.rs.network.io.packet.PacketProcessor;
 import org.maxgamer.rs.network.io.packet.RSIncomingPacket;
 
 import co.paralleluniverse.fibers.SuspendExecution;
+import org.maxgamer.rs.repository.ItemTypeRepository;
 
 /**
  * @author netherfoam
@@ -77,7 +79,7 @@ public class GroundItemOptionsHandler implements PacketProcessor<Player> {
 				break;
 			case EXAMINE: //TODO: Should we move this to a different handler?
 				itemId = packet.readShort();
-				ItemDefinition proto = ItemDefinition.getDefinition(itemId);
+				ItemType proto = Core.getWorldDatabase().getRepository(ItemTypeRepository.class).find(itemId);
 				player.sendMessage(proto.getExamine());
 				
 				return; //Return, not break

@@ -1,13 +1,13 @@
 package org.maxgamer.rs.model.item.vendor;
 
+import org.maxgamer.rs.core.Core;
+import org.maxgamer.rs.model.item.ItemStack;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.model.item.ItemStack;
 
 public class VendorManager{
 	private HashMap<String, VendorContainer> names = new HashMap<String, VendorContainer>();

@@ -1,11 +1,5 @@
 package org.maxgamer.rs.model.map;
 
-import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Iterator;
-
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.event.EventHandler;
 import org.maxgamer.rs.event.EventListener;
@@ -14,6 +8,12 @@ import org.maxgamer.rs.model.entity.mob.npc.NPC;
 import org.maxgamer.rs.model.events.world.ChunkLoadEvent;
 import org.maxgamer.rs.model.events.world.ChunkUnloadEvent;
 import org.maxgamer.rs.model.map.spawns.NPCSpawn;
+import org.maxgamer.rs.repository.NPCSpawnRepository;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
 
 public class MapManager implements EventListener, Iterable<WorldMap>{
 	private File folder;
@@ -61,29 +61,18 @@ public class MapManager implements EventListener, Iterable<WorldMap>{
 		if(loc == null){
 			throw new IllegalStateException("NPC has no spawn location set.");
 		}
-		
+
+
 		NPCSpawn spawn = new NPCSpawn(npc.getId(), loc);
-		
-		try {
-			spawn.insert(Core.getWorldDatabase().getConnection());
-		}
-		catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
+		Core.getWorldDatabase().getEntityManager().persist(spawn);
 	}
 	
 	public void unpersist(NPC npc){
 		if(isPersisted(npc.getMap()) == false){
 			throw new IllegalArgumentException("Map is not persisted!");
 		}
-		
-		NPCSpawn spawn = new NPCSpawn(npc.getUUID());
-		try{
-			spawn.delete(Core.getWorldDatabase().getConnection());
-		}
-		catch(SQLException e){
-			throw new RuntimeException(e);
-		}
+
+		Core.getWorldDatabase().getRepository(NPCSpawnRepository.class).deleteById(npc.getSpawnId());
 	}
 	
 	public WorldMap mainland(){

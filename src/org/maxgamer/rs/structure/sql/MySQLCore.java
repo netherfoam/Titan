@@ -1,11 +1,16 @@
 package org.maxgamer.rs.structure.sql;
 
+import com.vladmihalcea.book.hpjp.util.PersistenceUnitOfInfoImpl;
+import org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl;
+import org.hibernate.jpa.boot.internal.PersistenceUnitInfoDescriptor;
+import org.hibernate.jpa.internal.EntityManagerFactoryImpl;
+import org.maxgamer.rs.core.Core;
+
+import javax.persistence.spi.PersistenceUnitInfo;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * @author netherfoam
@@ -25,6 +30,8 @@ public class MySQLCore implements DatabaseCore {
 	
 	private final int MAX_CONNECTIONS = 8;
 	private ArrayList<Connection> pool = new ArrayList<Connection>();
+
+	private Properties entityManagerProperties;
 	
 	public MySQLCore(String host, String user, String pass, String database, String port) {
 		info = new Properties();
@@ -38,8 +45,25 @@ public class MySQLCore implements DatabaseCore {
 		for (int i = 0; i < MAX_CONNECTIONS; i++){
 			pool.add(null);
 		}
+
+		this.entityManagerProperties = new Properties();
+		this.entityManagerProperties.put("javax.persistence.jdbc.url", "jdbc:mysql://" + host + ":" + port + "/" + database);
+		this.entityManagerProperties.put("javax.persistence.jdbc.user", user);
+		this.entityManagerProperties.put("javax.persistence.jdbc.password", pass);
+		this.entityManagerProperties.put("javax.persistence.jdbc.driver", "com.mysql.jdbc.Driver");
 	}
-	
+
+	public EntityManagerFactoryImpl getEntityManagerFactory(List<String> entities) {
+		PersistenceUnitInfo info = new PersistenceUnitOfInfoImpl(Core.class.getSimpleName(), entities, this.entityManagerProperties);
+		Map<String, Object> configuration = new HashMap<>();
+
+		EntityManagerFactoryImpl factory = (EntityManagerFactoryImpl) new EntityManagerFactoryBuilderImpl(
+				new PersistenceUnitInfoDescriptor(info), configuration
+		).build();
+
+		return factory;
+	}
+
 	private boolean validate(Con c) throws SQLException{
 		if(c == null){
 			return false;

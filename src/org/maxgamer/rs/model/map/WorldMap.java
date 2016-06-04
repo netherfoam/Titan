@@ -1,13 +1,5 @@
 package org.maxgamer.rs.model.map;
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.Iterator;
-
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.core.server.WorldFullException;
 import org.maxgamer.rs.model.entity.Entity;
@@ -16,10 +8,15 @@ import org.maxgamer.rs.model.entity.mob.persona.Persona;
 import org.maxgamer.rs.model.entity.mob.persona.player.ViewDistance;
 import org.maxgamer.rs.model.map.area.AreaManager;
 import org.maxgamer.rs.model.map.spawns.NPCSpawn;
+import org.maxgamer.rs.repository.NPCSpawnRepository;
 import org.maxgamer.rs.structure.areagrid.AreaGrid;
 import org.maxgamer.rs.structure.areagrid.Cube;
 import org.maxgamer.rs.structure.areagrid.MBR;
 import org.maxgamer.rs.structure.timings.StopWatch;
+
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Iterator;
 
 /**
  * @author netherfoam
@@ -127,20 +124,8 @@ public abstract class WorldMap implements MBR {
 	}
 	
 	public void init(){
-		try{
-			Connection con = Core.getWorldDatabase().getConnection();
-			PreparedStatement ps = con.prepareStatement("SELECT * FROM NPCSpawn WHERE map = ?");
-			ps.setString(1, getName());
-			
-			ResultSet rs = ps.executeQuery();
-			while(rs.next()){
-				NPCSpawn spawn = new NPCSpawn(rs.getLong("id"));
-				spawn.reload(rs);
-				spawn.spawn();
-			}
-		}
-		catch(SQLException e){
-			e.printStackTrace();
+		for(NPCSpawn spawn : Core.getWorldDatabase().getRepository(NPCSpawnRepository.class).findAllByMap(this.getName())) {
+			spawn.spawn();
 		}
 	}
 	

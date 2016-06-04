@@ -33,7 +33,6 @@
 		<quasar>
 			<fileset dir="bin" />
 		</quasar>
-
 	</target>
 
 	<target name="jar" depends="compile">
@@ -48,6 +47,7 @@
 				<attribute name="Main-Class" value="org.maxgamer.rs.core.RSBootstrap" />
 				<attribute name="Class-Path" value="${lib.list}"/>
 			</manifest>
+			<fileset file="logger.properties" />
 		</jar>
 	</target>
 	
@@ -65,6 +65,7 @@
 				<attribute name="Implementation-Version" value="${build.number}"/>
 				<attribute name="Implementation-Vendor" value="${computer.hostname}"/>
 			</manifest>
+			<fileset file="logger.properties" />
 		</jar>
 	</target>
 

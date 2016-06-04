@@ -1,15 +1,11 @@
 package org.maxgamer.rs.core.server;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.PriorityQueue;
-
 import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.util.log.Log;
 import org.maxgamer.rs.network.Session;
 import org.maxgamer.rs.structure.timings.StopWatch;
+import org.maxgamer.rs.util.log.Log;
+
+import java.util.*;
 
 /**
  * @author netherfoam
@@ -148,6 +144,8 @@ public class ServerTicker implements Runnable {
 				s.close(false);
 			}
 		}
+
+		Core.getWorldDatabase().flush();
 		
 		//Say we took 37ms to perform this tick, we want to perform the next
 		//tick in 563ms, not 600ms. (37 + 563 = 600)

@@ -41,7 +41,7 @@ public class VendorSideInterface extends SideInterface {
 		//TODO: There are a few unknowns, but
 		// 621 = inventory item interface
 		// 93 = location of inventory interface
-		// 4 = 'shop inventory' container id
+		// 4 = 'shop inventory' container itemDefinition
 		// 7 = number of rows in inventory
 		// 4 = number of columns in inventory
 		// 1 = ??, -1 = ??

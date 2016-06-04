@@ -1,14 +1,14 @@
 package org.maxgamer.rs.model.entity.mob.npc.loot;
 
+import org.maxgamer.rs.core.Core;
+import org.maxgamer.rs.model.item.ItemStack;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.LinkedList;
-
-import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.model.item.ItemStack;
 
 /**
  * @author netherfoam

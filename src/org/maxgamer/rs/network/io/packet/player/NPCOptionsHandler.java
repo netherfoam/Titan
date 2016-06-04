@@ -1,19 +1,19 @@
 package org.maxgamer.rs.network.io.packet.player;
 
-import java.util.Arrays;
-import java.util.HashSet;
-
+import co.paralleluniverse.fibers.SuspendExecution;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.model.action.WalkAction;
 import org.maxgamer.rs.model.entity.mob.npc.NPC;
-import org.maxgamer.rs.model.entity.mob.npc.NPCDefinition;
+import org.maxgamer.rs.model.entity.mob.npc.NPCType;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.map.path.AStar;
 import org.maxgamer.rs.model.map.path.Path;
 import org.maxgamer.rs.network.io.packet.PacketProcessor;
 import org.maxgamer.rs.network.io.packet.RSIncomingPacket;
+import org.maxgamer.rs.repository.NPCTypeRepository;
 
-import co.paralleluniverse.fibers.SuspendExecution;
+import java.util.Arrays;
+import java.util.HashSet;
 
 /**
  * @author netherfoam
@@ -67,7 +67,7 @@ public class NPCOptionsHandler implements PacketProcessor<Player> {
 		case EXAMINE:
 			int npcId = packet.readShort();
 			try {
-				NPCDefinition d = NPCDefinition.getDefinition(npcId);
+				NPCType d = Core.getWorldDatabase().getRepository(NPCTypeRepository.class).find(npcId);
 				player.sendMessage(d.getExamine());
 
 				// TODO DEBUG: Send the player the options they can click on the NPC

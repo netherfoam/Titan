@@ -1,14 +1,18 @@
 package org.maxgamer.rs.structure.sql;
 
+import com.mchange.v2.c3p0.ComboPooledDataSource;
+import com.vladmihalcea.book.hpjp.util.PersistenceUnitOfInfoImpl;
+import org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl;
+import org.hibernate.jpa.boot.internal.PersistenceUnitInfoDescriptor;
+import org.hibernate.jpa.internal.EntityManagerFactoryImpl;
+import org.maxgamer.rs.core.Core;
+
+import javax.persistence.spi.PersistenceUnitInfo;
 import java.beans.PropertyVetoException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Properties;
-
-import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 /**
  * @author netherfoam
@@ -23,9 +27,11 @@ public class MySQLC3P0Core implements DatabaseCore {
 	private long timeout = 20 * 60 * 1000; //Timeout after 20 minutes.
 	
 	private ComboPooledDataSource pool;
+
+	private Properties entityManagerProperties;
 	
 	public MySQLC3P0Core(String host, String user, String pass, String database, String port) {
-		//This removes the debug spam from the C3P0 logger
+		// This removes the debug spam from the C3P0 logger
 		Properties p = new Properties(System.getProperties());
 		p.put("com.mchange.v2.log.MLog", "com.mchange.v2.log.FallbackMLog");
 		p.put("com.mchange.v2.log.FallbackMLog.DEFAULT_CUTOFF_LEVEL", "WARNING");
@@ -46,6 +52,23 @@ public class MySQLC3P0Core implements DatabaseCore {
 		pool.setAcquireIncrement(5);
 		pool.getProperties().setProperty("autoReconnect", "true");
 		pool.setMaxPoolSize(20);
+
+		this.entityManagerProperties = new Properties();
+		this.entityManagerProperties.put("javax.persistence.jdbc.url", "jdbc:mysql://" + host + ":" + port + "/" + database);
+		this.entityManagerProperties.put("javax.persistence.jdbc.user", user);
+		this.entityManagerProperties.put("javax.persistence.jdbc.password", pass);
+		this.entityManagerProperties.put("javax.persistence.jdbc.driver", "com.mysql.jdbc.Driver");
+	}
+
+	public EntityManagerFactoryImpl getEntityManagerFactory(List<String> entities) {
+		PersistenceUnitInfo info = new PersistenceUnitOfInfoImpl(Core.class.getSimpleName(), entities, this.entityManagerProperties);
+		Map<String, Object> configuration = new HashMap<>();
+
+		EntityManagerFactoryImpl factory = (EntityManagerFactoryImpl) new EntityManagerFactoryBuilderImpl(
+				new PersistenceUnitInfoDescriptor(info), configuration
+		).build();
+
+		return factory;
 	}
 	
 	public int prune() {

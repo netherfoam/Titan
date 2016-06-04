@@ -1,13 +1,13 @@
 package org.maxgamer.rs.network.server;
 
+import org.maxgamer.rs.core.server.Server;
+import org.maxgamer.rs.network.Session;
+import org.maxgamer.rs.structure.ServerHost;
+
 import java.io.IOException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
 import java.util.HashMap;
-
-import org.maxgamer.rs.core.server.Server;
-import org.maxgamer.rs.network.Session;
-import org.maxgamer.rs.structure.ServerHost;
 
 /**
  * A simple implementation of ServerHost that uses a Session class. This is the

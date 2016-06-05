@@ -1,11 +1,11 @@
 package org.maxgamer.rs.tools.importers;
 
+import org.maxgamer.rs.core.Core;
+
 import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.Scanner;
-
-import org.maxgamer.rs.core.Core;
 
 /**
  * @author netherfoam

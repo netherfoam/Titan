@@ -1,11 +1,11 @@
 package org.maxgamer.rs.model.entity.mob;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-
-import org.maxgamer.rs.util.io.OutputStreamWrapper;
 import org.maxgamer.rs.structure.YMLSerializable;
 import org.maxgamer.rs.structure.configs.ConfigSection;
+import org.maxgamer.rs.util.io.OutputStreamWrapper;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 /**
  * Represents the model currently used for a mob. This is an abstract class,

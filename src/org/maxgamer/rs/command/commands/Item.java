@@ -1,19 +1,17 @@
 package org.maxgamer.rs.command.commands;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.HashSet;
-
 import org.maxgamer.rs.command.PlayerCommand;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.item.inventory.ContainerException;
+import org.maxgamer.rs.repository.ItemTypeRepository;
 import org.maxgamer.rs.structure.TrieSet;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 
 /**
  * @author netherfoam
@@ -24,36 +22,25 @@ public class Item implements PlayerCommand {
 	private boolean ready = false;
 
 	public Item() {
-		Core.submit(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					Connection con = Core.getWorldDatabase().getConnection();
-					// Group by name means no duplicate names
-					PreparedStatement ps = con.prepareStatement("SELECT id, name FROM Item GROUP BY name ORDER BY id"); 
-					ResultSet rs = ps.executeQuery();
+		Map<Integer, String> data = Core.getWorldDatabase().getRepository(ItemTypeRepository.class).findNames();
 
-					while (rs.next()) {
-						String name = rs.getString("name");
-						if (name.equals("null")) {
-							continue;
-						}
-						name = name.toLowerCase().replaceAll("[^0-9A-Za-z]", "");
-
-						int id = rs.getInt("id");
-
-						names.add(name);
-						items.put(name, id);
-					}
-					items.put("coins", 995); // Fix for duplicate items called coins
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-				synchronized (Item.this) {
-					ready = true;
-				}
+		for(Map.Entry<Integer, String> entry : data.entrySet()){
+			String name = entry.getValue();
+			if (name.equals("null")) {
+				continue;
 			}
-		}, true);
+			name = name.toLowerCase().replaceAll("[^0-9A-Za-z]", "");
+
+			int id = entry.getKey();
+
+			names.add(name);
+			items.put(name, id);
+		}
+		items.put("coins", 995); // Fix for duplicate items called coins
+
+		synchronized (Item.this) {
+			ready = true;
+		}
 	}
 
 	@Override

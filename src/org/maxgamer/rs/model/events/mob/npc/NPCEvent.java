@@ -1,7 +1,7 @@
 package org.maxgamer.rs.model.events.mob.npc;
 
 import org.maxgamer.rs.model.entity.mob.npc.NPC;
-import org.maxgamer.rs.model.entity.mob.npc.NPCDefinition;
+import org.maxgamer.rs.model.entity.mob.npc.NPCType;
 import org.maxgamer.rs.model.events.mob.MobEvent;
 
 /**
@@ -17,7 +17,7 @@ public class NPCEvent extends MobEvent {
 		return (NPC) super.getMob();
 	}
 	
-	public NPCDefinition getDefinition() {
+	public NPCType getDefinition() {
 		return getMob().getDefinition();
 	}
 }

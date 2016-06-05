@@ -1,10 +1,10 @@
 package org.maxgamer.rs.model.interact;
 
 import co.paralleluniverse.fibers.SuspendExecution;
-import org.maxgamer.rs.model.interact.use.Use;
-import org.maxgamer.rs.util.log.Log;
 import org.maxgamer.rs.model.entity.Interactable;
 import org.maxgamer.rs.model.entity.mob.Mob;
+import org.maxgamer.rs.model.interact.use.Use;
+import org.maxgamer.rs.util.log.Log;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -123,7 +123,11 @@ public class InteractionHandlerMethod {
 			if(e.getTargetException() instanceof NotHandledException) throw (NotHandledException) e.getTargetException();
 			
 			Log.warning("Exception occurred while running interaction handler. Arguments were " + source + ", " + target + ", " + usage);
-			e.getTargetException().printStackTrace();
+			Throwable inner = e.getTargetException();
+			while(inner != null){
+				inner.printStackTrace();
+				inner = inner.getCause();
+			}
 		} catch(ReflectiveOperationException e){
 			e.printStackTrace();
 		}

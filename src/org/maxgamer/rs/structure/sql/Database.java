@@ -1,13 +1,36 @@
 package org.maxgamer.rs.structure.sql;
 
+import org.hibernate.jpa.HibernateEntityManagerFactory;
+import org.maxgamer.rs.repository.Repository;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * @author netherfoam
  */
 public class Database {
+    /**
+     * Represents a connection error, generally when the server can't connect to
+     * MySQL or something.
+     */
+    public static class ConnectionException extends Exception {
+        private static final long serialVersionUID = 8348749992936357317L;
+
+        public ConnectionException(String msg) {
+            super(msg);
+        }
+    }
+
 	private DatabaseCore core;
+	private HashMap<Class<? extends Repository>, Repository<?>> repositories = new HashMap<Class<? extends Repository>, Repository<?>>();
+    private ArrayList<String> managedEntities = new ArrayList<String>();
+    private HibernateEntityManagerFactory entityManagerFactory;
+    private EntityManager entityManager;
 	
 	/**
 	 * Creates a new database and validates its connection.
@@ -21,16 +44,72 @@ public class Database {
 		
 		try {
 			if (!getConnection().isValid(10)) {
-				throw new ConnectionException("Database doesn not appear to be valid!");
+				throw new ConnectionException("Database doesn't not appear to be valid!");
 			}
 		}
 		catch (AbstractMethodError e) {
 			//You don't need to validate this core.
 		}
 		catch (Exception e) {
-			throw new ConnectionException("Database doesn not appear to be valid!");
+			throw new ConnectionException("Database doesn't not appear to be valid!");
 		}
 	}
+
+    public <T> void addRepository(Repository<T> repository) {
+        this.repositories.put(repository.getClass(), repository);
+        if(this.managedEntities.contains(repository.getType().getName()) == false) {
+            this.addEntity(repository.getType());
+        }
+    }
+
+    public void removeRepository(Class<? extends Repository> type) {
+        this.repositories.remove(type);
+    }
+
+	@SuppressWarnings("unchecked")
+	public <R extends Repository> R getRepository(Class<R> type) {
+		return (R) repositories.get(type);
+	}
+
+    public void addEntity(Class<?> type){
+        if(this.managedEntities.contains(type.getName())) {
+            throw new IllegalArgumentException("Entity type " + type.getName() + " is already managed.");
+        }
+
+        if(this.entityManager == null || this.entityManager.isOpen() == false) {
+            // The entity manager is not set up yet. No need to reset it.
+            this.managedEntities.add(type.getName());
+            return;
+        }
+
+        if(this.entityManager.getTransaction().isActive()){
+            this.entityManager.getTransaction().commit();
+            this.entityManager.flush();
+            this.entityManager.close();
+        }
+        this.entityManager = null;
+
+        if(this.entityManagerFactory != null && this.entityManagerFactory.isOpen()){
+            this.entityManagerFactory.getSessionFactory().close();
+        }
+        this.entityManagerFactory = null;
+
+        this.managedEntities.add(type.getName());
+    }
+
+    public void removeEntity(Class<?> type){
+        if(this.entityManager != null && this.entityManager.isOpen() && this.entityManager.getTransaction().isActive()){
+            throw new IllegalStateException("EntityManager transaction in progress. Can't unregister a type.");
+        }
+        this.entityManager = null;
+
+        if(this.entityManagerFactory != null && this.entityManagerFactory.isOpen()){
+            this.entityManagerFactory.close();
+        }
+        this.entityManagerFactory = null;
+
+        this.managedEntities.remove(type.getName());
+    }
 	
 	/**
 	 * Returns the database core object, that this database runs on.
@@ -55,18 +134,50 @@ public class Database {
 	 * Closes the database
 	 */
 	public void close() {
-		this.core.close();
-	}
-	
-	/**
-	 * Represents a connection error, generally when the server can't connect to
-	 * MySQL or something.
-	 */
-	public static class ConnectionException extends Exception {
-		private static final long serialVersionUID = 8348749992936357317L;
-		
-		public ConnectionException(String msg) {
-			super(msg);
+        this.core.close();
+    }
+
+    /**
+     * The {@link EntityManager} for this Database. This will automatically begin a transaction,
+     * which will be flushed when the next server tick completes, if it was used.
+     *
+     * @return The {@link EntityManager} for this Database
+     */
+	public synchronized EntityManager getEntityManager() {
+		if(this.entityManager == null || this.entityManager.isOpen() == false) {
+            this.entityManager = this.getEntityManagerFactory().createEntityManager();
 		}
+
+        if(this.entityManager.getTransaction().isActive() == false){
+            this.entityManager.getTransaction().begin();
+        }
+
+		return this.entityManager;
 	}
+
+    /**
+     * Lazily initializes the {@link EntityManagerFactory}
+     *
+     * @return the {@link EntityManagerFactory}
+     */
+    private EntityManagerFactory getEntityManagerFactory() {
+        if(this.entityManagerFactory == null || this.entityManagerFactory.isOpen() == false){
+            this.entityManagerFactory = core.getEntityManagerFactory(this.managedEntities);
+
+        }
+        return this.entityManagerFactory;
+    }
+
+    /**
+     * Flushes the {@link EntityManager}, if it has been used and not committed
+     */
+    public void flush() {
+        if(this.entityManager == null || this.entityManager.isOpen() == false) {
+            return;
+        }
+
+        if(this.entityManager.getTransaction().isActive()) {
+            this.entityManager.getTransaction().commit();
+        }
+    }
 }

@@ -1,5 +1,15 @@
 package org.maxgamer.rs.tools.importers;
 
+import org.maxgamer.rs.core.Core;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -7,17 +17,6 @@ import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.maxgamer.rs.core.Core;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 public class XMLItemDefImporter {
 	public static void main(String[] args) throws ParserConfigurationException, SAXException, IOException, SQLException{
@@ -46,10 +45,10 @@ public class XMLItemDefImporter {
 		NodeList nodes = document.getDocumentElement().getChildNodes();
 		
 		for(int i = 0; i < nodes.getLength(); i++){
-			//An <itemDefinition> section
+			//An <id> section
 			Node node = nodes.item(i);
 			
-			if(node.getNodeName().equalsIgnoreCase("itemDefinition") == false) continue;
+			if(node.getNodeName().equalsIgnoreCase("id") == false) continue;
 			
 			String examine = null;
 			int id = -1;

@@ -15,7 +15,7 @@ public class NPCModel extends MobModel {
 		this.id = id;
 	}
 	
-	public NPCModel(NPCDefinition def) {
+	public NPCModel(NPCType def) {
 		this(def.getId());
 		
 		this.setCombatLevel(def.getCombatLevel());

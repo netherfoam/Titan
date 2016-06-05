@@ -1,7 +1,5 @@
 package org.maxgamer.rs.model.entity.mob.npc;
 
-import java.util.UUID;
-
 import org.maxgamer.rs.cache.EncryptedException;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.core.server.WorldFullException;
@@ -11,11 +9,7 @@ import org.maxgamer.rs.model.entity.mob.Bonuses;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.MobModel;
 import org.maxgamer.rs.model.entity.mob.MovementUpdate;
-import org.maxgamer.rs.model.entity.mob.combat.Attack;
-import org.maxgamer.rs.model.entity.mob.combat.AttackStyle;
-import org.maxgamer.rs.model.entity.mob.combat.DamageType;
-import org.maxgamer.rs.model.entity.mob.combat.MeleeAttack;
-import org.maxgamer.rs.model.entity.mob.combat.RangeAttack;
+import org.maxgamer.rs.model.entity.mob.combat.*;
 import org.maxgamer.rs.model.entity.mob.combat.mage.CombatSpell;
 import org.maxgamer.rs.model.entity.mob.combat.mage.MagicAttack;
 import org.maxgamer.rs.model.entity.mob.npc.loot.Loot;
@@ -30,6 +24,9 @@ import org.maxgamer.rs.model.map.path.Direction;
 import org.maxgamer.rs.model.map.path.Path;
 import org.maxgamer.rs.model.skill.SkillSet;
 import org.maxgamer.rs.model.skill.SkillType;
+import org.maxgamer.rs.repository.NPCTypeRepository;
+
+import java.util.UUID;
 
 /**
  * @author netherfoam
@@ -45,7 +42,7 @@ public class NPC extends Mob implements Interactable {
 	/**
 	 * The definition for this NPC
 	 */
-	private NPCDefinition definition;
+	private NPCType definition;
 	
 	/**
 	 * The NPCModel this NPC uses to represent visible information (Head icon,
@@ -59,8 +56,6 @@ public class NPC extends Mob implements Interactable {
 	private Location spawn;
 	
 	private SkillSet skills;
-	
-	private NPCGroup group;
 	
 	/**
 	 * Constructs a new NPC from the given ID. This loads the definition ID from the cache and database. If either fails, a {@link RuntimeException}
@@ -85,10 +80,10 @@ public class NPC extends Mob implements Interactable {
 	 * @param defId the definition id for the NPC
 	 * @throws WorldFullException
 	 */
-	public NPC(int defId, int uuid, Location l) throws WorldFullException {
+	public NPC(int defId, long spawnId, Location l) throws WorldFullException {
 		super(1, 1);
 		try {
-			this.definition = NPCDefinition.getDefinition(defId);
+			this.definition = Core.getWorldDatabase().getRepository(NPCTypeRepository.class).find(defId);
 		}
 		catch (Exception e) {
 			throw new RuntimeException(e);
@@ -100,13 +95,13 @@ public class NPC extends Mob implements Interactable {
 		this.mask = new NPCUpdateMask(this, new NPCMovementUpdate());
 		this.skills = new SkillSet(this);
 		
-		NPCDefinition d = getDefinition();
+		NPCType d = getDefinition();
 		this.skills.setLevel(SkillType.ATTACK, d.getAttackLevel());
 		this.skills.setLevel(SkillType.STRENGTH, d.getAttackLevel());
 		this.skills.setLevel(SkillType.DEFENCE, d.getAttackLevel());
 		this.skills.setLevel(SkillType.MAGIC, d.getAttackLevel());
 		this.skills.setLevel(SkillType.RANGE, d.getAttackLevel());
-		this.group = NPCGroup.get(d.getGroupId());
+		this.uuid = spawnId;
 		
 		this.setHealth(getMaxHealth());
 		loadId();
@@ -116,10 +111,9 @@ public class NPC extends Mob implements Interactable {
 	
 	/**
 	 * The unique identifier representing this NPC.  NPC's which are saved after server restarts will have the same UUID.  NPC's which are created
-	 * on the fly will have randomly generated UUID's.
 	 * @return the unique string representing this NPC.
 	 */
-	public long getUUID(){
+	public long getSpawnId(){
 		return uuid;
 	}
 	
@@ -150,11 +144,11 @@ public class NPC extends Mob implements Interactable {
 	}
 	
 	public NPCGroup getGroup() {
-		return this.group;
+		return this.getDefinition().getGroup();
 	}
 	
 	public Loot getLoot() {
-		return group.getLoot();
+		return getGroup().getLoot();
 	}
 	
 	/**
@@ -197,7 +191,7 @@ public class NPC extends Mob implements Interactable {
 	 * 
 	 * @return The definition used by this NPC
 	 */
-	public NPCDefinition getDefinition() {
+	public NPCType getDefinition() {
 		return definition;
 	}
 	
@@ -242,7 +236,7 @@ public class NPC extends Mob implements Interactable {
 	
 	@Override
 	public Attack nextAttack() {
-		NPCDefinition d = getDefinition();
+		NPCType d = getDefinition();
 		if (d.isMagic()) {
 			return new MagicAttack(this, new CombatSpell(1, d.getStartGraphics(), getCombatStats().getAttackAnimation(), d.getAttackDelay(), d.getEndGraphics(), -1, d.getProjectileId(), 8, d.getMagicLevel() * 4, -1));
 		}
@@ -396,13 +390,13 @@ public class NPC extends Mob implements Interactable {
 		int[] options = new int[] { Bonuses.ATK_STAB, Bonuses.ATK_SLASH, Bonuses.ATK_CRUSH };
 		String[] names = new String[] { "Stab", "Slash", "Crush" };
 		
-		int max = getDefinition().getBonuses().getBonus(options[0]);
+		int max = getDefinition().getBonus(options[0]);
 		int bestStyle = 0;
 		
 		for (int i = 1; i < options.length; i++) {
-			if (getDefinition().getBonuses().getBonus(options[i]) > max) {
+			if (getDefinition().getBonus(options[i]) > max) {
 				bestStyle = i;
-				max = getDefinition().getBonuses().getBonus(options[i]);
+				max = getDefinition().getBonus(options[i]);
 			}
 		}
 		return new AttackStyle(bestStyle + 1, names[bestStyle], bestStyle);

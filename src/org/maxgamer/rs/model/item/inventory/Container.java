@@ -5,9 +5,9 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import org.maxgamer.rs.core.Core;
+import org.maxgamer.rs.repository.ItemTypeRepository;
 import org.maxgamer.rs.util.IntList;
-import org.maxgamer.rs.util.log.Log;
-import org.maxgamer.rs.model.item.ItemDefinition;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.structure.YMLSerializable;
 import org.maxgamer.rs.structure.configs.ConfigSection;
@@ -678,7 +678,6 @@ public abstract class Container implements Cloneable, Iterable<ItemStack>, YMLSe
 		
 		for (ItemStack item : list) {
 			if (Container.add(item, proto, getStackType(), updates, -1) == false) {
-				Log.debug("Failed to remove " + item + " from " + this + " for hasRoom() check");
 				return false;
 			}
 		}
@@ -787,7 +786,7 @@ public abstract class Container implements Cloneable, Iterable<ItemStack>, YMLSe
 		if (id < 0) {
 			throw new IllegalArgumentException("May not search a container for a null item.");
 		}
-		long maxSize = ItemDefinition.getDefinition(id).getMaxStack();
+		long maxSize = Core.getWorldDatabase().getRepository(ItemTypeRepository.class).find(id).getMaxStack();
 		
 		int numStacks = (int) (amt / maxSize);
 		if (amt % maxSize > 0) numStacks++; // Leftovers stack.

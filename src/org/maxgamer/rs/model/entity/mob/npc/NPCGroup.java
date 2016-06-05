@@ -1,24 +1,22 @@
 package org.maxgamer.rs.model.entity.mob.npc;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.HashMap;
-
-import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.util.log.Log;
 import org.maxgamer.rs.model.entity.mob.npc.loot.CommonLootItem;
 import org.maxgamer.rs.model.entity.mob.npc.loot.Loot;
-import org.maxgamer.rs.model.item.ItemStack;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author netherfoam
  */
-public class NPCGroup {
-	private static HashMap<Integer, NPCGroup> groups = new HashMap<Integer, NPCGroup>(512);;
-	
-	public static void reload() throws SQLException {
+@Entity
+@Table(name = "NPCGroup")
+public class NPCGroup implements Serializable {
+	/*public static void reload() throws SQLException {
 		groups = new HashMap<Integer, NPCGroup>(512);
 		Connection con = Core.getWorldDatabase().getConnection();
 		PreparedStatement ps = con.prepareStatement("SELECT * FROM NPCGroupLoot");
@@ -72,9 +70,9 @@ public class NPCGroup {
 		}
 		rs.close();
 		ps.close();
-	}
+	}*/
 	
-	public static NPCGroup get(int id) {
+	/*public static NPCGroup get(int id) {
 		NPCGroup g = groups.get(id);
 		if (g == null) {
 			try {
@@ -109,19 +107,25 @@ public class NPCGroup {
 		}
 		
 		return g;
-	}
-	
+	}*/
+
+	@Id
 	private int id;
+
+	@OneToMany(mappedBy = "group")
+	private List<NPCGroupLoot> lootChances;
+
+	@OneToMany(mappedBy = "group")
+	private List<NPCGroupLootGuarantee> lootGuarantee;
 	
 	/**
 	 * A class to store NPC's which look different, but are the same underneath.
 	 * This means Loot, Attacks and ?? are the same for the NPCs in this group.
 	 */
-	private Loot loot;
+	private transient Loot loot;
 	
-	private NPCGroup(int id, Loot loot) {
-		this.id = id;
-		this.loot = loot;
+	public NPCGroup() {
+
 	}
 	
 	public int getId() {
@@ -129,6 +133,16 @@ public class NPCGroup {
 	}
 	
 	public Loot getLoot() {
+		if(loot == null) {
+			loot = new Loot();
+			for(NPCGroupLoot npcGroupLoot : this.lootChances) {
+				loot.add(npcGroupLoot.toLoot(), false);
+			}
+
+			for(NPCGroupLootGuarantee guaranteed : this.lootGuarantee) {
+				loot.add(new CommonLootItem(guaranteed.toItem(), 100), true);
+			}
+		}
 		return loot;
 	}
 }

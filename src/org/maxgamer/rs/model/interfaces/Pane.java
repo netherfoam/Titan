@@ -22,7 +22,7 @@ public abstract class Pane extends Window {
 	 * @param p
 	 *            The player
 	 * @param childId
-	 *            The unique id for this interface, this is actually unique.
+	 *            The unique itemDefinition for this interface, this is actually unique.
 	 */
 	public Pane(Player p, int childId) {
 		super(p);
@@ -143,7 +143,7 @@ public abstract class Pane extends Window {
 	 * Fetches the interface for the given ID
 	 * 
 	 * @param id
-	 *            the interface id
+	 *            the interface itemDefinition
 	 * @return the interface or null if not found.
 	 */
 	public Interface getInterface(int id) {

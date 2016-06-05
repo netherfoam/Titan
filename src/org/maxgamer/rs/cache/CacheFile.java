@@ -1,11 +1,11 @@
 package org.maxgamer.rs.cache;
 
+import org.maxgamer.rs.cache.reference.ReferenceTable;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-
-import org.maxgamer.rs.cache.reference.ReferenceTable;
 
 /**
  * Represents an individual file in the cache. Eg map region files.

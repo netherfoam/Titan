@@ -1,10 +1,20 @@
 package org.maxgamer.rs.structure.sql;
 
+import com.vladmihalcea.book.hpjp.util.PersistenceUnitOfInfoImpl;
+import org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl;
+import org.hibernate.jpa.boot.internal.PersistenceUnitInfoDescriptor;
+import org.hibernate.jpa.internal.EntityManagerFactoryImpl;
+import org.maxgamer.rs.core.Core;
+
+import javax.persistence.spi.PersistenceUnitInfo;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -13,9 +23,25 @@ import java.util.Properties;
 public class SQLiteCore implements DatabaseCore {
 	private Connection connection;
 	private File dbFile;
+	private Properties entityManagerProperties;
 	
 	public SQLiteCore(File dbFile) {
 		this.dbFile = dbFile;
+
+		this.entityManagerProperties = new Properties();
+		this.entityManagerProperties.put("javax.persistence.jdbc.url", "jdbc:sqlite:" + this.dbFile);
+		this.entityManagerProperties.put("javax.persistence.jdbc.driver", "org.sqlite.JDBC");
+	}
+
+	public EntityManagerFactoryImpl getEntityManagerFactory(List<String> entities) {
+		PersistenceUnitInfo info = new PersistenceUnitOfInfoImpl(Core.class.getSimpleName(), entities, this.entityManagerProperties);
+		Map<String, Object> configuration = new HashMap<>();
+
+		EntityManagerFactoryImpl factory = (EntityManagerFactoryImpl) new EntityManagerFactoryBuilderImpl(
+				new PersistenceUnitInfoDescriptor(info), configuration
+		).build();
+
+		return factory;
 	}
 	
 	/**

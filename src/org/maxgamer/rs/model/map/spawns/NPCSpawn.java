@@ -1,36 +1,47 @@
 package org.maxgamer.rs.model.map.spawns;
 
-import java.io.FileNotFoundException;
-import java.sql.SQLException;
-import java.util.UUID;
-
 import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.util.log.Log;
 import org.maxgamer.rs.model.entity.mob.npc.NPC;
 import org.maxgamer.rs.model.map.Location;
-import org.maxgamer.rs.structure.dbmodel.Mapping;
-import org.maxgamer.rs.structure.dbmodel.Transparent;
+import org.maxgamer.rs.util.log.Log;
 
-public class NPCSpawn extends Transparent {
-	@Mapping
-	protected int id;
-	@Mapping
+import javax.persistence.*;
+import java.io.FileNotFoundException;
+import java.util.UUID;
+
+@Entity
+@Table(name = "NPCSpawn")
+public class NPCSpawn {
+	@Id
+	protected long id;
+
+	@Column
 	protected int npc_id;
-	@Mapping
+
+	@Column(nullable = false)
 	protected String map;
-	@Mapping
+
+	@Column(nullable = false)
 	protected short x;
-	@Mapping
+
+	@Column(nullable = false)
 	protected short y;
-	@Mapping
+
+	@Column(nullable = false)
 	protected byte z;
+
+	public NPCSpawn() {
+
+	}
 	
 	public NPCSpawn(long id) {
-		super("NPCSpawn", new String[]{"id"}, new Object[]{id});
+		this();
+		this.id = id;
 	}
 	
 	public NPCSpawn(int npc_id, Location loc){
-		super("NPCSpawn", new String[]{"id"}, new Object[]{UUID.randomUUID().getLeastSignificantBits()});
+		this(UUID.randomUUID().getLeastSignificantBits());
+
 		this.npc_id = npc_id;
 		this.x = (short) loc.x;
 		this.y = (short) loc.y;
@@ -54,18 +65,14 @@ public class NPCSpawn extends Transparent {
 		}
 		catch(RuntimeException e){
 			if(e.getCause() instanceof FileNotFoundException){
-				Log.warning("NPC missing from cache. I'll delete it for you. ID: " + id + ", NPC_ID: " + npc_id + " at " + l);
-				try {
-					this.delete(Core.getWorldDatabase().getConnection());
-				} catch (SQLException e1) {
-					e1.printStackTrace();
-				}
+				Log.warning("NPC missing from cache. ID: " + id + ", NPC_ID: " + npc_id + " at " + l);
 				return null;
 			}
 			else{
 				throw e;
 			}
 		}
+
 		npc.setSpawn(l);
 		return npc;
 	}

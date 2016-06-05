@@ -1,10 +1,10 @@
 package org.maxgamer.rs.model.entity.mob.persona.player;
 
-import java.util.Map.Entry;
-
 import org.maxgamer.rs.cache.format.ClientScriptSettings;
 import org.maxgamer.rs.structure.YMLSerializable;
 import org.maxgamer.rs.structure.configs.ConfigSection;
+
+import java.util.Map.Entry;
 
 /**
  * @author Albert Beaupre

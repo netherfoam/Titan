@@ -1,8 +1,5 @@
 package org.maxgamer.rs.command.commands;
 
-import java.sql.SQLException;
-import java.text.ParseException;
-
 import org.maxgamer.rs.command.CmdName;
 import org.maxgamer.rs.command.PlayerCommand;
 import org.maxgamer.rs.core.Core;
@@ -13,6 +10,9 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
 import org.maxgamer.rs.model.map.Location;
 import org.maxgamer.rs.model.map.spawns.NPCSpawn;
 import org.maxgamer.rs.structure.Util;
+
+import java.sql.SQLException;
+import java.text.ParseException;
 
 /**
  * @author netherfoam
@@ -48,19 +48,14 @@ public class SpawnNPC implements PlayerCommand {
 			}
 			else{
 				if(Core.getServer().getMaps().isPersisted(p.getMap()) == false){
-					p.sendMessage("The map you are in is not persistant. You should persist the map before spawning NPC's permanently in it.");
+					p.sendMessage("The map you are in is not persistent. You should persist the map before spawning NPC's permanently in it.");
 					return;
 				}
-				try{
-					NPCSpawn spawn = new NPCSpawn(Integer.parseInt(args[0]), l);
-					spawn.insert(Core.getWorldDatabase().getConnection());
-					NPC n = spawn.spawn();
-					p.sendMessage("Spawned NPC " + args[0] + ": " + n.getDefinition().getName() + " permanently at " + l);
-				}
-				catch(SQLException e){
-					p.sendMessage("Failed to contact the MySQL database: " + e.getClass().getSimpleName() + "(" + e.getMessage() + ")");
-					e.printStackTrace();
-				}
+
+				NPCSpawn spawn = new NPCSpawn(Integer.parseInt(args[0]), l);
+				Core.getWorldDatabase().getEntityManager().persist(spawn);
+				NPC n = spawn.spawn();
+				p.sendMessage("Spawned NPC " + args[0] + ": " + n.getDefinition().getName() + " permanently at " + l);
 			}
 		}
 		catch (WorldFullException e) {

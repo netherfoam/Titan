@@ -1,62 +1,61 @@
 package org.maxgamer.rs.command.commands;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.HashMap;
-
 import org.maxgamer.rs.command.PlayerCommand;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
 import org.maxgamer.rs.model.events.mob.MobTeleportEvent.TeleportCause;
 import org.maxgamer.rs.model.map.Location;
-import org.maxgamer.rs.structure.TrieSet;
-import org.maxgamer.rs.structure.dbmodel.Mapping;
-import org.maxgamer.rs.structure.dbmodel.Transparent;
+import org.maxgamer.rs.repository.Repository;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import java.util.List;
 
 public class Warp implements PlayerCommand{
-	
-	private static class Destination extends Transparent{
-		@Mapping
+	@Entity(name = "Destination")
+	@Table(name = "Warp")
+	public static class Destination{
+		@Id
 		private String name;
-		@Mapping
+
+		@Column
 		private int x;
-		@Mapping
+
+		@Column
 		private int y;
-		@Mapping
+
+		@Column
 		private int z;
-		
-		public Destination(){
-			super("Warp", new String[]{"name"}, null);
+	}
+
+	private static class DestinationRepository extends Repository<Destination> {
+		public DestinationRepository() {
+			super(Destination.class);
+		}
+
+		public Destination findByPrefix(String name) {
+			return (Destination) getManager().createQuery("FROM " + this.name() + " WHERE name LIKE :name").setParameter("name", name + "%").getSingleResult();
 		}
 	}
-	
-	private TrieSet autocomplete = new TrieSet();
-	private HashMap<String, Destination> destinations = new HashMap<String, Destination>();
-	
+
+	private DestinationRepository repository;
+
 	public Warp(){
-		try{
-			PreparedStatement ps = Core.getWorldDatabase().getConnection().prepareStatement("SELECT * FROM Warp");
-			ResultSet rs = ps.executeQuery();
-			while(rs.next()){
-				Destination d = new Destination();
-				d.reload(rs);
-				destinations.put(d.name.toLowerCase(), d);
-				autocomplete.add(d.name.toLowerCase());
-			}
-		}
-		catch(SQLException e){
-			throw new RuntimeException(e);
-		}
+        Core.getWorldDatabase().flush();
+		this.repository = new DestinationRepository();
+		Core.getWorldDatabase().addRepository(this.repository);
 	}
 
 	@Override
 	public void execute(Player p, String[] args) throws Exception {
 		if(args.length < 1){
 			p.sendMessage("Usage: ::warp [target]");
-			StringBuilder sb = new StringBuilder(this.destinations.size() * 12);
-			for(Destination d : this.destinations.values()){
+			List<Destination> destinations = repository.findAll();
+			StringBuilder sb = new StringBuilder(destinations.size() * 12);
+			for(Destination d : destinations){
 				sb.append(d.name + ", ");
 			}
 			if(sb.length() > 0){
@@ -79,19 +78,10 @@ public class Warp implements PlayerCommand{
 			dest.y = l.y;
 			dest.z = l.z;
 			
-			dest.name = args[1];
+			dest.name = args[1].toLowerCase();
 			for(int i = 2; i < args.length; i++) dest.name += " " + args[i];
 			
-			try{
-				dest.insert(Core.getWorldDatabase().getConnection());
-			}
-			catch(SQLException e){
-				p.sendMessage("Failed to save warp! " + e.getMessage());
-				return;
-			}
-			
-			this.destinations.put(dest.name.toLowerCase(), dest);
-			autocomplete.add(dest.name.toLowerCase());
+			Core.getWorldDatabase().getEntityManager().persist(dest);
 			
 			p.sendMessage("Saved the warp as ::warp " + dest.name);
 			
@@ -101,12 +91,9 @@ public class Warp implements PlayerCommand{
 		String name = args[0];
 		for(int i = 1; i < args.length; i++) name += " " + args[i];
 		
-		Destination d = destinations.get(name.toLowerCase());
+		Destination d = repository.find(name.toLowerCase());
 		if(d == null){
-			String completed = autocomplete.nearestKey(name.toLowerCase());
-			if(completed != null){
-				d = destinations.get(completed);
-			}
+			d = repository.findByPrefix(name.toLowerCase());
 			
 			if(d == null){
 				p.sendMessage("No such destination '" + name + "'. Do ::warp for a list of destinations.");

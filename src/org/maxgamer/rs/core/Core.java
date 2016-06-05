@@ -8,12 +8,11 @@ import org.maxgamer.rs.cache.reference.Reference;
 import org.maxgamer.rs.cache.reference.ReferenceTable;
 import org.maxgamer.rs.command.ConsoleSender;
 import org.maxgamer.rs.core.server.Server;
-import org.maxgamer.rs.util.Files;
-import org.maxgamer.rs.util.log.Log;
-import org.maxgamer.rs.util.log.Logger.LogLevel;
 import org.maxgamer.rs.model.entity.mob.combat.RangeAttack;
-import org.maxgamer.rs.model.entity.mob.npc.NPCGroup;
-import org.maxgamer.rs.model.item.ItemDefinition;
+import org.maxgamer.rs.model.entity.mob.npc.NPCGroupLoot;
+import org.maxgamer.rs.model.entity.mob.npc.NPCGroupLootGuarantee;
+import org.maxgamer.rs.model.item.inventory.Equipment;
+import org.maxgamer.rs.repository.*;
 import org.maxgamer.rs.structure.configs.ConfigSection;
 import org.maxgamer.rs.structure.configs.FileConfig;
 import org.maxgamer.rs.structure.sql.Database;
@@ -22,7 +21,11 @@ import org.maxgamer.rs.structure.sql.SQLiteCore;
 import org.maxgamer.rs.structure.timings.NullTimings;
 import org.maxgamer.rs.structure.timings.Timings;
 import org.maxgamer.rs.tools.ConfigSetup;
+import org.maxgamer.rs.util.Files;
+import org.maxgamer.rs.util.log.Log;
+import org.maxgamer.rs.util.log.Logger.LogLevel;
 
+import javax.persistence.EntityManager;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -30,6 +33,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Date;
 import java.util.concurrent.*;
+import java.util.logging.LogManager;
 
 /**
  * Represents the core, responsible for running the server. Should keep this
@@ -90,7 +94,7 @@ public class Core {
 	 * and item definitions
 	 */
 	private static Database world;
-	
+
 	/**
 	 * The config for the world/servers
 	 */
@@ -120,12 +124,15 @@ public class Core {
 	public static void init(int threads, String[] args) throws Exception {
 		// This prevents Quasar from warning us about a missing JavaAgent, since we instrument as part of
 		// the build process, and using a URLClassLoader for the modules.
-		System.getProperties().setProperty("co.paralleluniverse.fibers.disableAgentWarning", "true");
+		System.setProperty("co.paralleluniverse.fibers.disableAgentWarning", "true");
 
-		getTimings(); //Force load timings
-		getWorldConfig(); //Force load worldCfg
-		
-		//We allow args to override the config parameters eg world.port=xxx will override the config value
+        // This loads logger.properties from our classpath, to remove Hibernate log messages
+        LogManager.getLogManager().readConfiguration(Core.class.getClassLoader().getResourceAsStream("logger.properties"));
+
+		getTimings(); // Force load timings
+		getWorldConfig(); // Force load worldCfg
+
+		// We allow args to override the config parameters eg world.port=xxx will override the config value
 		for (String arg : args) {
 			if (arg.contains("=") == false) continue;
 			String[] parts = arg.split("=");
@@ -133,21 +140,21 @@ public class Core {
 				Log.info("Bad program argument given: " + arg);
 				continue;
 			}
-			
+
 			getWorldConfig().set(parts[0], parts[1]);
 		}
-		
+
 		if (threads <= 0) threads = Runtime.getRuntime().availableProcessors();
-		
+
 		Log.init(LogLevel.valueOf(getWorldConfig().getString("log.level", LogLevel.INFO.toString())));
 		Log.info("Booting on " + new Date().toString() + " --");
 		Log.info("Author: " + Core.AUTHOR + ", Build: " + Core.BUILD + ", Threads: " + threads);
-		
+
 		final long start = System.currentTimeMillis();
-		
+
 		threadPool = Executors.newFixedThreadPool(threads, new ThreadFactory() {
 			private int nextThreadId = 0;
-			
+
 			@Override
 			public Thread newThread(Runnable r) {
 				Thread t = new Thread(r, "ExecutorService " + nextThreadId++);
@@ -157,25 +164,24 @@ public class Core {
 				return t;
 			}
 		});
-		
-		getCache(); //Force load the cache
-		getWorldDatabase(); //Force load the database
-		
+
+		getCache(); // Force load the cache
+		getWorldDatabase(); // Force load the database
+
 		boolean lazy = getWorldConfig().getBoolean("loading.lazy", false);
-		
-		//Loading
-		ItemDefinition.init();
+
+		// Loading
+		Equipment.load();
 		Log.info("RangeAttack Loading...");
 		RangeAttack.init();
 		Log.info("NPCGroup Loading...");
-		if (!lazy) NPCGroup.reload();
-		
+
 		ConfigSection cfg = Core.getWorldConfig().getSection("world");
 		server = new Server(cfg); //Binds port port
 		scheduler = new Scheduler(server.getThread(), threadPool);
 		server.load();
-		
-		//This is run when we get CTRL + C as well
+
+		// This is run when we get CTRL + C as well
 		Runtime.getRuntime().addShutdownHook(new Thread("Shutdown Hook") {
 			@Override
 			public void run() {
@@ -188,16 +194,24 @@ public class Core {
 				}, false);
 			}
 		});
-		
+
 		//Hint to the garbage collector it should run now.
 		System.gc();
-		
+
 		getServer().getThread().submit(new Runnable() {
 			@Override
 			public void run() {
 				Log.info("Booted in " + (System.currentTimeMillis() - start) + "ms.");
 			}
 		});
+	}
+
+	/**
+	 * The {@link EntityManager} for the World
+	 * @return The {@link EntityManager} for the World
+	 */
+	public EntityManager getEntityManager() {
+		return getWorldDatabase().getEntityManager();
 	}
 	
 	/**
@@ -373,6 +387,17 @@ public class Core {
 				e.printStackTrace();
 				System.exit(1);
 			}
+
+			// Add all of our standard repositories
+			world.addRepository(new NPCSpawnRepository());
+			world.addRepository(new ItemTypeRepository());
+			world.addRepository(new EquipmentRepository());
+			world.addRepository(new NPCTypeRepository());
+			world.addRepository(new NPCGroupRepository());
+
+			// We don't really need repositories for these
+			world.addEntity(NPCGroupLoot.class);
+			world.addEntity(NPCGroupLootGuarantee.class);
 		}
 		return world;
 	}

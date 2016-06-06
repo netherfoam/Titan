@@ -1,8 +1,7 @@
 package org.maxgamer.rs.model.item.vendor;
 
-import org.maxgamer.rs.core.Core;
+import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.item.ItemType;
-import org.maxgamer.rs.repository.ItemTypeRepository;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -40,7 +39,7 @@ public class Vendor implements Serializable {
     @PostLoad
     public void reset() {
         if(this.currency == null) {
-            this.currency = Core.getWorldDatabase().getRepository(ItemTypeRepository.class).find(995);
+            this.currency = ItemStack.COINS.getDefinition();
         }
         this.container = new VendorContainer(this);
     }

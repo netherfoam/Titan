@@ -2,12 +2,12 @@ package org.maxgamer.rs.command.commands;
 
 import org.maxgamer.rs.command.CmdName;
 import org.maxgamer.rs.command.PlayerCommand;
-import org.maxgamer.rs.model.interfaces.impl.primary.VendorInterface;
-import org.maxgamer.rs.util.Erratic;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
+import org.maxgamer.rs.model.interfaces.impl.primary.VendorInterface;
 import org.maxgamer.rs.model.item.ItemStack;
-import org.maxgamer.rs.model.item.vendor.VendorContainer;
+import org.maxgamer.rs.model.item.vendor.VendorItem;
+import org.maxgamer.rs.util.Erratic;
 
 /**
  * @author netherfoam
@@ -26,8 +26,16 @@ public class Vendor implements PlayerCommand {
 				items[i] = ItemStack.create(995);
 			}
 		}
-		VendorContainer shop = new VendorContainer("Admin-Shop", 0, items, 995);
-		player.getWindow().open(new VendorInterface(player, shop));
+
+		org.maxgamer.rs.model.item.vendor.Vendor vendor = new org.maxgamer.rs.model.item.vendor.Vendor();
+		for(ItemStack item : items){
+			vendor.getItems().add(new VendorItem(vendor, item.getDefinition(), item.getAmount()));
+		}
+		vendor.setName("Admin Shop");
+		vendor.setFlags(1);
+		vendor.reset();
+
+		player.getWindow().open(new VendorInterface(player, vendor));
 	}
 	
 	@Override

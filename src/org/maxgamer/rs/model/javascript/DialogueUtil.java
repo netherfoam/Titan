@@ -1,6 +1,10 @@
 package org.maxgamer.rs.model.javascript;
 
 import org.maxgamer.rs.core.Core;
+import org.maxgamer.rs.model.entity.mob.Mob;
+import org.maxgamer.rs.model.entity.mob.npc.NPC;
+import org.maxgamer.rs.model.entity.mob.persona.Persona;
+import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.interfaces.impl.chat.IntRequestInterface;
 import org.maxgamer.rs.model.interfaces.impl.chat.ItemPickerDialogue;
 import org.maxgamer.rs.model.interfaces.impl.chat.StringRequestInterface;
@@ -8,13 +12,9 @@ import org.maxgamer.rs.model.interfaces.impl.dialogue.ForkDialogue;
 import org.maxgamer.rs.model.interfaces.impl.dialogue.SpeechDialogue;
 import org.maxgamer.rs.model.interfaces.impl.dialogue.ThoughtDialogue;
 import org.maxgamer.rs.model.interfaces.impl.primary.VendorInterface;
-import org.maxgamer.rs.util.Chat;
-import org.maxgamer.rs.model.entity.mob.Mob;
-import org.maxgamer.rs.model.entity.mob.npc.NPC;
-import org.maxgamer.rs.model.entity.mob.persona.Persona;
-import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.item.ItemStack;
-import org.maxgamer.rs.model.item.vendor.VendorContainer;
+import org.maxgamer.rs.model.item.vendor.Vendor;
+import org.maxgamer.rs.util.Chat;
 
 public class DialogueUtil {
 	public static void chat(final JavaScriptFiber fiber, Player recipient, Mob speaker, final String message, int emote) {
@@ -167,7 +167,7 @@ public class DialogueUtil {
 		fiber.pause();
 	}
 	
-	public static void openVendor(final JavaScriptFiber fiber, Player recipient, VendorContainer container) {
+	public static void openVendor(final JavaScriptFiber fiber, Player recipient, Vendor container) {
 		final JavaScriptCall call = fiber.context().getCall();
 		
 		recipient.getWindow().open(new VendorInterface(recipient, container){
@@ -181,7 +181,7 @@ public class DialogueUtil {
 	}
 	
 	public static void openVendor(final JavaScriptFiber fiber, Player recipient, String shop) {
-		VendorContainer container = Core.getServer().getVendors().get(shop);
+		Vendor container = Core.getServer().getVendors().get(shop);
 		if(container == null){
 			throw new IllegalArgumentException("No such shop exists with name '" + shop + "'");
 		}
@@ -190,7 +190,7 @@ public class DialogueUtil {
 	}
 	
 	public static void openVendor(final JavaScriptFiber fiber, Player recipient, int shop) {
-		VendorContainer container = Core.getServer().getVendors().get(shop);
+		Vendor container = Core.getServer().getVendors().get(shop);
 		if(container == null){
 			throw new IllegalArgumentException("No such shop exists with ID " + shop + "");
 		}

@@ -8,9 +8,10 @@ import org.maxgamer.rs.cache.reference.Reference;
 import org.maxgamer.rs.cache.reference.ReferenceTable;
 import org.maxgamer.rs.command.ConsoleSender;
 import org.maxgamer.rs.core.server.Server;
-import org.maxgamer.rs.model.entity.mob.combat.RangeAttack;
 import org.maxgamer.rs.model.entity.mob.npc.NPCGroupLoot;
 import org.maxgamer.rs.model.entity.mob.npc.NPCGroupLootGuarantee;
+import org.maxgamer.rs.model.item.AmmoType;
+import org.maxgamer.rs.model.item.ItemAmmo;
 import org.maxgamer.rs.model.item.inventory.Equipment;
 import org.maxgamer.rs.repository.*;
 import org.maxgamer.rs.structure.configs.ConfigSection;
@@ -172,8 +173,6 @@ public class Core {
 
 		// Loading
 		Equipment.load();
-		Log.info("RangeAttack Loading...");
-		RangeAttack.init();
 		Log.info("NPCGroup Loading...");
 
 		ConfigSection cfg = Core.getWorldConfig().getSection("world");
@@ -394,10 +393,14 @@ public class Core {
 			world.addRepository(new EquipmentRepository());
 			world.addRepository(new NPCTypeRepository());
 			world.addRepository(new NPCGroupRepository());
+			world.addRepository(new VendorRepository());
+			world.addRepository(new VendorItemRepository());
 
 			// We don't really need repositories for these
 			world.addEntity(NPCGroupLoot.class);
 			world.addEntity(NPCGroupLootGuarantee.class);
+			world.addEntity(AmmoType.class);
+			world.addEntity(ItemAmmo.class);
 		}
 		return world;
 	}

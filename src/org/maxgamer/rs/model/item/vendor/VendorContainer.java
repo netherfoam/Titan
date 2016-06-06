@@ -19,6 +19,11 @@ import org.maxgamer.rs.model.item.inventory.StackType;
  */
 public class VendorContainer extends Container {
 	/**
+	 * The owning vendor
+	 */
+	private Vendor vendor;
+
+	/**
 	 * The items currently available in this vendor
 	 */
 	private ItemStack[] items = new ItemStack[40];
@@ -28,51 +33,35 @@ public class VendorContainer extends Container {
 	 * normalize towards these numbers.
 	 */
 	private long[] defaults;
-	
-	private int currencyId;
-	
-	private String name;
-	
+
 	/**
 	 * Constructs a new VendorContainer, with the given item array as the
 	 * default stock for the shop. Over time, the items in this shop will be
 	 * normalized towards the amount specified in the array. If the amount for
 	 * items in the array drops to 0, they will not be removed from stock but
 	 * will instead display 0 amount.
-	 * @param stock the default stock for this shop to have
-	 * @param currencyId the ID of the item to use as currency
+	 * @param vendor The vendor that owns this container
 	 * @throws IllegalArgumentException if there are more than 40 default stock
 	 *         items
-	 * @throws IllegalArgumentException if the given currencyId is < 0.
 	 * @throws NullPointerException if there are any null values in the given
 	 *         stock
 	 */
-	public VendorContainer(String name, int flags, ItemStack[] stock, int currencyId) {
+	public VendorContainer(Vendor vendor) {
 		super(StackType.ALWAYS);
-		this.name = name;
-		
-		if (currencyId < 0) throw new IllegalArgumentException("CurrencyID must be >= 0");
-		this.currencyId = currencyId;
-		defaults = new long[stock.length];
-		if (stock.length > items.length) {
-			throw new IllegalArgumentException("A shop may only have 40 items at most for sale at any point. Requested a stock size of " + stock.length);
+		this.vendor = vendor;
+
+		defaults = new long[this.vendor.getItems().size()];
+		if (defaults.length > items.length) {
+			throw new IllegalArgumentException("A shop may only have 40 items at most for sale at any point. Requested a stock size of " + defaults.length + " items");
 		}
 		
-		for (int i = 0; i < stock.length; i++) {
-			if (stock[i] == null) {
+		for (int i = 0; i < this.vendor.getItems().size(); i++) {
+			if (this.vendor.getItems().get(i) == null) {
 				throw new NullPointerException("Stock given at index " + i + " is null.");
 			}
-			items[i] = stock[i];
-			defaults[i] = stock[i].getAmount();
+			items[i] = this.vendor.getItems().get(i).toItem();
+			defaults[i] = this.vendor.getItems().get(i).getAmount();
 		}
-	}
-	
-	/**
-	 * The name of this vendor, as given by the constructor.
-	 * @return The name of this vendor, as given by the constructor.
-	 */
-	public String getName(){
-		return this.name;
 	}
 	
 	/**
@@ -97,7 +86,7 @@ public class VendorContainer extends Container {
 			ContainerState ven = getState();
 			
 			try {
-				ItemStack cost = ItemStack.create(getCurrency(), toBuy.getAmount() * toBuy.getDefinition().getHighAlchemy());
+				ItemStack cost = ItemStack.create(vendor.getCurrency().getId(), toBuy.getAmount() * toBuy.getDefinition().getHighAlchemy());
 				if (cost != null) inv.remove(cost);
 				
 				ven.remove(slot, toBuy);
@@ -120,13 +109,13 @@ public class VendorContainer extends Container {
 			Container inventory = ((InventoryHolder) seller).getInventory();
 			long amount = Math.min(toSell.getAmount(), inventory.getNumberOf(toSell));
 			if (amount <= 0) {
-				//This is bizare, they have tried to sell an item with 0 amount and not through a hack.
+				//This is bizarre, they have tried to sell an item with 0 amount and not through a hack.
 				seller.sendMessage("You don't have enough of those.");
 				return false;
 			}
 			toSell = toSell.setAmount(amount);
 			
-			ItemStack price = ItemStack.create(getCurrency(), toSell.getAmount() * toSell.getDefinition().getLowAlchemy());
+			ItemStack price = ItemStack.create(vendor.getCurrency().getId(), toSell.getAmount() * toSell.getDefinition().getLowAlchemy());
 			if (price == null) {
 				seller.sendMessage("That's not worth anything.");
 				return false;
@@ -150,14 +139,6 @@ public class VendorContainer extends Container {
 			return true;
 		}
 		return false;
-	}
-	
-	/**
-	 * The ID of the ItemStack to use as currency for this vendor
-	 * @return The ID of the ItemStack to use as currency for this vendor
-	 */
-	public int getCurrency() {
-		return currencyId;
 	}
 	
 	@Override

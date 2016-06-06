@@ -1,13 +1,13 @@
 package org.maxgamer.rs.model.interfaces.impl.primary;
 
+import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.interfaces.PrimaryInterface;
 import org.maxgamer.rs.model.interfaces.SettingsBuilder;
 import org.maxgamer.rs.model.interfaces.impl.side.VendorSideInterface;
-import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.item.inventory.Container;
 import org.maxgamer.rs.model.item.inventory.ContainerListener;
-import org.maxgamer.rs.model.item.vendor.VendorContainer;
+import org.maxgamer.rs.model.item.vendor.Vendor;
 
 /**
  * @author netherfoam
@@ -29,10 +29,10 @@ public class VendorInterface extends PrimaryInterface implements ContainerListen
 		SETTINGS.setInterfaceDepth(0);
 	}
 	
-	private VendorContainer vendor;
+	private Vendor vendor;
 	private VendorSideInterface side;
 	
-	public VendorInterface(Player p, VendorContainer vendor) {
+	public VendorInterface(Player p, Vendor vendor) {
 		super(p);
 		setChildId(620);
 		this.vendor = vendor;
@@ -42,7 +42,7 @@ public class VendorInterface extends PrimaryInterface implements ContainerListen
 	public void onOpen() {
 		getPlayer().getProtocol().sendConfig(118, 4);
 		getPlayer().getProtocol().sendConfig(1496, -1); //Number of free items, or something? Index of end of free items? (Eg splitter value?)
-		getPlayer().getProtocol().sendConfig(532, vendor.getCurrency()); //Currency ID
+		getPlayer().getProtocol().sendConfig(532, vendor.getCurrency().getId()); //Currency ID
 		super.onOpen();
 		
 		setAccessMask(SETTINGS.getValue(), 0, 12, 26);
@@ -51,16 +51,16 @@ public class VendorInterface extends PrimaryInterface implements ContainerListen
 		//A beasty for another day.
 		//getPlayer().getProtocol().invoke(VendorSideInterface.RIGHT_CLICK_OPTIONS, "Sell 50", "Sell 10", "Sell 5", "Sell 1", "Value", 25, 1, 5, 9, SHOP_INVENTORY_ID, (getChildId() << 16) | 25); //maybe | 25
 		
-		this.vendor.addListener(this);
-		for (int i = 0; i < vendor.getSize(); i++) { //Vendor max size is 40
-			ItemStack item = vendor.get(i);
+		this.vendor.getContainer().addListener(this);
+		for (int i = 0; i < vendor.getContainer().getSize(); i++) { //Vendor max size is 40
+			ItemStack item = vendor.getContainer().get(i);
 			if (item == null) continue;
 			
 			getPlayer().getProtocol().sendBConfig(SHOP_ITEM_PRICE_BCONFIG_OFFSE + i, item.getDefinition().getHighAlchemy());
 			getPlayer().getProtocol().setItem(SHOP_INVENTORY_ID, false, item, i);
 		}
 		getPlayer().getProtocol().sendContainer(555, false, player.getInventory());
-		side = new VendorSideInterface(getPlayer(), vendor);
+		side = new VendorSideInterface(getPlayer(), vendor.getContainer());
 		getPlayer().getWindow().open(side);
 	}
 	
@@ -69,17 +69,17 @@ public class VendorInterface extends PrimaryInterface implements ContainerListen
 		super.onClose();
 		
 		//We hide all items we sent them. TODO: This could be optimized by sending an array of slots and items at once
-		for (int i = 0; i < this.vendor.getSize(); i++) {
-			ItemStack item = this.vendor.get(i);
+		for (int i = 0; i < this.vendor.getContainer().getSize(); i++) {
+			ItemStack item = this.vendor.getContainer().get(i);
 			if (item != null) continue;
 			getPlayer().getProtocol().setItem(SHOP_INVENTORY_ID, false, null, i);
 		}
 		
-		this.vendor.removeListener(this);
+		this.vendor.getContainer().removeListener(this);
 		getPlayer().getWindow().close(side);
 	}
 	
-	public VendorContainer getVendor() {
+	public Vendor getVendor() {
 		return vendor;
 	}
 	
@@ -98,7 +98,7 @@ public class VendorInterface extends PrimaryInterface implements ContainerListen
 		if (buttonId == 25) { //Clicking on an item inside the vendor
 			//TODO: Why is this necessary? What information are we destroying?
 			slotId /= 6;
-			ItemStack item = vendor.get(slotId);
+			ItemStack item = vendor.getContainer().get(slotId);
 			if (item == null) {
 				getPlayer().getCheats().log(10, "Player attempted to interact with null shop item");
 				return;
@@ -128,7 +128,7 @@ public class VendorInterface extends PrimaryInterface implements ContainerListen
 					break;
 			}
 			//If we made it here, they're attempting to buy form the shop.
-			if (!vendor.buy(player, item, slotId)) {
+			if (!vendor.getContainer().buy(player, item, slotId)) {
 				player.sendMessage("Transaction failed!");
 				return;
 			}

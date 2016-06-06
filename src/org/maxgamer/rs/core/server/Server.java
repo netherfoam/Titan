@@ -1,19 +1,11 @@
 package org.maxgamer.rs.core.server;
 
-import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-
 import org.maxgamer.rs.command.Command;
 import org.maxgamer.rs.command.CommandManager;
 import org.maxgamer.rs.command.commands.*;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.core.tick.Tickable;
 import org.maxgamer.rs.event.EventManager;
-import org.maxgamer.rs.model.interact.InteractionManager;
-import org.maxgamer.rs.util.log.Log;
 import org.maxgamer.rs.logonv4.game.LogonConnection;
 import org.maxgamer.rs.model.entity.EntityList;
 import org.maxgamer.rs.model.entity.mob.npc.NPC;
@@ -22,6 +14,7 @@ import org.maxgamer.rs.model.entity.mob.persona.PersonaList;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.entity.mob.persona.player.Viewport;
 import org.maxgamer.rs.model.events.server.ServerShutdownEvent;
+import org.maxgamer.rs.model.interact.InteractionManager;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.item.ground.GroundItemManager;
 import org.maxgamer.rs.model.item.vendor.VendorManager;
@@ -41,7 +34,14 @@ import org.maxgamer.rs.structure.configs.ConfigSection;
 import org.maxgamer.rs.structure.configs.FileConfig;
 import org.maxgamer.rs.structure.sql.Database.ConnectionException;
 import org.maxgamer.rs.structure.timings.StopWatch;
+import org.maxgamer.rs.util.log.Log;
 import org.mozilla.javascript.ContinuationPending;
+
+import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * @author netherfoam
@@ -257,8 +257,6 @@ public class Server {
 					Server.this.ticker = new ServerTicker(Server.this);
 					
 					vendors = new VendorManager();
-					vendors.init();
-					Log.debug("... Vendors loaded!");
 					
 					// Preload our event system
 					getEvents();

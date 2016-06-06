@@ -17,10 +17,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.nio.ByteBuffer;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author netherfoam
@@ -43,9 +40,6 @@ public class ItemType implements Serializable {
 
 	@Column
 	protected String name;
-
-	@OneToOne(mappedBy = "item")
-	private org.maxgamer.rs.model.item.weapon.Equipment weapon;
 
 	@Column
 	private String examine;
@@ -70,6 +64,15 @@ public class ItemType implements Serializable {
 
 	@Column
 	private double weight;
+
+	@OneToOne(mappedBy = "item")
+	private org.maxgamer.rs.model.item.weapon.Equipment weapon;
+
+	@OneToMany(mappedBy = "weapon")
+	private List<ItemAmmo> ammo = new LinkedList<ItemAmmo>();
+
+	@OneToOne(mappedBy = "item")
+	private AmmoType projectile;
 
 	/* Cache Values */
 	protected transient int interfaceModelId;
@@ -141,6 +144,22 @@ public class ItemType implements Serializable {
 	private ItemType(int id) {
 		if(id != (short) id) throw new IllegalArgumentException("Id's must be a short.");
 		this.id = (short) id;
+	}
+
+	public AmmoType getProjectile() {
+		return projectile;
+	}
+
+	public void setProjectile(AmmoType projectile) {
+		this.projectile = projectile;
+	}
+
+	public List<ItemAmmo> getAmmo() {
+		return ammo;
+	}
+
+	public void setAmmo(List<ItemAmmo> ammo) {
+		this.ammo = ammo;
 	}
 
 	/**

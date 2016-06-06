@@ -143,6 +143,17 @@ public class ItemType implements Serializable {
 		this.id = (short) id;
 	}
 
+	/**
+	 * Returns true if this ItemType has a special attack associated with it
+	 * @return true if this ItemType has a special attack associated with it
+     */
+	public boolean hasSpecialAttack() {
+		Integer v = (Integer) this.getScriptData().get(687);
+		if(v != null && v.intValue() != 0) return true;
+
+		return false;
+	}
+
 	public int getCharges() {
 		int start = this.name.lastIndexOf('(');
 		int end = this.name.lastIndexOf(')');

@@ -32,6 +32,7 @@ public class Item implements PlayerCommand {
 			name = name.toLowerCase().replaceAll("[^0-9A-Za-z]", "");
 
 			int id = entry.getKey();
+			if(names.contains(name)) continue;
 
 			names.add(name);
 			items.put(name, id);
@@ -123,6 +124,9 @@ public class Item implements PlayerCommand {
 
 		if (args.length > 2 && args[2].equalsIgnoreCase("noted")) {
 			stack = stack.getNoted();
+		}
+		else {
+			stack = stack.getUnnoted();
 		}
 
 		try {

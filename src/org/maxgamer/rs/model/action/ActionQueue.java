@@ -1,15 +1,11 @@
 package org.maxgamer.rs.model.action;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-
 import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.core.tick.FastTickable;
-import org.maxgamer.rs.util.log.Log;
 import org.maxgamer.rs.model.entity.mob.Mob;
+import org.maxgamer.rs.util.log.Log;
+
+import java.util.*;
+import java.util.concurrent.Future;
 
 /**
  * A non trivial class which handles a list of actions a Mob wishes to execute
@@ -18,7 +14,28 @@ import org.maxgamer.rs.model.entity.mob.Mob;
  * when necessary.
  * @author netherfoam
  */
-public class ActionQueue extends FastTickable {
+public class ActionQueue {
+	private static class RunRequest implements Runnable {
+		private boolean cancel = false;
+		private ActionQueue queue;
+
+		private RunRequest(ActionQueue queue) {
+			this.queue = queue;
+		}
+
+		@Override
+		public void run() {
+			if (cancel) return;
+			else {
+				queue.req = null;
+				queue.tick();
+			}
+		}
+	}
+
+	private long lastRun = 0;
+	private RunRequest req;
+
 	/** The mob that this action queue is for */
 	private Mob owner;
 	
@@ -36,6 +53,24 @@ public class ActionQueue extends FastTickable {
 		super(); 
 		if (owner == null) throw new NullPointerException("ActionQueue owner mob may not be null.");
 		this.owner = owner;
+	}
+
+	protected boolean isQueued() {
+		return req != null && req.cancel == false;
+	}
+
+	protected Future<Void> queue(int delayMs) {
+		if (isQueued()) {
+			throw new IllegalStateException("Cannot queue() " + this.getClass().getSimpleName() + " because it is already queued.");
+		}
+		this.req = new RunRequest(this);
+		return Core.submit(this.req, delayMs, false);
+	}
+
+	protected void cancel() {
+		if (req == null) return;
+		req.cancel = true;
+		req = null;
 	}
 	
 	/**
@@ -79,7 +114,7 @@ public class ActionQueue extends FastTickable {
 				//subscribed to the server's ticker for the next tick.
 				
 				if (isQueued() == false) {
-					this.queue();
+					this.queue(0);
 				}
 				
 				assert isQueued(w) : "Queued task but task is not queued";
@@ -230,7 +265,7 @@ public class ActionQueue extends FastTickable {
 		synchronized (queue) {
 			queue.addFirst(insert);
 			if(this.isQueued() == false){
-				this.queue();
+				this.queue(0);
 			}
 		}
 	}
@@ -349,7 +384,7 @@ public class ActionQueue extends FastTickable {
 				getOwner().onIdle();
 				return;
 			}
-			
+
 			Action w = queue.getFirst();
 			try {
 				current = w;
@@ -358,14 +393,11 @@ public class ActionQueue extends FastTickable {
 			catch (Exception e) {
 				//Our task failed to work properly.
 				queue.remove(w); //Threw an exception, don't trust it again.
-				
+
 				Log.warning("Error ticking ActionQueue for Mob " + owner + ". Action: " + w);
 				e.printStackTrace();
 			}
 			current = null;
-			
-			//We do not know if we will finish, so we queue again anyway.
-			this.queue();
 		}
 	}
 	

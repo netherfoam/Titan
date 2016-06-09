@@ -75,10 +75,10 @@ network:
     #How many connections are accepted by the server from a single IP address?
     #A client will require 2 connections simultaneously to join the server, but
     #only 1 to remain connected. (Lobby -> Game transition)
-    connection-limit: 20
+    connection-limit: 20 # TODO
     #Maximum number of bytes in a session's buffer before overflowing and closing
     #the session
-    session-overflow: 8192
+    session-overflow: 8192 # TODO
     
 # Highly recommended you change these / generate your own.
 rsa:

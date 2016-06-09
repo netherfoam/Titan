@@ -1,13 +1,14 @@
 package org.maxgamer.rs.network.io.rawhandler;
 
-import java.nio.BufferUnderflowException;
-
-import org.maxgamer.rs.util.log.Log;
+import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.network.Session;
 import org.maxgamer.rs.network.io.packet.PacketProcessor;
 import org.maxgamer.rs.network.io.packet.RSIncomingPacket;
 import org.maxgamer.rs.network.io.stream.RSByteBuffer;
+import org.maxgamer.rs.util.log.Log;
+
+import java.nio.BufferUnderflowException;
 
 /**
  * @author netherfoam
@@ -26,7 +27,7 @@ public class GamePacketHandler extends RawHandler {
 			//Throws IOException if only a partial packet
 			//has been received. This means the buffer is
 			//reset until more data is available.
-			RSIncomingPacket in;
+			final RSIncomingPacket in;
 			try {
 				in = RSIncomingPacket.parse(b);
 			}
@@ -34,7 +35,7 @@ public class GamePacketHandler extends RawHandler {
 				throw new BufferUnderflowException();
 			}
 			
-			PacketProcessor<Player> p = this.p.getProtocol().getPacketManager().getHandler(in.getOpcode());
+			final PacketProcessor<Player> p = this.p.getProtocol().getPacketManager().getHandler(in.getOpcode());
 			
 			if (p == null) {
 				StringBuilder sb = new StringBuilder();
@@ -50,14 +51,19 @@ public class GamePacketHandler extends RawHandler {
 				
 				return;
 			}
-			
-			try {
-				p.process(this.p, in);
-			}
-			catch (Exception e) {
-				e.printStackTrace();
-				Log.warning("Error handling opcode " + in.getOpcode());
-			}
+
+			Core.getServer().getThread().submit(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						p.process(GamePacketHandler.this.p, in);
+					}
+					catch (Exception e) {
+						e.printStackTrace();
+						Log.warning("Error handling opcode " + in.getOpcode());
+					}
+				}
+			});
 		}
 	}
 }

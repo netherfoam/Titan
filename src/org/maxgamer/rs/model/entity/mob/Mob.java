@@ -320,8 +320,6 @@ public abstract class Mob extends Entity implements EquipmentHolder, Interactabl
 		MobUnloadEvent ev = new MobUnloadEvent(this);
 		ev.call();
 		
-		this.getActions().cancel();
-		
 		try {
 			this.onUnload();
 		}

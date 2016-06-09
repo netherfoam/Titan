@@ -3,6 +3,7 @@ package org.maxgamer.rs.model.action;
 import co.paralleluniverse.fibers.Fiber;
 import co.paralleluniverse.fibers.SuspendExecution;
 import org.maxgamer.rs.core.Core;
+import org.maxgamer.rs.core.server.ServerTicker;
 import org.maxgamer.rs.util.log.Log;
 import org.maxgamer.rs.model.entity.mob.Mob;
 
@@ -91,9 +92,26 @@ public abstract class Action {
 							Log.warning("Mob: " + Action.this.getOwner() + ", Action: " + Action.this);
 							t.printStackTrace();
 						}
+
+						Action next = getOwner().getActions().after(Action.this);
+
 						//Notify the action queue this action has ended
 						getOwner().getActions().end(Action.this);
+
+						if(next != null) {
+							// We finished without pausing, pass the turn on to the next Action that's queued
+							next.tick();
+						}
+
 						return null;
+					}
+
+					@Override
+					public void onParked() {
+						if(getOwner().getActions().isEmpty() == false && getOwner().getActions().isQueued() == false) {
+							// We're part way through an Action, so we want to continue it when possible.
+							getOwner().getActions().queue(ServerTicker.getTickDuration());
+						}
 					}
 				};
 			}

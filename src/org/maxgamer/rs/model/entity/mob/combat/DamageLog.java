@@ -1,14 +1,13 @@
 package org.maxgamer.rs.model.entity.mob.combat;
 
+import org.maxgamer.rs.core.Core;
+import org.maxgamer.rs.core.server.ServerTicker;
+import org.maxgamer.rs.model.entity.mob.Mob;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-
-import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.core.server.ServerTicker;
-import org.maxgamer.rs.core.tick.FastTickable;
-import org.maxgamer.rs.model.entity.mob.Mob;
 
 /**
  * @author netherfoam
@@ -98,27 +97,31 @@ public class DamageLog {
 		}
 		
 		list.add(d);
-		new FastTickable() {
+		Core.submit(new Runnable(){
 			@Override
-			public void tick() {
-				if (getOwner().getHealth() < d.getHit())
+			public void run() {
+				if (getOwner().getHealth() < d.getHit()) {
 					d.setHit(getOwner().getHealth());
-				//Fix miss attacks
-				if (d.getHit() <= 0)
+				}
+
+				// Fix miss attacks
+				if (d.getHit() <= 0) {
 					d.setType(DamageType.MISS);
+				}
+
 				getOwner().setHealth(getOwner().getHealth() - d.getHit());
 				getOwner().getUpdateMask().addHit(from, d);
 				
 				int anim = getOwner().getCombatStats().getDefenceAnimation();
-				if (anim > 0 && getOwner().getUpdateMask().getAnimation() == null)
+				if (anim > 0 && getOwner().getUpdateMask().getAnimation() == null) {
 					getOwner().animate(anim, 5);
+				}
 				
-				if (from != null)
+				if (from != null) {
 					setLastAttacker(from);
-				cancel();
+				}
 			}
-			
-		}.queue(d.getHitDelay() * ServerTicker.getTickDuration());
+		}, d.getHitDelay() * ServerTicker.getTickDuration(), false);
 	}
 	
 	/**

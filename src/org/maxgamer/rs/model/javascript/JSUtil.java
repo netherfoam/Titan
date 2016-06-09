@@ -1,7 +1,8 @@
 package org.maxgamer.rs.model.javascript;
 
+import co.paralleluniverse.fibers.SuspendExecution;
+import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.core.server.ServerTicker;
-import org.maxgamer.rs.core.tick.FastTickable;
 import org.maxgamer.rs.core.tick.Tickable;
 import org.maxgamer.rs.model.action.WalkAction;
 import org.maxgamer.rs.model.entity.mob.Animation;
@@ -10,20 +11,16 @@ import org.maxgamer.rs.model.map.Location;
 import org.maxgamer.rs.model.map.path.AStar;
 import org.maxgamer.rs.model.map.path.Path;
 
-import co.paralleluniverse.fibers.SuspendExecution;
-
 public class JSUtil {
 	public static void wait(final JavaScriptFiber fiber, int ticks){
 		final JavaScriptCall state = fiber.context().getCall();
-		
-		FastTickable t = new FastTickable() {
+
+		Core.submit(new Runnable() {
 			@Override
-			public void tick() {
+			public void run() {
 				fiber.unpause(state, null);
 			}
-		};
-		
-		t.queue(ServerTicker.getTickDuration() * ticks);
+		}, ServerTicker.getTickDuration() * ticks, false);
 		
 		fiber.pause();
 	}

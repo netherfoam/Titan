@@ -76,32 +76,12 @@ public class ServerTicker implements Runnable {
 	
 	@Override
 	public void run() {
-		//long start = System.nanoTime();
 		StopWatch tickTimer = Core.getTimings().start("tick");
-		
-		/*
-		 * "Tick Reversing" If one player is 'inhead' of another player on the
-		 * tick queue, it may cause an issue. Given PlayerA and PlayerB, assume
-		 * PlayerA is first in the tick queue. Calls are then PlayerA.tick();
-		 * PlayerB.tick();
-		 * 
-		 * In this circumstance, PlayerA moves, then PlayerB plays catchup
-		 * before being able to hit PlayerA, since PlayerA already moved.
-		 * 
-		 * If the situation were reversed and PlayerA was hunting down PlayerB,
-		 * then PlayerA hits playerB successfully, then PlayerB moves away. This
-		 * is different to the above circumstance, since PlayerA never hit
-		 * PlayerB previously.
-		 * 
-		 * To fix this, it may be fair to reverse the order of the ticks after
-		 * every second one. It would theoretically mean that all tickables
-		 * would be given a fair share of first-tick.
-		 */
 		
 		ticks++;
 		
 		TickableWrapper task;
-		//Add all of the tickables to a list of ticks we will execute.
+		// Add all of the tickables to a list of ticks we will execute.
 		LinkedList<TickableWrapper> shortlist = new LinkedList<TickableWrapper>();
 		
 		synchronized (this.tickables) {
@@ -111,10 +91,8 @@ public class ServerTicker implements Runnable {
 			}
 		}
 		
-		//Every second tick, we go through the tick tasks and run them in opposite order
-		Iterator<TickableWrapper> taskIt;
-		if (ticks % 2 == 0) taskIt = shortlist.iterator();
-		else taskIt = shortlist.descendingIterator();
+		// Every second tick, we go through the tick tasks and run them in opposite order
+		Iterator<TickableWrapper> taskIt = shortlist.iterator();
 		
 		while (taskIt.hasNext()) {
 			task = taskIt.next();
@@ -139,7 +117,7 @@ public class ServerTicker implements Runnable {
 		while (sit.hasNext()) {
 			Session s = sit.next();
 			if (System.currentTimeMillis() - 20000 > s.getLastPing()) {
-				//Disconnect, timeout.
+				// Disconnect, timeout.
 				Log.debug("Disconnecting " + s + ", timeout (no packets received in " + (System.currentTimeMillis() - s.getLastPing()) + "ms)");
 				s.close(false);
 			}
@@ -147,8 +125,8 @@ public class ServerTicker implements Runnable {
 
 		Core.getWorldDatabase().flush();
 		
-		//Say we took 37ms to perform this tick, we want to perform the next
-		//tick in 563ms, not 600ms. (37 + 563 = 600)
+		// Say we took 37ms to perform this tick, we want to perform the next
+		// tick in 563ms, not 600ms. (37 + 563 = 600)
 		int duration = (int) tickTimer.getTime() / 1000000;
 		
 		if (duration > getTickDuration() && getTickDuration() >= 600) {

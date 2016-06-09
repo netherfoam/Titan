@@ -83,7 +83,6 @@ public class NPCOptionsHandler implements PacketProcessor<Player> {
 				if (closest != null) {
 					player.sendMessage("Nearest: " + closest);
 					player.sendMessage("Actions: " + closest.getActions());
-					player.sendMessage("Actions.isQueued(): " + closest.getActions().isQueued());
 					player.sendMessage("Actions.isEmpty(): " + closest.getActions().isEmpty());
 				}
 			} catch (Exception e) {

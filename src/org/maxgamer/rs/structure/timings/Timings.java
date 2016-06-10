@@ -1,6 +1,9 @@
 package org.maxgamer.rs.structure.timings;
 
+import org.maxgamer.rs.util.Calc;
+
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -95,13 +98,18 @@ public class Timings {
 		//ThreadTiming thread = threads.get(Thread.currentThread().getName());
 		StringBuilder sb = new StringBuilder();
 		
-		for (ThreadTiming thread : threads.values()) {
+		for (final ThreadTiming thread : threads.values()) {
 			LinkedList<String> keys = new LinkedList<String>(thread.data.keySet());
-			Collections.sort(keys);
+			Collections.sort(keys, new Comparator<String>() {
+				@Override
+				public int compare(String a, String b) {
+					return (int) Calc.betweenl(Integer.MIN_VALUE, Integer.MAX_VALUE, thread.data.get(b) - thread.data.get(a));
+				}
+			});
 			
 			sb.append("-- Thread: " + thread.name + " --\n");
 			for (String k : keys) {
-				sb.append(k + ": " + (thread.data.get(k) / 1000) / 1000.0 + "ms. (" + thread.calls.get(k) + " calls)\n"); //ms with 3 decimals
+				sb.append(k + ": " + String.format("%.3f", (thread.data.get(k) / 1000) / 1000.0) + "ms. (" + thread.calls.get(k) + " calls)\n"); //ms with 3 decimals
 			}
 		}
 		return sb.toString();

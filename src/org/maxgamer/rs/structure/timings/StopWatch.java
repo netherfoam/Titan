@@ -19,7 +19,7 @@ public class StopWatch {
 	
 	public void stop() {
 		end = System.nanoTime();
-		if (this.src == null) throw new IllegalStateException("Timer already stopped");
+		if (isStopped()) throw new IllegalStateException("Timer already stopped");
 		
 		src.stop(this, end - start);
 		this.src = null;
@@ -44,13 +44,21 @@ public class StopWatch {
 		total = getTime();
 		start = -1;
 	}
+
+	public boolean isPaused() {
+		return start == -1;
+	}
 	
 	public void resume(){
-		if(start != -1) throw new IllegalStateException("StopWatch is not paused!");
+		if(!isPaused()) throw new IllegalStateException("StopWatch is not paused!");
 		start = System.nanoTime();
 	}
 	
 	public String getAlias() {
 		return alias;
+	}
+
+	public boolean isStopped() {
+		return this.src == null;
 	}
 }

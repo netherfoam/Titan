@@ -30,19 +30,22 @@ public class InteractionHandlerMethod {
 	 */
 	private boolean debug = false;
 
+	private boolean cancellable;
+
 	/**
 	 * Constructs a new InteractionHandler method, based on the given Method
 	 * @param handler the handler object
 	 * @param m the method to invoke on the handler
 	 * @param debug true if the call should be debugged if it is skipped
 	 */
-	public InteractionHandlerMethod(InteractionHandler handler, Method m, boolean debug) {
+	public InteractionHandlerMethod(InteractionHandler handler, Method m, boolean debug, boolean cancellable) {
 		if(m.getParameterTypes().length != 3){
 			throw new IllegalArgumentException("Parameter must take at 3 arguments: source, target, usage]");
 		}
 		this.handler = handler;
 		this.method = m;
 		this.debug = debug;
+		this.cancellable = cancellable;
 	}
 	
 	/**
@@ -131,5 +134,9 @@ public class InteractionHandlerMethod {
 		} catch(ReflectiveOperationException e){
 			e.printStackTrace();
 		}
+	}
+
+	public boolean isCancellable() {
+		return cancellable;
 	}
 }

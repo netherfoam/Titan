@@ -60,6 +60,8 @@ public class InteractionManager {
 		// Invoke this inside an Action, so that it may throw SuspendExecution
 		source.getActions().clear();
 		source.getActions().queue(new Action(source) {
+			private InteractionHandlerMethod method;
+
 			@Override
 			protected void run() throws SuspendExecution {
 				ArrayList<InteractionHandlerMethod> successes = new ArrayList<InteractionHandlerMethod>(1);
@@ -77,6 +79,7 @@ public class InteractionManager {
 						Log.info("Trying " + h.getMethod().getName() + " from " + h.getHandler().getClass());
 					}
 					try{
+						this.method = h;
 						// We try and run the interaction
 						h.run(source, target, usage);
 						// If we're successful, great, the interaction was handled
@@ -89,6 +92,9 @@ public class InteractionManager {
 						}
 						// That handler didn't want to handle that interaction, so we try again with any others!
 						continue;
+					}
+					finally {
+						this.method = null;
 					}
 				}
 				
@@ -108,7 +114,7 @@ public class InteractionManager {
 			
 			@Override
 			protected boolean isCancellable() {
-				return true;
+				return method.isCancellable();
 			}
 		});
 	}
@@ -149,7 +155,7 @@ public class InteractionManager {
 				}
 			}
 			
-			InteractionHandlerMethod method = new InteractionHandlerMethod(handler, m, annot.debug());
+			InteractionHandlerMethod method = new InteractionHandlerMethod(handler, m, annot.debug(), annot.cancellable());
 			
 			if(!throwsNotHandled) {
 				Log.warning("The method " + method + " should raise a NotHandledException instead of simply returning from the method call. Please do so, or this may lead to odd behaviour");

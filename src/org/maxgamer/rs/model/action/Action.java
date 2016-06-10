@@ -3,9 +3,8 @@ package org.maxgamer.rs.model.action;
 import co.paralleluniverse.fibers.Fiber;
 import co.paralleluniverse.fibers.SuspendExecution;
 import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.core.server.ServerTicker;
-import org.maxgamer.rs.util.log.Log;
 import org.maxgamer.rs.model.entity.mob.Mob;
+import org.maxgamer.rs.util.log.Log;
 
 import java.util.LinkedList;
 
@@ -33,7 +32,9 @@ public abstract class Action {
 			throw new RuntimeException("wait() may only be invoked by a Fiber.");
 		}
 		while (ticks-- > 0) {
-			Fiber.park();
+			/* There's a bug in Quasar which means that Fiber.park() won't directly
+			 * work for us. See ActionFiber.park() for more details. */
+			ActionFiber.park();
 		}
 	}
 	
@@ -49,7 +50,7 @@ public abstract class Action {
 	/**
 	 * The Fiber which runs this action
 	 */
-	private Fiber<Void> fiber;
+	private ActionFiber fiber;
 	
 	/**
 	 * Constructs a new Action, but does not apply it, for the given mob.
@@ -79,41 +80,7 @@ public abstract class Action {
 		Core.getServer().getThread().assertThread();
 		if (fiber == null) {
 			try {
-				fiber = new Fiber<Void>(this.toString(), Core.getServer().getThread().getFiberScheduler()) {
-					private static final long serialVersionUID = 1842342854418180882L;
-					
-					@Override
-					public Void run() throws SuspendExecution {
-						try {
-							Action.this.run();
-						}
-						catch (Throwable t) {
-							Log.warning("There was an Exception thrown while running an Action. Details:");
-							Log.warning("Mob: " + Action.this.getOwner() + ", Action: " + Action.this);
-							t.printStackTrace();
-						}
-
-						Action next = getOwner().getActions().after(Action.this);
-
-						//Notify the action queue this action has ended
-						getOwner().getActions().end(Action.this);
-
-						if(next != null) {
-							// We finished without pausing, pass the turn on to the next Action that's queued
-							next.tick();
-						}
-
-						return null;
-					}
-
-					@Override
-					public void onParked() {
-						if(getOwner().getActions().isEmpty() == false && getOwner().getActions().isQueued() == false) {
-							// We're part way through an Action, so we want to continue it when possible.
-							getOwner().getActions().queue(ServerTicker.getTickDuration());
-						}
-					}
-				};
+				fiber = new ActionFiber(this);
 			}
 			catch (IllegalArgumentException e) {
 				if (e.getMessage().contains("instrumented")) {
@@ -235,5 +202,4 @@ public abstract class Action {
 	public boolean isComplete(){
 		return fiber != null && fiber.isTerminated();
 	}
-	
 }

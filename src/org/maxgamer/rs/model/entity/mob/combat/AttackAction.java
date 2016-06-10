@@ -98,7 +98,6 @@ public class AttackAction extends Action {
 		if(target != null && getAttack().run(target)){
 			getOwner().getDamage().setLastAttack(Core.getServer().getTicks());
 			target.getDamage().setLastAttacker(getOwner());
-			this.yield();
 		}
 	}
 	

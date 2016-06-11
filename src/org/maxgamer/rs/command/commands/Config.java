@@ -2,6 +2,7 @@ package org.maxgamer.rs.command.commands;
 
 import org.maxgamer.rs.command.PlayerCommand;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
+import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
 
 public class Config implements PlayerCommand {
 
@@ -14,7 +15,7 @@ public class Config implements PlayerCommand {
 
 	@Override
 	public int getRankRequired() {
-		return 0;
+		return Rights.ADMIN;
 	}
 	
 }

@@ -1,18 +1,13 @@
 package org.maxgamer.rs.model.action;
 
-import java.lang.ref.WeakReference;
-
-import org.maxgamer.rs.util.Erratic;
+import co.paralleluniverse.fibers.SuspendExecution;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.MovementUpdate;
 import org.maxgamer.rs.model.map.Location;
-import org.maxgamer.rs.model.map.path.AStar;
-import org.maxgamer.rs.model.map.path.Direction;
-import org.maxgamer.rs.model.map.path.Directions;
-import org.maxgamer.rs.model.map.path.Path;
-import org.maxgamer.rs.model.map.path.PathFinder;
+import org.maxgamer.rs.model.map.path.*;
+import org.maxgamer.rs.util.Erratic;
 
-import co.paralleluniverse.fibers.SuspendExecution;
+import java.lang.ref.WeakReference;
 
 /**
  * A class to handle one mob following another.
@@ -178,5 +173,10 @@ public abstract class Follow extends Action {
 	@Override
 	protected boolean isCancellable() {
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return super.toString() + "[target=" + target.get() + "]";
 	}
 }

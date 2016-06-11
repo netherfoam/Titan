@@ -106,8 +106,11 @@ public class JavaScriptInteractHandler implements InteractionHandler{
 		String function = this.toFunction(option);
 		
 		if(target instanceof Mob){
-			// Turn the target around so they respond to the interaction
-			((Mob) target).setFacing(Facing.face(source.getCenter()));
+			Mob t = (Mob) target;
+			if(t.getFacing() == null) {
+				// Turn the target around so they respond to the interaction
+				t.setFacing(Facing.face(source.getCenter()));
+			}
 		}
 		
 		for(File f : files) {

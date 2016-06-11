@@ -84,16 +84,16 @@ public class ChatHandler implements PacketProcessor<Player> {
 				//or if the grammar/capsBlock calls run foul.
 				outMessage = outMessage.substring(0, 255);
 			}
+
+			// The sender gets told they're sending the message
+			p.getProtocol().sendPrivateMessage(victim, outMessage);
 			
 			//TODO: Use Server.getClient()
 			Persona pers = Core.getServer().getPersona(victim);
 			if (pers instanceof Player) {//TODO: Quite some checks and mute, ipmute in future. 
 				Player receiver = (Player) pers;
-				p.getProtocol().sendPrivateMessage(victim, outMessage);
 				receiver.getProtocol().receivePrivateMessage(p.getName(), p.getRights(), outMessage);
 			}
-			else p.sendMessage("Can't message bots"); //Will most likely never happen, since bots are excluded from friendslist.
-			return;
 		}
 	}
 	

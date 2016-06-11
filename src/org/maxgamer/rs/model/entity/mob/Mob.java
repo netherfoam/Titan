@@ -98,6 +98,9 @@ public abstract class Mob extends Entity implements EquipmentHolder, Interactabl
 	}
 	
 	public Mob setTarget(Mob target) {
+		if(target == this) {
+			throw new IllegalArgumentException("Cannot target self!");
+		}
 		if (target != null) {
 			getDamage().setLastTarget(target);
 			// New target is not null

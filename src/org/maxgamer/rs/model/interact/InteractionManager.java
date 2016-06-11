@@ -114,7 +114,7 @@ public class InteractionManager {
 			
 			@Override
 			protected boolean isCancellable() {
-				return method.isCancellable();
+				return method == null || method.isCancellable();
 			}
 		});
 	}

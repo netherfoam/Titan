@@ -7,6 +7,7 @@ import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.util.log.Log;
 
 import java.util.LinkedList;
+import java.util.concurrent.ExecutionException;
 
 /**
  * An abstract class which represents an action that a player may perform, such
@@ -111,48 +112,6 @@ public abstract class Action {
 		}
 	}
 	
-	/**
-	 * Called when a tick passes and this action is the first action in the
-	 * queue. If the action has finished, this method should return true. If the
-	 * action is not fully complete, it should return false. If the action is
-	 * cancellable, then despite returning false, it may not have its run()
-	 * method invoked again. When an action is cancelled, whether it started or
-	 * not, it's cancel() method will always be invoked.
-	 * @return true if finished, false if continue to call run() every tick.
-	 */
-	protected abstract void run() throws SuspendExecution;
-	
-	/**
-	 * Cancels this action. This is called when it is interrupted or cancelled
-	 * before it could be started. If run() returns true, this method will not
-	 * be called, otherwise it will be called. This allows cleanup.
-	 */
-	protected abstract void onCancel();
-	
-	/**
-	 * Returns true if this action is cancellable (Eg, movement, following, and
-	 * combat are cancellable. Eating and being stunned are not). If this method
-	 * returns false, it can still be cancelled if the ActionQueue is requested
-	 * to cancel it specifically. When the ActionQueue has the clear() method
-	 * invoked, however, only cancellable Actions will be removed.
-	 * @return true if this action can be cancelled, false if it should not.
-	 */
-	protected abstract boolean isCancellable();
-	
-	/**
-	 * Yields this action's turn to the next action, thus invoking the run()
-	 * method on the next action. The next action may yield and so on until one
-	 * doesn't yield, or the end of the ActionQueue is reached. Any exceptions
-	 * thrown are caught by this method. This is a shortcut to
-	 * getOwner().getActions().yield(this). This is useful in situations such as
-	 * combat, where a Follow is desired until the target is reached, in which
-	 * case a Follow Action would call yield(), allowing a Combat action to be
-	 * executed immediately after.
-	 */
-	public void yield() {
-		getOwner().getActions().yield(this);
-	}
-	
 	@Override
 	public String toString() {
 		return getClass().getSimpleName();
@@ -191,8 +150,10 @@ public abstract class Action {
 	/**
 	 * Cancels this action.  This is a convenience method for getOwner().getActions().cancel(this)
 	 */
-	public void cancel() {
+	public final void cancel() {
 		getOwner().getActions().cancel(this);
+		fiber.cancel(true);
+		fiber.interrupt();
 	}
 	
 	/**
@@ -202,4 +163,58 @@ public abstract class Action {
 	public boolean isComplete(){
 		return fiber != null && fiber.isTerminated();
 	}
+
+	/**
+	 * Waits for the Action to finish. If the action does not finish, this will raise an InterruptedException.
+     * If the Action throws an exception, it will raise an ExecutionException. If the Action gets suspended
+     * before finishing, the current Fiber will be suspended.
+     *
+	 * @throws SuspendExecution
+	 * @throws InterruptedException
+     */
+	public void join() throws SuspendExecution, InterruptedException, ExecutionException {
+		this.fiber.join();
+	}
+
+    /**
+     * Called when a tick passes and this action is the first action in the
+     * queue. If the action has finished, this method should return true. If the
+     * action is not fully complete, it should return false. If the action is
+     * cancellable, then despite returning false, it may not have its run()
+     * method invoked again. When an action is cancelled, whether it started or
+     * not, it's cancel() method will always be invoked.
+     * @return true if finished, false if continue to call run() every tick.
+     */
+    protected abstract void run() throws SuspendExecution;
+
+    /**
+     * Cancels this action. This is called when it is interrupted or cancelled
+     * before it could be started. If run() returns true, this method will not
+     * be called, otherwise it will be called. This allows cleanup.
+     */
+    protected abstract void onCancel();
+
+    /**
+     * Returns true if this action is cancellable (Eg, movement, following, and
+     * combat are cancellable. Eating and being stunned are not). If this method
+     * returns false, it can still be cancelled if the ActionQueue is requested
+     * to cancel it specifically. When the ActionQueue has the clear() method
+     * invoked, however, only cancellable Actions will be removed.
+     * @return true if this action can be cancelled, false if it should not.
+     */
+    protected abstract boolean isCancellable();
+
+    /**
+     * Yields this action's turn to the next action, thus invoking the run()
+     * method on the next action. The next action may yield and so on until one
+     * doesn't yield, or the end of the ActionQueue is reached. Any exceptions
+     * thrown are caught by this method. This is a shortcut to
+     * getOwner().getActions().yield(this). This is useful in situations such as
+     * combat, where a Follow is desired until the target is reached, in which
+     * case a Follow Action would call yield(), allowing a Combat action to be
+     * executed immediately after.
+     */
+    public void yield() {
+        getOwner().getActions().yield(this);
+    }
 }

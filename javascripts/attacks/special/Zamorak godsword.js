@@ -32,8 +32,9 @@ function perform(attacker, target, damage){
 	target.graphics(2111);
 	wait(1);
 	damage.apply(attacker);
-	
-	//TODO freeze target for 20 seconds
+
+	// freeze target for 20 seconds
+	target.root(20, 20, false);
 }
 
 /**

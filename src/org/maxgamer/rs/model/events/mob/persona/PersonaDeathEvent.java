@@ -11,7 +11,7 @@ import org.maxgamer.rs.model.skill.prayer.PrayerType;
  */
 public class PersonaDeathEvent extends PersonaEvent {
 
-	private int kept;
+	private int kept = 3;
 	private boolean safe = false;
 
 	public PersonaDeathEvent(Persona p) {
@@ -26,17 +26,15 @@ public class PersonaDeathEvent extends PersonaEvent {
 		this.safe = safe;
 	}
 
-	public void setKeepSize(int num) {
+	public void setBaseKeepSize(int num) {
 		this.kept = num;
 	}
 
 	public int getKeepSize() {
-		this.kept = 3;
-		if (getMob().getModel().isSkulled())
-			this.kept -= 3;
-		if (getMob().getPrayer().isEnabled(PrayerType.CURSE_PROTECT_ITEM) || getMob().getPrayer().isEnabled(PrayerType.PROTECT_ITEM))
-			this.kept += 1;
+        if (getMob().getPrayer().isEnabled(PrayerType.CURSE_PROTECT_ITEM) || getMob().getPrayer().isEnabled(PrayerType.PROTECT_ITEM)) {
+            this.kept += 1;
+        }
+
 		return this.kept;
 	}
-
 }

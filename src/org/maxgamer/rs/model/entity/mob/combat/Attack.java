@@ -1,9 +1,5 @@
 package org.maxgamer.rs.model.entity.mob.combat;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-
-import org.maxgamer.rs.util.log.Log;
 import org.maxgamer.rs.model.entity.mob.Animation;
 import org.maxgamer.rs.model.entity.mob.Graphics;
 import org.maxgamer.rs.model.entity.mob.Mob;
@@ -11,6 +7,10 @@ import org.maxgamer.rs.model.entity.mob.persona.Persona;
 import org.maxgamer.rs.model.events.mob.MobAttackEvent;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.skill.SkillType;
+import org.maxgamer.rs.util.log.Log;
+
+import java.util.Iterator;
+import java.util.LinkedList;
 
 /**
  * @author netherfoam
@@ -58,23 +58,25 @@ public abstract class Attack {
 		if(this.isFinished()){
 			throw new IllegalStateException(this + " has already finished. It cannot be run again.");
 		}
+		// An attack cannot be run twice!
+		this.finished = true;
 		
 		AttackResult damage = new AttackResult();
-		
+
 		try {
 			if(attacker.getEquipment().getWeapon() != this.weapon){
 				// TODO: Possible issue with health's implementation here, as matches() is health sensitive
-				// So this may return a false positive 
+				// So this may return a false positive
 				if(this.weapon == null || this.weapon.matches(attacker.getEquipment().getWeapon()) == false){
 					// We've changed weapons at some point
 					return false;
 				}
 			}
-			
+
 			if (this.prepare(target, damage) == false) {
 				return false; //Can't prepare, no attack.
 			}
-			
+
 			if (this.takeConsumables() == false) {
 				return false; //No consumables, no attack.
 			}
@@ -84,7 +86,7 @@ public abstract class Attack {
 			e.printStackTrace();
 			return false;
 		}
-		
+
 		//Throw mob attack event here
 		Iterator<Damage> adit = new LinkedList<Damage>(damage.getDamages()).iterator();
 		while (adit.hasNext()) {
@@ -101,27 +103,22 @@ public abstract class Attack {
 				damage.add(act.getDamage());
 			}
 		}
-		
-		try{
-			if(damage.getDamages().isEmpty() == false){
-				if (emote != null && emote.getId() >= 0) {
-					attacker.getUpdateMask().setAnimation(emote, 20);
-				}
-				
-				if (graphics != null && graphics.getId() >= 0) {
-					attacker.getUpdateMask().setGraphics(graphics);
-				}
-				
-				this.perform(target, damage);
-				return true;
+
+		if(damage.getDamages().isEmpty() == false){
+			if (emote != null && emote.getId() >= 0) {
+				attacker.getUpdateMask().setAnimation(emote, 20);
 			}
-			else{
-				/* No hits were dealt */
-				return false;
+
+			if (graphics != null && graphics.getId() >= 0) {
+				attacker.getUpdateMask().setGraphics(graphics);
 			}
+
+			this.perform(target, damage);
+			return true;
 		}
-		finally{
-			this.finished = true;
+		else{
+			/* No hits were dealt */
+			return false;
 		}
 	}
 	
@@ -161,6 +158,18 @@ public abstract class Attack {
 	public boolean isFinished(){
 		return this.finished;
 	}
+
+    /**
+     * Sets this Attack to finished.
+     *
+     * @throws IllegalStateException if this attack is already finished.
+     */
+    public void abort() {
+        if(this.finished) {
+            throw new IllegalStateException("Can't abort attack: It's already finished!");
+        }
+        this.finished = true;
+    }
 	
 	/**
 	 * Prepares to perform this attack on the given target. If the attack can't

@@ -27,16 +27,12 @@ function perform(attacker, target, damage){
 	attacker.animate(12031);
 	attacker.graphics(347);//TODO: Not correct, but close
 	if (target instanceof Persona) {
-		target.say("Boohoohoo...Why...");
 		var prayers = [PrayerType.PROTECT_FROM_MAGIC, PrayerType.PROTECT_FROM_MELEE, PrayerType.PROTECT_FROM_MISSILES];
 		target.getPrayer().setEnabled(false, prayers);
-	} else {
-		target.say("Nope");
 	}
+
 	//TODO: 5 seconds unable to use prot prayers 
 	damage.apply(attacker);
-
-
 }
 
 /**

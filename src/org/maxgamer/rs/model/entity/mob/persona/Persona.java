@@ -918,8 +918,7 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 		}
 		
 		if (autocast != null) {
-			// TODO: If the player hasn't got the runes, should autocast be
-			// cancelled?
+			// TODO: If the player hasn't got the runes, should autocast be cancelled?
 			nextAttack = new MagicAttack(this, autocast);
 			return nextAttack;
 		}
@@ -929,7 +928,6 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 		// TODO: Decide whether to use a magic, range or melee attack.
 		ItemStack item = getEquipment().get(WieldType.WEAPON);
 		if (item != null) {
-			// if (RangeAttack.isRange(item)) {
 			if (getAttackStyle().isType(SkillType.RANGE)) {
 				nextAttack = new RangeAttack(this){
 					@Override
@@ -937,6 +935,7 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 						if(weapon == getEquipment().get(WieldType.WEAPON)){
 							return super.run(target);
 						}
+						this.abort();
 						return false;
 					}
 				};
@@ -953,6 +952,7 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 				if(weapon == getEquipment().get(WieldType.WEAPON)){
 					return super.run(target);
 				}
+				this.abort();
 				return false;
 			}
 		};

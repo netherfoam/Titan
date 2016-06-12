@@ -280,4 +280,12 @@ public class ItemStack implements Comparable<ItemStack>, YMLSerializable, Intera
 	public String[] getOptions() {
 		return getDefinition().getInventoryOptions();
 	}
+
+	/**
+	 * The total value of this ItemStack - The amount multiplied by the value
+	 * @return The total value of this ItemStack - The amount multiplied by the value
+     */
+	public long getValue() {
+		return this.getAmount() * getDefinition().getValue();
+	}
 }

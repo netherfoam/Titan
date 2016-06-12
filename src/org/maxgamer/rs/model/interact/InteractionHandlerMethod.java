@@ -115,7 +115,7 @@ public class InteractionHandlerMethod {
 
 		if(types[2].isInstance(usage) == false) {
 			if(this.debug) {
-				Log.debug("The interaction method " + this + " declined arg2=" + usage + " because it's not an instance of " + types[2]);
+				Log.debug("The interaction method " + this + " declined arg2=" + usage.getClass().getName() + " because it's not an instance of " + types[2]);
 			}
 			throw new NotHandledException();
 		}

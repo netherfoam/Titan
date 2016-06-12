@@ -6,7 +6,6 @@ import org.maxgamer.rs.model.entity.Entity;
 import org.maxgamer.rs.model.entity.Interactable;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.facing.Facing;
-import org.maxgamer.rs.model.interact.use.ItemOptionUse;
 import org.maxgamer.rs.model.interact.use.OptionUse;
 import org.maxgamer.rs.model.javascript.JavaScriptCall;
 import org.maxgamer.rs.model.javascript.JavaScriptFiber;
@@ -83,14 +82,6 @@ public class JavaScriptInteractHandler implements InteractionHandler{
 			}
 		}
 		return sb.toString();
-	}
-	
-	/**
-	 * Handles when we receive an interaction with a slot as well, which we discard
-	 */
-	@Interact
-	public void javascript(Mob source, Interactable target, ItemOptionUse use) throws SuspendExecution, NotHandledException {
-		javascript(source, target, use.getOption());
 	}
 
 	@Interact

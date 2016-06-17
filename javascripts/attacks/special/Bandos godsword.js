@@ -15,7 +15,7 @@ importClass(org.maxgamer.rs.model.entity.mob.combat.MeleeAttack);
  * 		   without dealing damage. Not dealing any damage will have the same effect.
  */
 function prepare(attacker, target, damage){
-	damage.add(MeleeAttack.roll(attacker, target, 1.0, 1.1));
+	damage.add(MeleeAttack.roll(attacker, target, 1.0, 1.21));
 	//TODO: Drain one of cb stats by 10% of damage
 }
 

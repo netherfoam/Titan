@@ -313,11 +313,14 @@ public class Harvestable {
 	 * @return the harvest time for a harvestable object
 	 */
 	public int getHarvestTime(Persona p, HarvestTool tool) {
-		int A = p.getSkills().getLevel(this.skill, true);
-		double B = tool.getLevel() / (double) A;
-		double C = level / (double) tool.getLevel();
-		double D = level / (double) A;
-		return (int) Math.max(1, (Erratic.nextInt(minTime, maxTime) * ((B + C + D) / tool.getEfficiency())));
+		// Credits to Scu11 - Slightly modified though
+		int skill = p.getSkills().getLevel(this.skill, true);
+        int requirement = getLevel();
+        int modifier = tool.getLevel();
+
+        double time = Math.ceil(requirement * 50 - skill * 15) / (modifier + 20) * 0.25 + Erratic.nextInt(3) * 4;
+        if(time < 1) return 1;
+        return (int) time;
 	}
 
 	/**

@@ -30,7 +30,9 @@ public class MySQLC3P0Core implements DatabaseCore {
 
 	private Properties entityManagerProperties;
 	
-	public MySQLC3P0Core(String host, String user, String pass, String database, String port) {
+	public MySQLC3P0Core(String host, String user, String pass, String database, String port)
+	{
+		System.getProperties().setProperty("c3p0.testConnectionOnCheckout", "true");
 		// This removes the debug spam from the C3P0 logger
 		Properties p = new Properties(System.getProperties());
 		p.put("com.mchange.v2.log.MLog", "com.mchange.v2.log.FallbackMLog");

@@ -56,14 +56,22 @@ public class Database {
 	}
 
     public <T> void addRepository(Repository<T> repository) {
+        if(repository.getDatabase() != null) {
+            throw new IllegalArgumentException("Repository " + repository + " already has a database assigned.");
+        }
+
         this.repositories.put(repository.getClass(), repository);
         if(this.managedEntities.contains(repository.getType().getName()) == false) {
             this.addEntity(repository.getType());
         }
+        repository.setDatabase(this);
     }
 
     public void removeRepository(Class<? extends Repository> type) {
-        this.repositories.remove(type);
+        Repository<?> r = this.repositories.remove(type);
+        if(r != null && r.getDatabase() == this) {
+            r.setDatabase(null);
+        }
     }
 
 	@SuppressWarnings("unchecked")

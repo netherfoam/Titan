@@ -1,6 +1,5 @@
 package org.maxgamer.rs.repository;
 
-import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.structure.sql.Database;
 
 import javax.persistence.Entity;
@@ -16,12 +15,21 @@ public class Repository<T> {
     private Class<T> type;
     private Entity annotation;
     private Table table;
+    private Database database;
 
     public Repository(Class<T> type) {
         this.type = type;
         this.annotation = type.getAnnotation(Entity.class);
         this.table = type.getAnnotation(Table.class);
         if(this.annotation == null) throw new IllegalArgumentException("Class " + type.getName() + " is not annotated with @" + Entity.class);
+    }
+
+    public void setDatabase(Database db) {
+        this.database = db;
+    }
+
+    public Database getDatabase() {
+        return this.database;
     }
 
     public Class<T> getType() {
@@ -34,10 +42,6 @@ public class Repository<T> {
 
     public List<T> findAll() {
         return getManager().createQuery("FROM " + name()).getResultList();
-    }
-
-    public Database getDatabase() {
-        return Core.getWorldDatabase();
     }
 
     protected EntityManager getManager() {

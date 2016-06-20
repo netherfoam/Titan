@@ -1,20 +1,20 @@
 package org.maxgamer.rs.logonv4;
 
+import net.crackstation.hash.PasswordHash;
+import org.maxgamer.rs.util.log.Log;
+
+import javax.persistence.*;
+import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.sql.SQLException;
-
-import net.crackstation.hash.PasswordHash;
-
-import org.maxgamer.rs.util.log.Log;
-import org.maxgamer.rs.structure.dbmodel.Mapping;
-import org.maxgamer.rs.structure.dbmodel.Transparent;
 
 /**
  * Represents a user profile, one that may be offline or online.
  * @author netherfoam
  */
-public class Profile extends Transparent {
+@Entity
+@Table(name = "Profile")
+public class Profile implements Serializable {
 	/**
 	 * The prefix we use for passwords in the database. If a password does not
 	 * start with this prefix, then we can assume the password is not hashed and
@@ -48,33 +48,34 @@ public class Profile extends Transparent {
 		return true;
 	}
 	
-	private ProfileManager manager;
-	
-	@Mapping
+	@Column(name = "user")
 	private String user;
-	@Mapping
+
+	@Id
+	@Column(name = "user_clean")
 	private String user_clean;
-	@Mapping
+
+	@Column(name = "pass")
 	private String pass;
-	@Mapping
+
+	@Column(name = "lastIp")
 	private String lastIp;
-	@Mapping
+
+	@Column(name = "lastSeen")
 	private long lastSeen;
-	@Mapping
+
+	@Column(name = "rights")
 	private int rights;
 	
 	/**
-	 * Private constructor
+	 * Hibernate constructor
 	 */
-	protected Profile(ProfileManager m, String name) {
-		super("profiles", new String[]{"user_clean"}, new Object[]{name.toLowerCase()});
-		this.manager = m;
-		this.user_clean = name.toLowerCase();
-		this.user = name;
+	public Profile() {
 	}
 	
-	public Profile(ProfileManager m, String name, String pass, long lastSeen, String lastIp){
-		this(m, name);
+	public Profile(String name, String pass, long lastSeen, String lastIp){
+        this.user_clean = name.toLowerCase();
+        this.user = name;
 		this.setPass(pass);
 		this.setLastSeen(lastSeen);
 		this.setLastIP(lastIp);
@@ -196,10 +197,6 @@ public class Profile extends Transparent {
 	 */
 	public void setLastIP(String ip) {
 		this.lastIp = ip;
-	}
-	
-	public void update() throws SQLException {
-		this.update(manager.getConnection());
 	}
 	
 	@Override

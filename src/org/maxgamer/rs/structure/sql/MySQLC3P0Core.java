@@ -63,7 +63,7 @@ public class MySQLC3P0Core implements DatabaseCore {
 	}
 
 	public EntityManagerFactoryImpl getEntityManagerFactory(List<String> entities) {
-		PersistenceUnitInfo info = new PersistenceUnitOfInfoImpl(Core.class.getSimpleName(), entities, this.entityManagerProperties);
+        PersistenceUnitInfo info = new PersistenceUnitOfInfoImpl(Core.class.getSimpleName(), entities, this.entityManagerProperties);
 		Map<String, Object> configuration = new HashMap<>();
 
 		EntityManagerFactoryImpl factory = (EntityManagerFactoryImpl) new EntityManagerFactoryBuilderImpl(

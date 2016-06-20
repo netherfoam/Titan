@@ -1,20 +1,15 @@
 package org.maxgamer.rs.logonv4.logon;
 
+import org.maxgamer.rs.logonv4.*;
+import org.maxgamer.rs.model.events.session.AuthRequestEvent;
+import org.maxgamer.rs.network.AuthResult;
+import org.maxgamer.rs.network.io.stream.RSInputBuffer;
+import org.maxgamer.rs.util.log.Log;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.sql.SQLException;
-
-import org.maxgamer.rs.util.log.Log;
-import org.maxgamer.rs.logonv4.LSIncomingPacket;
-import org.maxgamer.rs.logonv4.LSOutgoingPacket;
-import org.maxgamer.rs.logonv4.Opcode;
-import org.maxgamer.rs.logonv4.OpcodeDecoder;
-import org.maxgamer.rs.logonv4.Profile;
-import org.maxgamer.rs.model.events.session.AuthRequestEvent;
-import org.maxgamer.rs.network.AuthResult;
-import org.maxgamer.rs.network.io.stream.RSInputBuffer;
 
 /**
  * Decodes packets received from the Game Server.
@@ -48,24 +43,18 @@ public class GameDecoder extends OpcodeDecoder<LSIncomingPacket> implements Hand
 				result = AuthResult.ALREADY_ONLINE;
 				break;
 			}
-			
-			try {
-				profile = LogonServer.getLogon().getProfiles().get(name);
-				if(profile == null){
-					profile = LogonServer.getLogon().getProfiles().create(name, pass, ip);
-				}
-				else if (profile.isPass(pass) == false) {
-					//Auth success
-					result = AuthResult.INVALID_PASSWORD;
-					break;
-				}
-			}
-			catch (SQLException e) {
-				result = AuthResult.SYSTEM_UNAVAILABLE;
-				e.printStackTrace();
-				break;
-			}
-			
+
+			profile = LogonServer.getLogon().getDatabase().getRepository(ProfileRepository.class).find(name);
+			if(profile == null){
+                profile = new Profile(name, pass, System.currentTimeMillis(), ip);
+                LogonServer.getLogon().getDatabase().getEntityManager().persist(profile);
+            }
+            else if (profile.isPass(pass) == false) {
+                //Auth success
+                result = AuthResult.INVALID_PASSWORD;
+                break;
+            }
+
 			try {
 				File file;
 				FileInputStream fin;
@@ -113,14 +102,8 @@ public class GameDecoder extends OpcodeDecoder<LSIncomingPacket> implements Hand
 		
 		profile.setLastIP(ip);
 		profile.setLastSeen(System.currentTimeMillis());
-		
-		try {
-			profile.update();
-		}
-		catch (SQLException e) {
-			//Not a big issue, and probably won't occur.
-			e.printStackTrace();
-		}
+
+		LogonServer.getLogon().getDatabase().getEntityManager().flush();
 		Log.debug("Connect " + profile.getName() + ": " + result);
 		this.host.add(profile);
 		
@@ -185,14 +168,8 @@ public class GameDecoder extends OpcodeDecoder<LSIncomingPacket> implements Hand
 		
 		Profile profile = this.host.getPlayer(name);
 		profile.setRights(rights);
-		
-		try {
-			profile.update();
-		}
-		catch (SQLException e) {
-			Log.warning("Failed to save " + name + "'s player rights!");
-			e.printStackTrace();
-		}
+
+		LogonServer.getLogon().getDatabase().getEntityManager().flush();
 	}
 	
 	@Override

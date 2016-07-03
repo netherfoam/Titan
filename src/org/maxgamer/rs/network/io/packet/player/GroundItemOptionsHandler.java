@@ -79,7 +79,7 @@ public class GroundItemOptionsHandler implements PacketProcessor<Player> {
 				break;
 			case EXAMINE: //TODO: Should we move this to a different handler?
 				itemId = packet.readShort();
-				ItemType proto = Core.getWorldDatabase().getRepository(ItemTypeRepository.class).find(itemId);
+				ItemType proto = Core.getServer().getDatabase().getRepository(ItemTypeRepository.class).find(itemId);
 				player.sendMessage(proto.getExamine());
 				
 				return; //Return, not break

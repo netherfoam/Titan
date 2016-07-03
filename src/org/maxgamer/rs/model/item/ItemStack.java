@@ -98,7 +98,7 @@ public class ItemStack implements Comparable<ItemStack>, YMLSerializable, Intera
 	
 	public ItemType getDefinition() {
 		if(this.definition == null) {
-			this.definition = Core.getWorldDatabase().getRepository(ItemTypeRepository.class).find(this.id);
+			this.definition = Core.getServer().getDatabase().getRepository(ItemTypeRepository.class).find(this.id);
 		}
 
 		return this.definition;

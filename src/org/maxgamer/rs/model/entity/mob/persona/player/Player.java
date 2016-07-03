@@ -207,7 +207,7 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 		
 		try {
 			// Attempt to get the view distance from the config.
-			this.viewDistance = ViewDistance.valueOf(Core.getWorldConfig().getString("players.view-distance", "SMALL").toUpperCase());
+			this.viewDistance = ViewDistance.valueOf(Core.getServer().getConfig().getString("players.view-distance", "SMALL").toUpperCase());
 		}
 		catch (IllegalArgumentException e) {
 			// User has a bad view distance in config.

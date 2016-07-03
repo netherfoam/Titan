@@ -124,7 +124,7 @@ public abstract class WorldMap implements MBR {
 	}
 	
 	public void init(){
-		for(NPCSpawn spawn : Core.getWorldDatabase().getRepository(NPCSpawnRepository.class).findAllByMap(this.getName())) {
+		for(NPCSpawn spawn : Core.getServer().getDatabase().getRepository(NPCSpawnRepository.class).findAllByMap(this.getName())) {
 			spawn.spawn();
 		}
 	}

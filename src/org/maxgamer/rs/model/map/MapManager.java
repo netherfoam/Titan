@@ -64,7 +64,7 @@ public class MapManager implements EventListener, Iterable<WorldMap>{
 
 
 		NPCSpawn spawn = new NPCSpawn(npc.getId(), loc);
-		Core.getWorldDatabase().getSession().persist(spawn);
+		Core.getServer().getDatabase().getSession().persist(spawn);
 	}
 	
 	public void unpersist(NPC npc){
@@ -72,7 +72,7 @@ public class MapManager implements EventListener, Iterable<WorldMap>{
 			throw new IllegalArgumentException("Map is not persisted!");
 		}
 
-		Core.getWorldDatabase().getRepository(NPCSpawnRepository.class).deleteById(npc.getSpawnId());
+		Core.getServer().getDatabase().getRepository(NPCSpawnRepository.class).deleteById(npc.getSpawnId());
 	}
 	
 	public WorldMap mainland(){
@@ -181,7 +181,7 @@ public class MapManager implements EventListener, Iterable<WorldMap>{
 		// TODO: This can be optimised by grouping chunks and then doing that selection instead of doing 16,000 odd queries for loading all of F2P
 		/*
 		try{
-			Connection con = Core.getWorldDatabase().getConnection();
+			Connection con = Core.getDatabase().getConnection();
 			PreparedStatement ps = con.prepareStatement("SELECT * FROM npc_spawns WHERE map = ? AND x BETWEEN ? AND ? AND y BETWEEN ? AND ? AND z = ?");
 			int x = e.getChunkX() << WorldMap.CHUNK_BITS;
 			int y = e.getChunkY() << WorldMap.CHUNK_BITS;

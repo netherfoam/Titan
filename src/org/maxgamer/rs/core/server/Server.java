@@ -1,28 +1,31 @@
 package org.maxgamer.rs.core.server;
 
+import org.hibernate.Session;
 import org.maxgamer.rs.command.Command;
 import org.maxgamer.rs.command.CommandManager;
 import org.maxgamer.rs.command.commands.*;
+import org.maxgamer.rs.command.commands.debug.*;
 import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.core.tick.Tickable;
+import org.maxgamer.rs.core.Scheduler;
 import org.maxgamer.rs.event.EventManager;
-import org.maxgamer.rs.logonv4.game.LogonConnection;
+import org.maxgamer.rs.logon.game.LogonConnection;
 import org.maxgamer.rs.model.entity.EntityList;
 import org.maxgamer.rs.model.entity.mob.npc.NPC;
+import org.maxgamer.rs.model.entity.mob.npc.NPCGroupLoot;
+import org.maxgamer.rs.model.entity.mob.npc.NPCGroupLootGuarantee;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;
 import org.maxgamer.rs.model.entity.mob.persona.PersonaList;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
-import org.maxgamer.rs.model.entity.mob.persona.player.Viewport;
 import org.maxgamer.rs.model.events.server.ServerShutdownEvent;
 import org.maxgamer.rs.model.interact.InteractionManager;
-import org.maxgamer.rs.model.item.ItemStack;
+import org.maxgamer.rs.model.item.AmmoType;
+import org.maxgamer.rs.model.item.ItemAmmo;
 import org.maxgamer.rs.model.item.ground.GroundItemManager;
 import org.maxgamer.rs.model.item.inventory.Equipment;
 import org.maxgamer.rs.model.item.vendor.VendorManager;
 import org.maxgamer.rs.model.javascript.JavaScriptFiber;
 import org.maxgamer.rs.model.javascript.TimeoutError;
 import org.maxgamer.rs.model.lobby.Lobby;
-import org.maxgamer.rs.model.map.Location;
 import org.maxgamer.rs.model.map.MapManager;
 import org.maxgamer.rs.model.map.StandardMap;
 import org.maxgamer.rs.model.map.WorldMap;
@@ -31,10 +34,15 @@ import org.maxgamer.rs.module.ModuleLoader;
 import org.maxgamer.rs.network.Client;
 import org.maxgamer.rs.network.LobbyPlayer;
 import org.maxgamer.rs.network.server.RS2Server;
+import org.maxgamer.rs.repository.*;
 import org.maxgamer.rs.structure.configs.ConfigSection;
 import org.maxgamer.rs.structure.configs.FileConfig;
+import org.maxgamer.rs.structure.sql.Database;
 import org.maxgamer.rs.structure.sql.Database.ConnectionException;
+import org.maxgamer.rs.structure.sql.MySQLC3P0Core;
 import org.maxgamer.rs.structure.timings.StopWatch;
+import org.maxgamer.rs.tools.ConfigSetup;
+import org.maxgamer.rs.util.Files;
 import org.maxgamer.rs.util.log.Log;
 import org.mozilla.javascript.ContinuationPending;
 
@@ -134,6 +142,22 @@ public class Server {
 	 * The server-wide vendor manager. This holds references to all vendors and their current quantities in the game world
 	 */
 	private VendorManager vendors;
+
+    /**
+     * The database used for world information, such as NPC spawns, ammo types
+     * and item definitions
+     */
+    private Database database;
+
+    /**
+     * Handles scheduling of tasks for a later date, optionally on the main
+     * thread or on an async thread
+     */
+    private Scheduler scheduler;
+
+    public Server() throws IOException, ConnectionException {
+        this(null);
+    }
 	
 	/**
 	 * Creates a new server.
@@ -142,14 +166,13 @@ public class Server {
 	 * @throws ConnectionException
 	 */
 	public Server(ConfigSection cfg) throws IOException, ConnectionException {
-		if (cfg == null) cfg = new ConfigSection(); //We will use default values.
 		this.config = cfg;
-		
+
 		//We construct this immediately, it may be required immediately.
 		this.thread = new ServerThread(this);
 		
 		//Immediately opens the port, but does not necessarily begin accepting/reading/writing
-		this.network = new RS2Server(config.getInt("port"), this);
+		this.network = new RS2Server(getConfig().getInt("world.port"), this);
 		
 		//TODO: ConfigSetup.logon() if file not found
 		//TODO: Copy the .dist file across automatically
@@ -158,7 +181,104 @@ public class Server {
 		
 		this.logon = new LogonConnection(logon);
 		this.started = System.currentTimeMillis();
+        this.scheduler = new Scheduler(this.getThread(), Core.getThreadPool());
 	}
+
+    /**
+     * Fetches the config file that is used for the world settings
+     * @return the config file for the world settings
+     */
+    public synchronized ConfigSection getConfig() {
+        if (config == null) {
+            boolean isNew = false;
+
+            File file = new File("config" + File.separatorChar + "world.yml");
+            if(!file.exists()){
+                File dist = new File("config" + File.separatorChar + "world.yml.dist");
+                if(dist.exists()){
+                    try{
+                        Files.copy(dist, file);
+                    }
+                    catch(IOException e){
+                        Log.warning("Could not copy " + dist + " to " + file);
+                    }
+                }
+                else{
+                    Log.warning(dist + " does not exist. Can't copy server config to " + file + "!");
+                }
+                isNew = true;
+            }
+
+            FileConfig config = new FileConfig(file);
+            try {
+                config.reload();
+            }
+            catch (IOException e) {
+                Log.warning("Error parsing world.yml! Exiting...");
+                e.printStackTrace();
+                System.exit(3);
+            }
+
+            if(isNew){
+                ConfigSetup.world(config);
+                try {
+                    config.save();
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+                    Log.warning("Failed to save world.yml file!");
+                }
+            }
+            this.config = config;
+        }
+        return config;
+    }
+
+    /**
+     * The {@link Session} for the World
+     * @return The {@link Session} for the World
+     */
+    public Session getSession() {
+        return getDatabase().getSession();
+    }
+
+    /**
+     * Fetches the SQL database for the world
+     * @return the world database
+     */
+    public synchronized Database getDatabase() {
+        if (database == null) {
+            try {
+                Log.debug("Connecting to database...");
+                // Database initialization
+                ConfigSection c = getConfig().getSection("database");
+                database = new Database(new MySQLC3P0Core(c.getString("host", "localhost"), c.getString("user", "root"), c.getString("pass", ""), c.getString("database", "database"), c.getString("port", "3306")));
+                Log.debug("Database connection established.");
+            }
+            catch(ConnectionException e) {
+                Log.severe("Failed to establish database connection, exiting.");
+                e.printStackTrace();
+                System.exit(1);
+            }
+
+            // Add all of our standard repositories
+            database.addRepository(new NPCSpawnRepository());
+            database.addRepository(new ItemTypeRepository());
+            database.addRepository(new EquipmentRepository());
+            database.addRepository(new NPCTypeRepository());
+            database.addRepository(new NPCGroupRepository());
+            database.addRepository(new VendorRepository());
+            database.addRepository(new VendorItemRepository());
+            database.addRepository(new Warp.DestinationRepository());
+
+            // We don't really need repositories for these
+            database.addEntity(NPCGroupLoot.class);
+            database.addEntity(NPCGroupLootGuarantee.class);
+            database.addEntity(AmmoType.class);
+            database.addEntity(ItemAmmo.class);
+        }
+        return database;
+    }
 	
 	/**
 	 * The interactions for the server. These are a convenient method of writing Actions without having to create
@@ -182,19 +302,19 @@ public class Server {
 	}
 	
 	public String getRegion() {
-		return config.getString("region", "");
+		return config.getString("world.region", "");
 	}
 	
 	public String getActivity() {
-		return config.getString("activity", "");
+		return config.getString("world.activity", "");
 	}
 	
 	public String getIP() {
-		return config.getString("ip", "127.0.0.1");
+		return config.getString("world.ip", "127.0.0.1");
 	}
 	
 	public int getFlags() {
-		return config.getInt("flags");
+		return config.getInt("world.flags");
 	}
 	
 	public int getWorldId() {
@@ -269,7 +389,6 @@ public class Server {
             @Override
             public void run() {
                 try {
-                    Core.getWorldDatabase().getSession().flush();
                     Server.this.lobby = new Lobby();
 
                     // We should initialize everything before loading user content
@@ -295,7 +414,7 @@ public class Server {
                     Server.this.logon.start();
 
                     //Autosave
-                    int interval = Core.getWorldConfig().getInt("autosave-interval", 10000);
+                    int interval = getConfig().getInt("autosave-interval", 10000);
                     if (interval > 0) {
                         Server.this.autosave = new AutoSave(interval);
                         Core.submit(Server.this.autosave, interval, true);
@@ -380,10 +499,10 @@ public class Server {
                 finally {
                     update.stop();
                 }
-                Core.submit(this, Core.getWorldConfig().getInt("update-interval", 30), false);
+                Core.submit(this, getConfig().getInt("update-interval", 30), false);
             }
         };
-        Core.submit(maskUpdate, Core.getWorldConfig().getInt("update-interval", 30), false);
+        Core.submit(maskUpdate, getConfig().getInt("update-interval", 30), false);
     }
 
 	public LogonConnection getLogon() {
@@ -464,7 +583,6 @@ public class Server {
 			commands.register("restore", new Restore());
 			commands.register("save", new Save());
 			commands.register("servers", new Servers());
-			commands.register("showflags", new ShowFlags());
 			commands.register("skilllevel", new SkillLevel());
 			commands.register("sort", new Sort());
 			commands.register("sound", new Sound());
@@ -491,7 +609,7 @@ public class Server {
 			commands.register("warp", new Warp());
 			commands.register("organise", new Organise());
 			
-			ConfigSection config = Core.getWorldConfig().getSection("commands", null);
+			ConfigSection config = getConfig().getSection("commands", null);
 			if (config != null) {
 				for (String alias : config.getKeys()) {
 					Command command = commands.getCommand(config.getString(alias));
@@ -572,6 +690,8 @@ public class Server {
 		thread.shutdown();
 		
 		save(); //Also saves all players, but fails since logon is closed
+
+        scheduler.shutdown();
 	}
 	
 	/**
@@ -581,8 +701,12 @@ public class Server {
 	public Lobby getLobby() {
 		return lobby;
 	}
-	
-	public Collection<Client> getClients() {
+
+    public Scheduler getScheduler() {
+        return scheduler;
+    }
+
+    public Collection<Client> getClients() {
 		ArrayList<Client> clients = new ArrayList<Client>(lobby.size() + personas.getCount());
 		for (Persona p : personas) {
 			if (p instanceof Client) clients.add((Client) p);
@@ -636,15 +760,6 @@ public class Server {
 	}
 	
 	/**
-	 * Fetches the ConfigSection for the server. This is under a section labeled
-	 * "server" in the config file.
-	 * @return the ConfigSection for this server.
-	 */
-	public ConfigSection getConfig() {
-		return Core.getWorldConfig().getSection("server");
-	}
-	
-	/**
 	 * Saves all currently online players to disk.
 	 */
 	public void save() {
@@ -668,37 +783,6 @@ public class Server {
 				}
 			}
 		}, true);
-	}
-	
-	/**
-	 * Highlights the given locations to all nearby players for the given
-	 * duration
-	 * @param locations
-	 */
-	public void highlight(int duration, final Location... locations) {
-		if (duration < 0) {
-			throw new IllegalArgumentException("Duration must be >= 0");
-		}
-		
-		for (Location l : locations) {
-			for (Viewport view : l.getNearby(Viewport.class, 0)) {
-				Player p = view.getOwner();
-				p.getProtocol().sendGroundItem(l, ItemStack.create(995, 5000));
-			}
-		}
-		
-		//this.getTicker().submit(duration, new Tickable(){
-		new Tickable() {
-			@Override
-			public void tick() {
-				for (Location l : locations) {
-					for (Viewport view : l.getNearby(Viewport.class, 0)) {
-						Player p = view.getOwner();
-						p.getProtocol().removeGroundItem(l, ItemStack.create(995, 5000));
-					}
-				}
-			}
-		}.queue(duration);
 	}
 	
 	/**

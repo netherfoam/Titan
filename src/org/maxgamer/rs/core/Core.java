@@ -1,6 +1,5 @@
 package org.maxgamer.rs.core;
 
-import org.hibernate.Session;
 import org.maxgamer.rs.cache.Cache;
 import org.maxgamer.rs.cache.CacheFile;
 import org.maxgamer.rs.cache.IDX;
@@ -8,29 +7,16 @@ import org.maxgamer.rs.cache.MapCache;
 import org.maxgamer.rs.cache.reference.Reference;
 import org.maxgamer.rs.cache.reference.ReferenceTable;
 import org.maxgamer.rs.command.ConsoleSender;
-import org.maxgamer.rs.command.commands.Warp;
 import org.maxgamer.rs.core.server.Server;
-import org.maxgamer.rs.model.entity.mob.npc.NPCGroupLoot;
-import org.maxgamer.rs.model.entity.mob.npc.NPCGroupLootGuarantee;
-import org.maxgamer.rs.model.item.AmmoType;
-import org.maxgamer.rs.model.item.ItemAmmo;
-import org.maxgamer.rs.repository.*;
-import org.maxgamer.rs.structure.configs.ConfigSection;
 import org.maxgamer.rs.structure.configs.FileConfig;
-import org.maxgamer.rs.structure.sql.Database;
-import org.maxgamer.rs.structure.sql.MySQLC3P0Core;
 import org.maxgamer.rs.structure.timings.NullTimings;
 import org.maxgamer.rs.structure.timings.Timings;
-import org.maxgamer.rs.tools.ConfigSetup;
-import org.maxgamer.rs.util.Files;
 import org.maxgamer.rs.util.log.Log;
 import org.maxgamer.rs.util.log.Logger.LogLevel;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.Date;
 import java.util.concurrent.*;
 import java.util.logging.LogManager;
@@ -63,12 +49,6 @@ public class Core {
 	}
 	
 	/**
-	 * Handles scheduling of tasks for a later date, optionally on the main
-	 * thread or on an async thread
-	 */
-	private static Scheduler scheduler;
-	
-	/**
 	 * A thread pool for handling async tasks that are not on the main server
 	 * thread.
 	 */
@@ -90,17 +70,6 @@ public class Core {
 	private static Timings timings;
 	
 	/**
-	 * The database used for world information, such as NPC spawns, ammo types
-	 * and item definitions
-	 */
-	private static Database world;
-
-	/**
-	 * The config for the world/servers
-	 */
-	private static FileConfig worldCfg;
-	
-	/**
 	 * The RS cache that is to be loaded and used.
 	 */
 	private static Cache cache;
@@ -115,13 +84,10 @@ public class Core {
 	
 	/**
 	 * Initializes the core of the server
-	 * @param threads the max number of threads to run with, or <= 0 to use the
-	 *        number of processors available to the runtime as the number of
-	 *        threads.
 	 * @throws Exception If there was an error binding the port or loading the
 	 *         cache.
 	 */
-	public static void init(int threads, String[] args) throws Exception {
+	public static void init() throws Exception {
 		// This prevents Quasar from warning us about a missing JavaAgent, since we instrument as part of
 		// the build process, and using a URLClassLoader for the modules.
 		System.setProperty("co.paralleluniverse.fibers.disableAgentWarning", "true");
@@ -129,45 +95,13 @@ public class Core {
         // This loads logger.properties from our classpath, to remove Hibernate log messages
         LogManager.getLogManager().readConfiguration(Core.class.getClassLoader().getResourceAsStream("logger.properties"));
 
-		getTimings(); // Force load timings
-		getWorldConfig(); // Force load worldCfg
-
-		// We allow args to override the config parameters eg world.port=xxx will override the config value
-		for (String arg : args) {
-			if (arg.contains("=") == false) continue;
-			String[] parts = arg.split("=");
-			if (parts.length != 2) {
-				Log.info("Bad program argument given: " + arg);
-				continue;
-			}
-
-			getWorldConfig().set(parts[0], parts[1]);
-		}
-
-		if (threads <= 0) threads = Runtime.getRuntime().availableProcessors();
-
-		Log.init(LogLevel.valueOf(getWorldConfig().getString("log.level", LogLevel.INFO.toString())));
+		Log.init(LogLevel.INFO);
 		Log.info("Booting on " + new Date().toString() + " --");
-		Log.info("Author: " + Core.AUTHOR + ", Build: " + Core.BUILD + ", Threads: " + threads);
+		Log.info("Author: " + Core.AUTHOR + ", Build: " + Core.BUILD);
 
 		final long start = System.currentTimeMillis();
 
-		threadPool = Executors.newFixedThreadPool(threads, new ThreadFactory() {
-			private int nextThreadId = 0;
-
-			@Override
-			public Thread newThread(Runnable r) {
-				Thread t = new Thread(r, "ExecutorService " + nextThreadId++);
-				t.setContextClassLoader(CLASS_LOADER);
-				t.setPriority(Thread.NORM_PRIORITY);
-				t.setDaemon(true);
-				return t;
-			}
-		});
-
-		ConfigSection cfg = Core.getWorldConfig().getSection("world");
-		server = new Server(cfg); //Binds port port
-		scheduler = new Scheduler(server.getThread(), threadPool);
+		server = new Server(); //Binds port port
 		server.load();
 
 		// This is run when we get CTRL + C as well
@@ -193,30 +127,6 @@ public class Core {
 				Log.info("Booted in " + (System.currentTimeMillis() - start) + "ms.");
 			}
 		});
-	}
-
-	/**
-	 * The {@link Session} for the World
-	 * @return The {@link Session} for the World
-	 */
-	public Session getSession() {
-		return getWorldDatabase().getSession();
-	}
-	
-	/**
-	 * Fetches the file that contains org.maxgamer.rs.Core, whether it be a JAR file or a compiled
-	 * BIN folder containing .class files.
-	 * @return the location of the main program.
-	 */
-	public static File getCodeSource(){
-		try{
-			URL url = Core.class.getProtectionDomain().getCodeSource().getLocation();
-			return new File(url.toURI().getPath());
-			
-		}
-		catch(URISyntaxException e){
-			throw new RuntimeException("Couldn't locate Code Source. Source " + Core.class.getProtectionDomain().getCodeSource().getLocation().toString());
-		}
 	}
 	
 	/**
@@ -268,21 +178,21 @@ public class Core {
 							}
 						}
 					}
-					//Update config & save
+					// Update config & save
 					cacheCfg.set("modified." + main.getName(), main.lastModified());
 					cacheCfg.set("modified." + xtea.getName(), xtea.lastModified());
 					cacheCfg.save();
 				}
 				else {
-					//We previously worked on this cache, and listed all broken files.
-					//This is faster than testing each file if it's broken or not.
+					// We previously worked on this cache, and listed all broken files.
+					// This is faster than testing each file if it's broken or not.
 					for (String refId : cacheCfg.getSection("encryptedMaps").getKeys()) {
 						int referenceId = cacheCfg.getInt("encryptedMaps." + refId, -1);
 						r.remove(referenceId);
 					}
 				}
 				
-				//Now we re-encode the raw version of the data
+				// Now we re-encode the raw version of the data
 				r.setVersion(r.getVersion() + 1);
 				f.setData(r.encode()); //Set the file data to the reference table
 				cache.setRaw(255, IDX.LANDSCAPES, f.encode());
@@ -300,101 +210,7 @@ public class Core {
 		return cache;
 	}
 	
-	/**
-	 * Fetches the config file that is used for the world settings
-	 * @return the config file for the world settings
-	 */
-	public synchronized static FileConfig getWorldConfig() {
-		if (worldCfg == null) {
-			boolean isNew = false;
-			
-			File cfgFile = new File("config" + File.separatorChar + "world.yml");
-			if(cfgFile.exists() == false){
-				File dist = new File("config" + File.separatorChar + "world.yml.dist");
-				if(dist.exists()){
-					try{
-						Files.copy(dist, cfgFile);
-					}
-					catch(IOException e){
-						Log.warning("Could not copy " + dist + " to " + cfgFile);
-					}
-				}
-				else{
-					Log.warning(dist + " does not exist. Can't copy server config to " + cfgFile + "!");
-				}
-				isNew = true;
-			}
-			
-			worldCfg = new FileConfig(cfgFile);
-			try {
-				worldCfg.reload();
-			}
-			catch (IOException e) {
-				Log.warning("Error parsing world.yml! Exiting...");
-				e.printStackTrace();
-				System.exit(3);
-			}
-			
-			if(isNew){
-				ConfigSetup.world(worldCfg);
-				try {
-					worldCfg.save();
-				}
-				catch (IOException e) {
-					e.printStackTrace();
-					Log.warning("Failed to save world.yml file!");
-				}
-			}
-		}
-		return worldCfg;
-	}
-	
-	/**
-	 * Fetches the SQL database for the world
-	 * @return the world database
-	 */
-	public synchronized static Database getWorldDatabase() {
-		if (world == null) {
-			try {
-				//Database initialization
-				ConfigSection c = getWorldConfig().getSection("database");
-				String type = c.getString("type", "sqlite");
-				
-				//Logon Database
-				if (type.equalsIgnoreCase("mysql")) {
-					Log.debug("World using MySQL Database.");
-					world = new Database(new MySQLC3P0Core(c.getString("host", "localhost"), c.getString("user", "root"), c.getString("pass", ""), c.getString("database", "database"), c.getString("port", "3306")));
-				}
-				else {
-					throw new IllegalArgumentException("Unsupported type of database: " + type);
-				}
-				Log.debug("Database connection established.");
-			}
-			catch (Exception e) {
-				Log.severe("Failed to establish database connection, exitting.");
-				e.printStackTrace();
-				System.exit(1);
-			}
 
-			// Add all of our standard repositories
-			world.addRepository(new NPCSpawnRepository());
-			world.addRepository(new ItemTypeRepository());
-			world.addRepository(new EquipmentRepository());
-			world.addRepository(new NPCTypeRepository());
-			world.addRepository(new NPCGroupRepository());
-			world.addRepository(new VendorRepository());
-			world.addRepository(new VendorItemRepository());
-            Core.getWorldDatabase().addRepository(new Warp.DestinationRepository());
-
-
-			// We don't really need repositories for these
-			world.addEntity(NPCGroupLoot.class);
-			world.addEntity(NPCGroupLootGuarantee.class);
-			world.addEntity(AmmoType.class);
-			world.addEntity(ItemAmmo.class);
-		}
-		return world;
-	}
 	
 	/**
 	 * Fetches the console command sender
@@ -416,7 +232,7 @@ public class Core {
 	 * @param r The runnable task to execute
 	 */
 	public synchronized static Future<?> submit(Runnable r, boolean async) {
-		if (async) return threadPool.submit(r);
+		if (async) return getThreadPool().submit(r);
 		else {
 			return getServer().getThread().submit(r);
 		}
@@ -431,7 +247,7 @@ public class Core {
 	 * @param delay The task delay in milliseconds.
 	 */
 	public synchronized static Future<Void> submit(Runnable r, long delay, boolean async) {
-		return scheduler.queue(r, delay, async);
+		return getServer().getScheduler().queue(r, delay, async);
 	}
 	
 	/**
@@ -448,12 +264,10 @@ public class Core {
 	private static void shutdown() {
 		Log.info("Shutting down...");
 		getServer().shutdown();
-		console.stop();
-		scheduler.shutdown();
-		threadPool.shutdown();
+		getConsole().stop();
 		try {
-			threadPool.shutdown();
-			threadPool.awaitTermination(5, TimeUnit.SECONDS);
+            getThreadPool().shutdown();
+            getThreadPool().awaitTermination(5, TimeUnit.SECONDS);
 		}
 		catch (InterruptedException e) {}
 		Log.close();
@@ -461,7 +275,7 @@ public class Core {
 	
 	public synchronized static Timings getTimings() {
 		if (timings == null) {
-			if(getWorldConfig().getBoolean("timings")){
+			if(getServer().getConfig().getBoolean("timings")){
 				timings = new Timings();
 			}
 			else{
@@ -470,6 +284,25 @@ public class Core {
 		}
 		return timings;
 	}
+
+    public static ExecutorService getThreadPool() {
+        if(threadPool == null) {
+            int threads = Runtime.getRuntime().availableProcessors() - 1;
+            threadPool = Executors.newFixedThreadPool(threads, new ThreadFactory() {
+                private int nextThreadId = 0;
+
+                @Override
+                public Thread newThread(Runnable r) {
+                    Thread t = new Thread(r, "ExecutorService " + nextThreadId++);
+                    t.setContextClassLoader(CLASS_LOADER);
+                    t.setPriority(Thread.NORM_PRIORITY);
+                    t.setDaemon(true);
+                    return t;
+                }
+            });
+        }
+        return threadPool;
+    }
 	
 	private Core() {
 		//Private Constructor

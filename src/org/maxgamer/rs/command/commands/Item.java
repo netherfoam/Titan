@@ -22,7 +22,7 @@ public class Item implements PlayerCommand {
 	private boolean ready = false;
 
 	public Item() {
-		Map<Integer, String> data = Core.getWorldDatabase().getRepository(ItemTypeRepository.class).findNames();
+		Map<Integer, String> data = Core.getServer().getDatabase().getRepository(ItemTypeRepository.class).findNames();
 
 		for(Map.Entry<Integer, String> entry : data.entrySet()){
 			String name = entry.getValue();

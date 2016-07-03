@@ -53,7 +53,7 @@ public class SpawnNPC implements PlayerCommand {
 				}
 
 				NPCSpawn spawn = new NPCSpawn(Integer.parseInt(args[0]), l);
-				Core.getWorldDatabase().getSession().persist(spawn);
+				Core.getServer().getDatabase().getSession().persist(spawn);
 				NPC n = spawn.spawn();
 				p.sendMessage("Spawned NPC " + args[0] + ": " + n.getDefinition().getName() + " permanently at " + l);
 			}

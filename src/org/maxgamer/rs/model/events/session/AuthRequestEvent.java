@@ -1,6 +1,6 @@
 package org.maxgamer.rs.model.events.session;
 
-import org.maxgamer.rs.logonv4.logon.LSEvent;
+import org.maxgamer.rs.logon.logon.LSEvent;
 import org.maxgamer.rs.network.AuthResult;
 
 /**

@@ -786,7 +786,7 @@ public abstract class Container implements Cloneable, Iterable<ItemStack>, YMLSe
 		if (id < 0) {
 			throw new IllegalArgumentException("May not search a container for a null item.");
 		}
-		long maxSize = Core.getWorldDatabase().getRepository(ItemTypeRepository.class).find(id).getMaxStack();
+		long maxSize = Core.getServer().getDatabase().getRepository(ItemTypeRepository.class).find(id).getMaxStack();
 		
 		int numStacks = (int) (amt / maxSize);
 		if (amt % maxSize > 0) numStacks++; // Leftovers stack.

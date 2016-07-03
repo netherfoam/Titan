@@ -6,7 +6,7 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
 import org.maxgamer.rs.model.events.mob.MobTeleportEvent.TeleportCause;
 import org.maxgamer.rs.model.map.Location;
-import org.maxgamer.rs.repository.Repository;
+import org.maxgamer.rs.repository.AbstractRepository;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -31,7 +31,7 @@ public class Warp implements PlayerCommand{
 		private int z;
 	}
 
-	public static class DestinationRepository extends Repository<Destination> {
+	public static class DestinationRepository extends AbstractRepository<Destination> {
 		public DestinationRepository() {
 			super(Destination.class);
 		}
@@ -44,7 +44,7 @@ public class Warp implements PlayerCommand{
 	private DestinationRepository repository;
 
 	public Warp(){
-        Core.getWorldDatabase().flush();
+        Core.getServer().getDatabase().flush();
 	}
 
 	@Override
@@ -79,7 +79,7 @@ public class Warp implements PlayerCommand{
 			dest.name = args[1].toLowerCase();
 			for(int i = 2; i < args.length; i++) dest.name += " " + args[i];
 			
-			Core.getWorldDatabase().getSession().persist(dest);
+			Core.getServer().getDatabase().getSession().persist(dest);
 			
 			p.sendMessage("Saved the warp as ::warp " + dest.name);
 			

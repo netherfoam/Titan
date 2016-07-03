@@ -1,10 +1,10 @@
 package org.maxgamer.rs.tools;
 
-import java.util.regex.Pattern;
-
 import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.util.Erratic;
 import org.maxgamer.rs.structure.configs.FileConfig;
+import org.maxgamer.rs.util.Erratic;
+
+import java.util.regex.Pattern;
 
 /**
  * Configuration utility that requests the user to configure their YML files. This can be used
@@ -53,7 +53,7 @@ public class ConfigSetup {
 		
 		p.println("Testing database connection...");
 		/* This will fail and abort the JVM if the database details were incorrect */
-		Core.getWorldDatabase();
+		Core.getServer().getDatabase();
 		
 		p.print("-- Client Setup --");
 		p.print("Server Port [43594]: ");

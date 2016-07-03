@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.logonv4.game.LogonAPI.RemoteWorld;
+import org.maxgamer.rs.logon.game.LogonAPI.RemoteWorld;
 import org.maxgamer.rs.model.events.mob.persona.player.AddFriendEvent;
 import org.maxgamer.rs.model.events.mob.persona.player.RemoveFriendEvent;
 import org.maxgamer.rs.network.Client;

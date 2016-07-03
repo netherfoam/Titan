@@ -2,7 +2,7 @@ package org.maxgamer.rs.structure.sql;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.maxgamer.rs.repository.Repository;
+import org.maxgamer.rs.repository.AbstractRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -28,7 +28,7 @@ public class Database {
     }
 
 	private DatabaseCore core;
-	private HashMap<Class<? extends Repository>, Repository<?>> repositories = new HashMap<Class<? extends Repository>, Repository<?>>();
+	private HashMap<Class<? extends AbstractRepository>, AbstractRepository<?>> repositories = new HashMap<Class<? extends AbstractRepository>, AbstractRepository<?>>();
     private ArrayList<Class<?>> managedEntities = new ArrayList<Class<?>>();
     private SessionFactory sessionFactory;
     private Session session;
@@ -56,7 +56,7 @@ public class Database {
 		}
 	}
 
-    public <T> void addRepository(Repository<T> repository) {
+    public <T> void addRepository(AbstractRepository<T> repository) {
         if(repository.getDatabase() != null) {
             throw new IllegalArgumentException("Repository " + repository + " already has a database assigned.");
         }
@@ -68,15 +68,15 @@ public class Database {
         repository.setDatabase(this);
     }
 
-    public void removeRepository(Class<? extends Repository> type) {
-        Repository<?> r = this.repositories.remove(type);
+    public void removeRepository(Class<? extends AbstractRepository> type) {
+        AbstractRepository<?> r = this.repositories.remove(type);
         if(r != null && r.getDatabase() == this) {
             r.setDatabase(null);
         }
     }
 
 	@SuppressWarnings("unchecked")
-	public <R extends Repository> R getRepository(Class<R> type) {
+	public <R extends AbstractRepository> R getRepository(Class<R> type) {
 		return (R) repositories.get(type);
 	}
 

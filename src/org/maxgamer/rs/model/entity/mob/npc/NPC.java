@@ -83,7 +83,7 @@ public class NPC extends Mob implements Interactable {
 	public NPC(int defId, long spawnId, Location l) throws WorldFullException {
 		super(1, 1);
 		try {
-			this.definition = Core.getWorldDatabase().getRepository(NPCTypeRepository.class).find(defId);
+			this.definition = Core.getServer().getDatabase().getRepository(NPCTypeRepository.class).find(defId);
 		}
 		catch (Exception e) {
 			throw new RuntimeException(e);

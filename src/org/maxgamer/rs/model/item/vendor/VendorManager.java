@@ -4,7 +4,7 @@ import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.repository.VendorRepository;
 
 public class VendorManager{
-	private VendorRepository repository = Core.getWorldDatabase().getRepository(VendorRepository.class);
+	private VendorRepository repository = Core.getServer().getDatabase().getRepository(VendorRepository.class);
 
 	public VendorManager(){
 		

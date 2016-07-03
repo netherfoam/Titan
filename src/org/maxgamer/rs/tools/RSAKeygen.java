@@ -1,18 +1,13 @@
 package org.maxgamer.rs.tools;
 
+import org.maxgamer.rs.core.Core;
+import org.maxgamer.rs.structure.configs.FileConfig;
+
 import java.io.IOException;
-import java.security.KeyFactory;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
+import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.RSAPrivateKeySpec;
 import java.security.spec.RSAPublicKeySpec;
-
-import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.structure.configs.FileConfig;
 
 public class RSAKeygen {
 	public static void main(String[] args) throws IOException, InvalidKeySpecException, NoSuchAlgorithmException{
@@ -44,7 +39,7 @@ public class RSAKeygen {
 	    
 	    prompt.println("Should I insert the private modulus/exponent into your config/world.yml now? [no]:");
 	    if(prompt.getBoolean(false)){
-	    	FileConfig config = Core.getWorldConfig();
+	    	FileConfig config = (FileConfig) Core.getServer().getConfig();
 	    	config.set("rsa.private-key", String.format("%X", privSpec.getModulus()));
 	    	config.set("rsa.private-exponent", String.format("%X", privSpec.getPrivateExponent()));
 	    	config.save();

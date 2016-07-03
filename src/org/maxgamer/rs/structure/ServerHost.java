@@ -1,20 +1,16 @@
 package org.maxgamer.rs.structure;
 
+import org.maxgamer.rs.util.log.Log;
+
 import java.io.IOException;
 import java.net.BindException;
 import java.net.InetSocketAddress;
-import java.nio.channels.ClosedSelectorException;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
-import java.nio.channels.ServerSocketChannel;
-import java.nio.channels.SocketChannel;
+import java.nio.channels.*;
 import java.nio.channels.spi.SelectorProvider;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-
-import org.maxgamer.rs.util.log.Log;
 
 /**
  * Represents a ServerHost that holds many ServerSessions. This is for IO and
@@ -54,6 +50,9 @@ public abstract class ServerHost<T extends ServerSession> implements Runnable {
 	 * @param port the port to run on
 	 */
 	public ServerHost(int port) {
+		if(port <= 0) {
+			throw new IllegalArgumentException("Port must be > 0, given " + port);
+		}
 		this.port = port;
 	}
 	
@@ -99,7 +98,7 @@ public abstract class ServerHost<T extends ServerSession> implements Runnable {
 			throw new IllegalStateException("Server running");
 		}
 		
-		thread = new Thread(this); //TODO Name thread
+		thread = new Thread(this, "ServerHost-" + this); //TODO Name thread
 		thread.start();
 	}
 	

@@ -70,7 +70,7 @@ public abstract class CombatStats {
 		parser.addVariable("effective_str", 0); //Default to 0
 		
 		//TOOD: Optimise this by caching the formula
-		String formula = Core.getWorldConfig().getString(key, null);
+		String formula = Core.getServer().getConfig().getString(key, null);
 		if (formula == null) {
 			Log.debug("No combat formula found for " + key);
 			formula = "skill_level * prayer_multiplier + equip_bonus";

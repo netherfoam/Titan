@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.Collection;
 
 import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.logonv4.game.LogonAPI.RemoteWorld;
+import org.maxgamer.rs.logon.game.LogonAPI.RemoteWorld;
 import org.maxgamer.rs.model.entity.mob.persona.player.CheatLog;
 import org.maxgamer.rs.model.entity.mob.persona.player.FriendsList;
 import org.maxgamer.rs.model.entity.mob.persona.player.NoSuchProtocolException;

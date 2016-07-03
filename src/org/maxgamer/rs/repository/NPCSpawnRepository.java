@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * @author netherfoam
  */
-public class NPCSpawnRepository extends Repository<NPCSpawn> {
+public class NPCSpawnRepository extends AbstractRepository<NPCSpawn> {
     public NPCSpawnRepository() {
         super(NPCSpawn.class);
     }

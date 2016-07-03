@@ -1,17 +1,17 @@
 package org.maxgamer.rs.network.io.rawhandler;
 
-import java.io.IOException;
-import java.math.BigInteger;
-import java.nio.ByteBuffer;
-
 import org.maxgamer.rs.cache.XTEAKey;
 import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.util.io.InputStreamWrapper;
-import org.maxgamer.rs.util.log.Log;
 import org.maxgamer.rs.model.entity.mob.persona.player.ScreenSettings;
 import org.maxgamer.rs.network.AuthResult;
 import org.maxgamer.rs.network.Session;
 import org.maxgamer.rs.network.io.stream.RSByteBuffer;
+import org.maxgamer.rs.util.io.InputStreamWrapper;
+import org.maxgamer.rs.util.log.Log;
+
+import java.io.IOException;
+import java.math.BigInteger;
+import java.nio.ByteBuffer;
 
 /**
  * @author netherfoam
@@ -21,8 +21,8 @@ public class LoginRequestHandler extends RawHandler {
 	private static BigInteger RSA_EXPONENT;
 	
 	static{
-		String priv = Core.getWorldConfig().getString("rsa.private-key");
-		String exp = Core.getWorldConfig().getString("rsa.private-exponent");
+		String priv = Core.getServer().getConfig().getString("rsa.private-key");
+		String exp = Core.getServer().getConfig().getString("rsa.private-exponent");
 		
 		if(priv == null || exp == null){
 			Log.warning("world.yml >> rsa.private-key or rsa.private-exponent are null. Please correctly fill in the fields to use RSA.");

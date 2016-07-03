@@ -67,7 +67,7 @@ public class NPCOptionsHandler implements PacketProcessor<Player> {
 		case EXAMINE:
 			int npcId = packet.readShort();
 			try {
-				NPCType d = Core.getWorldDatabase().getRepository(NPCTypeRepository.class).find(npcId);
+				NPCType d = Core.getServer().getDatabase().getRepository(NPCTypeRepository.class).find(npcId);
 				player.sendMessage(d.getExamine());
 
 				// TODO DEBUG: Send the player the options they can click on the NPC

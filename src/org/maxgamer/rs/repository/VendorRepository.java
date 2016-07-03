@@ -5,7 +5,7 @@ import org.maxgamer.rs.model.item.vendor.Vendor;
 /**
  * @author netherfoam
  */
-public class VendorRepository extends Repository<Vendor> {
+public class VendorRepository extends AbstractRepository<Vendor> {
     public VendorRepository() {
         super(Vendor.class);
     }

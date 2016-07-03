@@ -5,7 +5,7 @@ import org.maxgamer.rs.model.entity.mob.npc.NPCType;
 /**
  * @author netherfoam
  */
-public class NPCTypeRepository extends Repository<NPCType> {
+public class NPCTypeRepository extends AbstractRepository<NPCType> {
     public NPCTypeRepository() {
         super(NPCType.class);
     }

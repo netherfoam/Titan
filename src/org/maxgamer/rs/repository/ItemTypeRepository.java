@@ -9,7 +9,7 @@ import java.util.TreeMap;
 /**
  * @author netherfoam
  */
-public class ItemTypeRepository extends Repository<ItemType> {
+public class ItemTypeRepository extends AbstractRepository<ItemType> {
     public ItemTypeRepository() {
         super(ItemType.class);
     }

@@ -18,7 +18,7 @@ import java.util.List;
 public class NPCGroup implements Serializable {
 	/*public static void reload() throws SQLException {
 		groups = new HashMap<Integer, NPCGroup>(512);
-		Connection con = Core.getWorldDatabase().getConnection();
+		Connection con = Core.getDatabase().getConnection();
 		PreparedStatement ps = con.prepareStatement("SELECT * FROM NPCGroupLoot");
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
@@ -77,7 +77,7 @@ public class NPCGroup implements Serializable {
 		if (g == null) {
 			try {
 				Loot loots = new Loot();
-				Connection con = Core.getWorldDatabase().getConnection();
+				Connection con = Core.getDatabase().getConnection();
 				PreparedStatement ps = con.prepareStatement("SELECT * FROM NPCGroupLoot WHERE group_id = ?");
 				ps.setInt(1, id);
 				ResultSet rs = ps.executeQuery();

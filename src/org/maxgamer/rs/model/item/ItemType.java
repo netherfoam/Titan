@@ -192,7 +192,7 @@ public class ItemType implements Serializable {
 			int end = this.name.lastIndexOf('(');
 			String next = this.name.substring(0, end) + '(' + n + ')';
 
-			List<ItemType> options = Core.getWorldDatabase().getRepository(ItemTypeRepository.class).findByName(next);
+			List<ItemType> options = Core.getServer().getDatabase().getRepository(ItemTypeRepository.class).findByName(next);
 			for (ItemType proto : options) {
 				if (proto.isNoted() == this.isNoted())
 					return proto;
@@ -224,7 +224,7 @@ public class ItemType implements Serializable {
 
 	public String getName() {
 		if(name == null){
-			ItemType def = Core.getWorldDatabase().getRepository(ItemTypeRepository.class).find(this.id - 1);
+			ItemType def = Core.getServer().getDatabase().getRepository(ItemTypeRepository.class).find(this.id - 1);
 			if(def != null){
 				this.name = def.getName();
 			}
@@ -332,7 +332,7 @@ public class ItemType implements Serializable {
 		try{
 			// The item immediately before this item should be the unnoted version. If it is,
 			// they should have the same name. If not, then this cannot be a noted version.
-			ItemType last = Core.getWorldDatabase().getRepository(ItemTypeRepository.class).find(id - 1);
+			ItemType last = Core.getServer().getDatabase().getRepository(ItemTypeRepository.class).find(id - 1);
 			if(last.getName().equals(this.getName())){
 				return true;
 			}

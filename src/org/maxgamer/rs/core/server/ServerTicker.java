@@ -123,7 +123,7 @@ public class ServerTicker implements Runnable {
 			}
 		}
 
-		Core.getWorldDatabase().flush();
+		Core.getServer().getDatabase().flush();
 		
 		// Say we took 37ms to perform this tick, we want to perform the next
 		// tick in 563ms, not 600ms. (37 + 563 = 600)

@@ -1,11 +1,11 @@
 package org.maxgamer.rs.core;
 
+import org.maxgamer.rs.logon.logon.LogonServer;
+import org.maxgamer.rs.structure.sql.Database.ConnectionException;
+import org.maxgamer.rs.util.log.Log;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
-
-import org.maxgamer.rs.util.log.Log;
-import org.maxgamer.rs.logonv4.logon.LogonServer;
-import org.maxgamer.rs.structure.sql.Database.ConnectionException;
 
 /**
  * @author netherfoam
@@ -13,7 +13,7 @@ import org.maxgamer.rs.structure.sql.Database.ConnectionException;
 public class RSBootstrap {
 	public static void main(String[] args) throws IOException, ConnectionException, URISyntaxException {
 		try {
-			Core.init(Runtime.getRuntime().availableProcessors() - 1, args);
+			Core.init();
 			
 			//Flag that prevents the logon server being started automatically
 			boolean gameOnly = false;

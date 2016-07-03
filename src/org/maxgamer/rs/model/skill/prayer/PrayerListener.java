@@ -1,6 +1,5 @@
 package org.maxgamer.rs.model.skill.prayer;
 
-import org.maxgamer.rs.event.AutoRegister;
 import org.maxgamer.rs.event.EventHandler;
 import org.maxgamer.rs.event.EventListener;
 import org.maxgamer.rs.event.EventPriority;
@@ -14,9 +13,7 @@ import org.maxgamer.rs.model.events.mob.MobAttackEvent;
  * Listener class that handles prayer on-attack effects, like protect and deflect prayers.
  * @author netherfoam
  */
-@AutoRegister
 public class PrayerListener implements EventListener {
-	
 	@EventHandler(priority = EventPriority.LOWEST, skipIfCancelled=true)
 	public void onAttack(MobAttackEvent e) {
 		Mob target = e.getTarget();

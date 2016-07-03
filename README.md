@@ -131,9 +131,9 @@ Two options:
       $ cd Project_Root/ (Or whateverlocation your project is in)
       
       If you're running from bin/ (Eg not a jar)
-      	$ java -cp "lib/*;bin/" -javaagent:lib/quasar-core.jar -Xms768m org.maxgamer.rs.logonv4.logon.LogonServer
+      	$ java -cp "lib/*;bin/" -javaagent:lib/quasar-core.jar -Xms768m org.maxgamer.rs.logon.logon.LogonServer
       Else
-      	$ java -javaagent:lib/quasar-core.jar -Xms768m -cp "Titan.jar;lib/*" org.maxgamer.rs.logonv4.logon.LogonServer
+      	$ java -javaagent:lib/quasar-core.jar -Xms768m -cp "Titan.jar;lib/*" org.maxgamer.rs.logon.logon.LogonServer
       
       You should now see the logon server successfully connect to the game server and visa versa (You should have two
       command windows open)

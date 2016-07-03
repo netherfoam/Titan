@@ -38,8 +38,7 @@ public class HandlerExecutor{
 		return target;
 	}
 	/**
-	 * The priority for this executor. This is found using the 
-	 * @ActionHandler annotation on the method.
+	 * The priority for this executor. This is found using the @ActionHandler annotation on the method.
 	 * @return The priority for this executor.
 	 */
 	public EventPriority getPriority(){

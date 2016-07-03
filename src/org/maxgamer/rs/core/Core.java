@@ -288,6 +288,8 @@ public class Core {
     public static ExecutorService getThreadPool() {
         if(threadPool == null) {
             int threads = Runtime.getRuntime().availableProcessors() - 1;
+            if(threads <= 0) threads = 1;
+
             threadPool = Executors.newFixedThreadPool(threads, new ThreadFactory() {
                 private int nextThreadId = 0;
 

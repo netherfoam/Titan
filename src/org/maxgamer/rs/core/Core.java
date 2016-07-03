@@ -1,5 +1,6 @@
 package org.maxgamer.rs.core;
 
+import org.hibernate.Session;
 import org.maxgamer.rs.cache.Cache;
 import org.maxgamer.rs.cache.CacheFile;
 import org.maxgamer.rs.cache.IDX;
@@ -7,18 +8,17 @@ import org.maxgamer.rs.cache.MapCache;
 import org.maxgamer.rs.cache.reference.Reference;
 import org.maxgamer.rs.cache.reference.ReferenceTable;
 import org.maxgamer.rs.command.ConsoleSender;
+import org.maxgamer.rs.command.commands.Warp;
 import org.maxgamer.rs.core.server.Server;
 import org.maxgamer.rs.model.entity.mob.npc.NPCGroupLoot;
 import org.maxgamer.rs.model.entity.mob.npc.NPCGroupLootGuarantee;
 import org.maxgamer.rs.model.item.AmmoType;
 import org.maxgamer.rs.model.item.ItemAmmo;
-import org.maxgamer.rs.model.item.inventory.Equipment;
 import org.maxgamer.rs.repository.*;
 import org.maxgamer.rs.structure.configs.ConfigSection;
 import org.maxgamer.rs.structure.configs.FileConfig;
 import org.maxgamer.rs.structure.sql.Database;
 import org.maxgamer.rs.structure.sql.MySQLC3P0Core;
-import org.maxgamer.rs.structure.sql.SQLiteCore;
 import org.maxgamer.rs.structure.timings.NullTimings;
 import org.maxgamer.rs.structure.timings.Timings;
 import org.maxgamer.rs.tools.ConfigSetup;
@@ -26,7 +26,6 @@ import org.maxgamer.rs.util.Files;
 import org.maxgamer.rs.util.log.Log;
 import org.maxgamer.rs.util.log.Logger.LogLevel;
 
-import javax.persistence.EntityManager;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -55,7 +54,7 @@ public class Core {
 	 */
 	public static final String BUILD;
 	
-	static{
+	static {
 		String vendor = Core.class.getPackage().getImplementationVendor();
 		AUTHOR = vendor;
 		
@@ -166,15 +165,6 @@ public class Core {
 			}
 		});
 
-		getCache(); // Force load the cache
-		getWorldDatabase(); // Force load the database
-
-		boolean lazy = getWorldConfig().getBoolean("loading.lazy", false);
-
-		// Loading
-		Equipment.load();
-		Log.info("NPCGroup Loading...");
-
 		ConfigSection cfg = Core.getWorldConfig().getSection("world");
 		server = new Server(cfg); //Binds port port
 		scheduler = new Scheduler(server.getThread(), threadPool);
@@ -206,11 +196,11 @@ public class Core {
 	}
 
 	/**
-	 * The {@link EntityManager} for the World
-	 * @return The {@link EntityManager} for the World
+	 * The {@link Session} for the World
+	 * @return The {@link Session} for the World
 	 */
-	public EntityManager getEntityManager() {
-		return getWorldDatabase().getEntityManager();
+	public Session getSession() {
+		return getWorldDatabase().getSession();
 	}
 	
 	/**
@@ -376,8 +366,7 @@ public class Core {
 					world = new Database(new MySQLC3P0Core(c.getString("host", "localhost"), c.getString("user", "root"), c.getString("pass", ""), c.getString("database", "database"), c.getString("port", "3306")));
 				}
 				else {
-					Log.debug("World using SQLite Database: " + c.getString("file", "sql" + File.separator + "sqlite.db"));
-					world = new Database(new SQLiteCore(new File(c.getString("file", "sql" + File.separator + "sqlite.db"))));
+					throw new IllegalArgumentException("Unsupported type of database: " + type);
 				}
 				Log.debug("Database connection established.");
 			}
@@ -395,6 +384,8 @@ public class Core {
 			world.addRepository(new NPCGroupRepository());
 			world.addRepository(new VendorRepository());
 			world.addRepository(new VendorItemRepository());
+            Core.getWorldDatabase().addRepository(new Warp.DestinationRepository());
+
 
 			// We don't really need repositories for these
 			world.addEntity(NPCGroupLoot.class);

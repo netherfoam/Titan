@@ -1,18 +1,17 @@
 package org.maxgamer.rs.structure.sql;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
-import com.vladmihalcea.book.hpjp.util.PersistenceUnitOfInfoImpl;
-import org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl;
-import org.hibernate.jpa.boot.internal.PersistenceUnitInfoDescriptor;
-import org.hibernate.jpa.internal.EntityManagerFactoryImpl;
-import org.maxgamer.rs.core.Core;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
 
-import javax.persistence.spi.PersistenceUnitInfo;
 import java.beans.PropertyVetoException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map.Entry;
+import java.util.Properties;
 
 /**
  * @author netherfoam
@@ -55,22 +54,27 @@ public class MySQLC3P0Core implements DatabaseCore {
 		pool.getProperties().setProperty("autoReconnect", "true");
 		pool.setMaxPoolSize(20);
 
-		this.entityManagerProperties = new Properties();
-		this.entityManagerProperties.put("javax.persistence.jdbc.url", "jdbc:mysql://" + host + ":" + port + "/" + database);
-		this.entityManagerProperties.put("javax.persistence.jdbc.user", user);
-		this.entityManagerProperties.put("javax.persistence.jdbc.password", pass);
-		this.entityManagerProperties.put("javax.persistence.jdbc.driver", "com.mysql.jdbc.Driver");
+        this.entityManagerProperties = new Properties();
+        this.entityManagerProperties.put("hibernate.connection.url", "jdbc:mysql://" + host + ":" + port + "/" + database);
+        this.entityManagerProperties.put("hibernate.connection.username", user);
+        this.entityManagerProperties.put("hibernate.connection.password", pass);
+        this.entityManagerProperties.put("hibernate.hbm2ddl.auto", "");
+
+        // For persistent session storage
+        this.entityManagerProperties.put("hibernate.current_session_context_class", "managed");
+        this.entityManagerProperties.put("hibernate.enable_lazy_load_no_trans", "true");
+        this.entityManagerProperties.put("hibernate.archive.autodetection", "true");
 	}
 
-	public EntityManagerFactoryImpl getEntityManagerFactory(List<String> entities) {
-        PersistenceUnitInfo info = new PersistenceUnitOfInfoImpl(Core.class.getSimpleName(), entities, this.entityManagerProperties);
-		Map<String, Object> configuration = new HashMap<>();
+	public SessionFactory getSessionFactory(List<Class<?>> entities) {
+        Configuration configuration = new Configuration();
+        configuration.addProperties(this.entityManagerProperties);
 
-		EntityManagerFactoryImpl factory = (EntityManagerFactoryImpl) new EntityManagerFactoryBuilderImpl(
-				new PersistenceUnitInfoDescriptor(info), configuration
-		).build();
+        for(Class<?> type : entities) {
+            configuration.addAnnotatedClass(type);
+        }
 
-		return factory;
+        return configuration.buildSessionFactory();
 	}
 	
 	public int prune() {

@@ -1,10 +1,11 @@
 package org.maxgamer.rs.repository;
 
+import org.hibernate.Session;
 import org.maxgamer.rs.structure.sql.Database;
 
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.Table;
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -36,16 +37,17 @@ public class Repository<T> {
         return this.type;
     }
 
-    public T find(Object id) {
-        return getManager().find(type, id);
+    public T find(Serializable id) {
+        return getManager().get(type, id);
     }
 
+    @SuppressWarnings("unchecked")
     public List<T> findAll() {
-        return getManager().createQuery("FROM " + name()).getResultList();
+        return (List<T>) getManager().createQuery("FROM " + name()).list();
     }
 
-    protected EntityManager getManager() {
-        return this.getDatabase().getEntityManager();
+    protected Session getManager() {
+        return this.getDatabase().getSession();
     }
 
     protected String name() {

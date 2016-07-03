@@ -47,7 +47,7 @@ public class GameDecoder extends OpcodeDecoder<LSIncomingPacket> implements Hand
 			profile = LogonServer.getLogon().getDatabase().getRepository(ProfileRepository.class).find(name);
 			if(profile == null){
                 profile = new Profile(name, pass, System.currentTimeMillis(), ip);
-                LogonServer.getLogon().getDatabase().getEntityManager().persist(profile);
+                LogonServer.getLogon().getDatabase().getSession().persist(profile);
             }
             else if (profile.isPass(pass) == false) {
                 //Auth success
@@ -103,7 +103,7 @@ public class GameDecoder extends OpcodeDecoder<LSIncomingPacket> implements Hand
 		profile.setLastIP(ip);
 		profile.setLastSeen(System.currentTimeMillis());
 
-		LogonServer.getLogon().getDatabase().getEntityManager().flush();
+		LogonServer.getLogon().getDatabase().getSession().flush();
 		Log.debug("Connect " + profile.getName() + ": " + result);
 		this.host.add(profile);
 		
@@ -169,7 +169,7 @@ public class GameDecoder extends OpcodeDecoder<LSIncomingPacket> implements Hand
 		Profile profile = this.host.getPlayer(name);
 		profile.setRights(rights);
 
-		LogonServer.getLogon().getDatabase().getEntityManager().flush();
+		LogonServer.getLogon().getDatabase().getSession().flush();
 	}
 	
 	@Override

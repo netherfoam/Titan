@@ -31,13 +31,13 @@ public class Warp implements PlayerCommand{
 		private int z;
 	}
 
-	private static class DestinationRepository extends Repository<Destination> {
+	public static class DestinationRepository extends Repository<Destination> {
 		public DestinationRepository() {
 			super(Destination.class);
 		}
 
 		public Destination findByPrefix(String name) {
-			return (Destination) getManager().createQuery("FROM " + this.name() + " WHERE name LIKE :name").setParameter("name", name + "%").getSingleResult();
+			return (Destination) getManager().createQuery("FROM " + this.name() + " WHERE name LIKE :name").setParameter("name", name + "%").uniqueResult();
 		}
 	}
 
@@ -45,8 +45,6 @@ public class Warp implements PlayerCommand{
 
 	public Warp(){
         Core.getWorldDatabase().flush();
-		this.repository = new DestinationRepository();
-		Core.getWorldDatabase().addRepository(this.repository);
 	}
 
 	@Override
@@ -81,7 +79,7 @@ public class Warp implements PlayerCommand{
 			dest.name = args[1].toLowerCase();
 			for(int i = 2; i < args.length; i++) dest.name += " " + args[i];
 			
-			Core.getWorldDatabase().getEntityManager().persist(dest);
+			Core.getWorldDatabase().getSession().persist(dest);
 			
 			p.sendMessage("Saved the warp as ::warp " + dest.name);
 			

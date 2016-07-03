@@ -12,7 +12,6 @@ import org.maxgamer.rs.structure.configs.FileConfig;
 import org.maxgamer.rs.structure.sql.Database;
 import org.maxgamer.rs.structure.sql.Database.ConnectionException;
 import org.maxgamer.rs.structure.sql.MySQLC3P0Core;
-import org.maxgamer.rs.structure.sql.SQLiteCore;
 import org.maxgamer.rs.tools.ConfigSetup;
 import org.maxgamer.rs.util.Files;
 import org.maxgamer.rs.util.log.Log;
@@ -107,8 +106,7 @@ public class LogonServer extends ServerHost<WorldHost> {
 				database = new Database(new MySQLC3P0Core(c.getString("host", "localhost"), c.getString("user", "root"), c.getString("pass", ""), c.getString("database", "titan"), c.getString("port", "3306")));
 			}
 			else {
-				Log.debug("Logon using SQLite Database: " + c.getString("file", "sql" + File.separator + "profiles.db"));
-				database = new Database(new SQLiteCore(new File(c.getString("file", "sql" + File.separator + "profiles.db"))));
+				throw new IllegalArgumentException("Bad configuration, database type " + type + " not supported");
 			}
 			Log.debug("Database connection established.");
 		}

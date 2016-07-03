@@ -17,6 +17,7 @@ import org.maxgamer.rs.model.events.server.ServerShutdownEvent;
 import org.maxgamer.rs.model.interact.InteractionManager;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.item.ground.GroundItemManager;
+import org.maxgamer.rs.model.item.inventory.Equipment;
 import org.maxgamer.rs.model.item.vendor.VendorManager;
 import org.maxgamer.rs.model.javascript.JavaScriptFiber;
 import org.maxgamer.rs.model.javascript.TimeoutError;
@@ -136,8 +137,7 @@ public class Server {
 	
 	/**
 	 * Creates a new server.
-	 * @param port The port to run the server on. This must be >= 0.
-	 * @param definition The WorldDefinition to use. This may not be null.
+     * @param cfg The configuration used for this server
 	 * @throws IOException If the port could not be bound.
 	 * @throws ConnectionException
 	 */
@@ -235,131 +235,6 @@ public class Server {
 	}
 	
 	/**
-	 * Loads this server and starts it so that players can begin connecting.
-	 * @throws IOException if there is an issue with the config or map
-	 * @throws SQLException
-	 */
-	public void load() throws IOException, SQLException {
-		this.thread.submit(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					Core.getWorldDatabase().getEntityManager().flush();
-					Server.this.lobby = new Lobby();
-					
-					// We should initialize everything before loading user content
-					// Eg commands, events, modules
-					Log.info("Loading Map...");
-					getMaps();
-					Log.info("...Map Loaded!");
-					
-					Server.this.modules = new ModuleLoader(new File("modules"), "class");
-					Server.this.ticker = new ServerTicker(Server.this);
-					
-					vendors = new VendorManager();
-					
-					// Preload our event system
-					getEvents();
-					
-					Log.debug("Loading Commands...");
-					getCommands();
-					Log.debug("Loading Modules...");
-					Server.this.modules.load();
-					Log.debug("Modules Loaded!");
-					
-					Server.this.logon.start();
-					
-					//Autosave
-					int interval = Core.getWorldConfig().getInt("autosave-interval", 10000);
-					if (interval > 0) {
-						Server.this.autosave = new AutoSave(interval);
-						Core.submit(Server.this.autosave, interval, true);
-					}
-					
-					File startup = new File("startup.js");
-					if (startup.exists()) {
-						JavaScriptFiber js = null;
-						try {
-							js = new JavaScriptFiber(Core.CLASS_LOADER);
-							js.parse(startup);
-						}
-						catch(TimeoutError e){
-							Log.warning("Startup script timed out.");
-						}
-						catch (ContinuationPending e) {
-							//TODO: Allow them.
-							Log.warning("Can't use continuations in startup.js");
-						}
-						catch (IOException e) {
-							e.printStackTrace();
-						}
-					}
-					
-					Server.this.thread.submit(ticker);
-					//Note that Server.this doesn't start the network, that is done by the
-					//logon server when a connection is established. The logon server
-					//will also drop the connection if the logon connection is lost
-					Log.info("Server initialized!");
-					getThread().resetUsage();
-				}
-				catch (Throwable t) {
-					t.printStackTrace();
-					Log.severe("Exception was raised while booting server. Shutting down...");
-					Core.getServer().shutdown();
-					System.exit(1);
-				}
-			}
-		});
-		this.thread.start();
-		
-		Runnable maskUpdate = new Runnable() {
-			@Override
-			public void run() {
-				//This should be done in the main thread, because if the world is modified while we're sending masks,
-				//we will be sending the modified masks!
-				StopWatch update = Core.getTimings().start("sync-mask-update");
-				try {
-					//Update our players, our Personas don't need to be updated though.
-					for (Persona p : Server.this.getPersonas()) {
-						if (p instanceof Player) {
-							Player pl = (Player) p;
-							if (pl.isLoaded() == false) continue;
-							//The way NIO works is the data is queued to be written,
-							//instead of actually being written to the client.
-							//Thus this is actually much faster because this thread isn't
-							//performing any IO.
-							pl.getProtocol().sendUpdates();
-						}
-					}
-					
-					//Reset our masks - Personas
-					for (Persona p : Server.this.getPersonas()) {
-						//Generally the server is not doing anything here,
-						//so we can do this in another thread.
-						p.getUpdateMask().reset();
-						p.getModel().setChanged(false);
-					}
-					
-					//Reset our masks - NPCs
-					for (NPC n : Server.this.getNPCs()) {
-						n.getUpdateMask().reset();
-						n.getModel().setChanged(false);
-					}
-				}
-				catch (Exception e) {
-					e.printStackTrace();
-					Log.warning("Error processing mask updates.");
-				}
-				finally {
-					update.stop();
-				}
-				Core.submit(this, Core.getWorldConfig().getInt("update-interval", 30), false);
-			}
-		};
-		Core.submit(maskUpdate, Core.getWorldConfig().getInt("update-interval", 30), false);
-	}
-	
-	/**
 	 * Fetches the client with the given UUID. This searches the currently
 	 * online players, and then the lobby players. If none is found with the
 	 * given UUID, then this returns null.
@@ -370,20 +245,147 @@ public class Server {
 		for (Persona p : personas) {
 			if (p instanceof Client) {
 				Client c = (Client) p;
-				
+
 				if (c.getUUID() == uuid) {
 					return c;
 				}
 			}
 		}
-		
+
 		for (LobbyPlayer player : lobby.getPlayers()) {
 			if (player.getUUID() == uuid) return player;
 		}
-		
+
 		return null; //Not found
 	}
-	
+
+    /**
+     * Loads this server and starts it so that players can begin connecting.
+     * @throws IOException if there is an issue with the config or map
+     * @throws SQLException
+     */
+    public void load() throws IOException, SQLException {
+        this.thread.submit(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Core.getWorldDatabase().getSession().flush();
+                    Server.this.lobby = new Lobby();
+
+                    // We should initialize everything before loading user content
+                    // Eg commands, events, modules
+                    Log.info("Loading Map...");
+                    getMaps();
+                    Log.info("...Map Loaded!");
+
+                    Server.this.modules = new ModuleLoader(new File("modules"), "class");
+                    Server.this.ticker = new ServerTicker(Server.this);
+
+                    vendors = new VendorManager();
+
+                    // Preload our event system
+                    getEvents();
+
+                    Log.debug("Loading Commands...");
+                    getCommands();
+                    Log.debug("Loading Modules...");
+                    Server.this.modules.load();
+                    Log.debug("Modules Loaded!");
+
+                    Server.this.logon.start();
+
+                    //Autosave
+                    int interval = Core.getWorldConfig().getInt("autosave-interval", 10000);
+                    if (interval > 0) {
+                        Server.this.autosave = new AutoSave(interval);
+                        Core.submit(Server.this.autosave, interval, true);
+                    }
+
+                    File startup = new File("startup.js");
+                    if (startup.exists()) {
+                        JavaScriptFiber js = null;
+                        try {
+                            js = new JavaScriptFiber(Core.CLASS_LOADER);
+                            js.parse(startup);
+                        }
+                        catch(TimeoutError e){
+                            Log.warning("Startup script timed out.");
+                        }
+                        catch (ContinuationPending e) {
+                            //TODO: Allow them.
+                            Log.warning("Can't use continuations in startup.js");
+                        }
+                        catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    Equipment.load();
+
+                    Server.this.thread.submit(ticker);
+                    //Note that Server.this doesn't start the network, that is done by the
+                    //logon server when a connection is established. The logon server
+                    //will also drop the connection if the logon connection is lost
+                    Log.info("Server initialized!");
+                    getThread().resetUsage();
+                }
+                catch (Throwable t) {
+                    t.printStackTrace();
+                    Log.severe("Exception was raised while booting server. Shutting down...");
+                    Core.getServer().shutdown();
+                    System.exit(1);
+                }
+            }
+        });
+        this.thread.start();
+
+        Runnable maskUpdate = new Runnable() {
+            @Override
+            public void run() {
+                //This should be done in the main thread, because if the world is modified while we're sending masks,
+                //we will be sending the modified masks!
+                StopWatch update = Core.getTimings().start("sync-mask-update");
+                try {
+                    //Update our players, our Personas don't need to be updated though.
+                    for (Persona p : Server.this.getPersonas()) {
+                        if (p instanceof Player) {
+                            Player pl = (Player) p;
+                            if (pl.isLoaded() == false) continue;
+                            //The way NIO works is the data is queued to be written,
+                            //instead of actually being written to the client.
+                            //Thus this is actually much faster because this thread isn't
+                            //performing any IO.
+                            pl.getProtocol().sendUpdates();
+                        }
+                    }
+
+                    //Reset our masks - Personas
+                    for (Persona p : Server.this.getPersonas()) {
+                        //Generally the server is not doing anything here,
+                        //so we can do this in another thread.
+                        p.getUpdateMask().reset();
+                        p.getModel().setChanged(false);
+                    }
+
+                    //Reset our masks - NPCs
+                    for (NPC n : Server.this.getNPCs()) {
+                        n.getUpdateMask().reset();
+                        n.getModel().setChanged(false);
+                    }
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                    Log.warning("Error processing mask updates.");
+                }
+                finally {
+                    update.stop();
+                }
+                Core.submit(this, Core.getWorldConfig().getInt("update-interval", 30), false);
+            }
+        };
+        Core.submit(maskUpdate, Core.getWorldConfig().getInt("update-interval", 30), false);
+    }
+
 	public LogonConnection getLogon() {
 		return logon;
 	}

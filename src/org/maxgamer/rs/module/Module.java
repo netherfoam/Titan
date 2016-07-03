@@ -1,17 +1,13 @@
 package org.maxgamer.rs.module;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
 import org.maxgamer.rs.command.CommandManager;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.core.server.Server;
 import org.maxgamer.rs.event.EventManager;
 import org.maxgamer.rs.model.interact.InteractionManager;
 import org.maxgamer.rs.structure.configs.FileConfig;
+
+import java.io.*;
 
 /**
  * A Module class which represents a plugin that may be loaded from the modules
@@ -20,6 +16,7 @@ import org.maxgamer.rs.structure.configs.FileConfig;
  * package.for.module.ModuleName property as well as a name: ModuleName
  * property. These modules are loaded on startup and shutdown and can allow
  * integration with the server through Java code, instead of say script code.
+ *
  * @author netherfoam
  */
 public abstract class Module {

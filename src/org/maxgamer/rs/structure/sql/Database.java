@@ -1,6 +1,7 @@
 package org.maxgamer.rs.structure.sql;
 
-import org.hibernate.jpa.HibernateEntityManagerFactory;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.maxgamer.rs.repository.Repository;
 
 import javax.persistence.EntityManager;
@@ -28,9 +29,9 @@ public class Database {
 
 	private DatabaseCore core;
 	private HashMap<Class<? extends Repository>, Repository<?>> repositories = new HashMap<Class<? extends Repository>, Repository<?>>();
-    private ArrayList<String> managedEntities = new ArrayList<String>();
-    private HibernateEntityManagerFactory entityManagerFactory;
-    private EntityManager entityManager;
+    private ArrayList<Class<?>> managedEntities = new ArrayList<Class<?>>();
+    private SessionFactory sessionFactory;
+    private Session session;
 	
 	/**
 	 * Creates a new database and validates its connection.
@@ -56,14 +57,22 @@ public class Database {
 	}
 
     public <T> void addRepository(Repository<T> repository) {
+        if(repository.getDatabase() != null) {
+            throw new IllegalArgumentException("Repository " + repository + " already has a database assigned.");
+        }
+
         this.repositories.put(repository.getClass(), repository);
-        if(this.managedEntities.contains(repository.getType().getName()) == false) {
+        if(!this.managedEntities.contains(repository.getType())) {
             this.addEntity(repository.getType());
         }
+        repository.setDatabase(this);
     }
 
     public void removeRepository(Class<? extends Repository> type) {
-        this.repositories.remove(type);
+        Repository<?> r = this.repositories.remove(type);
+        if(r != null && r.getDatabase() == this) {
+            r.setDatabase(null);
+        }
     }
 
 	@SuppressWarnings("unchecked")
@@ -72,45 +81,16 @@ public class Database {
 	}
 
     public void addEntity(Class<?> type){
-        if(this.managedEntities.contains(type.getName())) {
+        if(this.sessionFactory != null) {
+            throw new IllegalStateException("SessionFactory has already been instantiated. Too late");
+        }
+        if(this.managedEntities.contains(type)) {
             throw new IllegalArgumentException("Entity type " + type.getName() + " is already managed.");
         }
 
-        if(this.entityManager == null || this.entityManager.isOpen() == false) {
-            // The entity manager is not set up yet. No need to reset it.
-            this.managedEntities.add(type.getName());
-            return;
-        }
-
-        if(this.entityManager.getTransaction().isActive()){
-            this.entityManager.getTransaction().commit();
-            this.entityManager.flush();
-            this.entityManager.close();
-        }
-        this.entityManager = null;
-
-        if(this.entityManagerFactory != null && this.entityManagerFactory.isOpen()){
-            this.entityManagerFactory.getSessionFactory().close();
-        }
-        this.entityManagerFactory = null;
-
-        this.managedEntities.add(type.getName());
+        this.managedEntities.add(type);
     }
 
-    public void removeEntity(Class<?> type){
-        if(this.entityManager != null && this.entityManager.isOpen() && this.entityManager.getTransaction().isActive()){
-            throw new IllegalStateException("EntityManager transaction in progress. Can't unregister a type.");
-        }
-        this.entityManager = null;
-
-        if(this.entityManagerFactory != null && this.entityManagerFactory.isOpen()){
-            this.entityManagerFactory.close();
-        }
-        this.entityManagerFactory = null;
-
-        this.managedEntities.remove(type.getName());
-    }
-	
 	/**
 	 * Returns the database core object, that this database runs on.
 	 * @return the database core object, that this database runs on.
@@ -143,16 +123,12 @@ public class Database {
      *
      * @return The {@link EntityManager} for this Database
      */
-	public synchronized EntityManager getEntityManager() {
-		if(this.entityManager == null || this.entityManager.isOpen() == false) {
-            this.entityManager = this.getEntityManagerFactory().createEntityManager();
+	public synchronized Session getSession() {
+		if(this.session == null || this.session.isOpen() == false) {
+            this.session = this.getSessionFactory().openSession();
 		}
 
-        if(this.entityManager.getTransaction().isActive() == false){
-            this.entityManager.getTransaction().begin();
-        }
-
-		return this.entityManager;
+		return this.session;
 	}
 
     /**
@@ -160,24 +136,18 @@ public class Database {
      *
      * @return the {@link EntityManagerFactory}
      */
-    private EntityManagerFactory getEntityManagerFactory() {
-        if(this.entityManagerFactory == null || this.entityManagerFactory.isOpen() == false){
-            this.entityManagerFactory = core.getEntityManagerFactory(this.managedEntities);
+    private SessionFactory getSessionFactory() {
+        if(this.sessionFactory == null){
+            this.sessionFactory = core.getSessionFactory(this.managedEntities);
 
         }
-        return this.entityManagerFactory;
+        return this.sessionFactory;
     }
 
     /**
      * Flushes the {@link EntityManager}, if it has been used and not committed
      */
     public void flush() {
-        if(this.entityManager == null || this.entityManager.isOpen() == false) {
-            return;
-        }
 
-        if(this.entityManager.getTransaction().isActive()) {
-            this.entityManager.getTransaction().commit();
-        }
     }
 }

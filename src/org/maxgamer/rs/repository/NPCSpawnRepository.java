@@ -12,14 +12,15 @@ public class NPCSpawnRepository extends Repository<NPCSpawn> {
         super(NPCSpawn.class);
     }
 
+    @SuppressWarnings("unchecked")
     public List<NPCSpawn> findAllByMap(String map) {
-        return getManager().createQuery("FROM " + name() + " WHERE map = :map").setParameter("map", map).getResultList();
+        return (List<NPCSpawn>) getManager().createQuery("FROM " + name() + " WHERE map = :map").setParameter("map", map).list();
     }
 
     public void deleteById(long id) {
         NPCSpawn spawn = this.find(id);
         if(spawn != null) {
-            this.getManager().remove(spawn);
+            this.getManager().delete(spawn);
         }
     }
 }

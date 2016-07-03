@@ -64,7 +64,7 @@ public class MapManager implements EventListener, Iterable<WorldMap>{
 
 
 		NPCSpawn spawn = new NPCSpawn(npc.getId(), loc);
-		Core.getWorldDatabase().getEntityManager().persist(spawn);
+		Core.getWorldDatabase().getSession().persist(spawn);
 	}
 	
 	public void unpersist(NPC npc){

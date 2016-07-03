@@ -1,18 +1,10 @@
 package org.maxgamer.rs.logonv4.logon;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.SocketChannel;
-
 import org.maxgamer.rs.command.CommandManager;
 import org.maxgamer.rs.command.commands.Stop;
 import org.maxgamer.rs.event.EventManager;
-import org.maxgamer.rs.util.Files;
-import org.maxgamer.rs.util.log.Log;
 import org.maxgamer.rs.logonv4.LSOutgoingPacket;
-import org.maxgamer.rs.logonv4.ProfileManager;
+import org.maxgamer.rs.logonv4.ProfileRepository;
 import org.maxgamer.rs.module.ModuleLoader;
 import org.maxgamer.rs.structure.ServerHost;
 import org.maxgamer.rs.structure.configs.ConfigSection;
@@ -20,8 +12,15 @@ import org.maxgamer.rs.structure.configs.FileConfig;
 import org.maxgamer.rs.structure.sql.Database;
 import org.maxgamer.rs.structure.sql.Database.ConnectionException;
 import org.maxgamer.rs.structure.sql.MySQLC3P0Core;
-import org.maxgamer.rs.structure.sql.SQLiteCore;
 import org.maxgamer.rs.tools.ConfigSetup;
+import org.maxgamer.rs.util.Files;
+import org.maxgamer.rs.util.log.Log;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.SocketChannel;
 
 /**
  * @author netherfoam
@@ -81,11 +80,6 @@ public class LogonServer extends ServerHost<WorldHost> {
 	 */
 	private String hostPass;
 	
-	/**
-	 * The profiles which are to be used for this logon server
-	 */
-	private ProfileManager profiles;
-	
 	private EventManager events;
 	
 	private CommandManager commands;
@@ -112,8 +106,7 @@ public class LogonServer extends ServerHost<WorldHost> {
 				database = new Database(new MySQLC3P0Core(c.getString("host", "localhost"), c.getString("user", "root"), c.getString("pass", ""), c.getString("database", "titan"), c.getString("port", "3306")));
 			}
 			else {
-				Log.debug("Logon using SQLite Database: " + c.getString("file", "sql" + File.separator + "profiles.db"));
-				database = new Database(new SQLiteCore(new File(c.getString("file", "sql" + File.separator + "profiles.db"))));
+				throw new IllegalArgumentException("Bad configuration, database type " + type + " not supported");
 			}
 			Log.debug("Database connection established.");
 		}
@@ -123,8 +116,8 @@ public class LogonServer extends ServerHost<WorldHost> {
 			System.exit(1);
 			return;
 		}
-		
-		this.profiles = new ProfileManager(database);
+
+		this.database.addRepository(new ProfileRepository());
 	}
 	
 	public EventManager getEvents(){
@@ -205,10 +198,6 @@ public class LogonServer extends ServerHost<WorldHost> {
 	
 	public boolean isHostPass(String pass) {
 		return this.hostPass.equals(pass);
-	}
-	
-	public ProfileManager getProfiles() {
-		return profiles;
 	}
 	
 	@Override

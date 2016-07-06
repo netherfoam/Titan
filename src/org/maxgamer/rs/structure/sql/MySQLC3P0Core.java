@@ -55,10 +55,11 @@ public class MySQLC3P0Core implements DatabaseCore {
 		pool.setMaxPoolSize(20);
 
         this.entityManagerProperties = new Properties();
-        this.entityManagerProperties.put("hibernate.connection.url", "jdbc:mysql://" + host + ":" + port + "/" + database);
+        this.entityManagerProperties.put("hibernate.connection.url", "jdbc:mysql://" + host + ":" + port + "/" + database + "?autoReconnect=true");
         this.entityManagerProperties.put("hibernate.connection.username", user);
         this.entityManagerProperties.put("hibernate.connection.password", pass);
         this.entityManagerProperties.put("hibernate.hbm2ddl.auto", "");
+		this.entityManagerProperties.put("hibernate.c3p0.idle_test_period", "300");
 
         // For persistent session storage
         this.entityManagerProperties.put("hibernate.current_session_context_class", "managed");

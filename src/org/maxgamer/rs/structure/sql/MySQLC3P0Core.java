@@ -75,6 +75,8 @@ public class MySQLC3P0Core implements DatabaseCore {
             configuration.addAnnotatedClass(type);
         }
 
+        configuration.setInterceptor(new HibernateJPAListener());
+
         return configuration.buildSessionFactory();
 	}
 	

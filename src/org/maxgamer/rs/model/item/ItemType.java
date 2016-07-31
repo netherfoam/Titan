@@ -638,4 +638,12 @@ public class ItemType implements Serializable {
 			return (Integer) animId;
 		return 1426;
 	}
+
+	public ItemStack toItem() {
+		return ItemStack.create(this.id);
+	}
+
+	public ItemStack toItem(int quantity) {
+		return ItemStack.create(this.id, quantity);
+	}
 }

@@ -41,6 +41,13 @@ public class LoginRequestHandler extends RawHandler {
 		if(RSA_EXPONENT.intValue() == 0){
 			RSA_EXPONENT = null;
 		}
+
+		if(RSA_MODULUS == null || RSA_EXPONENT == null) {
+			Log.debug("There is no RSA enabled on this server.");
+		}
+		else {
+			Log.debug("RSA is enabled");
+		}
 	}
 	
 	public LoginRequestHandler(Session s) {
@@ -183,10 +190,11 @@ public class LoginRequestHandler extends RawHandler {
 				}
 			}
 			else {
-				throw new IOException();
+				throw new IOException("Unsupported opcode, expected 16/18/19 (connect/reconnect/lobby), got " + opcode);
 			}
 		}
 		catch (IOException e) {
+			Log.debug("Player appears to have disconnected during login process " + e.getMessage());
 			//This is caused by the player disconnecting during the login process.
 			getSession().close(false);
 			return;

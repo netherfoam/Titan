@@ -12,7 +12,7 @@ import org.maxgamer.rs.structure.configs.FileConfig;
 import org.maxgamer.rs.structure.timings.NullTimings;
 import org.maxgamer.rs.structure.timings.Timings;
 import org.maxgamer.rs.util.log.Log;
-import org.maxgamer.rs.util.log.Logger.LogLevel;
+import org.maxgamer.rs.util.log.Logger;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -95,13 +95,18 @@ public class Core {
         // This loads logger.properties from our classpath, to remove Hibernate log messages
         LogManager.getLogManager().readConfiguration(Core.class.getClassLoader().getResourceAsStream("logger.properties"));
 
-		Log.init(LogLevel.INFO);
 		Log.info("Booting on " + new Date().toString() + " --");
 		Log.info("Author: " + Core.AUTHOR + ", Build: " + Core.BUILD);
 
 		final long start = System.currentTimeMillis();
 
 		server = new Server(); //Binds port port
+		try {
+			Log.init(Logger.LogLevel.valueOf(server.getConfig().getString("log.level", "INFO").toUpperCase()));
+		}
+		catch(IllegalArgumentException e) {
+			Log.init(Logger.LogLevel.DEBUG);
+		}
 		server.load();
 
 		// This is run when we get CTRL + C as well

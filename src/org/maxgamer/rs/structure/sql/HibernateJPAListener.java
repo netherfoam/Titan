@@ -3,7 +3,6 @@ package org.maxgamer.rs.structure.sql;
 import org.hibernate.CallbackException;
 import org.hibernate.EmptyInterceptor;
 import org.hibernate.type.Type;
-import org.maxgamer.rs.util.log.Log;
 
 import javax.persistence.PostLoad;
 import javax.persistence.PrePersist;
@@ -50,7 +49,6 @@ public class HibernateJPAListener extends EmptyInterceptor {
             }
 
             this.hooks.put(clazz, hooks);
-            Log.info("Found " + hooks.size() + " hooks in " + clazz + "!");
         }
 
         return hooks;

@@ -59,7 +59,14 @@ public class MySQLC3P0Core implements DatabaseCore {
         this.entityManagerProperties.put("hibernate.connection.username", user);
         this.entityManagerProperties.put("hibernate.connection.password", pass);
         this.entityManagerProperties.put("hibernate.hbm2ddl.auto", "");
+
+		// For C3p0
+		this.entityManagerProperties.setProperty("c3p0.min_size", "5");
+		this.entityManagerProperties.setProperty("c3p0.max_size", "20");
+		this.entityManagerProperties.setProperty("c3p0.timeout", "1800");
+		this.entityManagerProperties.put("connection.provider_class", "org.hibernate.connection.C3P0ConnectionProvider");
 		this.entityManagerProperties.put("hibernate.c3p0.idle_test_period", "300");
+		this.entityManagerProperties.put("connection.autoReconnect", "true");
 
         // For persistent session storage
         this.entityManagerProperties.put("hibernate.current_session_context_class", "managed");

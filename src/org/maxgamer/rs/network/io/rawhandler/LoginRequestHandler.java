@@ -11,6 +11,7 @@ import org.maxgamer.rs.util.log.Log;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 
 /**
@@ -53,156 +54,170 @@ public class LoginRequestHandler extends RawHandler {
 	public LoginRequestHandler(Session s) {
 		super(s);
 	}
-	
+
+    private static class AuthenticationException extends Exception {
+        private AuthResult code;
+
+        public AuthenticationException(String message, AuthResult code) {
+            this.code = code;
+        }
+
+        public AuthResult getCode() {
+            return code;
+        }
+    }
+
+    private void logon() throws AuthenticationException {
+        if (Core.getServer().getLogon().isConnected() == false) {
+            throw new AuthenticationException("LoginServer is offline, so login request has been declined.", AuthResult.ACCOUNT_INACCESSIBLE.LOGIN_SERVER_OFFLINE);
+        }
+    }
+
+    private RSByteBuffer decodeRSA(byte[] rsaPayload) throws AuthenticationException {
+        RSByteBuffer rsaEncrypted;
+        if(RSA_EXPONENT != null && RSA_MODULUS != null){
+            rsaEncrypted = new RSByteBuffer(ByteBuffer.wrap(new BigInteger(rsaPayload).modPow(RSA_EXPONENT, RSA_MODULUS).toByteArray()));
+
+            int rsaHeader = rsaEncrypted.readByte();
+            if(rsaHeader == 10) {
+                Log.debug("Client using correct RSA key");
+                return rsaEncrypted;
+            }
+            else {
+                Log.debug("Client doesn't appear to be using our RSA key.");
+            }
+        }
+
+        rsaEncrypted = new RSByteBuffer(ByteBuffer.wrap(rsaPayload));
+        int header = rsaEncrypted.readByte();
+        if(header != 10) {
+            Log.warning("Invalid RSA Header: " + header + ".");
+            Log.warning("This may indicate that the client is using a different RSA key, or the protocol handling is incorrect");
+            Log.warning("Dropping connection from " + getSession().getIP().getHostName());
+
+            throw new AuthenticationException("RSA header mismatch, expected 10, got " + header, AuthResult.MALFORMED_PACKET);
+        }
+
+        Log.debug("Client is not using a RSA key");
+
+        return rsaEncrypted;
+    }
+
 	@Override
 	public void handle(RSByteBuffer buffer) {
-		if (Core.getServer().getLogon().isConnected() == false) {
-			try {
-				getSession().write(AuthResult.LOGIN_SERVER_OFFLINE.getCode());
-				Log.info("LoginServer is offline, so login request has been declined.");
-			}
-			finally {
-				getSession().close(true);
-			}
-			return;
-		}
-		
-		InputStreamWrapper in = null;
-		String name = null;
-		String pass = null;
-		int uuid = -1;
-		boolean toLobby = false;
-		
-		try {
-			int opcode = buffer.readByte() & 0xFF;
-			
-			//Length of data available. (~280 ish) - Packet size.
-			int packetLength = buffer.readShort(); //Number of bytes remaining
-			int version = buffer.readInt(); //Client version
-			getSession().setRevision(version);
-			
-			byte[] rsaPayload = new byte[(buffer.readShort() & 0xFFFF)];
-			buffer.read(rsaPayload);
-			
-			RSByteBuffer rsaEncrypted;
-			if(RSA_EXPONENT != null && RSA_MODULUS != null){
-				rsaEncrypted = new RSByteBuffer(ByteBuffer.wrap(new BigInteger(rsaPayload).modPow(RSA_EXPONENT, RSA_MODULUS).toByteArray()));
-			
-				int rsaHeader = rsaEncrypted.readByte();
-				if (rsaHeader != 10) {
-					//We tried with our RSA key, but it appears the key didn't work.
-					//We try again without an RSA key, in case the client has it disabled.
-					rsaEncrypted = new RSByteBuffer(ByteBuffer.wrap(rsaPayload));
-					
-					int rawHeader = rsaEncrypted.readByte();
-					
-					if(rawHeader != 10){
-						Log.warning("Invalid RSA Header: " + rsaHeader + " or " + rawHeader + " (if no RSA used), length: " + packetLength);
-						Log.warning("This may indicate that the client is using a different RSA key, or the protocol handling is incorrect");
-						Log.warning("Dropping connection from " + getSession().getIP().getHostName());
-						getSession().close(false);
-						return;
-					}
-				}
-			}
-			else{
-				rsaEncrypted = new RSByteBuffer(ByteBuffer.wrap(rsaPayload));
-			}
-			
-			//Client seed?
-			int[] keys = new int[4];
-			for (int i = 0; i < keys.length; i++) {
-				keys[i] = rsaEncrypted.readInt();
-			}
-			XTEAKey key = new XTEAKey(keys);
-			
-			rsaEncrypted.readLong(); //Appears to be zero always
-			
-			pass = rsaEncrypted.readPJStr1();
-			
-			//Client UUID
-			rsaEncrypted.readLong(); // client key, appears to be 0 always
-			rsaEncrypted.readInt(); // always 0
-			
-			uuid = rsaEncrypted.readInt(); // other client key, randomly generated every time client starts
-			
-			//The rest of the packet is encrypted
-			byte[] block = new byte[packetLength - rsaPayload.length - 6];
-			buffer.read(block);
-			
-			//Decrypt it
-			ByteBuffer bb = ByteBuffer.wrap(block);
-			key.decipher(bb, 0, block.length);
-			
-			//A nice way of reading.
-			in = new InputStreamWrapper(block);
-			name = in.readString();
-			
-			if(name.matches("[A-Za-z0-9_\\- ]{1,20}") == false){
-				getSession().write(AuthResult.CHANGE_NAME.getCode());
-				return;
-			}
-			
-			if (opcode == 16 || opcode == 18) { //Initial world join or resume (rejoin) request
-				toLobby = false;
-				in.readByte(); //Unknown..
-				
-				//Screen settings
-				int mode = in.read();
-				int width = in.readShort();
-				int height = in.readShort();
-				boolean active = in.readByte() != 0; //is window selected, I assume.
-				
-				ScreenSettings ss = getSession().getScreenSettings();
-				ss.setDisplayMode(mode);
-				ss.setWidth(width);
-				ss.setHeight(height);
-				ss.setWindowActive(active);
-				
-				for (int i = 0; i < 24; i++) {
-					in.readByte();
-				}
-				in.readString(); //Settings
-				
-				in.readInt();
-				for (int i = 0; i < 34; i++) {
-					in.readInt();
-				}
-			}
-			else if (opcode == 19) {
-				toLobby = true;
-				//LOBBY
-				
-				in.readByte(); // screen settings?
-				in.readByte();
-				for (int i = 0; i < 24; i++) {
-					in.readByte();
-				}
-				
-				in.readInt();
-				for (int i = 0; i < 34; i++) {
-					in.readInt();
-				}
-				
-				//We are left with 4 unknown bytes. On my client they are (in hex) (0x24, 0x57, 0x42, 0x5C)
-				while (in.available() > 0) {
-					in.readByte();
-				}
-			}
-			else {
-				throw new IOException("Unsupported opcode, expected 16/18/19 (connect/reconnect/lobby), got " + opcode);
-			}
-		}
-		catch (IOException e) {
-			Log.debug("Player appears to have disconnected during login process " + e.getMessage());
-			//This is caused by the player disconnecting during the login process.
-			getSession().close(false);
-			return;
-		}
-		finally {
-			if (in != null) in.close();
-		}
-		
-		Core.getServer().getLogon().getAPI().authenticate(getSession(), name, pass, uuid, toLobby);
+		try{
+            logon();
+
+            int opcode = buffer.readByte() & 0xFF;
+
+            //Length of data available. (~280 ish) - Packet size.
+            int packetLength = buffer.readShort(); //Number of bytes remaining
+            getSession().setRevision(buffer.readInt()); // Client version
+
+            byte[] rsaPayload = new byte[(buffer.readShort() & 0xFFFF)];
+            buffer.read(rsaPayload);
+            RSByteBuffer rsaEncrypted = decodeRSA(rsaPayload);
+
+            //Client seed?
+            int[] keys = new int[4];
+            for (int i = 0; i < keys.length; i++) {
+                keys[i] = rsaEncrypted.readInt();
+            }
+            XTEAKey key = new XTEAKey(keys);
+
+            rsaEncrypted.readLong(); //Appears to be zero always
+
+            String pass = rsaEncrypted.readPJStr1();
+
+            //Client UUID
+            rsaEncrypted.readLong(); // client key, appears to be 0 always
+            rsaEncrypted.readInt(); // always 0
+
+            int uuid = rsaEncrypted.readInt(); // other client key, randomly generated every time client starts
+
+            //The rest of the packet is encrypted
+            byte[] block = new byte[packetLength - rsaPayload.length - 6];
+            buffer.read(block);
+
+            //Decrypt it
+            ByteBuffer bb = ByteBuffer.wrap(block);
+            key.decipher(bb, 0, block.length);
+
+            //A nice way of reading.
+            InputStreamWrapper in = new InputStreamWrapper(block);
+            String name = in.readString();
+
+            if(name.matches("[A-Za-z0-9_\\- ]{1,20}") == false){
+                Log.debug("User supplied invalid username: " + name);
+                getSession().write(AuthResult.CHANGE_NAME.getCode());
+
+                return;
+            }
+
+            if (opcode == 16 || opcode == 18) {
+                // Game world login or rejoin request
+                in.readByte(); //Unknown..
+
+                //Screen settings
+                int mode = in.read();
+                int width = in.readShort();
+                int height = in.readShort();
+                boolean active = in.readByte() != 0; //is window selected, I assume.
+
+                ScreenSettings ss = getSession().getScreenSettings();
+                ss.setDisplayMode(mode);
+                ss.setWidth(width);
+                ss.setHeight(height);
+                ss.setWindowActive(active);
+
+                for (int i = 0; i < 24; i++) {
+                    in.readByte();
+                }
+                in.readString(); //Settings
+
+                in.readInt();
+                for (int i = 0; i < 34; i++) {
+                    in.readInt();
+                }
+                Core.getServer().getLogon().getAPI().authenticate(getSession(), name, pass, uuid, false);
+            }
+            else if (opcode == 19) {
+                // Lobby login
+                in.readByte(); // screen settings?
+                in.readByte();
+                for (int i = 0; i < 24; i++) {
+                    in.readByte();
+                }
+
+                in.readInt();
+                for (int i = 0; i < 34; i++) {
+                    in.readInt();
+                }
+
+                //We are left with 4 unknown bytes. On my client they are (in hex) (0x24, 0x57, 0x42, 0x5C)
+                while (in.available() > 0) {
+                    in.readByte();
+                }
+                Core.getServer().getLogon().getAPI().authenticate(getSession(), name, pass, uuid, true);
+            }
+            else {
+                throw new AuthenticationException("Unsupported opcode, expected 16/18/19, got " + opcode, AuthResult.MALFORMED_PACKET);
+            }
+        }
+        catch(IOException | BufferUnderflowException e) {
+            Log.warning("Failed to read login request: " + e.getMessage());
+            Log.warning("Client is being kicked.");
+            getSession().write(AuthResult.MALFORMED_PACKET.getCode());
+            getSession().close(true);
+
+            return;
+        }
+        catch(AuthenticationException e) {
+            Log.debug(e.getMessage());
+            getSession().write(e.getCode().getCode());
+            getSession().close(true);
+
+            return;
+        }
 	}
 }

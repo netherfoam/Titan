@@ -45,6 +45,7 @@ public class Warp implements PlayerCommand{
 
 	public Warp(){
         Core.getServer().getDatabase().flush();
+		repository = Core.getServer().getDatabase().getRepository(DestinationRepository.class);
 	}
 
 	@Override

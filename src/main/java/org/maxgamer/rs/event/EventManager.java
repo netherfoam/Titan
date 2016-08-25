@@ -1,11 +1,12 @@
 package org.maxgamer.rs.event;
 
+import org.maxgamer.rs.core.Core;
+import org.maxgamer.rs.structure.timings.StopWatch;
+import org.maxgamer.rs.util.log.Log;
+
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.LinkedList;
-
-import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.structure.timings.StopWatch;
 
 public class EventManager {
 	private HashMap<EventPriority, LinkedList<HandlerExecutor>> listeners;
@@ -49,11 +50,9 @@ public class EventManager {
 		
 		LinkedList<HandlerExecutor> handlers = getHandlers(listener);
 		if(handlers.isEmpty()){
-			System.out.println("<=== WARNING ===>");
-			System.out.println("Event listener: " + listener.getClass().getCanonicalName());
-			System.out.println("Has no methods which will be registered for events. Are there any defined?");
-			System.out.println("Please check all listeners have the @EventHandler annotation.");
-			System.out.println("<=== WARNING ===>");
+			Log.warning("Event listener: " + listener.getClass().getCanonicalName());
+			Log.warning("Has no methods which will be registered for events. Are there any defined?");
+			Log.warning("Please check all listeners have the @EventHandler annotation.");
 		}
 		
 		for(HandlerExecutor h : handlers){

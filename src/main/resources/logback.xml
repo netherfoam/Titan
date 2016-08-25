@@ -18,7 +18,7 @@
         <file>server.log</file>
         <append>true</append>
         <encoder>
-            <pattern>%d{dd MMM yyyy HH:mm:ss} [%thread] [%level] %logger %msg%n</pattern>
+            <pattern>%d{dd MMM yyyy HH:mm:ss} [%thread] [%level] [%logger] %msg%n</pattern>
         </encoder>
     </appender>
 

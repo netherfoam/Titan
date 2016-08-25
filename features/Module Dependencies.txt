@@ -1,7 +1,0 @@
-Modules should be able to specify which other modules they require to be loaded first.
-
-Hard dependencies
-	- Requires the other module to be loaded first
-	
-Soft dependencies
-	- Requires the other module to be loaded first but only if it is installed

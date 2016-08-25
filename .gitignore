@@ -10,6 +10,8 @@
 *titan-client/
 .idea/
 *.iml
+dependency-reduced-pom.xml
+target/
 
 # Temporary files created by sublime-text
 *~

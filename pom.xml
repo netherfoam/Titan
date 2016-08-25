@@ -55,6 +55,19 @@
         <version>0.7.6</version>
     </dependency>
 
+    <!-- We use Logback as the implementation for slf4j -->
+    <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>1.0.13</version>
+    </dependency>
+
+    <!-- Include the slf4j -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.5</version>
+    </dependency>
 
     <!-- SnakeYAML is used to parse our configuration files -->
     <dependency>

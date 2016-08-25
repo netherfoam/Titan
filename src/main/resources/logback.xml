@@ -1,0 +1,29 @@
+<!--
+    This is our logback configuration file. Logback is an implementation of the SLF4J
+    library. Here, we can fine tune what gets printed to stdout and server.log.
+
+    To include this file, it should be at the root of the classpath, with the name
+    "logback.xml". If it is omitted, all debugging will be printed to the console.
+-->
+<configuration debug="false">
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- encoders are assigned the type
+             ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+        <encoder>
+            <pattern>%d{HH:mm:ss} [%level] %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="server.log" class="ch.qos.logback.core.FileAppender">
+        <file>server.log</file>
+        <append>true</append>
+        <encoder>
+            <pattern>%d{dd MMM yyyy HH:mm:ss} [%thread] [%level] %logger %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="stdout" />
+        <appender-ref ref="server.log"/>
+    </root>
+</configuration>

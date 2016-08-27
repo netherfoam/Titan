@@ -1,188 +1,194 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.maxgamer</groupId>
-  <artifactId>titan</artifactId>
-  <packaging>jar</packaging>
-  <version>1.0</version>
-  <name>Titan</name>
-  <url>http://titan.maxgamer.org</url>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.maxgamer</groupId>
+    <artifactId>titan</artifactId>
+    <packaging>jar</packaging>
+    <version>1.0</version>
+    <name>Titan</name>
+    <url>http://titan.maxgamer.org</url>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
-  <dependencies>
-    <!-- MySQL driver -->
-    <dependency>
-        <groupId>mysql</groupId>
-        <artifactId>mysql-connector-java</artifactId>
-        <version>5.1.39</version>
-    </dependency>
+    <dependencies>
+        <!-- MySQL driver -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.39</version>
+        </dependency>
 
-    <!-- MySQL connection pooling library -->
-    <dependency>
-        <groupId>com.mchange</groupId>
-        <artifactId>c3p0</artifactId>
-        <version>0.9.5.2</version>
-    </dependency>
+        <!-- MySQL connection pooling library -->
+        <dependency>
+            <groupId>com.mchange</groupId>
+            <artifactId>c3p0</artifactId>
+            <version>0.9.5.2</version>
+        </dependency>
 
-    <!-- ORM library for easy database access through entity models -->
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-core</artifactId>
-      <version>5.1.0.Final</version>
-    </dependency>
+        <!-- ORM library for easy database access through entity models -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>5.1.0.Final</version>
+        </dependency>
 
-    <!-- Bridging library between c3p0 and hibernate -->
-    <dependency>
-        <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-c3p0</artifactId>
-        <version>5.1.0.Final</version>
-    </dependency>
+        <!-- Bridging library between c3p0 and hibernate -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-c3p0</artifactId>
+            <version>5.1.0.Final</version>
+        </dependency>
 
-    <!-- Mathematical expression parsing library, used by configuration for combat formulas -->
-    <dependency>
-        <groupId>jep</groupId>
-        <artifactId>jep</artifactId>
-        <version>2.24</version>
-    </dependency>
+        <!-- Mathematical expression parsing library, used by configuration for combat formulas -->
+        <dependency>
+            <groupId>jep</groupId>
+            <artifactId>jep</artifactId>
+            <version>2.24</version>
+        </dependency>
 
-    <!-- Lightweight threads library for Actions and javascript fibers -->
-    <dependency>
-        <groupId>co.paralleluniverse</groupId>
-        <artifactId>quasar-core</artifactId>
-        <!-- <version>0.6.2</version> -->
-        <version>0.7.6</version>
-    </dependency>
+        <!-- Lightweight threads library for Actions and javascript fibers -->
+        <dependency>
+            <groupId>co.paralleluniverse</groupId>
+            <artifactId>quasar-core</artifactId>
+            <!-- <version>0.6.2</version> -->
+            <version>0.7.6</version>
+        </dependency>
 
-    <!-- We use Logback as the implementation for slf4j -->
-    <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-classic</artifactId>
-        <version>1.0.13</version>
-    </dependency>
+        <!-- We use Logback as the implementation for slf4j -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.0.13</version>
+        </dependency>
 
-    <!-- Include the slf4j -->
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>1.7.5</version>
-    </dependency>
+        <!-- Include the slf4j -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.5</version>
+        </dependency>
 
-    <!-- SnakeYAML is used to parse our configuration files -->
-    <dependency>
-        <groupId>org.yaml</groupId>
-        <artifactId>snakeyaml</artifactId>
-        <version>1.17</version>
-    </dependency>
+        <!-- SnakeYAML is used to parse our configuration files -->
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>1.17</version>
+        </dependency>
 
-    <!-- Rhino js is a JavaScript processing library for Java -->
-    <!-- https://mvnrepository.com/artifact/org.mozilla/rhino -->
-    <dependency>
-        <groupId>org.mozilla</groupId>
-        <artifactId>rhino</artifactId>
-        <version>1.7.7.1</version>
-    </dependency>
+        <!-- Rhino js is a JavaScript processing library for Java -->
+        <dependency>
+            <groupId>org.mozilla</groupId>
+            <artifactId>rhino</artifactId>
+            <version>1.7.7.1</version>
+        </dependency>
 
-    <!-- Testing library -->
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.11</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
+        <!-- Flyway is a database migration tool, to keep our database at the latest version -->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>4.0.3</version>
+        </dependency>
 
-  <build>
-    <resources>
-      <resource>
-        <directory>${project.basedir}/src/main/resources</directory>
-      </resource>
-    </resources>
+        <!-- Testing library -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
-    <testResources>
-        <testResource>
-            <directory>${project.basedir}/src/test/resources</directory>
-        </testResource>
-    </testResources>
+    <build>
+        <resources>
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+            </resource>
+        </resources>
 
-    <plugins>
-      <!-- Used to set our source and target version -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.5.1</version>
-        <configuration>
-          <source>1.7</source>
-          <target>1.7</target>
-        </configuration>
-      </plugin>
+        <testResources>
+            <testResource>
+                <directory>${project.basedir}/src/test/resources</directory>
+            </testResource>
+        </testResources>
 
-      <!-- Used to make a fat jar with all classes -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>2.4.3</version>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
+        <plugins>
+            <!-- Used to set our source and target version -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.5.1</version>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>
 
-      <!-- Used to run Quasar over our framework code which needs to be instrumented -->
-      <plugin>
-        <groupId>com.vlkan</groupId>
-        <artifactId>quasar-maven-plugin</artifactId>
-        <version>0.6.2</version> <!-- Versions after 0.6.2 are JDK8+ only -->
-        <configuration>
-            <check>true</check>
-        </configuration>
-        <executions>
-            <execution>
-                <phase>compile</phase>
-                <goals>
-                    <goal>instrument</goal>
-                </goals>
-            </execution>
-        </executions>
-      </plugin>
+            <!-- Used to make a fat jar with all classes -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.4.3</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
-      <!-- Defines our mainClass in our Manifest file -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>2.3.1</version>
-        <configuration>
-          <archive>
-            <manifest>
-              <addClasspath>true</addClasspath>
-              <mainClass>org.maxgamer.rs.core.RSBootstrap</mainClass>
-            </manifest>
-          </archive>
-        </configuration>
-      </plugin>
+            <!-- Used to run Quasar over our framework code which needs to be instrumented -->
+            <plugin>
+                <groupId>com.vlkan</groupId>
+                <artifactId>quasar-maven-plugin</artifactId>
+                <version>0.6.2</version> <!-- Versions after 0.6.2 are JDK8+ only -->
+                <configuration>
+                    <check>true</check>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>instrument</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
-      <!-- Plugin that allows us to run exec:java as a target -->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>1.5.0</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>java</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <mainClass>org.maxgamer.rs.core.RSBootstrap</mainClass>
-        </configuration>
-      </plugin>
+            <!-- Defines our mainClass in our Manifest file -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.3.1</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>org.maxgamer.rs.core.RSBootstrap</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
 
-    </plugins>
-  </build>
+            <!-- Plugin that allows us to run exec:java as a target -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.5.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <mainClass>org.maxgamer.rs.core.RSBootstrap</mainClass>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
 </project>

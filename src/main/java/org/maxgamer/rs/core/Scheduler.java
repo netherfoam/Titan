@@ -4,7 +4,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 
-import org.maxgamer.rs.core.server.ServerThread;
+import org.maxgamer.rs.core.server.ServerExecutor;
 import org.maxgamer.rs.core.server.ServerThreadTask;
 
 /**
@@ -14,13 +14,13 @@ import org.maxgamer.rs.core.server.ServerThreadTask;
  */
 public class Scheduler extends Timer {
 	private ExecutorService pool;
-	private ServerThread primary;
+	private ServerExecutor primary;
 	
 	/**
 	 * Constructs a new Scheduler.
 	 * @param pool the execution service to use to make tasks execute.
 	 */
-	public Scheduler(ServerThread primary, ExecutorService pool) {
+	public Scheduler(ServerExecutor primary, ExecutorService pool) {
 		super("Scheduler Service");
 		if (primary == null) throw new IllegalArgumentException("Primary ServerThread may not be null");
 		if (pool == null) throw new IllegalArgumentException("ExecutorService may not be null");

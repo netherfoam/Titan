@@ -16,4 +16,9 @@ public class ServerShutdownEvent extends RSEvent {
 	public Server getServer() {
 		return s;
 	}
+
+	@Override
+	public boolean isAsync() {
+		return true;
+	}
 }

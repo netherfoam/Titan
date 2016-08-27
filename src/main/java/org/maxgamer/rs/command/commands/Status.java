@@ -1,16 +1,14 @@
 package org.maxgamer.rs.command.commands;
 
-import java.util.Date;
-
 import org.maxgamer.rs.command.CommandSender;
 import org.maxgamer.rs.command.GenericCommand;
 import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.util.log.Log;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;
 import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
 import org.maxgamer.rs.model.skill.SkillType;
 import org.maxgamer.rs.network.Session;
 import org.maxgamer.rs.structure.Util;
+import org.maxgamer.rs.util.log.Log;
 
 /**
  * @author netherfoam
@@ -21,7 +19,7 @@ public class Status implements GenericCommand {
 	
 	@Override
 	public void execute(CommandSender s, String[] args) {
-		s.sendMessage("-- Server Status at " + new Date().toString() + "--");
+		s.sendMessage("Server Status:");
 		s.sendMessage("Players: " + Core.getServer().getPersonas().getCount() + "/" + Core.getServer().getPersonas().getMax() + ", NPCs: " + Core.getServer().getNPCs().getCount() + "/" + Core.getServer().getNPCs().getMax());
 		Log.info("Primary Thread Load: " + String.format("%.2f", (Core.getServer().getThread().getUsage() * 100)) + "%, " + ", Ticks/sec: " + ((double) (Core.getServer().getTicks() - lastTick) / (double) ((System.currentTimeMillis() - lastPrint) / 1000.0)) + ", Active Threads: " + Thread.activeCount());
 		s.sendMessage("RAM (JVM): " + (Runtime.getRuntime().totalMemory() / 1024 / 1024) + "MB, RAM (Used): " + ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024 / 1024) + "MB");

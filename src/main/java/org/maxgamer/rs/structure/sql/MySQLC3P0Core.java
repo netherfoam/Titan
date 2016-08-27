@@ -1,6 +1,7 @@
 package org.maxgamer.rs.structure.sql;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
+import org.flywaydb.core.Flyway;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
@@ -9,14 +10,26 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author netherfoam
  */
 public class MySQLC3P0Core implements DatabaseCore {
-	private static final long TIMEOUT = 20 * 60 * 1000; //Timeout after 20 minutes.
+    /**
+     * The timeout for connections - 20 minutes
+     */
+	private static final long TIMEOUT = TimeUnit.MINUTES.toMillis(20);
 
+    /**
+     * The {@link javax.sql.DataSource} we use to connect to the database internally
+     */
 	private ComboPooledDataSource pool;
+
+    /**
+     * The flyway object we use to migrate our database
+     */
+    private Flyway flyway;
 
 	/**
 	 * Constructs a new MySQL database core backed by a C3P0 {@link ComboPooledDataSource}
@@ -44,6 +57,17 @@ public class MySQLC3P0Core implements DatabaseCore {
 		pool.setAcquireIncrement(5);
 		pool.getProperties().setProperty("autoReconnect", "true");
 		pool.setMaxPoolSize(20);
+
+        flyway = new Flyway();
+        flyway.setDataSource(pool);
+
+        // Configures flyway such that, if it is missing it's metadata table, it will
+        // accept the current configuration as the latest version (Eg. this time, no
+        // migrations will run)
+        flyway.setBaselineOnMigrate(true);
+
+        // Perform any necessary migrations
+        flyway.migrate();
 	}
 
 	/**
@@ -59,9 +83,9 @@ public class MySQLC3P0Core implements DatabaseCore {
 		// For C3p0
 		hibernateProperties.put("hibernate.c3p0.min_size", "5");
 		hibernateProperties.put("hibernate.c3p0.max_size", "20");
-		hibernateProperties.put("hibernate.c3p0.timeout", TIMEOUT);
+		hibernateProperties.put("hibernate.c3p0.timeout", String.valueOf(TIMEOUT));
 		hibernateProperties.put("hibernate.connection.provider_class", "org.hibernate.c3p0.internal.C3P0ConnectionProvider");
-		hibernateProperties.put("hibernate.c3p0.idle_test_period", TIMEOUT);
+		hibernateProperties.put("hibernate.c3p0.idle_test_period", String.valueOf(TIMEOUT));
 		hibernateProperties.put("hibernate.connection.autoReconnect", "true");
 
 		// For persistent session storage

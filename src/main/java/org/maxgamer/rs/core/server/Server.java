@@ -116,7 +116,7 @@ public class Server {
 	/**
 	 * The primary server thread wrapper
 	 */
-	private ServerThread thread;
+	private ServerExecutor thread;
 	
 	/**
 	 * The GroundItemManager, this manages all items that are lying on the
@@ -169,7 +169,7 @@ public class Server {
 		this.config = cfg;
 
 		//We construct this immediately, it may be required immediately.
-		this.thread = new ServerThread(this);
+		this.thread = new ServerExecutor(this);
 		
 		//Immediately opens the port, but does not necessarily begin accepting/reading/writing
 		this.network = new RS2Server(getConfig().getInt("world.port"), this);
@@ -793,7 +793,7 @@ public class Server {
 		return modules;
 	}
 	
-	public ServerThread getThread() {
+	public ServerExecutor getThread() {
 		return thread;
 	}
 	

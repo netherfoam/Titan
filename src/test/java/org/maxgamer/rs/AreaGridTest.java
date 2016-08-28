@@ -1,8 +1,11 @@
-import static org.junit.Assert.assertEquals;
+package org.maxgamer.rs;
+
 import org.junit.Test;
 import org.maxgamer.rs.structure.areagrid.AreaGrid;
 import org.maxgamer.rs.structure.areagrid.Cube;
 import org.maxgamer.rs.structure.areagrid.MBR;
+
+import static org.junit.Assert.assertEquals;
 
 public class AreaGridTest {
 	@Test

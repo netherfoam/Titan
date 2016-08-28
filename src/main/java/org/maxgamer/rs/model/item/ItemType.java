@@ -5,6 +5,7 @@ import org.maxgamer.rs.cache.IDX;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.model.entity.mob.Bonuses;
 import org.maxgamer.rs.model.entity.mob.combat.AttackStyle;
+import org.maxgamer.rs.model.item.condition.ItemFlagSet;
 import org.maxgamer.rs.model.skill.SkillType;
 import org.maxgamer.rs.repository.ItemTypeRepository;
 import org.maxgamer.rs.util.BufferUtils;
@@ -137,6 +138,8 @@ public class ItemType implements Serializable {
 	 */
 	private transient HashMap<Integer, Object> clientScriptData;
 
+	private transient ItemFlagSet flags;
+
 	private ItemType() {
 
 	}
@@ -244,6 +247,18 @@ public class ItemType implements Serializable {
 				return true;
 		}
 		return false;
+	}
+
+	public synchronized ItemFlagSet getFlags() {
+		if(flags == null) {
+			if(this.clientScriptData == null) {
+				this.clientScriptData = new HashMap<>(0);
+			}
+
+			flags = new ItemFlagSet(this.clientScriptData);
+		}
+
+		return flags;
 	}
 
 	public boolean isMembers() {

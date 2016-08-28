@@ -21,7 +21,6 @@ import org.maxgamer.rs.model.interact.InteractionManager;
 import org.maxgamer.rs.model.item.AmmoType;
 import org.maxgamer.rs.model.item.ItemAmmo;
 import org.maxgamer.rs.model.item.ground.GroundItemManager;
-import org.maxgamer.rs.model.item.inventory.Equipment;
 import org.maxgamer.rs.model.item.vendor.VendorManager;
 import org.maxgamer.rs.model.javascript.JavaScriptFiber;
 import org.maxgamer.rs.model.javascript.TimeoutError;
@@ -184,7 +183,17 @@ public class Server {
         this.scheduler = new Scheduler(this.getThread(), Core.getThreadPool());
 	}
 
-    /**
+	public synchronized AutoSave getAutosave() {
+		if(autosave == null) {
+			int interval = this.getConfig().getInt("autosave-interval", 10000);
+			if(interval <= 0) throw new IllegalArgumentException("autosave-interval must be positive");
+			this.autosave = new AutoSave(interval);
+		}
+
+		return autosave;
+	}
+
+	/**
      * Fetches the config file that is used for the world settings
      * @return the config file for the world settings
      */
@@ -297,7 +306,10 @@ public class Server {
 		return this.started;
 	}
 	
-	public VendorManager getVendors(){
+	public synchronized VendorManager getVendors(){
+		if(vendors == null) {
+			vendors = new VendorManager();
+		}
 		return vendors;
 	}
 	
@@ -385,77 +397,7 @@ public class Server {
      * @throws SQLException
      */
     public void load() throws IOException, SQLException {
-        this.thread.submit(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Server.this.lobby = new Lobby();
-
-                    // We should initialize everything before loading user content
-                    // Eg commands, events, modules
-                    Log.info("Loading Map...");
-                    getMaps();
-                    Log.info("...Map Loaded!");
-
-                    Server.this.modules = new ModuleLoader(new File("modules"), "class");
-                    Server.this.ticker = new ServerTicker(Server.this);
-
-                    vendors = new VendorManager();
-
-                    // Preload our event system
-                    getEvents();
-
-                    Log.debug("Loading Commands...");
-                    getCommands();
-                    Log.debug("Loading Modules...");
-                    Server.this.modules.load();
-                    Log.debug("Modules Loaded!");
-
-                    Server.this.logon.start();
-
-                    //Autosave
-                    int interval = getConfig().getInt("autosave-interval", 10000);
-                    if (interval > 0) {
-                        Server.this.autosave = new AutoSave(interval);
-                        Core.submit(Server.this.autosave, interval, true);
-                    }
-
-                    File startup = new File("startup.js");
-                    if (startup.exists()) {
-                        JavaScriptFiber js = null;
-                        try {
-                            js = new JavaScriptFiber(Core.CLASS_LOADER);
-                            js.parse(startup);
-                        }
-                        catch(TimeoutError e){
-                            Log.warning("Startup script timed out.");
-                        }
-                        catch (ContinuationPending e) {
-                            //TODO: Allow them.
-                            Log.warning("Can't use continuations in startup.js");
-                        }
-                        catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    Equipment.load();
-
-                    Server.this.thread.submit(ticker);
-                    //Note that Server.this doesn't start the network, that is done by the
-                    //logon server when a connection is established. The logon server
-                    //will also drop the connection if the logon connection is lost
-                    Log.info("Server initialized!");
-                    getThread().resetUsage();
-                }
-                catch (Throwable t) {
-                    t.printStackTrace();
-                    Log.severe("Exception was raised while booting server. Shutting down...");
-                    Core.getServer().shutdown();
-                    System.exit(1);
-                }
-            }
-        });
+        this.thread.submit(new ServerStartRunnable(this));
         this.thread.start();
 
         Runnable maskUpdate = new Runnable() {
@@ -660,7 +602,7 @@ public class Server {
 	 * Unloads all modules, calls a new ServerShutdownEvent, shuts down the
 	 * network and save's all player data.
 	 */
-	public void shutdown() {
+	public void shutdown() throws InterruptedException {
 		File shutdown = new File("shutdown.js");
 		if (shutdown.exists()) {
 			JavaScriptFiber js = new JavaScriptFiber(Core.CLASS_LOADER);
@@ -698,7 +640,11 @@ public class Server {
 	 * Fetches the player's login lobby
 	 * @return the player's login lobby
 	 */
-	public Lobby getLobby() {
+	public synchronized Lobby getLobby() {
+		if(lobby == null) {
+			this.lobby = new Lobby();
+		}
+
 		return lobby;
 	}
 
@@ -755,7 +701,10 @@ public class Server {
 	 * unsubscribing Tickable objects to tick() notifications.
 	 * @return the Server's Tick Handler.
 	 */
-	public ServerTicker getTicker() {
+	public synchronized ServerTicker getTicker() {
+		if(ticker == null) {
+			ticker = new ServerTicker(Server.this);
+		}
 		return ticker;
 	}
 	
@@ -789,7 +738,11 @@ public class Server {
 	 * The plugin system that loads/unloads modules at runtime.
 	 * @return the module system manager
 	 */
-	public ModuleLoader getModules() {
+	public synchronized ModuleLoader getModules() {
+		if(modules == null) {
+			modules = new ModuleLoader(new File("modules"), "class");
+		}
+
 		return modules;
 	}
 	

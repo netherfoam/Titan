@@ -46,16 +46,11 @@ public class ServerExecutor implements Executor {
     /**
      * Joins with the server thread until it stops
      */
-    public void shutdown() {
+    public void shutdown() throws InterruptedException {
         ServerThread end = this.thread;
         this.thread = null;
-        try {
-            end.terminate();
-            end.join();
-        } catch (InterruptedException e) {
-            //What can you do?
-            e.printStackTrace();
-        }
+        end.terminate();
+        end.join();
     }
 
     /**

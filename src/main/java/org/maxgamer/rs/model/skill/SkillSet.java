@@ -198,7 +198,7 @@ public class SkillSet implements YMLSerializable {
 	/**
 	 * Returns the current level for the given skill. If modifier is true, then
 	 * this will add whatever modifier is present. Else, it will simply return
-	 * getLevel(t)
+	 * getCraftLevel(t)
 	 * 
 	 * @param t the skill type
 	 * @param modifier true if you want to include modifiers, false otherwise

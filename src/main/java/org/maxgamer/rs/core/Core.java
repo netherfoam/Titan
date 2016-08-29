@@ -16,7 +16,10 @@ import org.maxgamer.rs.util.Log;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Represents the core, responsible for running the server. Should keep this
@@ -76,13 +79,8 @@ public class Core {
      */
     private static Cache cache;
 
-    /**
-     * Initializes the core of the server
-     *
-     * @throws Exception If there was an error binding the port or loading the
-     *                   cache.
-     */
-    public static void init() throws Exception {
+    // TODO: Doc
+    public static void start() throws Exception {
         // This prevents Quasar from warning us about a missing JavaAgent, since we instrument as part of
         // the build process, and using a URLClassLoader for the modules.
         System.setProperty("co.paralleluniverse.fibers.disableAgentWarning", "true");
@@ -90,10 +88,7 @@ public class Core {
         Log.info("Author: " + Core.AUTHOR + " Build: " + Core.BUILD);
 
         final long start = System.currentTimeMillis();
-
-        server = new Server(); //Binds port port
         server.load();
-
         // This is run when we get CTRL + C as well
         Runtime.getRuntime().addShutdownHook(new Thread(new CoreShutdownHook(), "Shutdown Hook"));
 
@@ -228,7 +223,14 @@ public class Core {
      *
      * @return the server
      */
-    public static Server getServer() {
+    public static synchronized Server getServer() {
+        if(server == null) {
+            try {
+                server = new Server(); //Binds port port
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
         return server;
     }
 

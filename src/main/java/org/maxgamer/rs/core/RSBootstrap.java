@@ -13,7 +13,7 @@ import java.net.URISyntaxException;
 public class RSBootstrap {
 	public static void main(String[] args) throws IOException, ConnectionException, URISyntaxException {
 		try {
-			Core.init();
+			Core.start();
 			
 			//Flag that prevents the logon server being started automatically
 			boolean gameOnly = false;

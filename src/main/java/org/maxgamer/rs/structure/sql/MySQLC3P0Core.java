@@ -83,10 +83,12 @@ public class MySQLC3P0Core implements DatabaseCore {
 		// For C3p0
 		hibernateProperties.put("hibernate.c3p0.min_size", "5");
 		hibernateProperties.put("hibernate.c3p0.max_size", "20");
+		hibernateProperties.put("hibernate.c3p0.testConnectionOnCheckout", "true");
 		hibernateProperties.put("hibernate.c3p0.timeout", String.valueOf(TIMEOUT));
 		hibernateProperties.put("hibernate.connection.provider_class", "org.hibernate.c3p0.internal.C3P0ConnectionProvider");
 		hibernateProperties.put("hibernate.c3p0.idle_test_period", String.valueOf(TIMEOUT));
 		hibernateProperties.put("hibernate.connection.autoReconnect", "true");
+		hibernateProperties.put("hibernate.connection.driver_class", pool.getDriverClass());
 
 		// For persistent session storage
 		hibernateProperties.put("hibernate.current_session_context_class", "managed");

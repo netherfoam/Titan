@@ -178,6 +178,22 @@ public class ItemMetadataSet {
     }
 
     /**
+     * Fetches all SkillTypes that are required to equip the item
+     * @return all SkillTypes that are required to equip the item
+     */
+    public List<SkillType> getWearSkills() {
+        ArrayList<SkillType> types = new ArrayList<>(3);
+        for(int i = 749; i <= 761; i += 2) {
+            Integer t = getInt(i);
+            if(t == null) continue;
+
+            types.add(SkillType.forId(t));
+        }
+
+        return types;
+    }
+
+    /**
      * True if this is some kind of "Squad" item
      * @return True if this is some kind of "Squad" item
      */
@@ -210,14 +226,6 @@ public class ItemMetadataSet {
     }
 
     /**
-     * Appears to be the skill requirement, but the skill is arbitrary
-     * @return
-     */
-    public Integer getSkillRequirement() {
-        return getInt(750);
-    }
-
-    /**
      * Attack type - such as a mace, or a sword or an axe. These determine what methods
      * of attack there are for melee weapons, eg. crush and slash or slash and stab.
      *
@@ -237,7 +245,7 @@ public class ItemMetadataSet {
      * @param type the skill type
      * @return the required level or null if no level is required
      */
-    public Integer getLevel(SkillType type) {
+    public Integer getCraftLevel(SkillType type) {
         Prove.isNotNull(type, "SkillType may not be null");
 
         for(int i = 770; i <= 774; i += 2) {
@@ -248,6 +256,22 @@ public class ItemMetadataSet {
         }
 
         return null;
+    }
+
+    /**
+     * Fetches all SkillTypes that are required to equip the item
+     * @return all SkillTypes that are required to equip the item
+     */
+    public List<SkillType> getCraftSkills() {
+        ArrayList<SkillType> types = new ArrayList<>(3);
+        for(int i = 770; i <= 774; i += 2) {
+            Integer t = getInt(i);
+            if(t == null) continue;
+
+            types.add(SkillType.forId(t));
+        }
+
+        return types;
     }
 
     /**

@@ -47,10 +47,9 @@ public class ServerExecutor implements Executor {
      * Joins with the server thread until it stops
      */
     public void shutdown() throws InterruptedException {
-        ServerThread end = this.thread;
+        this.thread.terminate();
+        this.thread.join();
         this.thread = null;
-        end.terminate();
-        end.join();
     }
 
     /**

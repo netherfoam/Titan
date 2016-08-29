@@ -5,7 +5,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 import org.maxgamer.rs.util.BufferUtils;
-import org.maxgamer.rs.util.log.Log;
+import org.maxgamer.rs.util.Log;
 import org.maxgamer.rs.model.map.Chunk;
 import org.maxgamer.rs.model.map.ClipMasks;
 import org.maxgamer.rs.model.map.Location;

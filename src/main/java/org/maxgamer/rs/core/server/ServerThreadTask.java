@@ -5,7 +5,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.maxgamer.rs.util.log.Log;
+import org.maxgamer.rs.util.Log;
 
 /**
  * @author netherfoam

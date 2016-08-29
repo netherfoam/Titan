@@ -2,29 +2,54 @@ package org.maxgamer.rs.model.item.condition;
 
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.skill.SkillType;
+import org.maxgamer.rs.util.Prove;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 /**
+ * A simple interface object which provides an easier and more readable method of interpreting
+ * the metadata on items
+ *
  * @author netherfoam
  */
-public class ItemFlagSet {
-    private Map<Integer, Object> values;
+public class ItemMetadataSet {
+    /**
+     * The underlying metadata values
+     */
+    private Map<Integer, Object> data;
 
-    public Map<Integer, Object> getValues() {
-        return values;
+    /**
+     * Constructs a new ItemMetadataSet for the given values
+     * @param values the values
+     */
+    public ItemMetadataSet(Map<Integer, Object> values) {
+        Prove.isNotNull(values, "Map may not be null");
+
+        this.data = values;
     }
 
-    public ItemFlagSet(Map<Integer, Object> values) {
-        this.values = values;
+    /**
+     * Returns a reference to the map used in the constructor
+     * @return the underlying key-value pairs
+     */
+    public Map<Integer, Object> getData() {
+        return data;
     }
 
+    /**
+     * Returns true if the object has a broken flag, eg. Broken pickaxe heads
+     * @return true if the object has a broken flag
+     */
     public boolean isBroken() {
         return this.is(59, 1);
     }
 
+    /**
+     * Returns the list of ItemStacks which are required to build this item in a Player Owned House
+     * @return the list of materials
+     */
     public List<ItemStack> getConstructionMaterials() {
         ArrayList<ItemStack> list = new ArrayList<>(2);
 
@@ -128,6 +153,10 @@ public class ItemFlagSet {
         return has(687);
     }
 
+    /**
+     * Returns true if this item is a runecrafting pouch
+     * @return true if this item is a runecrafting pouch
+     */
     public boolean isRunecraftingPouch() {
         return is(723, 1);
     }
@@ -173,6 +202,14 @@ public class ItemFlagSet {
     }
 
     /**
+     * The idle, standing animation to use for this weapon when it's wielded
+     * @return The idle wield animation
+     */
+    public Integer getRenderAnimation() {
+        return getInt(644);
+    }
+
+    /**
      * Appears to be the skill requirement, but the skill is arbitrary
      * @return
      */
@@ -183,6 +220,9 @@ public class ItemFlagSet {
     /**
      * Attack type - such as a mace, or a sword or an axe. These determine what methods
      * of attack there are for melee weapons, eg. crush and slash or slash and stab.
+     *
+     * See also: {@link org.maxgamer.rs.model.entity.mob.combat.AttackStyle}
+     *
      * @return the attack type
      */
     public Integer getAttackType() {
@@ -192,39 +232,52 @@ public class ItemFlagSet {
         return v;
     }
 
+    /**
+     * Get the skill level required to use this item
+     * @param type the skill type
+     * @return the required level or null if no level is required
+     */
     public Integer getLevel(SkillType type) {
-        Integer a = getInt(770);
-        if(a == null) return null;
+        Prove.isNotNull(type, "SkillType may not be null");
 
-        if(a == type.getId()) {
-            return getInt(771);
-        }
+        for(int i = 770; i <= 774; i += 2) {
+            Integer v = getInt(i);
+            if(v == null || v != type.getId()) continue;
 
-        Integer b = getInt(772);
-        if(b == null) return null;
-
-        if(b == type.getId()) {
-            return getInt(773);
-        }
-
-        Integer c = getInt(774);
-        if(c == null) return null;
-
-        if(c == type.getId()) {
-            return getInt(775);
+            return getInt(i + 1);
         }
 
         return null;
     }
 
+    /**
+     * Gets the integer under the given key. This shouldn't really be used externally, instead
+     * convenience methods should be defined for readability.
+     * @param key the key
+     * @return the value or null if not found
+     * @throws ClassCastException if the given key is a String instead
+     */
     public Integer getInt(int key) {
-        return (Integer) values.get(key);
+        return (Integer) data.get(key);
     }
 
+    /**
+     * Gets the String under the given key. This shouldn't really be used externally, instead
+     * convenience methods should be defined for readability.
+     * @param key the key
+     * @return the value or null if not found
+     * @throws ClassCastException if the given key is an Integer instead
+     */
     public String getString(int key) {
-        return (String) values.get(key);
+        return (String) data.get(key);
     }
 
+    /**
+     * Returns true if the given key is of the given value
+     * @param key the key
+     * @param value the value
+     * @return true if value == map.get(key) || value.equals(map.get(key))
+     */
     public boolean is(int key, Integer value) {
         Integer stored = getInt(key);
         if(stored == value) return true;
@@ -234,6 +287,12 @@ public class ItemFlagSet {
         return stored.equals(value);
     }
 
+    /**
+     * Returns true if the given key is of the given value
+     * @param key the key
+     * @param value the value
+     * @return true if value == map.get(key) || value.equals(map.get(key))
+     */
     public boolean is(int key, String value) {
         String stored = getString(key);
         if(stored == value) return true;
@@ -243,7 +302,12 @@ public class ItemFlagSet {
         return stored.equals(value);
     }
 
+    /**
+     * Returns true if the map has the given key
+     * @param key the key
+     * @return true if the map contains the given key (the value may be null though)
+     */
     public boolean has(int key) {
-        return values.containsKey(key);
+        return data.containsKey(key);
     }
 }

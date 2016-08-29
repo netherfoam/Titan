@@ -4,7 +4,7 @@ import java.io.ByteArrayInputStream;
 
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.core.server.WorldFullException;
-import org.maxgamer.rs.util.log.Log;
+import org.maxgamer.rs.util.Log;
 import org.maxgamer.rs.logon.LSIncomingPacket;
 import org.maxgamer.rs.logon.Opcode;
 import org.maxgamer.rs.logon.OpcodeDecoder;

@@ -6,7 +6,7 @@ import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.core.server.ServerTicker;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.structure.timings.StopWatch;
-import org.maxgamer.rs.util.log.Log;
+import org.maxgamer.rs.util.Log;
 
 /**
  * @author netherfoam

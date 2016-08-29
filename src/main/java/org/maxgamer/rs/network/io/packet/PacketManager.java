@@ -1,6 +1,6 @@
 package org.maxgamer.rs.network.io.packet;
 
-import org.maxgamer.rs.util.log.Log;
+import org.maxgamer.rs.util.Log;
 import org.maxgamer.rs.network.Client;
 
 /**

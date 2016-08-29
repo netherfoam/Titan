@@ -6,7 +6,7 @@ import org.maxgamer.rs.network.Session;
 import org.maxgamer.rs.network.io.packet.PacketProcessor;
 import org.maxgamer.rs.network.io.packet.RSIncomingPacket;
 import org.maxgamer.rs.network.io.stream.RSByteBuffer;
-import org.maxgamer.rs.util.log.Log;
+import org.maxgamer.rs.util.Log;
 
 import java.nio.BufferUnderflowException;
 

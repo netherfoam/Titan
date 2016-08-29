@@ -8,7 +8,7 @@ import org.maxgamer.rs.model.events.server.LogonConnectEvent;
 import org.maxgamer.rs.model.events.server.LogonDisconnectEvent;
 import org.maxgamer.rs.network.io.stream.RSOutputStream;
 import org.maxgamer.rs.structure.configs.ConfigSection;
-import org.maxgamer.rs.util.log.Log;
+import org.maxgamer.rs.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;

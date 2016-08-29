@@ -4,7 +4,7 @@ import co.paralleluniverse.fibers.SuspendExecution;
 import org.maxgamer.rs.model.entity.Interactable;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.interact.use.Use;
-import org.maxgamer.rs.util.log.Log;
+import org.maxgamer.rs.util.Log;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

@@ -14,7 +14,7 @@ import org.maxgamer.rs.structure.sql.Database.ConnectionException;
 import org.maxgamer.rs.structure.sql.MySQLC3P0Core;
 import org.maxgamer.rs.tools.ConfigSetup;
 import org.maxgamer.rs.util.Files;
-import org.maxgamer.rs.util.log.Log;
+import org.maxgamer.rs.util.Log;
 
 import java.io.File;
 import java.io.IOException;

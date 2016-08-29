@@ -27,7 +27,7 @@ import org.maxgamer.rs.model.interfaces.impl.side.QuestInterface;
 import org.maxgamer.rs.model.interfaces.impl.side.SettingsInterface;
 import org.maxgamer.rs.model.interfaces.impl.side.SkillsInterface;
 import org.maxgamer.rs.model.interfaces.impl.side.TasksInterface;
-import org.maxgamer.rs.util.log.Log;
+import org.maxgamer.rs.util.Log;
 import org.maxgamer.rs.model.entity.mob.combat.Attack;
 import org.maxgamer.rs.model.entity.mob.combat.AttackStyle;
 import org.maxgamer.rs.model.entity.mob.combat.JavaScriptAttack;

@@ -4,7 +4,7 @@ import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.model.item.inventory.Equipment;
 import org.maxgamer.rs.model.javascript.JavaScriptFiber;
 import org.maxgamer.rs.model.javascript.TimeoutError;
-import org.maxgamer.rs.util.log.Log;
+import org.maxgamer.rs.util.Log;
 import org.mozilla.javascript.ContinuationPending;
 
 import java.io.File;

@@ -457,7 +457,7 @@ public abstract class WorldMap implements MBR {
 	}
 	
 	public int getFlags(int x, int y, int z) {
-		StopWatch w = Core.getTimings().start("worldmap-getFlags");
+		StopWatch w = Core.getTimings().start("worldmap-getMetadata");
 		try {
 			int cx = x >> CHUNK_BITS;
 			int cy = y >> CHUNK_BITS;

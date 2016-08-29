@@ -9,7 +9,7 @@ import org.maxgamer.rs.model.interact.use.ItemTargetUse;
 import org.maxgamer.rs.model.interact.use.OptionUse;
 import org.maxgamer.rs.util.Calc;
 import org.maxgamer.rs.util.Chat;
-import org.maxgamer.rs.util.log.Log;
+import org.maxgamer.rs.util.Log;
 import org.maxgamer.rs.model.entity.Interactable;
 import org.maxgamer.rs.model.entity.mob.*;
 import org.maxgamer.rs.model.entity.mob.combat.*;

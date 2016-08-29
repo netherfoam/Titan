@@ -13,7 +13,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import org.maxgamer.rs.util.log.Log;
+import org.maxgamer.rs.util.Log;
 
 /**
  * A class which helps in retrieving simple rows from a database, changing them,

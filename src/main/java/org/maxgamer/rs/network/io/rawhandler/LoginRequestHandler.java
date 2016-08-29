@@ -7,7 +7,7 @@ import org.maxgamer.rs.network.AuthResult;
 import org.maxgamer.rs.network.Session;
 import org.maxgamer.rs.network.io.stream.RSByteBuffer;
 import org.maxgamer.rs.util.io.InputStreamWrapper;
-import org.maxgamer.rs.util.log.Log;
+import org.maxgamer.rs.util.Log;
 
 import java.io.IOException;
 import java.math.BigInteger;

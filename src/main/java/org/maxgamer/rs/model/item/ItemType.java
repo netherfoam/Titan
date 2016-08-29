@@ -5,11 +5,11 @@ import org.maxgamer.rs.cache.IDX;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.model.entity.mob.Bonuses;
 import org.maxgamer.rs.model.entity.mob.combat.AttackStyle;
-import org.maxgamer.rs.model.item.condition.ItemFlagSet;
+import org.maxgamer.rs.model.item.condition.ItemMetadataSet;
 import org.maxgamer.rs.model.skill.SkillType;
 import org.maxgamer.rs.repository.ItemTypeRepository;
 import org.maxgamer.rs.util.BufferUtils;
-import org.maxgamer.rs.util.log.Log;
+import org.maxgamer.rs.util.Log;
 
 import javax.persistence.*;
 import java.io.FileNotFoundException;
@@ -138,7 +138,7 @@ public class ItemType implements Serializable {
 	 */
 	private transient HashMap<Integer, Object> clientScriptData;
 
-	private transient ItemFlagSet flags;
+	private transient ItemMetadataSet flags;
 
 	private ItemType() {
 
@@ -163,17 +163,6 @@ public class ItemType implements Serializable {
 
 	public void setAmmo(List<ItemAmmo> ammo) {
 		this.ammo = ammo;
-	}
-
-	/**
-	 * Returns true if this ItemType has a special attack associated with it
-	 * @return true if this ItemType has a special attack associated with it
-     */
-	public boolean hasSpecialAttack() {
-		Integer v = (Integer) this.getScriptData().get(687);
-		if(v != null && v.intValue() != 0) return true;
-
-		return false;
 	}
 
 	public int getCharges() {
@@ -249,13 +238,13 @@ public class ItemType implements Serializable {
 		return false;
 	}
 
-	public synchronized ItemFlagSet getFlags() {
+	public synchronized ItemMetadataSet getMetadata() {
 		if(flags == null) {
 			if(this.clientScriptData == null) {
 				this.clientScriptData = new HashMap<>(0);
 			}
 
-			flags = new ItemFlagSet(this.clientScriptData);
+			flags = new ItemMetadataSet(this.clientScriptData);
 		}
 
 		return flags;
@@ -329,14 +318,12 @@ public class ItemType implements Serializable {
 		if ((slot < 1 || slot > 4) && slot != -1) {
 			throw new IllegalArgumentException("Slot must be between 1 and 4 inclusive.");
 		}
-		if (clientScriptData == null) {
+
+		Integer v = getMetadata().getAttackType();
+		if (v == null) {
 			return new AttackStyle(1, "Punch", Bonuses.ATK_CRUSH, SkillType.ATTACK);
 		}
-		Object o = clientScriptData.get(686);
-		if (o == null) {
-			return new AttackStyle(1, "Punch", Bonuses.ATK_CRUSH, SkillType.ATTACK);
-		}
-		Integer v = (Integer) o; // 686 is the ID of the Combat Styles data
+
 		return AttackStyle.getStyle(v.intValue(), slot);
 	}
 
@@ -645,13 +632,11 @@ public class ItemType implements Serializable {
 		return maxStack > 1;
 	}
 
-	public int getRenderAnim() {
-		if (clientScriptData == null)
-			return 1426;
-		Object animId = clientScriptData.get(644);
-		if (animId instanceof Integer)
-			return (Integer) animId;
-		return 1426;
+	public int getRenderAnimation() {
+        Integer v = getMetadata().getRenderAnimation();
+        if(v == null) return 1426;
+
+        return v;
 	}
 
 	public ItemStack toItem() {

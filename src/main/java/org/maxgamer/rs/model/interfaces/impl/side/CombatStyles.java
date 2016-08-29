@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.maxgamer.rs.model.interfaces.SideInterface;
-import org.maxgamer.rs.util.log.Log;
+import org.maxgamer.rs.util.Log;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.combat.AttackStyle;
 import org.maxgamer.rs.model.entity.mob.combat.DamageType;

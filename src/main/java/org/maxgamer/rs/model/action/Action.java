@@ -4,7 +4,7 @@ import co.paralleluniverse.fibers.Fiber;
 import co.paralleluniverse.fibers.SuspendExecution;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.model.entity.mob.Mob;
-import org.maxgamer.rs.util.log.Log;
+import org.maxgamer.rs.util.Log;
 
 import java.util.LinkedList;
 import java.util.concurrent.ExecutionException;

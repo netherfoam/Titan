@@ -11,7 +11,7 @@ import org.maxgamer.rs.core.server.Server;
 import org.maxgamer.rs.structure.configs.FileConfig;
 import org.maxgamer.rs.structure.timings.NullTimings;
 import org.maxgamer.rs.structure.timings.Timings;
-import org.maxgamer.rs.util.log.Log;
+import org.maxgamer.rs.util.Log;
 
 import java.io.File;
 import java.io.FileNotFoundException;

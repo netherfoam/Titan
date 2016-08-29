@@ -2,7 +2,7 @@ package org.maxgamer.rs.model.interact;
 
 import co.paralleluniverse.fibers.SuspendExecution;
 import org.maxgamer.rs.model.interact.use.Use;
-import org.maxgamer.rs.util.log.Log;
+import org.maxgamer.rs.util.Log;
 import org.maxgamer.rs.model.action.Action;
 import org.maxgamer.rs.model.entity.Entity;
 import org.maxgamer.rs.model.entity.Interactable;

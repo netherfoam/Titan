@@ -7,7 +7,7 @@ import org.maxgamer.rs.model.entity.mob.persona.Persona;
 import org.maxgamer.rs.model.events.mob.MobAttackEvent;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.skill.SkillType;
-import org.maxgamer.rs.util.log.Log;
+import org.maxgamer.rs.util.Log;
 
 import java.util.Iterator;
 import java.util.LinkedList;

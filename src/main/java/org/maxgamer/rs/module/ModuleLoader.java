@@ -4,7 +4,7 @@ import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.structure.configs.ConfigSection;
 import org.maxgamer.rs.structure.configs.FileConfig;
 import org.maxgamer.rs.structure.dependency.Graph;
-import org.maxgamer.rs.util.log.Log;
+import org.maxgamer.rs.util.Log;
 
 import java.io.File;
 import java.io.FilenameFilter;

@@ -1,7 +1,7 @@
 package org.maxgamer.rs.network.io.packet.player;
 
 import org.maxgamer.rs.model.map.object.GameObjectProto;
-import org.maxgamer.rs.util.log.Log;
+import org.maxgamer.rs.util.Log;
 import org.maxgamer.rs.model.action.WalkAction;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.entity.mob.persona.player.Rights;

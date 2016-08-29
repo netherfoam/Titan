@@ -1,4 +1,4 @@
-package org.maxgamer.rs.util.log;
+package org.maxgamer.rs.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

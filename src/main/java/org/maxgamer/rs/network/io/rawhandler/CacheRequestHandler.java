@@ -5,7 +5,7 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 
 import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.util.log.Log;
+import org.maxgamer.rs.util.Log;
 import org.maxgamer.rs.network.Session;
 import org.maxgamer.rs.network.io.stream.RSByteBuffer;
 

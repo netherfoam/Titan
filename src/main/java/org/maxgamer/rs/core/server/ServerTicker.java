@@ -3,7 +3,7 @@ package org.maxgamer.rs.core.server;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.network.Session;
 import org.maxgamer.rs.structure.timings.StopWatch;
-import org.maxgamer.rs.util.log.Log;
+import org.maxgamer.rs.util.Log;
 
 import java.util.*;
 

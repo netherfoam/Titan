@@ -1,7 +1,7 @@
 package org.maxgamer.rs.logon;
 
 import net.crackstation.hash.PasswordHash;
-import org.maxgamer.rs.util.log.Log;
+import org.maxgamer.rs.util.Log;
 
 import javax.persistence.*;
 import java.io.Serializable;

@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.core.tick.Tickable;
-import org.maxgamer.rs.util.log.Log;
+import org.maxgamer.rs.util.Log;
 import org.maxgamer.rs.model.entity.mob.persona.Persona;
 import org.maxgamer.rs.structure.ArrayUtility;
 

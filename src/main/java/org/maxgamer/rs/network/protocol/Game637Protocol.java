@@ -32,7 +32,7 @@ import org.maxgamer.rs.structure.areagrid.Cube;
 import org.maxgamer.rs.structure.areagrid.MBR;
 import org.maxgamer.rs.structure.areagrid.MBRUtil;
 import org.maxgamer.rs.util.Calc;
-import org.maxgamer.rs.util.log.Log;
+import org.maxgamer.rs.util.Log;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

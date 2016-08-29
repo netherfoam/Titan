@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.maxgamer.rs.util.log.Log;
+import org.maxgamer.rs.util.Log;
 import org.maxgamer.rs.model.entity.mob.Bonuses;
 import org.maxgamer.rs.model.entity.mob.InventoryHolder;
 import org.maxgamer.rs.model.entity.mob.Mob;
@@ -286,9 +286,9 @@ public class Equipment extends Container {
 		ItemStack weapon = equip.get(WieldType.WEAPON.getSlot());
 		ItemStack gloves = equip.get(WieldType.GLOVES.getSlot());
 		if (weapon != null) {
-			getOwner().getModel().setRenderAnimationId(weapon.getDefinition().getRenderAnim());
+			getOwner().getModel().setRenderAnimationId(weapon.getDefinition().getRenderAnimation());
 		} else if (gloves != null) {
-			getOwner().getModel().setRenderAnimationId(gloves.getDefinition().getRenderAnim());
+			getOwner().getModel().setRenderAnimationId(gloves.getDefinition().getRenderAnimation());
 		} else {
 			getOwner().getModel().setRenderAnimationId(1426);
 		}

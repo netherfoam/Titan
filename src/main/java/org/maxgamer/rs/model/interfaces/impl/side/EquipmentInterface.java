@@ -120,7 +120,7 @@ public class EquipmentInterface extends SideInterface {
 				
 				ItemStack weapon = equip.get(WieldType.WEAPON.getSlot());
 				if (weapon != null) {
-					player.getModel().setRenderAnimationId(weapon.getDefinition().getRenderAnim());
+					player.getModel().setRenderAnimationId(weapon.getDefinition().getRenderAnimation());
 				}
 				else {
 					player.getModel().setRenderAnimationId(1426);

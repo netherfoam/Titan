@@ -8,7 +8,7 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
 import org.maxgamer.rs.model.skill.SkillType;
 import org.maxgamer.rs.network.Session;
 import org.maxgamer.rs.structure.Util;
-import org.maxgamer.rs.util.log.Log;
+import org.maxgamer.rs.util.Log;
 
 /**
  * @author netherfoam

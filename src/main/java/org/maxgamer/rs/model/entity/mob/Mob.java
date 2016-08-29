@@ -3,7 +3,7 @@ package org.maxgamer.rs.model.entity.mob;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.core.server.IllegalThreadException;
 import org.maxgamer.rs.model.interact.use.Use;
-import org.maxgamer.rs.util.log.Log;
+import org.maxgamer.rs.util.Log;
 import org.maxgamer.rs.model.action.Action;
 import org.maxgamer.rs.model.action.ActionQueue;
 import org.maxgamer.rs.model.action.CombatFollow;

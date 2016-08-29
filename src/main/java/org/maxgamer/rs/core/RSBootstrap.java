@@ -2,7 +2,7 @@ package org.maxgamer.rs.core;
 
 import org.maxgamer.rs.logon.logon.LogonServer;
 import org.maxgamer.rs.structure.sql.Database.ConnectionException;
-import org.maxgamer.rs.util.log.Log;
+import org.maxgamer.rs.util.Log;
 
 import java.io.IOException;
 import java.net.URISyntaxException;

@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 
 import org.maxgamer.rs.cache.XTEAKey;
 import org.maxgamer.rs.util.BufferUtils;
-import org.maxgamer.rs.util.log.Log;
+import org.maxgamer.rs.util.Log;
 import org.maxgamer.rs.network.Session;
 import org.maxgamer.rs.network.io.stream.RSByteBuffer;
 

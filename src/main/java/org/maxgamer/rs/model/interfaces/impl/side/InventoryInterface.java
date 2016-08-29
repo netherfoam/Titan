@@ -5,7 +5,7 @@ import java.util.Arrays;
 import org.maxgamer.rs.model.interfaces.SettingsBuilder;
 import org.maxgamer.rs.model.interfaces.SideInterface;
 import org.maxgamer.rs.model.interfaces.Window;
-import org.maxgamer.rs.util.log.Log;
+import org.maxgamer.rs.util.Log;
 import org.maxgamer.rs.model.action.WalkAction;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;

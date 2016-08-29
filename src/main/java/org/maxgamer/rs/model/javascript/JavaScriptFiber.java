@@ -1,7 +1,7 @@
 package org.maxgamer.rs.model.javascript;
 
 import org.maxgamer.rs.core.Core;
-import org.maxgamer.rs.util.log.Log;
+import org.maxgamer.rs.util.Log;
 import org.mozilla.javascript.*;
 
 import java.io.*;

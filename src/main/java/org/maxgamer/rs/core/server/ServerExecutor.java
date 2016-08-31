@@ -62,8 +62,8 @@ public class ServerExecutor implements Executor {
     }
 
     public Future<Void> submit(Runnable r) {
-        if(thread == null) return null;
-        
+        if (thread == null) return null;
+
         return thread.submit(r);
     }
 

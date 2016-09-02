@@ -8,7 +8,7 @@
  * javascripts/lib/core.js is automatically imported in the source.
  */
 
-importClass(org.maxgamer.rs.util.log.Log);
+importClass(org.maxgamer.rs.util.Log);
 importClass(org.maxgamer.rs.core.Core);
 
 //Core.getServer().getCommands().handle(Core.getConsole(), "::jaiarmy 200");

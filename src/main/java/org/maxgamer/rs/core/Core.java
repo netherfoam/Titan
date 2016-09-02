@@ -88,7 +88,7 @@ public class Core {
         Log.info("Author: " + Core.AUTHOR + " Build: " + Core.BUILD);
 
         final long start = System.currentTimeMillis();
-        server.load();
+        getServer().load();
         // This is run when we get CTRL + C as well
         Runtime.getRuntime().addShutdownHook(new Thread(new CoreShutdownHook(), "Shutdown Hook"));
 

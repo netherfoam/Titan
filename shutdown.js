@@ -9,6 +9,6 @@
  */
 
 
-importClass(org.maxgamer.rs.util.log.Log);
+importClass(org.maxgamer.rs.util.Log);
 
 Log.info("shutdown.js running!");

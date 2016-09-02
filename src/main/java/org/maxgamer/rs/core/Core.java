@@ -12,10 +12,13 @@ import org.maxgamer.rs.structure.configs.FileConfig;
 import org.maxgamer.rs.structure.timings.NullTimings;
 import org.maxgamer.rs.structure.timings.Timings;
 import org.maxgamer.rs.util.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -53,6 +56,8 @@ public class Core {
      */
     public static final String BUILD;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(Core.class);
+
     /**
      * A thread pool for handling async tasks that are not on the main server
      * thread.
@@ -80,7 +85,7 @@ public class Core {
     private static Cache cache;
 
     // TODO: Doc
-    public static void start() throws Exception {
+    public static void start() throws IOException, SQLException {
         // This prevents Quasar from warning us about a missing JavaAgent, since we instrument as part of
         // the build process, and using a URLClassLoader for the modules.
         System.setProperty("co.paralleluniverse.fibers.disableAgentWarning", "true");
@@ -88,7 +93,7 @@ public class Core {
         Log.info("Author: " + Core.AUTHOR + " Build: " + Core.BUILD);
 
         final long start = System.currentTimeMillis();
-        server.load();
+        getServer().load();
         // This is run when we get CTRL + C as well
         Runtime.getRuntime().addShutdownHook(new Thread(new CoreShutdownHook(), "Shutdown Hook"));
 
@@ -167,8 +172,7 @@ public class Core {
                 cache.setRaw(255, IDX.LANDSCAPES, f.encode());
                 cache.rebuildChecksum();
             } catch (IOException e) {
-                Log.severe("There was an error loading the cache. Please ensure you placed it in the cache/ folder and that it is in tact and readable.");
-                e.printStackTrace();
+                LOGGER.error("There was an error loading the cache. Please ensure you placed it in the cache/ folder and that it is in tact and readable.", e);
                 System.exit(2);
             }
         }
@@ -228,7 +232,8 @@ public class Core {
             try {
                 server = new Server(); //Binds port port
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                LOGGER.error("There was an error instantiating the server", e);
+                System.exit(3);
             }
         }
         return server;

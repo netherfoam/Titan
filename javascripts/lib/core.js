@@ -7,7 +7,7 @@ importClass(org.maxgamer.rs.model.map.Location);
 importClass(org.maxgamer.rs.model.item.ItemStack);
 importClass(org.maxgamer.rs.model.skill.SkillType);
 importClass(org.maxgamer.rs.model.action.Action);
-importClass(org.maxgamer.rs.util.log.Log);
+importClass(org.maxgamer.rs.util.Log);
 
 /* These imports are required by this file */
 importClass(org.maxgamer.rs.model.javascript.JSUtil);

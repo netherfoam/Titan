@@ -6,8 +6,8 @@ import org.maxgamer.rs.model.entity.mob.persona.player.ScreenSettings;
 import org.maxgamer.rs.network.AuthResult;
 import org.maxgamer.rs.network.Session;
 import org.maxgamer.rs.network.io.stream.RSByteBuffer;
-import org.maxgamer.rs.util.io.InputStreamWrapper;
 import org.maxgamer.rs.util.Log;
+import org.maxgamer.rs.util.io.InputStreamWrapper;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -18,53 +18,39 @@ import java.nio.ByteBuffer;
  * @author netherfoam
  */
 public class LoginRequestHandler extends RawHandler {
-	private static BigInteger RSA_MODULUS;
-	private static BigInteger RSA_EXPONENT;
-	
-	static{
-		String priv = Core.getServer().getConfig().getString("rsa.private-key");
-		String exp = Core.getServer().getConfig().getString("rsa.private-exponent");
-		
-		if(priv == null || exp == null){
-			Log.warning("world.yml >> rsa.private-key or rsa.private-exponent are null. Please correctly fill in the fields to use RSA.");
-			Log.warning("To silence this message, set their values to 0");
-			RSA_MODULUS = new BigInteger("0");
-			RSA_EXPONENT = new BigInteger("0");
-		}
-		else{
-			RSA_MODULUS = new BigInteger(priv, 16);
-			RSA_EXPONENT = new BigInteger(exp, 16);
-		}
-		
-		if(RSA_MODULUS.intValue() == 0){
-			RSA_MODULUS = null;
-		}
-		if(RSA_EXPONENT.intValue() == 0){
-			RSA_EXPONENT = null;
-		}
+    private static BigInteger RSA_MODULUS;
+    private static BigInteger RSA_EXPONENT;
 
-		if(RSA_MODULUS == null || RSA_EXPONENT == null) {
-			Log.debug("There is no RSA enabled on this server.");
-		}
-		else {
-			Log.debug("RSA is enabled");
-		}
-	}
-	
-	public LoginRequestHandler(Session s) {
-		super(s);
-	}
+    static {
+        String priv = Core.getServer().getConfig().getString("rsa.private-key");
+        String exp = Core.getServer().getConfig().getString("rsa.private-exponent");
 
-    private static class AuthenticationException extends Exception {
-        private AuthResult code;
-
-        public AuthenticationException(String message, AuthResult code) {
-            this.code = code;
+        if (priv == null || exp == null) {
+            Log.warning("world.yml >> rsa.private-key or rsa.private-exponent are null. Please correctly fill in the fields to use RSA.");
+            Log.warning("To silence this message, set their values to 0");
+            RSA_MODULUS = new BigInteger("0");
+            RSA_EXPONENT = new BigInteger("0");
+        } else {
+            RSA_MODULUS = new BigInteger(priv, 16);
+            RSA_EXPONENT = new BigInteger(exp, 16);
         }
 
-        public AuthResult getCode() {
-            return code;
+        if (RSA_MODULUS.intValue() == 0) {
+            RSA_MODULUS = null;
         }
+        if (RSA_EXPONENT.intValue() == 0) {
+            RSA_EXPONENT = null;
+        }
+
+        if (RSA_MODULUS == null || RSA_EXPONENT == null) {
+            Log.debug("There is no RSA enabled on this server.");
+        } else {
+            Log.debug("RSA is enabled");
+        }
+    }
+
+    public LoginRequestHandler(Session s) {
+        super(s);
     }
 
     private void logon() throws AuthenticationException {
@@ -75,22 +61,21 @@ public class LoginRequestHandler extends RawHandler {
 
     private RSByteBuffer decodeRSA(byte[] rsaPayload) throws AuthenticationException {
         RSByteBuffer rsaEncrypted;
-        if(RSA_EXPONENT != null && RSA_MODULUS != null){
+        if (RSA_EXPONENT != null && RSA_MODULUS != null) {
             rsaEncrypted = new RSByteBuffer(ByteBuffer.wrap(new BigInteger(rsaPayload).modPow(RSA_EXPONENT, RSA_MODULUS).toByteArray()));
 
             int rsaHeader = rsaEncrypted.readByte();
-            if(rsaHeader == 10) {
+            if (rsaHeader == 10) {
                 Log.debug("Client using correct RSA key");
                 return rsaEncrypted;
-            }
-            else {
+            } else {
                 Log.debug("Client doesn't appear to be using our RSA key.");
             }
         }
 
         rsaEncrypted = new RSByteBuffer(ByteBuffer.wrap(rsaPayload));
         int header = rsaEncrypted.readByte();
-        if(header != 10) {
+        if (header != 10) {
             Log.warning("Invalid RSA Header: " + header + ".");
             Log.warning("This may indicate that the client is using a different RSA key, or the protocol handling is incorrect");
             Log.warning("Dropping connection from " + getSession().getIP().getHostName());
@@ -103,9 +88,9 @@ public class LoginRequestHandler extends RawHandler {
         return rsaEncrypted;
     }
 
-	@Override
-	public void handle(RSByteBuffer buffer) {
-		try{
+    @Override
+    public void handle(RSByteBuffer buffer) {
+        try {
             logon();
 
             int opcode = buffer.readByte() & 0xFF;
@@ -147,7 +132,7 @@ public class LoginRequestHandler extends RawHandler {
             InputStreamWrapper in = new InputStreamWrapper(block);
             String name = in.readString();
 
-            if(name.matches("[A-Za-z0-9_\\- ]{1,20}") == false){
+            if (name.matches("[A-Za-z0-9_\\- ]{1,20}") == false) {
                 Log.debug("User supplied invalid username: " + name);
                 getSession().write(AuthResult.CHANGE_NAME.getCode());
 
@@ -180,8 +165,7 @@ public class LoginRequestHandler extends RawHandler {
                     in.readInt();
                 }
                 Core.getServer().getLogon().getAPI().authenticate(getSession(), name, pass, uuid, false);
-            }
-            else if (opcode == 19) {
+            } else if (opcode == 19) {
                 // Lobby login
                 in.readByte(); // screen settings?
                 in.readByte();
@@ -199,25 +183,34 @@ public class LoginRequestHandler extends RawHandler {
                     in.readByte();
                 }
                 Core.getServer().getLogon().getAPI().authenticate(getSession(), name, pass, uuid, true);
-            }
-            else {
+            } else {
                 throw new AuthenticationException("Unsupported opcode, expected 16/18/19, got " + opcode, AuthResult.MALFORMED_PACKET);
             }
-        }
-        catch(IOException | BufferUnderflowException e) {
+        } catch (IOException | BufferUnderflowException e) {
             Log.warning("Failed to read login request: " + e.getMessage());
             Log.warning("Client is being kicked.");
             getSession().write(AuthResult.MALFORMED_PACKET.getCode());
             getSession().close(true);
 
             return;
-        }
-        catch(AuthenticationException e) {
+        } catch (AuthenticationException e) {
             Log.debug(e.getMessage());
             getSession().write(e.getCode().getCode());
             getSession().close(true);
 
             return;
         }
-	}
+    }
+
+    private static class AuthenticationException extends Exception {
+        private AuthResult code;
+
+        public AuthenticationException(String message, AuthResult code) {
+            this.code = code;
+        }
+
+        public AuthResult getCode() {
+            return code;
+        }
+    }
 }

@@ -44,15 +44,12 @@ public class ServerStartRunnable implements Runnable {
                 try {
                     JavaScriptFiber js = new JavaScriptFiber(Core.CLASS_LOADER);
                     js.parse(startup);
-                }
-                catch(TimeoutError e){
+                } catch (TimeoutError e) {
                     Log.warning("Startup script timed out.");
-                }
-                catch (ContinuationPending e) {
+                } catch (ContinuationPending e) {
                     //TODO: Allow them.
                     Log.warning("Can't use continuations in startup.js");
-                }
-                catch (IOException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
@@ -65,8 +62,7 @@ public class ServerStartRunnable implements Runnable {
             //will also drop the connection if the logon connection is lost
             Log.info("Server initialized!");
             server.getThread().resetUsage();
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             t.printStackTrace();
             Log.severe("Exception was raised while booting server. Shutting down...");
             try {

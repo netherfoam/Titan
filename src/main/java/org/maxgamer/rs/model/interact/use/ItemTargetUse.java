@@ -30,7 +30,7 @@ public class ItemTargetUse implements Use {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return item.toString();
     }
 }

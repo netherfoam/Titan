@@ -8,17 +8,17 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
 /**
  * @author netherfoam
  */
-@CmdName(names = { "suicide" })
+@CmdName(names = {"suicide"})
 public class Die implements PlayerCommand {
-	
-	@Override
-	public void execute(Player player, String[] args) throws Exception {
-		player.setHealth(0);
-	}
-	
-	@Override
-	public int getRankRequired() {
-		return Rights.MOD;
-	}
-	
+
+    @Override
+    public void execute(Player player, String[] args) throws Exception {
+        player.setHealth(0);
+    }
+
+    @Override
+    public int getRankRequired() {
+        return Rights.MOD;
+    }
+
 }

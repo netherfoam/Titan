@@ -19,7 +19,7 @@ public class NPCSpawnRepository extends AbstractRepository<NPCSpawn> {
 
     public void deleteById(long id) {
         NPCSpawn spawn = this.find(id);
-        if(spawn != null) {
+        if (spawn != null) {
             this.getManager().delete(spawn);
         }
     }

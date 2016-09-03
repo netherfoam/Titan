@@ -4,7 +4,7 @@ public class OptionUse implements Use {
     private String option;
 
     public OptionUse(String option) {
-        if(option == null) throw new NullPointerException("Option may not be null");
+        if (option == null) throw new NullPointerException("Option may not be null");
         this.option = option;
     }
 
@@ -13,7 +13,7 @@ public class OptionUse implements Use {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return option;
     }
 }

@@ -11,27 +11,27 @@ import org.maxgamer.rs.model.map.Location;
  * @author netherfoam
  */
 public class Tphere implements PlayerCommand {
-	
-	@Override
-	public void execute(Player p, String[] args) {
-		if (args.length <= 0) {
-			p.sendMessage("Arg0 must be the user to teleport.");
-			return;
-		}
-		
-		Location dest = p.getLocation();
-		Persona victim = Core.getServer().getPersonas().getPersona(args[0], true);
-		if (victim == null) {
-			p.sendMessage("Target " + args[0] + " not online.");
-			return;
-		}
-		
-		victim.teleport(dest);
-		p.sendMessage("Teleported " + victim.getName() + " to you.");
-	}
-	
-	@Override
-	public int getRankRequired() {
-		return Rights.MOD;
-	}
+
+    @Override
+    public void execute(Player p, String[] args) {
+        if (args.length <= 0) {
+            p.sendMessage("Arg0 must be the user to teleport.");
+            return;
+        }
+
+        Location dest = p.getLocation();
+        Persona victim = Core.getServer().getPersonas().getPersona(args[0], true);
+        if (victim == null) {
+            p.sendMessage("Target " + args[0] + " not online.");
+            return;
+        }
+
+        victim.teleport(dest);
+        p.sendMessage("Teleported " + victim.getName() + " to you.");
+    }
+
+    @Override
+    public int getRankRequired() {
+        return Rights.MOD;
+    }
 }

@@ -13,16 +13,16 @@ import org.maxgamer.rs.model.map.WorldMap;
  */
 public class Instance implements PlayerCommand {
 
-	@Override
-	public void execute(Player p, String[] args) {
-		WorldMap map = new SubMap(p.getName() + "-instance", new Position(2624, 2560), 64, 64);
-		Location l = new Location(map, 2640, 2576, 0);
-		p.teleport(l);
-		p.sendMessage("Teleported to generated area");
-	}
+    @Override
+    public void execute(Player p, String[] args) {
+        WorldMap map = new SubMap(p.getName() + "-instance", new Position(2624, 2560), 64, 64);
+        Location l = new Location(map, 2640, 2576, 0);
+        p.teleport(l);
+        p.sendMessage("Teleported to generated area");
+    }
 
-	@Override
-	public int getRankRequired() {
-		return Rights.ADMIN;
-	}
+    @Override
+    public int getRankRequired() {
+        return Rights.ADMIN;
+    }
 }

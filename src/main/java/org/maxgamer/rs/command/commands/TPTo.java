@@ -11,27 +11,27 @@ import org.maxgamer.rs.model.map.Location;
  * @author netherfoam
  */
 public class TPTo implements PlayerCommand {
-	
-	@Override
-	public void execute(Player p, String[] args) {
-		if (args.length < 0) {
-			p.sendMessage("Arg0 must be the user to teleport.");
-			return;
-		}
-		
-		Persona victim = Core.getServer().getPersonas().getPersona(args[0], true);
-		if (victim == null) {
-			p.sendMessage("Target " + args[0] + " not online.");
-			return;
-		}
-		Location dest = victim.getLocation();
-		
-		p.teleport(dest);
-		p.sendMessage("Teleported to " + victim.getName());
-	}
-	
-	@Override
-	public int getRankRequired() {
-		return Rights.MOD;
-	}
+
+    @Override
+    public void execute(Player p, String[] args) {
+        if (args.length < 0) {
+            p.sendMessage("Arg0 must be the user to teleport.");
+            return;
+        }
+
+        Persona victim = Core.getServer().getPersonas().getPersona(args[0], true);
+        if (victim == null) {
+            p.sendMessage("Target " + args[0] + " not online.");
+            return;
+        }
+        Location dest = victim.getLocation();
+
+        p.teleport(dest);
+        p.sendMessage("Teleported to " + victim.getName());
+    }
+
+    @Override
+    public int getRankRequired() {
+        return Rights.MOD;
+    }
 }

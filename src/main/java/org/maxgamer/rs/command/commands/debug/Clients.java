@@ -10,19 +10,19 @@ import org.maxgamer.rs.network.Client;
 /**
  * @author netherfoam
  */
-@CmdName(names = { "users" })
+@CmdName(names = {"users"})
 public class Clients implements GenericCommand {
-	@Override
-	public void execute(CommandSender sender, String[] args) {
-		sender.sendMessage("Active Clients: (" + Core.getServer().getClients().size() + ")");
-		for (Client client : Core.getServer().getClients()) {
-			sender.sendMessage("Connected: " + client.getName());
-		}
-	}
-	
-	@Override
-	public int getRankRequired() {
-		return Rights.USER;
-	}
-	
+    @Override
+    public void execute(CommandSender sender, String[] args) {
+        sender.sendMessage("Active Clients: (" + Core.getServer().getClients().size() + ")");
+        for (Client client : Core.getServer().getClients()) {
+            sender.sendMessage("Connected: " + client.getName());
+        }
+    }
+
+    @Override
+    public int getRankRequired() {
+        return Rights.USER;
+    }
+
 }

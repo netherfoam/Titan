@@ -1,33 +1,10 @@
 package org.maxgamer.rs.model.entity.mob.persona.player;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.LinkedList;
-
 import org.maxgamer.rs.cache.IDX;
 import org.maxgamer.rs.cache.format.RSFont;
 import org.maxgamer.rs.command.CommandSender;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.core.server.WorldFullException;
-import org.maxgamer.rs.model.interfaces.Interface;
-import org.maxgamer.rs.model.interfaces.impl.PrayerOrbInterface;
-import org.maxgamer.rs.model.interfaces.impl.RunInterface;
-import org.maxgamer.rs.model.interfaces.impl.chat.ChatInterface;
-import org.maxgamer.rs.model.interfaces.impl.frame.GamePane;
-import org.maxgamer.rs.model.interfaces.impl.side.CombatStyles;
-import org.maxgamer.rs.model.interfaces.impl.side.EquipmentInterface;
-import org.maxgamer.rs.model.interfaces.impl.side.ExitInterface;
-import org.maxgamer.rs.model.interfaces.impl.side.FriendSideInterface;
-import org.maxgamer.rs.model.interfaces.impl.side.IgnoresSideInterface;
-import org.maxgamer.rs.model.interfaces.impl.side.InventoryInterface;
-import org.maxgamer.rs.model.interfaces.impl.side.MagicInterface;
-import org.maxgamer.rs.model.interfaces.impl.side.NotesInterface;
-import org.maxgamer.rs.model.interfaces.impl.side.PrayerInterface;
-import org.maxgamer.rs.model.interfaces.impl.side.QuestInterface;
-import org.maxgamer.rs.model.interfaces.impl.side.SettingsInterface;
-import org.maxgamer.rs.model.interfaces.impl.side.SkillsInterface;
-import org.maxgamer.rs.model.interfaces.impl.side.TasksInterface;
-import org.maxgamer.rs.util.Log;
 import org.maxgamer.rs.model.entity.mob.combat.Attack;
 import org.maxgamer.rs.model.entity.mob.combat.AttackStyle;
 import org.maxgamer.rs.model.entity.mob.combat.JavaScriptAttack;
@@ -38,6 +15,12 @@ import org.maxgamer.rs.model.entity.mob.persona.Persona;
 import org.maxgamer.rs.model.events.mob.persona.player.PlayerDestroyEvent;
 import org.maxgamer.rs.model.events.mob.persona.player.PlayerEnterWorldEvent;
 import org.maxgamer.rs.model.events.mob.persona.player.PlayerLeaveWorldEvent;
+import org.maxgamer.rs.model.interfaces.Interface;
+import org.maxgamer.rs.model.interfaces.impl.PrayerOrbInterface;
+import org.maxgamer.rs.model.interfaces.impl.RunInterface;
+import org.maxgamer.rs.model.interfaces.impl.chat.ChatInterface;
+import org.maxgamer.rs.model.interfaces.impl.frame.GamePane;
+import org.maxgamer.rs.model.interfaces.impl.side.*;
 import org.maxgamer.rs.model.map.Location;
 import org.maxgamer.rs.network.Client;
 import org.maxgamer.rs.network.Session;
@@ -47,715 +30,716 @@ import org.maxgamer.rs.network.protocol.Game637Protocol;
 import org.maxgamer.rs.network.protocol.ProtocolHandler;
 import org.maxgamer.rs.structure.YMLSerializable;
 import org.maxgamer.rs.structure.configs.ConfigSection;
+import org.maxgamer.rs.util.Log;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.LinkedList;
 
 /**
  * Represents a player with a network connection to the server who is actively
  * able to wander around the server and interact with it.
- * 
+ *
  * @author netherfoam
  */
 public class Player extends Persona implements Client, CommandSender, YMLSerializable {
-	/**
-	 * The chat font that is used by the client
-	 */
-	private static final RSFont CLIENT_FONT;
-	static {
-		try {
-			CLIENT_FONT = new RSFont(Core.getCache().getFile(IDX.FONTS, 495).getData());
-		}
-		catch (IOException e) {
-			throw new ExceptionInInitializerError(e);
-		}
-	}
-	
-	/**
-	 * The session belonging to this player, used for data transfer
-	 */
-	private Session session;
-	
-	/**
-	 * The protocol interface we are to use to communicate with the player. This
-	 * leaves room for using different protocols later, if necessary.
-	 */
-	private ProtocolHandler<Player> protocol;
-	
-	/**
-	 * The Panes manager for this player. This controls visible windows and
-	 * sends them to the player through the protocol.
-	 */
-	private PaneSet panes;
-	
-	/**
-	 * A log of all cheats this player has attempted to perform. The violation
-	 * level slowly decreases over time, however this allows for tracking of
-	 * potential cheats or abuse.
-	 */
-	private CheatLog cheatLog;
-	
-	/**
-	 * The View Distance of the player - Eg, how far are they able to walk
-	 * before they need to reload the map.
-	 */
-	private ViewDistance viewDistance = ViewDistance.SMALL;
-	
-	/**
-	 * True if the client has loaded the game screen, false otherwise. It may be
-	 * dangerous to send some packets to the client if they are not loaded.
-	 */
-	private boolean isLoaded;
-	
-	/**
-	 * Holds information about the player's interfaces that are currently open
-	 */
-	private GamePane gamepane;
-	
-	/**
-	 * The list of friends and ignores for this player
-	 */
-	private FriendsList friends;
-	
-	/**
-	 * The list of notes for this player
-	 */
-	private Notes notes;
-	
-	/**
-	 * The music for this player
-	 */
-	private Music music;
-	
-	/**
-	 * This number is randomly generated by the client when it starts. It is not
-	 * persistent after restarting the client, as it will change. TODO: This is
-	 * only an int, not a long!
-	 */
-	private int uuid = 0;
-	
-	private int rights = Rights.USER;
-	
-	/**
-	 * The epoch time in milliseconds that the player first played.
-	 */
-	private long created = System.currentTimeMillis();
-	
-	/**
-	 * The epoch time in milliseconds that the player was loaded
-	 */
-	private long loggedInAt = System.currentTimeMillis();
-	
-	/**
-	 * The total playtime this player has
-	 */
-	private long playtime = 0;
-	
-	/**
-	 * Constructs a new Player but does not add them to the world. This does not
-	 * send any data to the session until the start() method is invoked on the
-	 * player.
-	 * 
-	 * @param profile the profile to use for this player
-	 * @param session the session controlling the player.
-	 * @throws WorldFullException
-	 * @throws NullPointerException if the given profile is null
-	 */
-	public Player(String name, Session session, int uuid) throws NoSuchProtocolException, WorldFullException {
-		super(name);
-		
-		if (session == null) {
-			throw new NullPointerException("Session may not be null");
-		}
-		
-		session.addCloseHandler(new Runnable() {
-			@Override
-			public void run() {
-				Core.submit(new Runnable() {
-					@Override
-					public void run() {
-						// This must be done in the primary thread.
-						if (!Player.this.isDestroyed()) {
-							PlayerLeaveWorldEvent leave = new PlayerLeaveWorldEvent(Player.this);
-							leave.call();
-							if (leave.isCancelled()) {
-								// Keep attempting to leave until the event is
-								// not cancelled
-								Core.submit(this, 1800, false);
-								return;
-							}
-							
-							Player.this.destroy();
-						}
-					}
-				}, false);
-			}
-		});
-		
-		switch (session.getRevision()) {
-			case 637:
-				this.protocol = new Game637Protocol(this);
-				break;
-			default:
-				throw new NoSuchProtocolException("No protocol known for " + protocol);
-		}
-		
-		this.session = session;
-		
-		this.panes = new PaneSet(this);
-		this.cheatLog = new CheatLog(this);
-		this.friends = new FriendsList(this);
-		this.notes = new Notes(this);
-		this.music = new Music(this);
-		
-		try {
-			// Attempt to get the view distance from the config.
-			this.viewDistance = ViewDistance.valueOf(Core.getServer().getConfig().getString("players.view-distance", "SMALL").toUpperCase());
-		}
-		catch (IllegalArgumentException e) {
-			// User has a bad view distance in config.
-			this.viewDistance = ViewDistance.SMALL;
-			Log.warning("The view distance set in the config is invalid. Allowed values are: " + Arrays.toString(ViewDistance.values()));
-		}
-	}
-	
-	/**
-	 * The epoch time that this player was created in milliseconds.
-	 * @return The epoch time that this player was created in milliseconds.
-	 */
-	public long getCreated(){
-		return created;
-	}
-	
-	/**
-	 * The amount of playtime this player has, in milliseconds
-	 * @return The amount of playtime this player has, in milliseconds
-	 */
-	public long getPlaytime(){
-		return playtime + (System.currentTimeMillis() - loggedInAt);
-	}
-	
-	@Override
-	protected void onLoad() {
-		register("music", this.music);
-		this.getProtocol().login();
-		
-		ConfigSection config = getConfig().getSection("location");
-		try {
-			this.setLocation(Location.deserialize(config, DEFAULT_PLAYER_SPAWN));
-		}
-		catch (RuntimeException e) {
-			// Map didn't seem to load.
-			this.setLocation(DEFAULT_PLAYER_SPAWN);
-		}
-		this.created = getConfig().getLong("created", created);
-		this.playtime = getConfig().getLong("playtime", playtime);
-		this.loggedInAt = System.currentTimeMillis();
-		this.getProtocol().sendMap();
-		
-		this.gamepane = new GamePane(this);
-		this.getPanes().add(gamepane);
-		
-		PlayerEnterWorldEvent ev = new PlayerEnterWorldEvent(this);
-		ev.call();
-		
-		this.getProtocol().loginInterfaces();
-		this.getProtocol().sendInitMasks();
-		
-		getSession().setHandler(new GamePacketHandler(session, this));
-		
-		super.onLoad();
-		register("friends", this.friends);
-		register("notes", this.notes);
-		
-		// We may now load objects which send packets when constructing them
-		// to the player safely without interfering with the login procedure.
-		
-		this.addOption("Follow");
-		this.addOption("Trade");
-		this.addOption("Inspect");
-		
-		getWindow().open(new PrayerOrbInterface(this));
-		getWindow().open(new PrayerInterface(this));
-		getWindow().open(new EquipmentInterface(this));
-		getWindow().open(new InventoryInterface(this));
-		getWindow().open(new ExitInterface(this));
-		getWindow().open(new FriendSideInterface(this));
-		getWindow().open(new IgnoresSideInterface(this));
-		getWindow().open(new CombatStyles(this));
-		getWindow().open(new SettingsInterface(this));
-		getWindow().open(new ChatInterface(this));
-		getWindow().open(new NotesInterface(this));
-		getWindow().open(new RunInterface(this));
-		getWindow().open(new QuestInterface(this));
-		getWindow().open(new SkillsInterface(this));
-		getWindow().open(new TasksInterface(this));
-		
-		this.getProtocol().sendConfig(281, 1000); // Removes tutorial island limitations
-	}
-	
-	@Override
-	public void onUnload(){
-		super.onUnload();
-	}
-	
-	/**
-	 * Fetches the UUID for this client. The client generates this UUID on
-	 * startup, and therefore it is not persistent through restarts of the
-	 * client.
-	 * 
-	 * @return the UUID for this client.
-	 */
-	@Override
-	public int getUUID() {
-		return this.uuid;
-	}
-	
-	@Override
-	public Player setRunEnergy(int energy) {
-		super.setRunEnergy(energy);
-		getProtocol().sendRunEnergy(getRunEnergy());
-		return this;
-	}
-	
-	@Override
-	public Player setRunning(boolean run) {
-		super.setRunning(run);
-		this.getProtocol().sendConfig(173, isRunning() ? 1 : 0);
-		return this;
-	}
-	
-	@Override
-	public Attack nextAttack(){
-		/* First, we check if the player selected a spell to cast */
-		MagicInterface magic = this.getWindow().getInterface(MagicInterface.class);
-		if(magic != null){
-			MagicAttack a = magic.attack();
-			if(a != null){
-				return a;
-			}
-		}
+    /**
+     * The chat font that is used by the client
+     */
+    private static final RSFont CLIENT_FONT;
+
+    static {
+        try {
+            CLIENT_FONT = new RSFont(Core.getCache().getFile(IDX.FONTS, 495).getData());
+        } catch (IOException e) {
+            throw new ExceptionInInitializerError(e);
+        }
+    }
+
+    /**
+     * The session belonging to this player, used for data transfer
+     */
+    private Session session;
+
+    /**
+     * The protocol interface we are to use to communicate with the player. This
+     * leaves room for using different protocols later, if necessary.
+     */
+    private ProtocolHandler<Player> protocol;
+
+    /**
+     * The Panes manager for this player. This controls visible windows and
+     * sends them to the player through the protocol.
+     */
+    private PaneSet panes;
+
+    /**
+     * A log of all cheats this player has attempted to perform. The violation
+     * level slowly decreases over time, however this allows for tracking of
+     * potential cheats or abuse.
+     */
+    private CheatLog cheatLog;
+
+    /**
+     * The View Distance of the player - Eg, how far are they able to walk
+     * before they need to reload the map.
+     */
+    private ViewDistance viewDistance = ViewDistance.SMALL;
+
+    /**
+     * True if the client has loaded the game screen, false otherwise. It may be
+     * dangerous to send some packets to the client if they are not loaded.
+     */
+    private boolean isLoaded;
+
+    /**
+     * Holds information about the player's interfaces that are currently open
+     */
+    private GamePane gamepane;
+
+    /**
+     * The list of friends and ignores for this player
+     */
+    private FriendsList friends;
+
+    /**
+     * The list of notes for this player
+     */
+    private Notes notes;
+
+    /**
+     * The music for this player
+     */
+    private Music music;
+
+    /**
+     * This number is randomly generated by the client when it starts. It is not
+     * persistent after restarting the client, as it will change. TODO: This is
+     * only an int, not a long!
+     */
+    private int uuid = 0;
+
+    private int rights = Rights.USER;
+
+    /**
+     * The epoch time in milliseconds that the player first played.
+     */
+    private long created = System.currentTimeMillis();
+
+    /**
+     * The epoch time in milliseconds that the player was loaded
+     */
+    private long loggedInAt = System.currentTimeMillis();
+
+    /**
+     * The total playtime this player has
+     */
+    private long playtime = 0;
+
+    /**
+     * Constructs a new Player but does not add them to the world. This does not
+     * send any data to the session until the start() method is invoked on the
+     * player.
+     *
+     * @param profile the profile to use for this player
+     * @param session the session controlling the player.
+     * @throws WorldFullException
+     * @throws NullPointerException if the given profile is null
+     */
+    public Player(String name, Session session, int uuid) throws NoSuchProtocolException, WorldFullException {
+        super(name);
+
+        if (session == null) {
+            throw new NullPointerException("Session may not be null");
+        }
+
+        session.addCloseHandler(new Runnable() {
+            @Override
+            public void run() {
+                Core.submit(new Runnable() {
+                    @Override
+                    public void run() {
+                        // This must be done in the primary thread.
+                        if (!Player.this.isDestroyed()) {
+                            PlayerLeaveWorldEvent leave = new PlayerLeaveWorldEvent(Player.this);
+                            leave.call();
+                            if (leave.isCancelled()) {
+                                // Keep attempting to leave until the event is
+                                // not cancelled
+                                Core.submit(this, 1800, false);
+                                return;
+                            }
+
+                            Player.this.destroy();
+                        }
+                    }
+                }, false);
+            }
+        });
+
+        switch (session.getRevision()) {
+            case 637:
+                this.protocol = new Game637Protocol(this);
+                break;
+            default:
+                throw new NoSuchProtocolException("No protocol known for " + protocol);
+        }
+
+        this.session = session;
+
+        this.panes = new PaneSet(this);
+        this.cheatLog = new CheatLog(this);
+        this.friends = new FriendsList(this);
+        this.notes = new Notes(this);
+        this.music = new Music(this);
+
+        try {
+            // Attempt to get the view distance from the config.
+            this.viewDistance = ViewDistance.valueOf(Core.getServer().getConfig().getString("players.view-distance", "SMALL").toUpperCase());
+        } catch (IllegalArgumentException e) {
+            // User has a bad view distance in config.
+            this.viewDistance = ViewDistance.SMALL;
+            Log.warning("The view distance set in the config is invalid. Allowed values are: " + Arrays.toString(ViewDistance.values()));
+        }
+    }
+
+    /**
+     * The epoch time that this player was created in milliseconds.
+     *
+     * @return The epoch time that this player was created in milliseconds.
+     */
+    public long getCreated() {
+        return created;
+    }
+
+    /**
+     * The amount of playtime this player has, in milliseconds
+     *
+     * @return The amount of playtime this player has, in milliseconds
+     */
+    public long getPlaytime() {
+        return playtime + (System.currentTimeMillis() - loggedInAt);
+    }
+
+    @Override
+    protected void onLoad() {
+        register("music", this.music);
+        this.getProtocol().login();
+
+        ConfigSection config = getConfig().getSection("location");
+        try {
+            this.setLocation(Location.deserialize(config, DEFAULT_PLAYER_SPAWN));
+        } catch (RuntimeException e) {
+            // Map didn't seem to load.
+            this.setLocation(DEFAULT_PLAYER_SPAWN);
+        }
+        this.created = getConfig().getLong("created", created);
+        this.playtime = getConfig().getLong("playtime", playtime);
+        this.loggedInAt = System.currentTimeMillis();
+        this.getProtocol().sendMap();
+
+        this.gamepane = new GamePane(this);
+        this.getPanes().add(gamepane);
+
+        PlayerEnterWorldEvent ev = new PlayerEnterWorldEvent(this);
+        ev.call();
+
+        this.getProtocol().loginInterfaces();
+        this.getProtocol().sendInitMasks();
+
+        getSession().setHandler(new GamePacketHandler(session, this));
+
+        super.onLoad();
+        register("friends", this.friends);
+        register("notes", this.notes);
+
+        // We may now load objects which send packets when constructing them
+        // to the player safely without interfering with the login procedure.
+
+        this.addOption("Follow");
+        this.addOption("Trade");
+        this.addOption("Inspect");
+
+        getWindow().open(new PrayerOrbInterface(this));
+        getWindow().open(new PrayerInterface(this));
+        getWindow().open(new EquipmentInterface(this));
+        getWindow().open(new InventoryInterface(this));
+        getWindow().open(new ExitInterface(this));
+        getWindow().open(new FriendSideInterface(this));
+        getWindow().open(new IgnoresSideInterface(this));
+        getWindow().open(new CombatStyles(this));
+        getWindow().open(new SettingsInterface(this));
+        getWindow().open(new ChatInterface(this));
+        getWindow().open(new NotesInterface(this));
+        getWindow().open(new RunInterface(this));
+        getWindow().open(new QuestInterface(this));
+        getWindow().open(new SkillsInterface(this));
+        getWindow().open(new TasksInterface(this));
+
+        this.getProtocol().sendConfig(281, 1000); // Removes tutorial island limitations
+    }
+
+    @Override
+    public void onUnload() {
+        super.onUnload();
+    }
+
+    /**
+     * Fetches the UUID for this client. The client generates this UUID on
+     * startup, and therefore it is not persistent through restarts of the
+     * client.
+     *
+     * @return the UUID for this client.
+     */
+    @Override
+    public int getUUID() {
+        return this.uuid;
+    }
+
+    @Override
+    public Player setRunEnergy(int energy) {
+        super.setRunEnergy(energy);
+        getProtocol().sendRunEnergy(getRunEnergy());
+        return this;
+    }
+
+    @Override
+    public Player setRunning(boolean run) {
+        super.setRunning(run);
+        this.getProtocol().sendConfig(173, isRunning() ? 1 : 0);
+        return this;
+    }
+
+    @Override
+    public Attack nextAttack() {
+        /* First, we check if the player selected a spell to cast */
+        MagicInterface magic = this.getWindow().getInterface(MagicInterface.class);
+        if (magic != null) {
+            MagicAttack a = magic.attack();
+            if (a != null) {
+                return a;
+            }
+        }
 		
 		/* Second, we check if the player wants to use a special attack */
-		CombatStyles styles = this.getWindow().getInterface(CombatStyles.class);
-		if(styles != null){
-			JavaScriptAttack a = styles.attack();
-			if(a != null){
-				return a;
-			}
-		}
+        CombatStyles styles = this.getWindow().getInterface(CombatStyles.class);
+        if (styles != null) {
+            JavaScriptAttack a = styles.attack();
+            if (a != null) {
+                return a;
+            }
+        }
 		
 		/* Third, we resort to a generic Persona attack */
-		return super.nextAttack();
-	}
-	
-	/**
-	 * The currently running Window Panes for this player.
-	 * 
-	 * @return The currently running Window Panes for this player.
-	 */
-	public PaneSet getPanes() {
-		return panes;
-	}
-	
-	@Override
-	public Player setSpellbook(Spellbook book) {
-		if (book == null) {
-			throw new NullPointerException("Spellbook may not be null");
-		}
-		
-		if (book != this.getSpellbook()) {
-			// Update the player by adding the new interface
-			MagicInterface magic = new MagicInterface(this, (short) book.getChildId());
-			this.getWindow().open(magic);
-			setAutocast(null);
-		}
-		
-		super.setSpellbook(book);
-		return this;
-	}
-	
-	@Override
-	public Player setAutocast(CombatSpell spell) {
-		super.setAutocast(spell);
-		
-		if (spell == null) {
-			getProtocol().sendConfig(108, -1);
-		}
-		else {
-			getProtocol().sendConfig(108, spell.getAutocastId());
-		}
-		return this;
-	}
-	
-	/**
-	 * A logger against this particular player for anything that is suspicious,
-	 * such as picking up items they can't see, sending bad packets, using
-	 * interfaces they don't have open, and so on.
-	 * 
-	 * @return the cheat log
-	 */
-	public CheatLog getCheats() {
-		return this.cheatLog;
-	}
-	
-	/**
-	 * True if the player has loaded the map, false if they haven't told us they
-	 * have yet.
-	 * 
-	 * @return True if the player has loaded the map, false if they haven't told
-	 *         us they have yet.
-	 */
-	public boolean isMapLoaded() {
-		return this.isLoaded;
-	}
-	
-	/**
-	 * Sets the return of isLoaded(). The player sends us a packet when they've
-	 * finished loading a portion of the map.
-	 * 
-	 * @param loaded whether the player has finished or not.
-	 */
-	public Player setLoaded(boolean loaded) {
-		this.isLoaded = loaded;
-		return this;
-	}
-	
-	@Override
-	public void setLocation(Location l) {
-		// Persona class forces the map around it to be loaded.
-		super.setLocation(l);
-		
-		if (this.gamepane != null) {
-			for (Interface interf : getWindow().getInterfaces()) {
-				if (interf.isMobile() == false) {
-					getWindow().close(interf);
-				}
-			}
-		}
-	}
-	
-	/**
-	 * A systematically calculated weighting for the given persona. Since
-	 * clients can't display all 2000 players from a world happily, this simple
-	 * method will calculate a value that determines whether or not to show the
-	 * player.
-	 * 
-	 * @param p the player who is being prioritized
-	 * @return the priority value, this may be negative.
-	 */
-	public int getPriority(Persona p) {
-		int priority = 0;
-		priority -= p.getLocation().distanceSq(getLocation()); // Further away, less prioritised
-		
-		if (this.getTarget() == p) {
-			priority += 50; // Our target, heavy weighted.
-		}
-		if (p.getTarget() == this) {
-			priority += 25; // Targetting us, heavy weighted
-		}
-		if (this.getFriends().isFriend(p.getName())) {
-			priority += 50; // You're my friend
-		}
-		if (p instanceof Player && ((Player) p).getRights() > Rights.USER) {
-			priority += 25; // You're an admin
-		}
-		
-		return priority;
-	}
-	
-	/**
-	 * Currently active interfaces the player is able to view.
-	 * 
-	 * @return Currently active interfaces the player is able to view.
-	 */
-	public GamePane getWindow() {
-		if (this.gamepane == null) {
-			throw new RuntimeException("The player's GamePane has not been initialized yet. Interfaces may not be used until then.");
-		}
-		return this.gamepane;
-	}
-	
-	/**
-	 * Returns the protocol that this player is currently using. This shouldn't
-	 * be null unless accessed during login.
-	 * 
-	 * @return the protocol for this player
-	 */
-	public Game637Protocol getProtocol() {
-		return (Game637Protocol) this.protocol;
-	}
-	
-	@Override
-	public void sendMessage(String string) {
-		super.sendMessage(string);
-		
-		int pos = 0;
-		while (pos < string.length()) {
-			int width = 0;
-			int start = pos;
-			while (pos < string.length() && width < 480 && string.charAt(pos) != '\n') {
-				width += CLIENT_FONT.getCharWidth(string.charAt(pos));
-				pos++;
-			}
-			
-			getProtocol().sendMessage(string.substring(start, pos));
-		}
-	}
-	
-	@Override
-	public Session getSession() {
-		return this.session;
-	}
-	
-	@Override
-	public int getVersion() {
-		return this.protocol.getRevision();
-	}
-	
-	/**
-	 * Sets the rights for this persona to the given value
-	 * 
-	 * @param rights the rights for the persona
-	 */
-	public Player setRights(int rights) {
-		if (rights < 0) {
-			throw new IllegalArgumentException("Rights must be >= 0");
-		}
-		this.rights = rights;
-		Core.getServer().getLogon().getAPI().updateRights(getName(), getRights());
-		return this;
-	}
-	
-	/**
-	 * The rights of this Persona. Zero representing a normal player, one
-	 * representing Player Mod and two representing an Admin.
-	 * 
-	 * @return the rights level of the persona.
-	 */
-	@Override
-	public int getRights() {
-		return rights;
-	}
-	
-	/**
-	 * Whispers the given player a message
-	 * 
-	 * @param to the player to whisper to, not null
-	 * @param msg the message to send, not null
-	 */
-	public void whisper(Player to, String msg) {
-		if (to == null) throw new NullPointerException("Player may not be null");
-		if (msg == null) throw new NullPointerException("Message may not be null");
-		
-		getProtocol().sendPrivateMessage(to.getName(), msg);
-		to.getProtocol().receivePrivateMessage(getName(), getRights(), msg);
-	}
-	
-	/**
-	 * The player's view distance setting. See the actual enum for more details.
-	 * 
-	 * @return The player's view distance setting.
-	 */
-	public ViewDistance getViewDistance() {
-		return this.viewDistance;
-	}
-	
-	/**
-	 * Sets the view distance for this player, and refreshes the view distance
-	 * if required.
-	 * 
-	 * @param d the new view distance
-	 * @throws NullPointerException if the distance is null
-	 */
-	public Player setViewDistance(ViewDistance d) {
-		if (d == null) {
-			throw new NullPointerException("ViewDistance may not be null");
-		}
-		
-		if (this.viewDistance != d) {
-			this.viewDistance = d;
-			getProtocol().sendMap();
-		}
-		return this;
-	}
-	
-	/**
-	 * Sends the given packet to this player, if the player is connected to the
-	 * server. If they are not connected, this will call
-	 * Core.getServer().getPlayers().set(id, null) to dispose of the player.
-	 * 
-	 * @param out the packet to send
-	 * @return true if the packet was sent, false if it wasn't and we tried to
-	 *         disconnect the player.
-	 */
-	public boolean write(RSOutgoingPacket out) {
-		if (this.getProtocol().getViewport() == null) {
-			throw new RuntimeException("Player hasn't started yet. You should not send packets to them before they enter the world fully. If you ABSOLUTELY must, use Player.getSession().write();");
-		}
-		
-		try {
-			if (out.getLength() > 5000) {
-				throw new IllegalArgumentException("The given packet's length is " + out.getLength() + " bytes long, but the client will disconnect if a packet is > 5000 bytes.");
-			}
-			
-			if (this.getSession().isConnected()) {
-				this.getSession().write(out);
-				return true;
-			}
-			else {
-				return false;
-			}
-		}
-		catch (IOException e) {
-			if (this.isDestroyed() == false) {
-				Core.submit(new Runnable() {
-					@Override
-					public void run() {
-						// Destroy the player session, the check is necessary.
-						if (isDestroyed() == false) destroy();
-						getSession().close(true);
-					}
-				}, false);
-			}
-			return false;
-		}
-	}
-	
-	/**
-	 * Destroys this player. It calls the PlayerDisconnectEvent, then calls
-	 * Player.save(), cancels the ticking of the player, removes the player from
-	 * the Core's player list and then calls super.destroy(). The
-	 * super.destroy() call sets the player's location to null.
-	 * 
-	 * This method does close the player's session.
-	 * 
-	 * @throws RuntimeException if this player is already destroyed.
-	 */
-	@Override
-	public void destroy() {
-		if (this.isDestroyed()) {
-			throw new RuntimeException("This player has already been destroyed.");
-		}
-		
-		if (this.gamepane != null) {
-			for (Interface iface : this.gamepane.getInterfaces()) {
-				try {
-					if (iface.isOpen()) {
-						// May close other interfaces as well, which is why this check is necessary.
-						this.gamepane.close(iface);
-					}
-				}
-				catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		LinkedList<Client> list = new LinkedList<Client>();
-		list.add(this);
-		Core.getServer().getLogon().getAPI().save(list);
-		
-		// We call this before we perform the save.
-		PlayerDestroyEvent e = new PlayerDestroyEvent(this);
-		e.call();
-		
-		// Tidies up the protocol so references are removed
-		getProtocol().close();
-		
-		Core.getServer().getLogon().getAPI().leave(this);
-		
-		if (getSession().isConnected()) {
-			// This may cause duplicates if we send logout() prior to calling destroy.
-			// It currently has no effect on the client though.
-			getProtocol().logout(false);
-			getSession().close(true);
-		}
-		
-		super.destroy();
-	}
-	
-	@Override
-	public String toString() {
-		return this.getName();
-	}
-	
-	@Override
-	public Player setHealth(int hp) {
-		super.setHealth(hp);
-		getProtocol().sendConfig(1240, Math.min(getHealth() << 1, Short.MAX_VALUE));
-		return this;
-	}
-	
-	/**
-	 * The list of friends and ignores that this player has, not null.
-	 * 
-	 * @return the list of friends and ignores
-	 */
-	public FriendsList getFriends() {
-		return friends;
-	}
-	
-	@Override
-	public Player setRetaliate(boolean retaliate) {
-		super.setRetaliate(retaliate);
-		// Overrides so that we may inform the client of the change
-		getProtocol().sendConfig(172, retaliate ? 0 : 1); // 1 to disable retaliate
-		return this;
-	}
-	
-	@Override
-	public Player setAttackStyle(AttackStyle style) {
-		super.setAttackStyle(style);
-		
-		getProtocol().sendConfig(43, style.getSlot() > 0 ? style.getSlot() - 1 : -1);
-		return this;
-	}
-	
-	@Override
-	public Player setAttackEnergy(int e){
-		super.setAttackEnergy(e);
-		
-		this.getProtocol().sendConfig(300, getAttackEnergy() * 10);
-		return this;
-	}
-	
-	public Notes getNotes() {
-		return this.notes;
-	}
-	
-	public Music getMusic() {
-		return this.music;
-	}
-	
-	@Override
-	public ConfigSection serialize() {
-		ConfigSection config = super.serialize();
-		config.set("playtime", getPlaytime());
-		config.set("created", created);
-		return config;
-	}
-	
-	public void addOption(String option, boolean priority) {
-		super.addOption(option);
-		
-		for(int i = 0; i < this.personaOptions.length; i++){
-			if(this.personaOptions[i] != null && this.personaOptions[i].equals(option)) {
-				getProtocol().sendOption(i+1, option, priority);
-				return;
-			}
-		}
-	}
-	
-	@Override
-	public void addOption(String option) {
-		this.addOption(option, false);
-	}
-	
-	@Override
-	public void removeOption(String option) {
-		for(int i = 0; i < this.personaOptions.length; i++){
-			if(this.personaOptions[i] != null && this.personaOptions[i].equals(option)) {
-				getProtocol().sendOption(i+1, null, false);
-				this.personaOptions[i] = null;
-				return;
-			}
-		}
-	}
+        return super.nextAttack();
+    }
+
+    /**
+     * The currently running Window Panes for this player.
+     *
+     * @return The currently running Window Panes for this player.
+     */
+    public PaneSet getPanes() {
+        return panes;
+    }
+
+    @Override
+    public Player setSpellbook(Spellbook book) {
+        if (book == null) {
+            throw new NullPointerException("Spellbook may not be null");
+        }
+
+        if (book != this.getSpellbook()) {
+            // Update the player by adding the new interface
+            MagicInterface magic = new MagicInterface(this, (short) book.getChildId());
+            this.getWindow().open(magic);
+            setAutocast(null);
+        }
+
+        super.setSpellbook(book);
+        return this;
+    }
+
+    @Override
+    public Player setAutocast(CombatSpell spell) {
+        super.setAutocast(spell);
+
+        if (spell == null) {
+            getProtocol().sendConfig(108, -1);
+        } else {
+            getProtocol().sendConfig(108, spell.getAutocastId());
+        }
+        return this;
+    }
+
+    /**
+     * A logger against this particular player for anything that is suspicious,
+     * such as picking up items they can't see, sending bad packets, using
+     * interfaces they don't have open, and so on.
+     *
+     * @return the cheat log
+     */
+    public CheatLog getCheats() {
+        return this.cheatLog;
+    }
+
+    /**
+     * True if the player has loaded the map, false if they haven't told us they
+     * have yet.
+     *
+     * @return True if the player has loaded the map, false if they haven't told
+     * us they have yet.
+     */
+    public boolean isMapLoaded() {
+        return this.isLoaded;
+    }
+
+    /**
+     * Sets the return of isLoaded(). The player sends us a packet when they've
+     * finished loading a portion of the map.
+     *
+     * @param loaded whether the player has finished or not.
+     */
+    public Player setLoaded(boolean loaded) {
+        this.isLoaded = loaded;
+        return this;
+    }
+
+    @Override
+    public void setLocation(Location l) {
+        // Persona class forces the map around it to be loaded.
+        super.setLocation(l);
+
+        if (this.gamepane != null) {
+            for (Interface interf : getWindow().getInterfaces()) {
+                if (interf.isMobile() == false) {
+                    getWindow().close(interf);
+                }
+            }
+        }
+    }
+
+    /**
+     * A systematically calculated weighting for the given persona. Since
+     * clients can't display all 2000 players from a world happily, this simple
+     * method will calculate a value that determines whether or not to show the
+     * player.
+     *
+     * @param p the player who is being prioritized
+     * @return the priority value, this may be negative.
+     */
+    public int getPriority(Persona p) {
+        int priority = 0;
+        priority -= p.getLocation().distanceSq(getLocation()); // Further away, less prioritised
+
+        if (this.getTarget() == p) {
+            priority += 50; // Our target, heavy weighted.
+        }
+        if (p.getTarget() == this) {
+            priority += 25; // Targetting us, heavy weighted
+        }
+        if (this.getFriends().isFriend(p.getName())) {
+            priority += 50; // You're my friend
+        }
+        if (p instanceof Player && ((Player) p).getRights() > Rights.USER) {
+            priority += 25; // You're an admin
+        }
+
+        return priority;
+    }
+
+    /**
+     * Currently active interfaces the player is able to view.
+     *
+     * @return Currently active interfaces the player is able to view.
+     */
+    public GamePane getWindow() {
+        if (this.gamepane == null) {
+            throw new RuntimeException("The player's GamePane has not been initialized yet. Interfaces may not be used until then.");
+        }
+        return this.gamepane;
+    }
+
+    /**
+     * Returns the protocol that this player is currently using. This shouldn't
+     * be null unless accessed during login.
+     *
+     * @return the protocol for this player
+     */
+    public Game637Protocol getProtocol() {
+        return (Game637Protocol) this.protocol;
+    }
+
+    @Override
+    public void sendMessage(String string) {
+        super.sendMessage(string);
+
+        int pos = 0;
+        while (pos < string.length()) {
+            int width = 0;
+            int start = pos;
+            while (pos < string.length() && width < 480 && string.charAt(pos) != '\n') {
+                width += CLIENT_FONT.getCharWidth(string.charAt(pos));
+                pos++;
+            }
+
+            getProtocol().sendMessage(string.substring(start, pos));
+        }
+    }
+
+    @Override
+    public Session getSession() {
+        return this.session;
+    }
+
+    @Override
+    public int getVersion() {
+        return this.protocol.getRevision();
+    }
+
+    /**
+     * The rights of this Persona. Zero representing a normal player, one
+     * representing Player Mod and two representing an Admin.
+     *
+     * @return the rights level of the persona.
+     */
+    @Override
+    public int getRights() {
+        return rights;
+    }
+
+    /**
+     * Sets the rights for this persona to the given value
+     *
+     * @param rights the rights for the persona
+     */
+    public Player setRights(int rights) {
+        if (rights < 0) {
+            throw new IllegalArgumentException("Rights must be >= 0");
+        }
+        this.rights = rights;
+        Core.getServer().getLogon().getAPI().updateRights(getName(), getRights());
+        return this;
+    }
+
+    /**
+     * Whispers the given player a message
+     *
+     * @param to  the player to whisper to, not null
+     * @param msg the message to send, not null
+     */
+    public void whisper(Player to, String msg) {
+        if (to == null) throw new NullPointerException("Player may not be null");
+        if (msg == null) throw new NullPointerException("Message may not be null");
+
+        getProtocol().sendPrivateMessage(to.getName(), msg);
+        to.getProtocol().receivePrivateMessage(getName(), getRights(), msg);
+    }
+
+    /**
+     * The player's view distance setting. See the actual enum for more details.
+     *
+     * @return The player's view distance setting.
+     */
+    public ViewDistance getViewDistance() {
+        return this.viewDistance;
+    }
+
+    /**
+     * Sets the view distance for this player, and refreshes the view distance
+     * if required.
+     *
+     * @param d the new view distance
+     * @throws NullPointerException if the distance is null
+     */
+    public Player setViewDistance(ViewDistance d) {
+        if (d == null) {
+            throw new NullPointerException("ViewDistance may not be null");
+        }
+
+        if (this.viewDistance != d) {
+            this.viewDistance = d;
+            getProtocol().sendMap();
+        }
+        return this;
+    }
+
+    /**
+     * Sends the given packet to this player, if the player is connected to the
+     * server. If they are not connected, this will call
+     * Core.getServer().getPlayers().set(id, null) to dispose of the player.
+     *
+     * @param out the packet to send
+     * @return true if the packet was sent, false if it wasn't and we tried to
+     * disconnect the player.
+     */
+    public boolean write(RSOutgoingPacket out) {
+        if (this.getProtocol().getViewport() == null) {
+            throw new RuntimeException("Player hasn't started yet. You should not send packets to them before they enter the world fully. If you ABSOLUTELY must, use Player.getSession().write();");
+        }
+
+        try {
+            if (out.getLength() > 5000) {
+                throw new IllegalArgumentException("The given packet's length is " + out.getLength() + " bytes long, but the client will disconnect if a packet is > 5000 bytes.");
+            }
+
+            if (this.getSession().isConnected()) {
+                this.getSession().write(out);
+                return true;
+            } else {
+                return false;
+            }
+        } catch (IOException e) {
+            if (this.isDestroyed() == false) {
+                Core.submit(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Destroy the player session, the check is necessary.
+                        if (isDestroyed() == false) destroy();
+                        getSession().close(true);
+                    }
+                }, false);
+            }
+            return false;
+        }
+    }
+
+    /**
+     * Destroys this player. It calls the PlayerDisconnectEvent, then calls
+     * Player.save(), cancels the ticking of the player, removes the player from
+     * the Core's player list and then calls super.destroy(). The
+     * super.destroy() call sets the player's location to null.
+     * <p>
+     * This method does close the player's session.
+     *
+     * @throws RuntimeException if this player is already destroyed.
+     */
+    @Override
+    public void destroy() {
+        if (this.isDestroyed()) {
+            throw new RuntimeException("This player has already been destroyed.");
+        }
+
+        if (this.gamepane != null) {
+            for (Interface iface : this.gamepane.getInterfaces()) {
+                try {
+                    if (iface.isOpen()) {
+                        // May close other interfaces as well, which is why this check is necessary.
+                        this.gamepane.close(iface);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        LinkedList<Client> list = new LinkedList<Client>();
+        list.add(this);
+        Core.getServer().getLogon().getAPI().save(list);
+
+        // We call this before we perform the save.
+        PlayerDestroyEvent e = new PlayerDestroyEvent(this);
+        e.call();
+
+        // Tidies up the protocol so references are removed
+        getProtocol().close();
+
+        Core.getServer().getLogon().getAPI().leave(this);
+
+        if (getSession().isConnected()) {
+            // This may cause duplicates if we send logout() prior to calling destroy.
+            // It currently has no effect on the client though.
+            getProtocol().logout(false);
+            getSession().close(true);
+        }
+
+        super.destroy();
+    }
+
+    @Override
+    public String toString() {
+        return this.getName();
+    }
+
+    @Override
+    public Player setHealth(int hp) {
+        super.setHealth(hp);
+        getProtocol().sendConfig(1240, Math.min(getHealth() << 1, Short.MAX_VALUE));
+        return this;
+    }
+
+    /**
+     * The list of friends and ignores that this player has, not null.
+     *
+     * @return the list of friends and ignores
+     */
+    public FriendsList getFriends() {
+        return friends;
+    }
+
+    @Override
+    public Player setRetaliate(boolean retaliate) {
+        super.setRetaliate(retaliate);
+        // Overrides so that we may inform the client of the change
+        getProtocol().sendConfig(172, retaliate ? 0 : 1); // 1 to disable retaliate
+        return this;
+    }
+
+    @Override
+    public Player setAttackStyle(AttackStyle style) {
+        super.setAttackStyle(style);
+
+        getProtocol().sendConfig(43, style.getSlot() > 0 ? style.getSlot() - 1 : -1);
+        return this;
+    }
+
+    @Override
+    public Player setAttackEnergy(int e) {
+        super.setAttackEnergy(e);
+
+        this.getProtocol().sendConfig(300, getAttackEnergy() * 10);
+        return this;
+    }
+
+    public Notes getNotes() {
+        return this.notes;
+    }
+
+    public Music getMusic() {
+        return this.music;
+    }
+
+    @Override
+    public ConfigSection serialize() {
+        ConfigSection config = super.serialize();
+        config.set("playtime", getPlaytime());
+        config.set("created", created);
+        return config;
+    }
+
+    public void addOption(String option, boolean priority) {
+        super.addOption(option);
+
+        for (int i = 0; i < this.personaOptions.length; i++) {
+            if (this.personaOptions[i] != null && this.personaOptions[i].equals(option)) {
+                getProtocol().sendOption(i + 1, option, priority);
+                return;
+            }
+        }
+    }
+
+    @Override
+    public void addOption(String option) {
+        this.addOption(option, false);
+    }
+
+    @Override
+    public void removeOption(String option) {
+        for (int i = 0; i < this.personaOptions.length; i++) {
+            if (this.personaOptions[i] != null && this.personaOptions[i].equals(option)) {
+                getProtocol().sendOption(i + 1, null, false);
+                this.personaOptions[i] = null;
+                return;
+            }
+        }
+    }
 }

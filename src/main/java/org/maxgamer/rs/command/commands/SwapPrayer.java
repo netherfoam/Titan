@@ -8,17 +8,17 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
 /**
  * @author netherfoam
  */
-@CmdName(names = { "switchprayer" })
+@CmdName(names = {"switchprayer"})
 public class SwapPrayer implements PlayerCommand {
-	
-	@Override
-	public void execute(Player player, String[] args) throws Exception {
-		player.getPrayer().swapPrayerBook();
-		player.sendMessage("You are now using: " + (player.getPrayer().isAncient() ? "curses." : "normal prayers."));
-	}
-	
-	@Override
-	public int getRankRequired() {
-		return Rights.USER;
-	}
+
+    @Override
+    public void execute(Player player, String[] args) throws Exception {
+        player.getPrayer().swapPrayerBook();
+        player.sendMessage("You are now using: " + (player.getPrayer().isAncient() ? "curses." : "normal prayers."));
+    }
+
+    @Override
+    public int getRankRequired() {
+        return Rights.USER;
+    }
 }

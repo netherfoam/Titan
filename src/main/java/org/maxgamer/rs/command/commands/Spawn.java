@@ -9,17 +9,17 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
 /**
  * @author netherfoam
  */
-@CmdName(names = { "stuck" })
+@CmdName(names = {"stuck"})
 public class Spawn implements PlayerCommand {
-	
-	@Override
-	public void execute(Player player, String[] args) throws Exception {
-		player.teleport(Persona.DEFAULT_PLAYER_SPAWN);
-		player.sendMessage("Teleported to Spawn");
-	}
-	
-	@Override
-	public int getRankRequired() {
-		return Rights.USER;
-	}
+
+    @Override
+    public void execute(Player player, String[] args) throws Exception {
+        player.teleport(Persona.DEFAULT_PLAYER_SPAWN);
+        player.sendMessage("Teleported to Spawn");
+    }
+
+    @Override
+    public int getRankRequired() {
+        return Rights.USER;
+    }
 }

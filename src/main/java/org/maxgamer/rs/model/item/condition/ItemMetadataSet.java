@@ -22,6 +22,7 @@ public class ItemMetadataSet {
 
     /**
      * Constructs a new ItemMetadataSet for the given values
+     *
      * @param values the values
      */
     public ItemMetadataSet(Map<Integer, Object> values) {
@@ -32,6 +33,7 @@ public class ItemMetadataSet {
 
     /**
      * Returns a reference to the map used in the constructor
+     *
      * @return the underlying key-value pairs
      */
     public Map<Integer, Object> getData() {
@@ -40,6 +42,7 @@ public class ItemMetadataSet {
 
     /**
      * Returns true if the object has a broken flag, eg. Broken pickaxe heads
+     *
      * @return true if the object has a broken flag
      */
     public boolean isBroken() {
@@ -48,14 +51,15 @@ public class ItemMetadataSet {
 
     /**
      * Returns the list of ItemStacks which are required to build this item in a Player Owned House
+     *
      * @return the list of materials
      */
     public List<ItemStack> getConstructionMaterials() {
         ArrayList<ItemStack> list = new ArrayList<>(2);
 
-        for(int i = 211; i <= 221; i += 2) {
+        for (int i = 211; i <= 221; i += 2) {
             Integer type = getInt(i);
-            if(type == null) continue;
+            if (type == null) continue;
 
             list.add(ItemStack.create(type, getInt(i + 1)));
         }
@@ -91,13 +95,14 @@ public class ItemMetadataSet {
      */
     public SkillType getSkillCapeType() {
         Integer v = getInt(277);
-        if(v == null) return null;
+        if (v == null) return null;
 
         return SkillType.forId(v);
     }
 
     /**
      * Eg. "Clear circle" is 1, but "Orange almond" is 2, and "Yellow Pentagon" is 5.
+     *
      * @return the shape ID, 1-6 inclusive values.
      */
     public int getShapeType() {
@@ -106,6 +111,7 @@ public class ItemMetadataSet {
 
     /**
      * Eg. "Blue Hexagon" and "Blue pentagon" are 5, but "Green pentagon" is 4.
+     *
      * @return the shape ID, 1-7 inclusive values.
      */
     public int getShapeColour() {
@@ -115,6 +121,7 @@ public class ItemMetadataSet {
     /**
      * The dialogue option at pos. Eg for amulet of glory, pos[0] is "Edgeville", pos[3] is Al Kharid. For ring of duelling, pos[0]
      * is "Duel Arena".
+     *
      * @param pos the position 0-3 inclusive
      * @return the name of the option
      */
@@ -124,11 +131,12 @@ public class ItemMetadataSet {
 
     /**
      * Possibly the maximum number of spirit shards that this pouch can carry
+     *
      * @return Possibly the maximum number of spirit shards that this pouch can carry
      */
     public ItemStack getSpiritShards() {
         Integer a = getInt(540);
-        if(a == null) return null;
+        if (a == null) return null;
 
         return ItemStack.create(a, getInt(541));
     }
@@ -136,17 +144,19 @@ public class ItemMetadataSet {
     /**
      * Possibly the charms required to make a pouch? Always amount=1, but the item id is a
      * red/gold/blue charm item id
+     *
      * @return * Possibly the charms required to make a pouch?
      */
     public ItemStack getCharms() {
         Integer a = getInt(542);
-        if(a == null) return null;
+        if (a == null) return null;
 
         return ItemStack.create(a, getInt(543));
     }
 
     /**
      * Returns true if this item has a special attack associated with it
+     *
      * @return true if this item has a special attack associated with it
      */
     public boolean hasSpecialAttack() {
@@ -155,6 +165,7 @@ public class ItemMetadataSet {
 
     /**
      * Returns true if this item is a runecrafting pouch
+     *
      * @return true if this item is a runecrafting pouch
      */
     public boolean isRunecraftingPouch() {
@@ -163,13 +174,14 @@ public class ItemMetadataSet {
 
     /**
      * The level required to wear this armour
+     *
      * @param skillType the skill type
      * @return The level required to wear this armour
      */
     public Integer getWearLevel(SkillType skillType) {
-        for(int i = 749; i <= 761; i += 2) {
+        for (int i = 749; i <= 761; i += 2) {
             Integer t = getInt(i);
-            if(t == null || t != skillType.getId()) continue;
+            if (t == null || t != skillType.getId()) continue;
 
             return getInt(i + 1);
         }
@@ -179,13 +191,14 @@ public class ItemMetadataSet {
 
     /**
      * Fetches all SkillTypes that are required to equip the item
+     *
      * @return all SkillTypes that are required to equip the item
      */
     public List<SkillType> getWearSkills() {
         ArrayList<SkillType> types = new ArrayList<>(3);
-        for(int i = 749; i <= 761; i += 2) {
+        for (int i = 749; i <= 761; i += 2) {
             Integer t = getInt(i);
-            if(t == null) continue;
+            if (t == null) continue;
 
             types.add(SkillType.forId(t));
         }
@@ -195,6 +208,7 @@ public class ItemMetadataSet {
 
     /**
      * True if this is some kind of "Squad" item
+     *
      * @return True if this is some kind of "Squad" item
      */
     public boolean isSquad() {
@@ -219,6 +233,7 @@ public class ItemMetadataSet {
 
     /**
      * The idle, standing animation to use for this weapon when it's wielded
+     *
      * @return The idle wield animation
      */
     public Integer getRenderAnimation() {
@@ -228,29 +243,30 @@ public class ItemMetadataSet {
     /**
      * Attack type - such as a mace, or a sword or an axe. These determine what methods
      * of attack there are for melee weapons, eg. crush and slash or slash and stab.
-     *
+     * <p>
      * See also: {@link org.maxgamer.rs.model.entity.mob.combat.AttackStyle}
      *
      * @return the attack type
      */
     public Integer getAttackType() {
         Integer v = getInt(686);
-        if(v == null) return null;
+        if (v == null) return null;
 
         return v;
     }
 
     /**
      * Get the skill level required to use this item
+     *
      * @param type the skill type
      * @return the required level or null if no level is required
      */
     public Integer getCraftLevel(SkillType type) {
         Prove.isNotNull(type, "SkillType may not be null");
 
-        for(int i = 770; i <= 774; i += 2) {
+        for (int i = 770; i <= 774; i += 2) {
             Integer v = getInt(i);
-            if(v == null || v != type.getId()) continue;
+            if (v == null || v != type.getId()) continue;
 
             return getInt(i + 1);
         }
@@ -260,13 +276,14 @@ public class ItemMetadataSet {
 
     /**
      * Fetches all SkillTypes that are required to equip the item
+     *
      * @return all SkillTypes that are required to equip the item
      */
     public List<SkillType> getCraftSkills() {
         ArrayList<SkillType> types = new ArrayList<>(3);
-        for(int i = 770; i <= 774; i += 2) {
+        for (int i = 770; i <= 774; i += 2) {
             Integer t = getInt(i);
-            if(t == null) continue;
+            if (t == null) continue;
 
             types.add(SkillType.forId(t));
         }
@@ -277,6 +294,7 @@ public class ItemMetadataSet {
     /**
      * Gets the integer under the given key. This shouldn't really be used externally, instead
      * convenience methods should be defined for readability.
+     *
      * @param key the key
      * @return the value or null if not found
      * @throws ClassCastException if the given key is a String instead
@@ -288,6 +306,7 @@ public class ItemMetadataSet {
     /**
      * Gets the String under the given key. This shouldn't really be used externally, instead
      * convenience methods should be defined for readability.
+     *
      * @param key the key
      * @return the value or null if not found
      * @throws ClassCastException if the given key is an Integer instead
@@ -298,36 +317,39 @@ public class ItemMetadataSet {
 
     /**
      * Returns true if the given key is of the given value
-     * @param key the key
+     *
+     * @param key   the key
      * @param value the value
      * @return true if value == map.get(key) || value.equals(map.get(key))
      */
     public boolean is(int key, Integer value) {
         Integer stored = getInt(key);
-        if(stored == value) return true;
+        if (stored == value) return true;
 
-        if(stored == null || value == null) return false;
+        if (stored == null || value == null) return false;
 
         return stored.equals(value);
     }
 
     /**
      * Returns true if the given key is of the given value
-     * @param key the key
+     *
+     * @param key   the key
      * @param value the value
      * @return true if value == map.get(key) || value.equals(map.get(key))
      */
     public boolean is(int key, String value) {
         String stored = getString(key);
-        if(stored == value) return true;
+        if (stored == value) return true;
 
-        if(stored == null || value == null) return false;
+        if (stored == null || value == null) return false;
 
         return stored.equals(value);
     }
 
     /**
      * Returns true if the map has the given key
+     *
      * @param key the key
      * @return true if the map contains the given key (the value may be null though)
      */

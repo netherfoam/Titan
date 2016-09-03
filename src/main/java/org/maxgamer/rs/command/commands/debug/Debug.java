@@ -9,17 +9,17 @@ import org.maxgamer.rs.model.map.Location;
  * @author netherfoam
  */
 public class Debug implements PlayerCommand {
-	@Override
-	public void execute(Player p, String[] args) {
-		Location l = p.getLocation();
-		p.sendMessage("Location: " + l);
-		p.sendMessage("isLoaded: " + p.getMap().isLoaded(l.getChunkX(), l.getChunkY(), l.z));
-		p.sendMessage("isDestroyed(): " + p.isDestroyed() + " isLoaded(): " + p.isLoaded());
-	}
-	
-	@Override
-	public int getRankRequired() {
-		return Rights.ADMIN;
-	}
-	
+    @Override
+    public void execute(Player p, String[] args) {
+        Location l = p.getLocation();
+        p.sendMessage("Location: " + l);
+        p.sendMessage("isLoaded: " + p.getMap().isLoaded(l.getChunkX(), l.getChunkY(), l.z));
+        p.sendMessage("isDestroyed(): " + p.isDestroyed() + " isLoaded(): " + p.isLoaded());
+    }
+
+    @Override
+    public int getRankRequired() {
+        return Rights.ADMIN;
+    }
+
 }

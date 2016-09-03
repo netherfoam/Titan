@@ -12,29 +12,29 @@ import org.maxgamer.rs.network.Session;
 /**
  * @author netherfoam
  */
-@CmdName(names = { "list", "online", "who" })
+@CmdName(names = {"list", "online", "who"})
 public class Who implements GenericCommand {
-	
-	@Override
-	public void execute(CommandSender sender, String[] args) {
-		sender.sendMessage("--Sessions--");
-		for (Session s : Core.getServer().getNetwork().getSessions()) {
-			sender.sendMessage(s.toString());
-		}
-		sender.sendMessage("--Lobby Players--");
-		for (LobbyPlayer p : Core.getServer().getLobby().getPlayers()) {
-			sender.sendMessage(p.toString());
-		}
-		sender.sendMessage("--Players--");
-		for (Persona p : Core.getServer().getPersonas()) {
-			sender.sendMessage(p.getSpawnIndex() + "# " + p.getName() + "@" + p.getLocation() + " HP: " + p.getHealth() + "/" + p.getMaxHealth());
-		}
-		sender.sendMessage(Core.getServer().getPersonas().getCount() + " Online");
-	}
-	
-	@Override
-	public int getRankRequired() {
-		return Rights.USER;
-	}
-	
+
+    @Override
+    public void execute(CommandSender sender, String[] args) {
+        sender.sendMessage("--Sessions--");
+        for (Session s : Core.getServer().getNetwork().getSessions()) {
+            sender.sendMessage(s.toString());
+        }
+        sender.sendMessage("--Lobby Players--");
+        for (LobbyPlayer p : Core.getServer().getLobby().getPlayers()) {
+            sender.sendMessage(p.toString());
+        }
+        sender.sendMessage("--Players--");
+        for (Persona p : Core.getServer().getPersonas()) {
+            sender.sendMessage(p.getSpawnIndex() + "# " + p.getName() + "@" + p.getLocation() + " HP: " + p.getHealth() + "/" + p.getMaxHealth());
+        }
+        sender.sendMessage(Core.getServer().getPersonas().getCount() + " Online");
+    }
+
+    @Override
+    public int getRankRequired() {
+        return Rights.USER;
+    }
+
 }

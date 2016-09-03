@@ -15,24 +15,11 @@ import java.util.HashMap;
  * @author netherfoam
  */
 public class Database {
-    /**
-     * Represents a connection error, generally when the server can't connect to
-     * MySQL or something.
-     */
-    public static class ConnectionException extends Exception {
-        private static final long serialVersionUID = 8348749992936357317L;
-
-        public ConnectionException(String msg) {
-            super(msg);
-        }
-    }
-
     private DatabaseCore core;
     private HashMap<Class<? extends AbstractRepository>, AbstractRepository<?>> repositories = new HashMap<Class<? extends AbstractRepository>, AbstractRepository<?>>();
     private ArrayList<Class<?>> managedEntities = new ArrayList<Class<?>>();
     private SessionFactory sessionFactory;
     private Session session;
-
     /**
      * Creates a new database and validates its connection.
      * <p>
@@ -140,5 +127,17 @@ public class Database {
      */
     public void flush() {
 
+    }
+
+    /**
+     * Represents a connection error, generally when the server can't connect to
+     * MySQL or something.
+     */
+    public static class ConnectionException extends Exception {
+        private static final long serialVersionUID = 8348749992936357317L;
+
+        public ConnectionException(String msg) {
+            super(msg);
+        }
     }
 }

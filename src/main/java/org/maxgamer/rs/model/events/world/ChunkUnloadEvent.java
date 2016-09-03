@@ -7,7 +7,7 @@ import org.maxgamer.rs.model.map.WorldMap;
  * @author netherfoam
  */
 public class ChunkUnloadEvent extends ChunkEvent {
-	public ChunkUnloadEvent(WorldMap map, Chunk c, int cx, int cy, int z) {
-		super(map, c, cx, cy, z);
-	}
+    public ChunkUnloadEvent(WorldMap map, Chunk c, int cx, int cy, int z) {
+        super(map, c, cx, cy, z);
+    }
 }

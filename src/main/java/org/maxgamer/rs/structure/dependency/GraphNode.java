@@ -4,13 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * It represents the node of the graph. It holds a user value that is passed
  * back to the user when a node gets the chance to be evaluated.
  *
- * @author nicolae caralicea
- *
  * @param <T>
+ * @author nicolae caralicea
  */
 final class GraphNode<T> {
     public T value;
@@ -20,8 +18,7 @@ final class GraphNode<T> {
     /**
      * Adds an incoming node to the current node
      *
-     * @param node
-     *            The incoming node
+     * @param node The incoming node
      */
     public void addComingInNode(GraphNode<T> node) {
         if (comingInNodes == null)
@@ -32,8 +29,7 @@ final class GraphNode<T> {
     /**
      * Adds an outgoing node from the current node
      *
-     * @param node
-     *            The outgoing node
+     * @param node The outgoing node
      */
     public void addGoingOutNode(GraphNode<T> node) {
         if (goingOutNodes == null)

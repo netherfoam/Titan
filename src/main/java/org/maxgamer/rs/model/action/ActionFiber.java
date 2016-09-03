@@ -13,6 +13,14 @@ import org.maxgamer.rs.util.Log;
  */
 public class ActionFiber extends Fiber<Void> {
     private static final long serialVersionUID = 1842342854418180882L;
+    private Action action;
+    private StopWatch watch;
+    public ActionFiber(Action action) {
+        super(action.toString() + "-fiber", Core.getServer().getThread().getFiberScheduler());
+        this.action = action;
+        this.watch = Core.getTimings().start(getAction().getClass().getName());
+        this.watch.pause();
+    }
 
     /**
      * There's a bug in Quasar, which prevents us from calling Fiber.park() when inside a subclass of Fiber,
@@ -23,16 +31,6 @@ public class ActionFiber extends Fiber<Void> {
      */
     public static void park() throws SuspendExecution {
         Fiber.park();
-    }
-
-    private Action action;
-    private StopWatch watch;
-
-    public ActionFiber(Action action) {
-        super(action.toString() + "-fiber", Core.getServer().getThread().getFiberScheduler());
-        this.action = action;
-        this.watch = Core.getTimings().start(getAction().getClass().getName());
-        this.watch.pause();
     }
 
     public Action getAction() {
@@ -48,13 +46,12 @@ public class ActionFiber extends Fiber<Void> {
         this.watch.resume();
         try {
             getAction().run();
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             Log.warning("There was an Exception thrown while running an Action. Details:");
             Log.warning("Mob: " + getOwner() + ", Action: " + getAction());
             t.printStackTrace();
         }
-        if(!watch.isStopped()) {
+        if (!watch.isStopped()) {
             watch.stop();
         }
 
@@ -63,7 +60,7 @@ public class ActionFiber extends Fiber<Void> {
         //Notify the action queue this action has ended
         getOwner().getActions().end(getAction());
 
-        if(next != null) {
+        if (next != null) {
             // We finished without pausing, pass the turn on to the next Action that's queued
             next.tick();
         }
@@ -75,23 +72,22 @@ public class ActionFiber extends Fiber<Void> {
     public void onResume() throws InterruptedException, SuspendExecution {
         super.onResume();
 
-        if(this.watch.isPaused()) {
+        if (this.watch.isPaused()) {
             this.watch.resume();
         }
     }
 
     @Override
     public void onParked() {
-        if(getOwner().getActions().isEmpty() == false) {
-            if(getOwner().getActions().isQueued() == false) {
+        if (getOwner().getActions().isEmpty() == false) {
+            if (getOwner().getActions().isQueued() == false) {
                 // We're part way through an Action, so we want to continue it when possible.
                 getOwner().getActions().queue(ServerTicker.getTickDuration());
             }
             this.watch.pause();
-        }
-        else {
+        } else {
             this.cancel(true);
-            if(!this.watch.isStopped()) {
+            if (!this.watch.isStopped()) {
                 this.watch.stop();
             }
         }

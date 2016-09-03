@@ -25,11 +25,6 @@ import java.util.concurrent.TimeUnit;
  * @author netherfoam
  */
 public class Core {
-    static {
-        AUTHOR = Core.class.getPackage().getImplementationVendor();
-        BUILD = Core.class.getPackage().getImplementationVersion();
-    }
-
     /**
      * This class loader is used so that the Module system works. It is a shared
      * ClassLoader that allows the Module system to load classes, independant of
@@ -37,44 +32,45 @@ public class Core {
      * a class from MusicModule using this ClassLoader.
      */
     public static final ClassLoader CLASS_LOADER = Thread.currentThread().getContextClassLoader();
-
     /**
      * The hostname that built the project and build number
      */
     public static final String AUTHOR;
-
     /**
      * The version
      */
     public static final String BUILD;
-
     private static final Logger LOGGER = LoggerFactory.getLogger(Core.class);
-
     /**
      * A thread pool for handling async tasks that are not on the main server
      * thread.
      */
     private static ExecutorService threadPool;
-
     /**
      * The server that is currently running.
      */
     private static Server server;
-
     /**
      * The command sender that the console uses, this has admin rights.
      */
     private static ConsoleSender console;
-
     /**
      * The timings for tracking lag and expensive operations down
      */
     private static Timings timings;
-
     /**
      * The RS cache that is to be loaded and used.
      */
     private static Cache cache;
+
+    static {
+        AUTHOR = Core.class.getPackage().getImplementationVendor();
+        BUILD = Core.class.getPackage().getImplementationVersion();
+    }
+
+    private Core() {
+        //Private Constructor
+    }
 
     // TODO: Doc
     public static void start() throws IOException, SQLException {
@@ -180,6 +176,7 @@ public class Core {
 
     /**
      * Fetch the timer for events
+     *
      * @return the timer for events
      */
     public static Timings getTimings() {
@@ -188,13 +185,10 @@ public class Core {
 
     /**
      * Fetch the server's thread pool for async tasks
+     *
      * @return the async task thread pool
      */
     public static ExecutorService getThreadPool() {
         return threadPool;
-    }
-
-    private Core() {
-        //Private Constructor
     }
 }

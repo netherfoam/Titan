@@ -8,22 +8,23 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Player;
  * (Eg, if they close the window). This event is cancellable, but can be avoided
  * by simply calling destroy() on the Player. It is used for handling when a
  * player may not log out yet.
+ *
  * @author netherfoam
  */
 public class PlayerLeaveWorldEvent extends PlayerEvent implements Cancellable {
-	private boolean cancel;
-	
-	public PlayerLeaveWorldEvent(Player p) {
-		super(p);
-	}
-	
-	@Override
-	public boolean isCancelled() {
-		return cancel;
-	}
-	
-	@Override
-	public void setCancelled(boolean cancel) {
-		this.cancel = cancel;
-	}
+    private boolean cancel;
+
+    public PlayerLeaveWorldEvent(Player p) {
+        super(p);
+    }
+
+    @Override
+    public boolean isCancelled() {
+        return cancel;
+    }
+
+    @Override
+    public void setCancelled(boolean cancel) {
+        this.cancel = cancel;
+    }
 }

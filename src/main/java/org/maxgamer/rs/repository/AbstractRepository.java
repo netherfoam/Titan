@@ -44,16 +44,7 @@ public abstract class AbstractRepository<T> {
         this.type = type;
         this.annotation = type.getAnnotation(Entity.class);
         this.table = type.getAnnotation(Table.class);
-        if(this.annotation == null) throw new IllegalArgumentException("Class " + type.getName() + " is not annotated with @" + Entity.class);
-    }
-
-    /**
-     * Sets the database on this repository. This is done when by the Database when adding the repository to it
-     *
-     * @param db the database
-     */
-    public void setDatabase(Database db) {
-        this.database = db;
+        if (this.annotation == null) throw new IllegalArgumentException("Class " + type.getName() + " is not annotated with @" + Entity.class);
     }
 
     /**
@@ -63,6 +54,15 @@ public abstract class AbstractRepository<T> {
      */
     public Database getDatabase() {
         return this.database;
+    }
+
+    /**
+     * Sets the database on this repository. This is done when by the Database when adding the repository to it
+     *
+     * @param db the database
+     */
+    public void setDatabase(Database db) {
+        this.database = db;
     }
 
     /**
@@ -76,6 +76,7 @@ public abstract class AbstractRepository<T> {
 
     /**
      * Finds the entity with the given ID
+     *
      * @param id the id
      * @return the entity
      */
@@ -108,7 +109,7 @@ public abstract class AbstractRepository<T> {
      * @return the name of the managed entity
      */
     protected String name() {
-        if(this.annotation.name().isEmpty() == false){
+        if (this.annotation.name().isEmpty() == false) {
             return this.annotation.name();
         }
         return this.type.getSimpleName();
@@ -120,7 +121,7 @@ public abstract class AbstractRepository<T> {
      * @return The physical table name of this entity
      */
     protected String tableName() {
-        if(this.table != null && this.table.name().isEmpty() == false) {
+        if (this.table != null && this.table.name().isEmpty() == false) {
             return this.table.name();
         }
         return name();

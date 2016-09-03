@@ -10,6 +10,12 @@ import org.maxgamer.rs.model.map.object.GameObject;
  * @author netherfoam
  */
 public class Move {
+    private int buffer = 8;
+    private int radius = 0;
+    public Move() {
+
+    }
+
     /**
      * Calculate the maximum coordinate that the entity resides on. Eg, if an entity is 2x3 tiles, and location is
      * at (3022, 3046), this will return (3023, 3048)
@@ -18,22 +24,15 @@ public class Move {
      * @return
      */
     public static Location getMax(Entity entity) {
-        if(entity == null) throw new NullPointerException("Entity is null");
+        if (entity == null) throw new NullPointerException("Entity is null");
         return entity.getLocation().add(entity.getSizeX() - 1, entity.getSizeY() - 1);
-    }
-
-    private int buffer = 8;
-    private int radius = 0;
-
-    public Move() {
-
     }
 
     /**
      * Sets the distance of the buffer around this movement. A buffer of zero means that the searched area is
      * the rectangle created by the walking mob, and the target object. A buffer of 10, means that the rectangle
      * is now 20 tiles longer and 20 tiles wider. (+10 to north/south/east/west directions).
-     *
+     * <p>
      * TLDR: A higher buffer means slower pathfinding, but less likely to fail.
      *
      * @param buffer the buffer. Usually between 5-20
@@ -81,16 +80,15 @@ public class Move {
      * @return
      */
     public Path build(Mob mob, GameObject dest) {
-        if(dest.getActionCount() == 0 || dest.isSolid()) {
+        if (dest.getActionCount() == 0 || dest.isSolid()) {
             // The destination is a solid game object
             AStar finder = (AStar) finder();
             Path path = finder.findPath(mob, dest.getLocation().add(-radius, -radius), getMax(dest).add(radius, radius), dest);
-            if(path.isEmpty() == false && !path.hasFailed()) {
+            if (path.isEmpty() == false && !path.hasFailed()) {
                 path.removeLast();
             }
             return path;
-        }
-        else {
+        } else {
             // The destination can be walked on, so we don't modify the path if successful
             return finder().findPath(mob.getLocation(), dest.getLocation().add(-radius, radius), getMax(dest).add(radius, radius), mob.getSizeX(), mob.getSizeY());
         }
@@ -106,12 +104,12 @@ public class Move {
      * @return
      */
     public Path build(Mob mob, Locatable dest) {
-        if(dest instanceof GameObject) {
+        if (dest instanceof GameObject) {
             // These are clipped and are handled differently
             return build(mob, (GameObject) dest);
         }
 
-        if(dest instanceof Entity) {
+        if (dest instanceof Entity) {
             return finder().findPath(mob.getLocation(), dest.getLocation().add(-radius, -radius), getMax((Entity) dest).add(radius, radius), mob.getSizeX(), mob.getSizeY());
         }
 

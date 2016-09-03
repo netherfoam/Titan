@@ -1,34 +1,34 @@
 package org.maxgamer.rs.model.interfaces.impl.side;
 
-import org.maxgamer.rs.model.interfaces.Interface;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
+import org.maxgamer.rs.model.interfaces.Interface;
 
 /**
  * @author netherfoam
  */
 public class QuestInterface extends Interface {
-	
-	public QuestInterface(Player p) {
-		//190 for quests
-		
-		super(p, p.getWindow(), (short) (p.getSession().getScreenSettings().getDisplayMode() < 2 ? 205 : 90), true);
-		setChildId(190);
-	}
-	
-	@Override
-	public boolean isServerSidedClose() {
-		return true;
-	}
-	
-	@Override
-	public void onOpen() {
-		super.onOpen();
-		
-		//sendConfig(player, 101, 100);// Number of completed Quests
-		//sendConfig(player, 904, 100);// Total number of quests available.
-		//sendConfig(player, 281, 1000);// Unlock questlist and chat sort tabs
-		//sendConfig(player, 1384, 512);// Clear quest sort options
-		
+
+    public QuestInterface(Player p) {
+        //190 for quests
+
+        super(p, p.getWindow(), (short) (p.getSession().getScreenSettings().getDisplayMode() < 2 ? 205 : 90), true);
+        setChildId(190);
+    }
+
+    @Override
+    public boolean isServerSidedClose() {
+        return true;
+    }
+
+    @Override
+    public void onOpen() {
+        super.onOpen();
+
+        //sendConfig(player, 101, 100);// Number of completed Quests
+        //sendConfig(player, 904, 100);// Total number of quests available.
+        //sendConfig(player, 281, 1000);// Unlock questlist and chat sort tabs
+        //sendConfig(player, 1384, 512);// Clear quest sort options
+
 		/*
 		 * sendConfig(player, 130, 4);// Black Knight's Fortress
 		 * sendConfig(player, 29, 2);// Cook's Assistant sendConfig(player, 222,
@@ -89,16 +89,16 @@ public class QuestInterface extends Interface {
 		 * 400);// Zogre Flesh Eaters sendConfig(player, 869, 400);// Darkness
 		 * of Hallowvale sendConfig(player, 794, 100);// Death to the Dorgeshuun
 		 */
-	}
-	
-	@Override
-	public boolean isMobile() {
-		return true;
-	}
-	
-	@Override
-	public void onClick(int option, int buttonId, int slotId, int itemId) {
-		// TODO Auto-generated method stub
-		
-	}
+    }
+
+    @Override
+    public boolean isMobile() {
+        return true;
+    }
+
+    @Override
+    public void onClick(int option, int buttonId, int slotId, int itemId) {
+        // TODO Auto-generated method stub
+
+    }
 }

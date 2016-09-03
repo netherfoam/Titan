@@ -6,5 +6,5 @@ import org.maxgamer.rs.model.item.inventory.Container;
  * @author netherfoam
  */
 public interface InventoryHolder {
-	public abstract Container getInventory();
+    public abstract Container getInventory();
 }

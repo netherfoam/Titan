@@ -52,7 +52,8 @@ public class ServerThread extends Thread {
 
     /**
      * Constructs a new {@link ServerThread}
-     * @param sex the server executor
+     *
+     * @param sex  the server executor
      * @param name the name of the thread
      */
     public ServerThread(ServerExecutor sex, String name) {
@@ -65,7 +66,7 @@ public class ServerThread extends Thread {
     public void run() {
         this.start = System.currentTimeMillis();
         long time;
-        while(!finishing) {
+        while (!finishing) {
             ArrayList<Runnable> tasks;
             synchronized (queue) {
                 if (queue.isEmpty()) {
@@ -152,6 +153,7 @@ public class ServerThread extends Thread {
     /**
      * The queue of runnables we want to run. This is a reference, not a copy.
      * Adding runnables here will safely update the thread.
+     *
      * @return the runnables
      */
     public ArrayList<Runnable> getQueue() {
@@ -160,6 +162,7 @@ public class ServerThread extends Thread {
 
     /**
      * Requests that the given runnable be run in the next tick
+     *
      * @param r the runnable
      * @return the future object
      */

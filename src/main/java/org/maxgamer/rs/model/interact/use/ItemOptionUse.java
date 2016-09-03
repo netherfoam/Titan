@@ -6,7 +6,7 @@ import org.maxgamer.rs.model.item.inventory.Container;
 /**
  * @author netherfoam
  */
-public class ItemOptionUse extends OptionUse{
+public class ItemOptionUse extends OptionUse {
     private Container container;
     private ItemStack item;
     private int slot;
@@ -31,7 +31,7 @@ public class ItemOptionUse extends OptionUse{
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return item.toString() + "#" + getOption();
     }
 }

@@ -38,7 +38,7 @@ public class Vendor implements Serializable {
      */
     @PostLoad
     public void reset() {
-        if(this.currency == null) {
+        if (this.currency == null) {
             this.currency = ItemStack.COINS.getDefinition();
         }
         this.container = new VendorContainer(this);

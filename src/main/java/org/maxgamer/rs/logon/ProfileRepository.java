@@ -11,7 +11,7 @@ public class ProfileRepository extends AbstractRepository<Profile> {
     }
 
     public Profile find(String name) {
-        if(name == null) return null;
+        if (name == null) return null;
         return super.find(name.toLowerCase());
     }
 }

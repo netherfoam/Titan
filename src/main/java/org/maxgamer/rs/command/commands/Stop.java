@@ -8,16 +8,16 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
  * @author netherfoam
  */
 public class Stop implements GenericCommand {
-	
-	@Override
-	public void execute(CommandSender sender, String[] args) {
-		sender.sendMessage("Shutting down server...");
-		System.exit(0);
-	}
-	
-	@Override
-	public int getRankRequired() {
-		return Rights.ADMIN;
-	}
-	
+
+    @Override
+    public void execute(CommandSender sender, String[] args) {
+        sender.sendMessage("Shutting down server...");
+        System.exit(0);
+    }
+
+    @Override
+    public int getRankRequired() {
+        return Rights.ADMIN;
+    }
+
 }

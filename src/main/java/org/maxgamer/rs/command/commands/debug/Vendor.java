@@ -12,34 +12,33 @@ import org.maxgamer.rs.util.Erratic;
 /**
  * @author netherfoam
  */
-@CmdName(names = { "shop" })
+@CmdName(names = {"shop"})
 public class Vendor implements PlayerCommand {
-	
-	@Override
-	public void execute(Player player, String[] args) throws Exception {
-		ItemStack[] items = new ItemStack[40];
-		for (int i = 0; i < items.length; i++) {
-			try {
-				items[i] = ItemStack.create(Erratic.nextInt(0, 10000), 100);
-			}
-			catch (Exception e) {
-				items[i] = ItemStack.create(995);
-			}
-		}
 
-		org.maxgamer.rs.model.item.vendor.Vendor vendor = new org.maxgamer.rs.model.item.vendor.Vendor();
-		for(ItemStack item : items){
-			vendor.getItems().add(new VendorItem(vendor, item.getDefinition(), item.getAmount()));
-		}
-		vendor.setName("Admin Shop");
-		vendor.setFlags(1);
-		vendor.reset();
+    @Override
+    public void execute(Player player, String[] args) throws Exception {
+        ItemStack[] items = new ItemStack[40];
+        for (int i = 0; i < items.length; i++) {
+            try {
+                items[i] = ItemStack.create(Erratic.nextInt(0, 10000), 100);
+            } catch (Exception e) {
+                items[i] = ItemStack.create(995);
+            }
+        }
 
-		player.getWindow().open(new VendorInterface(player, vendor));
-	}
-	
-	@Override
-	public int getRankRequired() {
-		return Rights.ADMIN;
-	}
+        org.maxgamer.rs.model.item.vendor.Vendor vendor = new org.maxgamer.rs.model.item.vendor.Vendor();
+        for (ItemStack item : items) {
+            vendor.getItems().add(new VendorItem(vendor, item.getDefinition(), item.getAmount()));
+        }
+        vendor.setName("Admin Shop");
+        vendor.setFlags(1);
+        vendor.reset();
+
+        player.getWindow().open(new VendorInterface(player, vendor));
+    }
+
+    @Override
+    public int getRankRequired() {
+        return Rights.ADMIN;
+    }
 }

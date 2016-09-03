@@ -16,7 +16,7 @@ import java.util.List;
 @Entity
 @Table(name = "NPCGroup")
 public class NPCGroup implements Serializable {
-	/*public static void reload() throws SQLException {
+    /*public static void reload() throws SQLException {
 		groups = new HashMap<Integer, NPCGroup>(512);
 		Connection con = Core.getDatabase().getConnection();
 		PreparedStatement ps = con.prepareStatement("SELECT * FROM NPCGroupLoot");
@@ -109,40 +109,40 @@ public class NPCGroup implements Serializable {
 		return g;
 	}*/
 
-	@Id
-	private int id;
+    @Id
+    private int id;
 
-	@OneToMany(mappedBy = "group")
-	private List<NPCGroupLoot> lootChances;
+    @OneToMany(mappedBy = "group")
+    private List<NPCGroupLoot> lootChances;
 
-	@OneToMany(mappedBy = "group")
-	private List<NPCGroupLootGuarantee> lootGuarantee;
-	
-	/**
-	 * A class to store NPC's which look different, but are the same underneath.
-	 * This means Loot, Attacks and ?? are the same for the NPCs in this group.
-	 */
-	private transient Loot loot;
-	
-	public NPCGroup() {
+    @OneToMany(mappedBy = "group")
+    private List<NPCGroupLootGuarantee> lootGuarantee;
 
-	}
-	
-	public int getId() {
-		return id;
-	}
-	
-	public Loot getLoot() {
-		if(loot == null) {
-			loot = new Loot();
-			for(NPCGroupLoot npcGroupLoot : this.lootChances) {
-				loot.add(npcGroupLoot.toLoot(), false);
-			}
+    /**
+     * A class to store NPC's which look different, but are the same underneath.
+     * This means Loot, Attacks and ?? are the same for the NPCs in this group.
+     */
+    private transient Loot loot;
 
-			for(NPCGroupLootGuarantee guaranteed : this.lootGuarantee) {
-				loot.add(new CommonLootItem(guaranteed.toItem(), 100), true);
-			}
-		}
-		return loot;
-	}
+    public NPCGroup() {
+
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public Loot getLoot() {
+        if (loot == null) {
+            loot = new Loot();
+            for (NPCGroupLoot npcGroupLoot : this.lootChances) {
+                loot.add(npcGroupLoot.toLoot(), false);
+            }
+
+            for (NPCGroupLootGuarantee guaranteed : this.lootGuarantee) {
+                loot.add(new CommonLootItem(guaranteed.toItem(), 100), true);
+            }
+        }
+        return loot;
+    }
 }

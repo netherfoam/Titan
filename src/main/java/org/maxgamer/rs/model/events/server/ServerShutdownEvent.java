@@ -7,18 +7,18 @@ import org.maxgamer.rs.model.events.RSEvent;
  * @author netherfoam
  */
 public class ServerShutdownEvent extends RSEvent {
-	private Server s;
-	
-	public ServerShutdownEvent(Server s) {
-		this.s = s;
-	}
-	
-	public Server getServer() {
-		return s;
-	}
+    private Server s;
 
-	@Override
-	public boolean isAsync() {
-		return true;
-	}
+    public ServerShutdownEvent(Server s) {
+        this.s = s;
+    }
+
+    public Server getServer() {
+        return s;
+    }
+
+    @Override
+    public boolean isAsync() {
+        return true;
+    }
 }

@@ -31,14 +31,14 @@ public class HibernateJPAListener extends EmptyInterceptor {
 
     private List<Method> getHooks(Class<?> clazz) {
         List<Method> hooks = this.hooks.get(clazz);
-        if(hooks == null) {
+        if (hooks == null) {
             hooks = new ArrayList<Method>(1);
             Class<?> type = clazz;
 
-            while(type != Object.class) {
-                for(Method m : type.getDeclaredMethods()) {
+            while (type != Object.class) {
+                for (Method m : type.getDeclaredMethods()) {
                     //PostLoad hook = m.getAnnotation(PostLoad.class);
-                    for(Class<?> annotationType : HOOK_TYPES) {
+                    for (Class<?> annotationType : HOOK_TYPES) {
                         Object hook = m.getAnnotation((Class<? extends Annotation>) annotationType);
                         if (hook == null) continue;
                         hooks.add(m);
@@ -57,8 +57,8 @@ public class HibernateJPAListener extends EmptyInterceptor {
     private void hook(Object entity, Class<? extends Annotation> type) {
         List<Method> hooks = getHooks(entity.getClass());
 
-        for(Method m : hooks) {
-            if(m.getAnnotation(type) == null) continue;
+        for (Method m : hooks) {
+            if (m.getAnnotation(type) == null) continue;
             try {
                 m.invoke(entity);
             } catch (IllegalAccessException e) {

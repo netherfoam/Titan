@@ -23,7 +23,7 @@
     </appender>
 
     <root level="info">
-        <appender-ref ref="stdout" />
+        <appender-ref ref="stdout"/>
         <appender-ref ref="server.log"/>
     </root>
 </configuration>

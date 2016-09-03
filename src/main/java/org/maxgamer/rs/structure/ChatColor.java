@@ -21,7 +21,7 @@ public enum ChatColor implements CharSequence {
     private ChatColor(String text) {
         this.text = "<col=" + text + ">";
     }
-	
+
     public static String get(int r, int g, int b) {
         return String.format("<col=%X%X%X>", r, g, b);
     }

@@ -5,29 +5,29 @@ import org.maxgamer.rs.model.item.ItemStack;
 
 public class HarvestReward implements Weighted {
 
-	private final ItemStack reward;
-	private final int requiredLevel;
+    private final ItemStack reward;
+    private final int requiredLevel;
 
-	public HarvestReward(ItemStack reward, int requiredLevel) {
-		this.reward = reward;
-		this.requiredLevel = requiredLevel;
-	}
+    public HarvestReward(ItemStack reward, int requiredLevel) {
+        this.reward = reward;
+        this.requiredLevel = requiredLevel;
+    }
 
-	public HarvestReward(int itemId, int requiredLevel) {
-		this(ItemStack.create(itemId), requiredLevel);
-	}
+    public HarvestReward(int itemId, int requiredLevel) {
+        this(ItemStack.create(itemId), requiredLevel);
+    }
 
-	@Override
-	public final double getWeight() {
-		return 100 - requiredLevel;
-	}
+    @Override
+    public final double getWeight() {
+        return 100 - requiredLevel;
+    }
 
-	public ItemStack getReward() {
-		return reward;
-	}
+    public ItemStack getReward() {
+        return reward;
+    }
 
-	public int getRequiredLevel() {
-		return requiredLevel;
-	}
+    public int getRequiredLevel() {
+        return requiredLevel;
+    }
 
 }

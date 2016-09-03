@@ -6,32 +6,32 @@ import org.maxgamer.rs.model.item.ItemStack;
 
 public class MobEquipEvent extends MobEvent implements Cancellable {
 
-	private boolean cancel;
-	private final ItemStack unequipped;
-	private final ItemStack equipped;
-	
-	public MobEquipEvent(Mob mob, ItemStack unequipped, ItemStack equipped) {
-		super(mob);
-		this.equipped = equipped;
-		this.unequipped = unequipped;
-	}
+    private final ItemStack unequipped;
+    private final ItemStack equipped;
+    private boolean cancel;
 
-	@Override
-	public boolean isCancelled() {
-		return cancel;
-	}
+    public MobEquipEvent(Mob mob, ItemStack unequipped, ItemStack equipped) {
+        super(mob);
+        this.equipped = equipped;
+        this.unequipped = unequipped;
+    }
 
-	@Override
-	public void setCancelled(boolean cancel) {
-		this.cancel = cancel;
-	}
+    @Override
+    public boolean isCancelled() {
+        return cancel;
+    }
 
-	public ItemStack getUnequipped() {
-		return unequipped;
-	}
+    @Override
+    public void setCancelled(boolean cancel) {
+        this.cancel = cancel;
+    }
 
-	public ItemStack getEquipped() {
-		return equipped;
-	}
-	
+    public ItemStack getUnequipped() {
+        return unequipped;
+    }
+
+    public ItemStack getEquipped() {
+        return equipped;
+    }
+
 }

@@ -8,17 +8,17 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
 /**
  * @author netherfoam
  */
-@CmdName(names = { "GarbageCollection" })
+@CmdName(names = {"GarbageCollection"})
 public class GC implements GenericCommand {
-	
-	@Override
-	public void execute(final CommandSender player, final String[] args) throws Exception {
-		System.gc();
-	}
-	
-	@Override
-	public int getRankRequired() {
-		return Rights.ADMIN;
-	}
-	
+
+    @Override
+    public void execute(final CommandSender player, final String[] args) throws Exception {
+        System.gc();
+    }
+
+    @Override
+    public int getRankRequired() {
+        return Rights.ADMIN;
+    }
+
 }

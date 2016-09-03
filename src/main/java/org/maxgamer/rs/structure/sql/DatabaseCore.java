@@ -10,7 +10,9 @@ import java.util.List;
  * @author netherfoam
  */
 public interface DatabaseCore {
-	public Connection getConnection() throws SQLException;
-	public SessionFactory getSessionFactory(List<Class<?>> entities);
-	public void close();
+    public Connection getConnection() throws SQLException;
+
+    public SessionFactory getSessionFactory(List<Class<?>> entities);
+
+    public void close();
 }

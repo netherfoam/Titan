@@ -1,22 +1,14 @@
 package org.maxgamer.rs.core;
 
 import org.maxgamer.rs.cache.Cache;
-import org.maxgamer.rs.cache.CacheFile;
-import org.maxgamer.rs.cache.IDX;
-import org.maxgamer.rs.cache.MapCache;
-import org.maxgamer.rs.cache.reference.Reference;
-import org.maxgamer.rs.cache.reference.ReferenceTable;
 import org.maxgamer.rs.command.ConsoleSender;
 import org.maxgamer.rs.core.server.Server;
-import org.maxgamer.rs.structure.configs.FileConfig;
 import org.maxgamer.rs.structure.timings.NullTimings;
 import org.maxgamer.rs.structure.timings.Timings;
 import org.maxgamer.rs.util.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.concurrent.ExecutorService;
@@ -33,11 +25,6 @@ import java.util.concurrent.TimeUnit;
  * @author netherfoam
  */
 public class Core {
-    static {
-        AUTHOR = Core.class.getPackage().getImplementationVendor();
-        BUILD = Core.class.getPackage().getImplementationVersion();
-    }
-
     /**
      * This class loader is used so that the Module system works. It is a shared
      * ClassLoader that allows the Module system to load classes, independant of
@@ -45,44 +32,45 @@ public class Core {
      * a class from MusicModule using this ClassLoader.
      */
     public static final ClassLoader CLASS_LOADER = Thread.currentThread().getContextClassLoader();
-
     /**
      * The hostname that built the project and build number
      */
     public static final String AUTHOR;
-
     /**
      * The version
      */
     public static final String BUILD;
-
     private static final Logger LOGGER = LoggerFactory.getLogger(Core.class);
-
     /**
      * A thread pool for handling async tasks that are not on the main server
      * thread.
      */
     private static ExecutorService threadPool;
-
     /**
      * The server that is currently running.
      */
     private static Server server;
-
     /**
      * The command sender that the console uses, this has admin rights.
      */
     private static ConsoleSender console;
-
     /**
      * The timings for tracking lag and expensive operations down
      */
     private static Timings timings;
-
     /**
      * The RS cache that is to be loaded and used.
      */
     private static Cache cache;
+
+    static {
+        AUTHOR = Core.class.getPackage().getImplementationVendor();
+        BUILD = Core.class.getPackage().getImplementationVersion();
+    }
+
+    private Core() {
+        //Private Constructor
+    }
 
     // TODO: Doc
     public static void start() throws IOException, SQLException {
@@ -93,6 +81,21 @@ public class Core {
         Log.info("Author: " + Core.AUTHOR + " Build: " + Core.BUILD);
 
         final long start = System.currentTimeMillis();
+
+        int threads = Runtime.getRuntime().availableProcessors() - 1;
+        if (threads <= 0) threads = 1;
+        threadPool = Executors.newFixedThreadPool(threads, new CoreThreadFactory());
+
+        console = new ConsoleSender();
+        cache = Cache.init();
+        server = new Server(); //Binds port port
+
+        if (getServer().getConfig().getBoolean("timings")) {
+            timings = new Timings();
+        } else {
+            timings = new NullTimings();
+        }
+
         getServer().load();
         // This is run when we get CTRL + C as well
         Runtime.getRuntime().addShutdownHook(new Thread(new CoreShutdownHook(), "Shutdown Hook"));
@@ -110,76 +113,9 @@ public class Core {
      *
      * @return the cache interface
      */
-    public synchronized static Cache getCache() {
-        if (cache == null) {
-            try {
-                Log.debug("Loading Cache...");
-                cache = new Cache();
-                cache.load(new File("cache"));
-
-                //We store a file as data/cache.yml, this file contains information on files which we should
-                //delete from our cache (Encrypted maps). This is done to avoid sending the player maps that
-                //we do not have an XTEA key for.
-                FileConfig cacheCfg = new FileConfig(new File("data", "cache.yml"));
-                cacheCfg.reload();
-                //The reference table as a ByteBuffer.
-                CacheFile f = cache.getFile(255, IDX.LANDSCAPES);
-                //The decoded reference table
-                ReferenceTable r = cache.getReferenceTable(IDX.LANDSCAPES);
-
-                //Now we figure out if our files have changed
-                File main = new File("cache", "main_file_cache.dat2");
-                File xtea = cache.getXTEA().getFile();
-                //Quick way to check if the file has changed. This does not check the idx files, which may cause issues, but the .dat file and the xtea file are
-                //key to allowing/disallowing files from the map cache
-                if (main.lastModified() != cacheCfg.getLong("modified." + main.getName()) || xtea.lastModified() != cacheCfg.getLong("modified." + xtea.getName())) {
-                    Log.debug("Cache change detected. Recalculating!");
-                    //So we must scan through all of the map files, attempt to parse them, and blacklist broken ones
-                    for (int x = 0; x < 256; x++) {
-                        for (int y = 0; y < 256; y++) {
-                            Reference ref;
-                            try {
-                                ref = r.getReferenceByHash("l" + x + "_" + y);
-                            } catch (FileNotFoundException e) {
-                                continue;
-                            }
-                            try {
-                                MapCache.getObjects(x, y);
-                            } catch (IOException e) {
-                                //File is broken or encrypted and we don't have the key.
-                                r.remove(ref.getId());
-                                //Blacklist the file
-                                cacheCfg.set("encryptedMaps." + ref.getId(), ref.getId());
-                            }
-                        }
-                    }
-                    // Update config & save
-                    cacheCfg.set("modified." + main.getName(), main.lastModified());
-                    cacheCfg.set("modified." + xtea.getName(), xtea.lastModified());
-                    cacheCfg.save();
-                } else {
-                    // We previously worked on this cache, and listed all broken files.
-                    // This is faster than testing each file if it's broken or not.
-                    for (String refId : cacheCfg.getSection("encryptedMaps").getKeys()) {
-                        int referenceId = cacheCfg.getInt("encryptedMaps." + refId, -1);
-                        r.remove(referenceId);
-                    }
-                }
-
-                // Now we re-encode the raw version of the data
-                r.setVersion(r.getVersion() + 1);
-                f.setData(r.encode()); //Set the file data to the reference table
-                cache.setRaw(255, IDX.LANDSCAPES, f.encode());
-                cache.rebuildChecksum();
-            } catch (IOException e) {
-                LOGGER.error("There was an error loading the cache. Please ensure you placed it in the cache/ folder and that it is in tact and readable.", e);
-                System.exit(2);
-            }
-        }
-
+    public static Cache getCache() {
         return cache;
     }
-
 
     /**
      * Fetches the console command sender
@@ -187,10 +123,6 @@ public class Core {
      * @return The console as a command sender.
      */
     public static ConsoleSender getConsole() {
-        if (console == null) {
-            console = new ConsoleSender();
-        }
-
         return console;
     }
 
@@ -227,15 +159,7 @@ public class Core {
      *
      * @return the server
      */
-    public static synchronized Server getServer() {
-        if(server == null) {
-            try {
-                server = new Server(); //Binds port port
-            } catch (Exception e) {
-                LOGGER.error("There was an error instantiating the server", e);
-                System.exit(3);
-            }
-        }
+    public static Server getServer() {
         return server;
     }
 
@@ -252,35 +176,19 @@ public class Core {
 
     /**
      * Fetch the timer for events
+     *
      * @return the timer for events
      */
-    public synchronized static Timings getTimings() {
-        if (timings == null) {
-            if (getServer().getConfig().getBoolean("timings")) {
-                timings = new Timings();
-            } else {
-                timings = new NullTimings();
-            }
-        }
-
+    public static Timings getTimings() {
         return timings;
     }
 
     /**
      * Fetch the server's thread pool for async tasks
+     *
      * @return the async task thread pool
      */
     public static ExecutorService getThreadPool() {
-        if (threadPool == null) {
-            int threads = Runtime.getRuntime().availableProcessors() - 1;
-            if (threads <= 0) threads = 1;
-            threadPool = Executors.newFixedThreadPool(threads, new CoreThreadFactory());
-        }
-
         return threadPool;
-    }
-
-    private Core() {
-        //Private Constructor
     }
 }

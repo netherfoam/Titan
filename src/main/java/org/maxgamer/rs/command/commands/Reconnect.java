@@ -11,26 +11,25 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
  * @author netherfoam
  */
 public class Reconnect implements GenericCommand {
-	
-	@Override
-	public void execute(CommandSender sender, String[] args) {
-		if (args.length < 1) {
-			sender.sendMessage("Arg0: Target name");
-			return;
-		}
-		Persona p = Core.getServer().getPersonas().getPersona(args[0], true);
-		if (p instanceof Player) {
-			Player pl = (Player) p;
-			pl.getSession().close(true);
-		}
-		else {
-			sender.sendMessage(p + " is not a player.");
-		}
-	}
-	
-	@Override
-	public int getRankRequired() {
-		return Rights.ADMIN;
-	}
-	
+
+    @Override
+    public void execute(CommandSender sender, String[] args) {
+        if (args.length < 1) {
+            sender.sendMessage("Arg0: Target name");
+            return;
+        }
+        Persona p = Core.getServer().getPersonas().getPersona(args[0], true);
+        if (p instanceof Player) {
+            Player pl = (Player) p;
+            pl.getSession().close(true);
+        } else {
+            sender.sendMessage(p + " is not a player.");
+        }
+    }
+
+    @Override
+    public int getRankRequired() {
+        return Rights.ADMIN;
+    }
+
 }

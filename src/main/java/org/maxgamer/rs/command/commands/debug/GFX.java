@@ -9,20 +9,20 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
 /**
  * @author netherfoam
  */
-@CmdName(names = { "graphics" })
+@CmdName(names = {"graphics"})
 public class GFX implements PlayerCommand {
-	
-	@Override
-	public void execute(Player p, String[] args) {
-		if (args.length < 1) {
-			p.sendMessage("Arg0: GFX Id)");
-			return;
-		}
-		p.getUpdateMask().setGraphics(new Graphics(Integer.parseInt(args[0])));
-	}
-	
-	@Override
-	public int getRankRequired() {
-		return Rights.ADMIN;
-	}
+
+    @Override
+    public void execute(Player p, String[] args) {
+        if (args.length < 1) {
+            p.sendMessage("Arg0: GFX Id)");
+            return;
+        }
+        p.getUpdateMask().setGraphics(new Graphics(Integer.parseInt(args[0])));
+    }
+
+    @Override
+    public int getRankRequired() {
+        return Rights.ADMIN;
+    }
 }

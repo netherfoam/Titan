@@ -154,7 +154,7 @@ public class Server {
      */
     private Scheduler scheduler;
 
-    public Server() throws IOException, ConnectionException {
+    public Server() throws IOException {
         this(null);
     }
 	
@@ -164,7 +164,7 @@ public class Server {
 	 * @throws IOException If the port could not be bound.
 	 * @throws ConnectionException
 	 */
-	public Server(ConfigSection cfg) throws IOException, ConnectionException {
+	public Server(ConfigSection cfg) throws IOException {
 		this.config = cfg;
 
 		//We construct this immediately, it may be required immediately.

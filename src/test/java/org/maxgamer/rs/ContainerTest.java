@@ -10,7 +10,7 @@ import org.maxgamer.rs.model.item.inventory.StackType;
 /**
  * @author netherfoam
  */
-public class ContainerTest {
+public class ContainerTest extends TitanTest {
     @Test
     public void testAdd() throws Exception {
         Container c = new GenericContainer(1, StackType.NORMAL);

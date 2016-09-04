@@ -16,32 +16,36 @@ public class Craftable {
     /**
      * The input items, these are used up during the crafting process. Eg a bronze bar
      */
-    private ItemStack[] inputs;
+    protected ItemStack[] inputs;
 
     /**
      * The catalyst items, these are required but aren't destroyed during the process. Eg a hammer
      */
-    private ItemStack[] catalysts;
+    protected ItemStack[] catalysts;
 
     /**
      * The output items, these are given after a successful craft
      */
-    private ItemStack[] outputs;
+    protected ItemStack[] outputs;
 
     /**
      * The Skill to require a level for, and to grant exp to upon successful crafting.
      */
-    private SkillType skill;
+    protected SkillType skill;
 
     /**
      * The level that is required to craft this
      */
-    private int level;
+    protected int level;
 
     /**
      * The exp granted for crafting this.
      */
-    private double exp;
+    protected double exp;
+
+    protected Craftable() {
+        super();
+    }
 
     /**
      * Creates a new Craftable
@@ -54,6 +58,8 @@ public class Craftable {
      * @param exp       the exp in the skill to grant after a craft
      */
     public Craftable(ItemStack[] catalysts, ItemStack[] input, ItemStack[] output, SkillType skill, int level, double exp) {
+        this();
+
         if (catalysts == null) catalysts = new ItemStack[0];
         if (input == null) input = new ItemStack[0];
         if (output == null) throw new NullPointerException("Output items may not be null.. If you want no output, use an ItemStack[0]");

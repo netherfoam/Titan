@@ -13,8 +13,10 @@ import org.maxgamer.rs.util.Log;
  */
 public class ActionFiber extends Fiber<Void> {
     private static final long serialVersionUID = 1842342854418180882L;
+
     private Action action;
     private StopWatch watch;
+
     public ActionFiber(Action action) {
         super(action.toString() + "-fiber", Core.getServer().getThread().getFiberScheduler());
         this.action = action;
@@ -23,7 +25,7 @@ public class ActionFiber extends Fiber<Void> {
     }
 
     /**
-     * There's a bug in Quasar, which prevents us from calling Fiber.park() when inside a subclass of Fiber,
+     * There's a bug in Quasar, which prevents us from calling <F extends Fiber>.park() when inside a subclass of Fiber,
      * such as this class. This method rectifies that. The symptom of the bug is that, when Fiber.park()
      * is called, no message is generated and park() simply fails to park the fiber.
      *

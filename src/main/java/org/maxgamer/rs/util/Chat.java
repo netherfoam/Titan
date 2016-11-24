@@ -174,4 +174,47 @@ public class Chat {
             return true;
         return false;
     }
+
+    /**
+     * Camel-cases the given string. Eg "The quick brown Fox" becomes "TheQuickBrownFox"
+     * @param str the input string, space delimited
+     * @return the output string
+     */
+    public static String toUpperCamelCase(String str) {
+        return toUpperCamelCase(str, ' ');
+    }
+
+    public static String toUpperCamelCase(String str, char separator) {
+        if (str == null) return null;
+
+        StringBuilder sb = new StringBuilder(str.length());
+
+        for (String word : str.split(String.valueOf(separator))) {
+            if(word.isEmpty()) continue;
+
+            sb.append(word.substring(0, 1).toUpperCase());
+            sb.append(word.substring(1).toLowerCase());
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * Camel-cases the given string. Eg "The quick brown Fox" becomes "theQuickBrownFox". This lowercases
+     * the first character - differing from toUpperCamelCase.
+     * @param str the string
+     * @return the output string
+     */
+    public static String toLowerCamelCase(String str) {
+        return toLowerCamelCase(str, ' ');
+    }
+
+    public static String toLowerCamelCase(String str, char separator) {
+        if(str.isEmpty()) return "";
+
+        str = toUpperCamelCase(str, separator);
+
+        // Now lowercase the first letter
+        return str.substring(0, 1).toLowerCase() + str.substring(1);
+    }
 }

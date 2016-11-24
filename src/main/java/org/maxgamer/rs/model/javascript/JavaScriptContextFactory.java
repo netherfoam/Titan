@@ -5,12 +5,16 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.Scriptable;
 
+import java.io.File;
+
 public abstract class JavaScriptContextFactory extends ContextFactory {
     private ClassLoader loader;
+    private File folder;
 
-    public JavaScriptContextFactory(ClassLoader loader) {
+    public JavaScriptContextFactory(ClassLoader loader, File folder) {
         super();
         this.loader = loader;
+        this.folder = folder;
     }
 
     public abstract long credits();
@@ -22,6 +26,7 @@ public abstract class JavaScriptContextFactory extends ContextFactory {
         JavaScriptContext c = new JavaScriptContext(this);
         c.setOptimizationLevel(-1);
         c.setInstructionObserverThreshold(1000);
+
         return c;
     }
 

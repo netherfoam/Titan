@@ -22,8 +22,9 @@ import org.maxgamer.rs.model.item.AmmoType;
 import org.maxgamer.rs.model.item.ItemAmmo;
 import org.maxgamer.rs.model.item.ground.GroundItemManager;
 import org.maxgamer.rs.model.item.vendor.VendorManager;
-import org.maxgamer.rs.model.javascript.JavaScriptFiber;
-import org.maxgamer.rs.model.javascript.TimeoutError;
+import org.maxgamer.rs.model.javascript.DialogueUtil;
+import org.maxgamer.rs.model.javascript.JavaScriptCallFiber;
+import org.maxgamer.rs.model.javascript.RootScope;
 import org.maxgamer.rs.model.lobby.Lobby;
 import org.maxgamer.rs.model.map.MapManager;
 import org.maxgamer.rs.model.map.StandardMap;
@@ -43,18 +44,25 @@ import org.maxgamer.rs.structure.timings.StopWatch;
 import org.maxgamer.rs.tools.ConfigSetup;
 import org.maxgamer.rs.util.Files;
 import org.maxgamer.rs.util.Log;
-import org.mozilla.javascript.ContinuationPending;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @author netherfoam
  */
 public class Server {
+    /**
+     * The server logger
+     */
+    private Logger logger = LoggerFactory.getLogger(Server.class);
+
     /**
      * The {@link MapManager} for instances of WorldMaps.  This holds the primary world "mainland", as well
      * as any other persistant worlds. It does not hold maps which are temporary, such as Pest Control arenas.
@@ -154,6 +162,11 @@ public class Server {
      */
     private Scheduler scheduler;
 
+    /**
+     * The root JS Scope
+     */
+    private RootScope jsScope;
+
     public Server() throws IOException {
         this(null);
     }
@@ -182,6 +195,8 @@ public class Server {
         this.logon = new LogonConnection(logon);
         this.started = System.currentTimeMillis();
         this.scheduler = new Scheduler(this.getThread(), Core.getThreadPool());
+        this.jsScope = new RootScope(new File("javascripts"));
+        this.jsScope.register(DialogueUtil.class);
     }
 
     public synchronized AutoSave getAutosave() {
@@ -389,6 +404,14 @@ public class Server {
         }
 
         return null; //Not found
+    }
+
+    /**
+     * Fetch the active JavaScript scope. Never null
+     * @return The root JS scope
+     */
+    public RootScope getJsScope() {
+        return jsScope;
     }
 
     /**
@@ -608,15 +631,12 @@ public class Server {
     public void shutdown() throws InterruptedException {
         File shutdown = new File("shutdown.js");
         if (shutdown.exists()) {
-            JavaScriptFiber js = new JavaScriptFiber(Core.CLASS_LOADER);
+            JavaScriptCallFiber js = new JavaScriptCallFiber(getJsScope(), "shutdown", "run");
+            js.start();
             try {
-                js.parse(shutdown);
-            } catch (ContinuationPending e) {
-                Log.warning("Can't throw continuations in shutdown.js!");
-            } catch (IOException e) {
-                Log.warning("Failed to run shutdown.js: " + e.getClass().getSimpleName() + "(" + e.getMessage() + ")");
-            } catch (TimeoutError e) {
-                Log.warning(shutdown + " shutdown hook timed out!");
+                js.join();
+            } catch (ExecutionException e) {
+                logger.warn("An exception was raised while running shutdown.js", e);
             }
         }
 

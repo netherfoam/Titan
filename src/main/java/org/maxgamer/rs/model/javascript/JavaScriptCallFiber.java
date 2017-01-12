@@ -55,6 +55,47 @@ public class JavaScriptCallFiber extends Fiber<Object> {
         super.unpark();
     }
 
+    public boolean hasFunction() {
+        Context context = Context.enter();
+        context.setOptimizationLevel(-1);
+        Require require = (Require) scope.get("require", scope);
+
+        try {
+            // TODO: Type safety check (can't be a function etc)
+            // Invoke require("my/module.js")
+            ScriptableObject module;
+            try {
+                module = (ScriptableObject) require.call(context, scope, require, new String[]{this.module});
+            } catch (JavaScriptException e) {
+                // If the module was not found, we skip safely
+                if (e.getMessage().startsWith("Error: Module ") && e.getMessage().endsWith(" not found.")) {
+                    return false;
+                }
+                throw e;
+            }
+
+            if (module == null || module == Undefined.instance) {
+                logger.debug("module " + this.module + " not found");
+
+                return false;
+            }
+
+            // TODO: Check a Function is returned (not a variable etc)
+            Function f = (Function) module.get(this.function);
+
+            if (f == null || f == Undefined.instance) {
+                logger.debug("function " + this.function + " not found in module " + this.module);
+
+                return false;
+            }
+
+            return true;
+        }
+        finally {
+            Context.exit();
+        }
+    }
+
     @Override
     public Object run() throws SuspendExecution {
         Context context = Context.enter();

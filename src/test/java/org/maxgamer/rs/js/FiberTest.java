@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.maxgamer.rs.model.javascript.JavaScriptCallFiber;
-import org.maxgamer.rs.model.javascript.RootScope;
+import org.maxgamer.rs.model.javascript.ScriptEnvironment;
 import org.mozilla.javascript.ScriptableObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,7 @@ public class FiberTest {
 
     @Before
     public void init() {
-        scope = new RootScope(folder);
+        scope = new ScriptEnvironment(folder);
     }
 
     @Test

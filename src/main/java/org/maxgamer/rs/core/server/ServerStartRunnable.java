@@ -39,7 +39,7 @@ public class ServerStartRunnable implements Runnable {
 
             File startup = new File("startup.js");
             if(startup.exists()) {
-                JavaScriptCallFiber js = new JavaScriptCallFiber(server.getJsScope(), "startup", "run");
+                JavaScriptCallFiber js = new JavaScriptCallFiber(server.getScriptEnvironment(), "startup", "run");
                 js.start();
                 try {
                     js.join();

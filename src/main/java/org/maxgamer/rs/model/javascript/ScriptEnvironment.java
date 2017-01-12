@@ -18,8 +18,8 @@ import java.util.Collections;
 /**
  * @author netherfoam
  */
-public class RootScope extends ScriptableObject {
-    public RootScope(File folder) {
+public class ScriptEnvironment extends ScriptableObject {
+    public ScriptEnvironment(File folder) {
         Context c = Context.enter();
         c.setOptimizationLevel(-1);
 

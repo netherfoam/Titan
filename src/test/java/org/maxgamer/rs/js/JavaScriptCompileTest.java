@@ -3,7 +3,7 @@ package org.maxgamer.rs.js;
 import org.junit.Assert;
 import org.junit.Test;
 import org.maxgamer.rs.model.javascript.JavaScriptCallFiber;
-import org.maxgamer.rs.model.javascript.RootScope;
+import org.maxgamer.rs.model.javascript.ScriptEnvironment;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.commonjs.module.Require;
@@ -20,7 +20,7 @@ import java.nio.file.attribute.BasicFileAttributes;
  * @author netherfoam
  */
 public class JavaScriptCompileTest {
-    private RootScope scope;
+    private ScriptEnvironment scope;
 
     @Test
     public void compileAll() throws IOException {
@@ -35,7 +35,7 @@ public class JavaScriptCompileTest {
 
             @Override
             public FileVisitResult visitFile(Path directions, BasicFileAttributes basicFileAttributes) throws IOException {
-                compile(directions.toFile(), new RootScope(JavaScriptCallFiber.SCRIPT_FOLDER));
+                compile(directions.toFile(), new ScriptEnvironment(JavaScriptCallFiber.SCRIPT_FOLDER));
 
                 return FileVisitResult.CONTINUE;
             }
@@ -52,7 +52,7 @@ public class JavaScriptCompileTest {
         });
     }
 
-    private void compile(File f, RootScope scope) {
+    private void compile(File f, ScriptEnvironment scope) {
         try {
             String moduleName = f.getAbsolutePath().substring(JavaScriptCallFiber.SCRIPT_FOLDER.getAbsolutePath().length() + 1);
             moduleName = moduleName.substring(0, moduleName.length() - 3); // Drop the '.js' extension

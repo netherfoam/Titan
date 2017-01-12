@@ -88,7 +88,6 @@ public class JavaScriptInvocation implements java.util.concurrent.Callable<Objec
             return null;
         }
 
-        // TODO: thisObj
-        return f.call(context, scope, null, args);
+        return f.call(context, scope, module, args);
     }
 }

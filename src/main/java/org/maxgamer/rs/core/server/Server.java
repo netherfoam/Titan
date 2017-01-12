@@ -24,7 +24,8 @@ import org.maxgamer.rs.model.item.ground.GroundItemManager;
 import org.maxgamer.rs.model.item.vendor.VendorManager;
 import org.maxgamer.rs.model.javascript.DialogueUtil;
 import org.maxgamer.rs.model.javascript.JavaScriptCallFiber;
-import org.maxgamer.rs.model.javascript.RootScope;
+import org.maxgamer.rs.model.javascript.ScriptEnvironment;
+import org.maxgamer.rs.model.javascript.WorldControls;
 import org.maxgamer.rs.model.lobby.Lobby;
 import org.maxgamer.rs.model.map.MapManager;
 import org.maxgamer.rs.model.map.StandardMap;
@@ -165,7 +166,7 @@ public class Server {
     /**
      * The root JS Scope
      */
-    private RootScope jsScope;
+    private ScriptEnvironment scriptEnvironment;
 
     public Server() throws IOException {
         this(null);
@@ -176,7 +177,6 @@ public class Server {
      *
      * @param cfg The configuration used for this server
      * @throws IOException         If the port could not be bound.
-     * @throws ConnectionException
      */
     public Server(ConfigSection cfg) throws IOException {
         this.config = cfg;
@@ -195,8 +195,9 @@ public class Server {
         this.logon = new LogonConnection(logon);
         this.started = System.currentTimeMillis();
         this.scheduler = new Scheduler(this.getThread(), Core.getThreadPool());
-        this.jsScope = new RootScope(new File("javascripts"));
-        this.jsScope.register(DialogueUtil.class);
+        this.scriptEnvironment = new ScriptEnvironment(new File("javascripts"));
+        this.scriptEnvironment.register(DialogueUtil.class);
+        this.scriptEnvironment.register(WorldControls.class);
     }
 
     public synchronized AutoSave getAutosave() {
@@ -410,8 +411,8 @@ public class Server {
      * Fetch the active JavaScript scope. Never null
      * @return The root JS scope
      */
-    public RootScope getJsScope() {
-        return jsScope;
+    public ScriptEnvironment getScriptEnvironment() {
+        return scriptEnvironment;
     }
 
     /**
@@ -631,7 +632,7 @@ public class Server {
     public void shutdown() throws InterruptedException {
         File shutdown = new File("shutdown.js");
         if (shutdown.exists()) {
-            JavaScriptCallFiber js = new JavaScriptCallFiber(getJsScope(), "shutdown", "run");
+            JavaScriptCallFiber js = new JavaScriptCallFiber(getScriptEnvironment(), "shutdown", "run");
             js.start();
             try {
                 js.join();

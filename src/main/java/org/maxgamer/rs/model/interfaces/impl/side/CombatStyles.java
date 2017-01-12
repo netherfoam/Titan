@@ -50,10 +50,12 @@ public class CombatStyles extends SideInterface {
 
                 // Naming conventions: Remove anything inside brackets such as (p++)
                 // And remove anything that's not alphanumeric, a space, underscore or dash.
+                // Then replace spaces with a dash
                 String name = w.getName();
                 name = name.replaceAll("\\(.*\\)", "");
-                name = name.replaceAll("[^A-Za-z0-9 _ -]", "");
-                name = name.trim();
+                name = name.replaceAll("[^A-Za-z0-9_ -]", "");
+                name = name.trim().toLowerCase();
+                name = name.replaceAll(" ", "-");
 
                 DamageType type;
                 if (getPlayer().getAttackStyle().isType(SkillType.RANGE)) {

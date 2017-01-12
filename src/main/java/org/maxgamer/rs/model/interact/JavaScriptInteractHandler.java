@@ -121,7 +121,9 @@ public class JavaScriptInteractHandler implements InteractionHandler {
             String module = f.getAbsolutePath().substring(INTERACTION_FOLDER.getAbsoluteFile().getParentFile().getAbsolutePath().length() + 1);
             module = module.substring(0, module.length() - 3); // Drop the '.js' extension
 
-            JavaScriptCallFiber call = new JavaScriptCallFiber(Core.getServer().getJsScope(), module, option, source, target);
+            JavaScriptCallFiber call = new JavaScriptCallFiber(Core.getServer().getScriptEnvironment(), module, option, source, target);
+            if(!call.hasFunction()) continue;
+
             if (target instanceof Entity) {
                 source.face((Entity) target);
             }

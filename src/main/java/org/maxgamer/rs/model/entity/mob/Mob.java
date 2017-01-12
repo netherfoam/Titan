@@ -499,6 +499,16 @@ public abstract class Mob extends Entity implements EquipmentHolder, Interactabl
     }
 
     /**
+     * Animates the mob with the given animation and priority. This is a
+     * shorthand method for accessing the update mask. The default priority 5 is used.
+     *
+     * @param anim     the animation
+     */
+    public Mob animate(Animation anim) {
+        return animate(anim, 5);
+    }
+
+    /**
      * Overlays graphics on the mob. This is a shorthand method for accessing
      * the update mask.
      *

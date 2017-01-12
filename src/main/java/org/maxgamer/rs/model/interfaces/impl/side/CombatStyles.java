@@ -8,12 +8,7 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.interfaces.SideInterface;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.item.WieldType;
-import org.maxgamer.rs.model.javascript.JavaScriptFiber;
 import org.maxgamer.rs.model.skill.SkillType;
-import org.maxgamer.rs.util.Log;
-
-import java.io.File;
-import java.io.IOException;
 
 /**
  * @author netherfoam
@@ -55,10 +50,12 @@ public class CombatStyles extends SideInterface {
 
                 // Naming conventions: Remove anything inside brackets such as (p++)
                 // And remove anything that's not alphanumeric, a space, underscore or dash.
+                // Then replace spaces with a dash
                 String name = w.getName();
                 name = name.replaceAll("\\(.*\\)", "");
-                name = name.replaceAll("[^A-Za-z0-9 _ -]", "");
-                name = name.trim();
+                name = name.replaceAll("[^A-Za-z0-9_ -]", "");
+                name = name.trim().toLowerCase();
+                name = name.replaceAll(" ", "-");
 
                 DamageType type;
                 if (getPlayer().getAttackStyle().isType(SkillType.RANGE)) {
@@ -67,24 +64,16 @@ public class CombatStyles extends SideInterface {
                     type = DamageType.MELEE;
                 }
 
-                File file = new File(JavaScriptFiber.SCRIPT_FOLDER, "attacks/special/" + name + ".js");
-                if (file.exists() == false) {
-                    Log.debug("Couldn't find " + name + " - Special attack failed.");
-                    return;
-                }
+                String module = "attacks/special/" + name;
 
-                try {
-                    this.attack = new JavaScriptAttack(getPlayer(), -1, -1, file, type) {
-                        @Override
-                        public boolean run(Mob target) {
-                            getPlayer().getProtocol().sendConfig(SPECIAL_TOGGLE_CONFIG, 0);
-                            return super.run(target);
-                        }
-                    };
-                    getPlayer().getProtocol().sendConfig(SPECIAL_TOGGLE_CONFIG, 1);
-                } catch (IOException e) {
-                    Log.info("Failed to read " + file + ", message: " + e.getClass().getSimpleName() + "(" + e.getMessage() + ")");
-                }
+                this.attack = new JavaScriptAttack(getPlayer(), -1, -1, module, type) {
+                    @Override
+                    public boolean run(Mob target) {
+                        getPlayer().getProtocol().sendConfig(SPECIAL_TOGGLE_CONFIG, 0);
+                        return super.run(target);
+                    }
+                };
+                getPlayer().getProtocol().sendConfig(SPECIAL_TOGGLE_CONFIG, 1);
                 break;
             case 11:
             case 12:

@@ -4,12 +4,12 @@ import org.mozilla.javascript.ContinuationPending;
 import org.mozilla.javascript.Undefined;
 
 public class JavaScriptCall {
-    private JavaScriptFiber fiber;
+    private JavaScriptCallFiber fiber;
     private ContinuationPending state;
     private Object result;
     private String name;
 
-    public JavaScriptCall(JavaScriptFiber fiber, String name) {
+    public JavaScriptCall(JavaScriptCallFiber fiber, String name) {
         this.fiber = fiber;
         this.name = name;
     }
@@ -18,7 +18,7 @@ public class JavaScriptCall {
         return name;
     }
 
-    public JavaScriptFiber getFiber() {
+    public JavaScriptCallFiber getFiber() {
         return fiber;
     }
 

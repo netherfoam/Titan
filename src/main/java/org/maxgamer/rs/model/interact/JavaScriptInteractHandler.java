@@ -1,25 +1,26 @@
 package org.maxgamer.rs.model.interact;
 
 import co.paralleluniverse.fibers.SuspendExecution;
-import org.maxgamer.rs.model.action.Action;
+import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.model.entity.Entity;
 import org.maxgamer.rs.model.entity.Interactable;
 import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.facing.Facing;
 import org.maxgamer.rs.model.interact.use.OptionUse;
-import org.maxgamer.rs.model.javascript.JavaScriptCall;
-import org.maxgamer.rs.model.javascript.JavaScriptFiber;
+import org.maxgamer.rs.model.javascript.DialogueUtil;
+import org.maxgamer.rs.model.javascript.JavaScriptCallFiber;
+import org.maxgamer.rs.util.Chat;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.ExecutionException;
 
 public class JavaScriptInteractHandler implements InteractionHandler {
     /**
      * The folder where interaction javascripts are stored
      */
-    private static final File INTERACTION_FOLDER = new File(JavaScriptFiber.SCRIPT_FOLDER, "interaction");
+    private static final File INTERACTION_FOLDER = new File(JavaScriptCallFiber.SCRIPT_FOLDER, "interaction");
 
     /**
      * Convert the given entity and option into a file, or null if there's no handler for that entity/file
@@ -31,11 +32,16 @@ public class JavaScriptInteractHandler implements InteractionHandler {
     private ArrayList<File> get(Interactable entity, String option) {
         Class<?> clazz = entity.getClass();
 
-        String entityName = entity.getName();
-        if (entityName.matches("[A-Za-z0-9 \\-_]*$") == false) {
+        String entityName = entity.getName().toLowerCase();
+        entityName = entityName.replaceAll(" ", "-");
+
+        if (!entityName.matches("[A-Za-z0-9 \\-_]*$")) {
             // Eg.  An 'Amulet of glory (4)' becomes 'Amulet of glory', with the special characters trimmed, and excess spaces removed.
             entityName = entityName.replaceAll("[^A-Za-z0-9\\-_ ].*", "").trim();
         }
+
+        option = option.replaceAll(" ", "-");
+        option = option.toLowerCase();
 
         ArrayList<File> files = new ArrayList<File>();
 
@@ -105,45 +111,38 @@ public class JavaScriptInteractHandler implements InteractionHandler {
             }
         }
 
+        // Camel case via any spaces or dashes
+        option = option.replaceAll("-", " ");
+        option = Chat.toLowerCamelCase(option, ' ');
+
         for (File f : files) {
-            JavaScriptFiber fiber = new JavaScriptFiber();
+            if(!f.exists()) continue;
 
-            try {
-                fiber.set("fiber", fiber);
-                fiber.set("player", source);
+            String module = f.getAbsolutePath().substring(INTERACTION_FOLDER.getAbsoluteFile().getParentFile().getAbsolutePath().length() + 1);
+            module = module.substring(0, module.length() - 3); // Drop the '.js' extension
 
-                if (fiber.parse("lib/core.js").isFinished() == false) {
-                    throw new RuntimeException("lib/core.js cannot contain pauses outside of functions.");
-                }
-                if (fiber.parse("lib/dialogue.js").isFinished() == false) {
-                    throw new RuntimeException("lib/dialogue.js cannot contain pauses outside of functions.");
-                }
-                if (fiber.parse(f).isFinished() == false) {
-                    throw new RuntimeException(f + " cannot contain pauses outside of functions.");
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            JavaScriptCallFiber call = new JavaScriptCallFiber(Core.getServer().getScriptEnvironment(), module, option, source, target);
+            if(!call.hasFunction()) continue;
 
             if (target instanceof Entity) {
                 source.face((Entity) target);
             }
 
-            JavaScriptCall call = null;
+            DialogueUtil.setCause(call, source);
+            call.start();
+
             try {
-                call = fiber.invoke(function, source, target);
-            } catch (NoSuchMethodException e) {
-                continue;
+                call.join();
+
+                return;
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
             }
 
-            Action.wait(1);
-            while (call.isFinished() == false) {
-                Action.wait(1);
-            }
             return;
         }
 
-        if (files.isEmpty() == false) {
+        if (!files.isEmpty()) {
             System.out.println("Files " + Arrays.toString(files.toArray(new File[files.size()])) + " exists, but the function " + function + "() does not.");
         }
 

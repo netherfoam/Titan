@@ -2,13 +2,11 @@ package org.maxgamer.rs.core.server;
 
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.model.item.inventory.Equipment;
-import org.maxgamer.rs.model.javascript.JavaScriptFiber;
-import org.maxgamer.rs.model.javascript.TimeoutError;
+import org.maxgamer.rs.model.javascript.JavaScriptCallFiber;
 import org.maxgamer.rs.util.Log;
-import org.mozilla.javascript.ContinuationPending;
 
 import java.io.File;
-import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @author netherfoam
@@ -40,17 +38,15 @@ public class ServerStartRunnable implements Runnable {
             Core.submit(server.getAutosave(), server.getAutosave().getInterval(), true);
 
             File startup = new File("startup.js");
-            if (startup.exists()) {
+            if(startup.exists()) {
+                JavaScriptCallFiber js = new JavaScriptCallFiber(server.getScriptEnvironment(), "startup", "run");
+                js.start();
                 try {
-                    JavaScriptFiber js = new JavaScriptFiber(Core.CLASS_LOADER);
-                    js.parse(startup);
-                } catch (TimeoutError e) {
-                    Log.warning("Startup script timed out.");
-                } catch (ContinuationPending e) {
-                    //TODO: Allow them.
-                    Log.warning("Can't use continuations in startup.js");
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    js.join();
+                }
+                catch(ExecutionException e) {
+                    // Unwrap our exception here
+                    throw e.getCause();
                 }
             }
 

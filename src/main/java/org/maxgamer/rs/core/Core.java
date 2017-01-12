@@ -6,8 +6,6 @@ import org.maxgamer.rs.core.server.Server;
 import org.maxgamer.rs.structure.timings.NullTimings;
 import org.maxgamer.rs.structure.timings.Timings;
 import org.maxgamer.rs.util.Log;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -40,7 +38,6 @@ public class Core {
      * The version
      */
     public static final String BUILD;
-    private static final Logger LOGGER = LoggerFactory.getLogger(Core.class);
     /**
      * A thread pool for handling async tasks that are not on the main server
      * thread.

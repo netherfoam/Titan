@@ -40,23 +40,7 @@ public class Warp implements PlayerCommand {
         }
 
         if (args[0].equalsIgnoreCase("add")) {
-            if (args.length < 2) {
-                p.sendMessage("Usage ::warp add [name of warp]");
-                return;
-            }
-
-            Destination dest = new Destination();
-            Location l = p.getLocation();
-            dest.x = l.x;
-            dest.y = l.y;
-            dest.z = l.z;
-
-            dest.name = args[1].toLowerCase();
-            for (int i = 2; i < args.length; i++) dest.name += " " + args[i];
-
-            Core.getServer().getDatabase().getSession().persist(dest);
-
-            p.sendMessage("Saved the warp as ::warp " + dest.name);
+            add(p, args);
 
             return;
         }
@@ -76,6 +60,31 @@ public class Warp implements PlayerCommand {
 
         p.teleport(new Location(d.x, d.y, d.z), TeleportCause.SERVER);
         p.sendMessage("Warped to " + d.name);
+    }
+
+    /**
+     * Add a warp based on a "::warp add <my warp name>" command
+     * @param p the player
+     * @param args the message they wrote
+     */
+    protected void add(Player p, String[] args) {
+        if (args.length < 2) {
+            p.sendMessage("Usage ::warp add [name of warp]");
+            return;
+        }
+
+        Destination dest = new Destination();
+        Location l = p.getLocation();
+        dest.x = l.x;
+        dest.y = l.y;
+        dest.z = l.z;
+
+        dest.name = args[1].toLowerCase();
+        for (int i = 2; i < args.length; i++) dest.name += " " + args[i];
+
+        Core.getServer().getDatabase().getSession().persist(dest);
+
+        p.sendMessage("Saved the warp as ::warp " + dest.name);
     }
 
     @Override

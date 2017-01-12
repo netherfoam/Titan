@@ -65,11 +65,11 @@ public class Core {
         BUILD = Core.class.getPackage().getImplementationVersion();
     }
 
-    private Core() {
-        //Private Constructor
-    }
-
-    // TODO: Doc
+    /**
+     * Boots the Titan framework in its entirety, initialising all static fields.
+     * @throws IOException
+     * @throws SQLException
+     */
     public static void start() throws IOException, SQLException {
         // This prevents Quasar from warning us about a missing JavaAgent, since we instrument as part of
         // the build process, and using a URLClassLoader for the modules.
@@ -187,5 +187,9 @@ public class Core {
      */
     public static ExecutorService getThreadPool() {
         return threadPool;
+    }
+
+    private Core() {
+        //Private Constructor
     }
 }

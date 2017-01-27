@@ -73,6 +73,7 @@ public class ServerThread extends Thread {
                     try {
                         queue.wait();
                     } catch (InterruptedException e) {
+                        // Interrupted, check the queue and process.
                     }
                 }
 
@@ -95,6 +96,7 @@ public class ServerThread extends Thread {
                     r.notifyAll();
                 }
             }
+
             this.working += (System.currentTimeMillis() - time);
 
             if (lastPrint + 120000 < System.currentTimeMillis()) {

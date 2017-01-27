@@ -64,11 +64,11 @@ public class MapManager implements EventListener, Iterable<WorldMap> {
 
 
         NPCSpawn spawn = new NPCSpawn(npc.getId(), loc);
-        Core.getServer().getDatabase().getSession().persist(spawn);
+        Core.getServer().getSession().persist(spawn);
     }
 
     public void unpersist(NPC npc) {
-        if (isPersisted(npc.getMap()) == false) {
+        if (!isPersisted(npc.getMap())) {
             throw new IllegalArgumentException("Map is not persisted!");
         }
 

@@ -54,7 +54,7 @@ public class Warp implements PlayerCommand {
             dest.name = args[1].toLowerCase();
             for (int i = 2; i < args.length; i++) dest.name += " " + args[i];
 
-            Core.getServer().getDatabase().getSession().persist(dest);
+            Core.getServer().getSession().persist(dest);
 
             p.sendMessage("Saved the warp as ::warp " + dest.name);
 

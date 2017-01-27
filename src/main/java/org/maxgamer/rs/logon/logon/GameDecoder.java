@@ -48,7 +48,7 @@ public class GameDecoder extends OpcodeDecoder<LSIncomingPacket> implements Hand
             if (profile == null) {
                 profile = new Profile(name, pass, System.currentTimeMillis(), ip);
                 LogonServer.getLogon().getDatabase().getSession().persist(profile);
-            } else if (profile.isPass(pass) == false) {
+            } else if (!profile.isPass(pass)) {
                 //Auth success
                 result = AuthResult.INVALID_PASSWORD;
                 break;

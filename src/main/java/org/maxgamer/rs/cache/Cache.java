@@ -104,7 +104,7 @@ public class Cache {
                         continue;
                     }
                     try {
-                        MapCache.getObjects(x, y);
+                        MapCache.getObjects(cache, x, y);
                     } catch (IOException e) {
                         //File is broken or encrypted and we don't have the key.
                         r.remove(ref.getId());

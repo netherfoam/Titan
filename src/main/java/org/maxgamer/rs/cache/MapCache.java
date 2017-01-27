@@ -15,7 +15,7 @@ public class MapCache {
     private static HashMap<String, SoftReference<ByteBuffer>> objects = new HashMap<String, SoftReference<ByteBuffer>>(400);
 
     /**
-     * Fetches the objects at the given zoneX
+     * Fetches the objects at the given zoneX and zoneY
      *
      * @param zoneX the x >> 6
      * @param zoneY the y >> 6
@@ -23,6 +23,19 @@ public class MapCache {
      * @throws IOException
      */
     public static ByteBuffer getObjects(int zoneX, int zoneY) throws IOException {
+    	return getObjects(Core.getCache(), zoneX, zoneY);
+    }
+    
+    /**
+     * Fetches the objects at the given zoneX and zoneY
+     *
+     * @param cache where the data is located
+     * @param zoneX the x >> 6
+     * @param zoneY the y >> 6
+     * @return the bytestream for objects, unencrypted, or null
+     * @throws IOException
+     */
+    public static ByteBuffer getObjects(Cache cache, int zoneX, int zoneY) throws IOException {
         //An example of this is performed over at
         //http://www.rune-server.org/runescape-development/rs-503-client-server/help/450588-openrs-map-decrypting.html
         String key = "l" + zoneX + "_" + zoneY;
@@ -38,8 +51,8 @@ public class MapCache {
 
         //We haven't got a previously decrypted map data.
         try {
-            int fileId = Core.getCache().getFileId(IDX.LANDSCAPES, key);
-            CacheFile c = Core.getCache().getFile(IDX.LANDSCAPES, fileId);
+            int fileId = cache.getFileId(IDX.LANDSCAPES, key);
+            CacheFile c = cache.getFile(IDX.LANDSCAPES, fileId);
 
             bb = c.getData();
             objects.put(key, new SoftReference<ByteBuffer>(bb));

@@ -5,18 +5,23 @@ import org.maxgamer.rs.model.item.ItemType;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
+ * Entity representing an item sold at a vendor
+ *
  * @author netherfoam
  */
 @Entity
 @Table(name = "VendorItem")
 public class VendorItem implements Serializable {
     @Id
+    @MapsId
     @ManyToOne
-    private Vendor vendor;
+    private VendorType vendor;
 
     @Id
+    @MapsId
     @ManyToOne
     private ItemType item;
 
@@ -26,7 +31,7 @@ public class VendorItem implements Serializable {
     public VendorItem() {
     }
 
-    public VendorItem(Vendor vendor, ItemType item, long amount) {
+    public VendorItem(VendorType vendor, ItemType item, long amount) {
         this.vendor = vendor;
         this.item = item;
         this.amount = amount;
@@ -40,11 +45,11 @@ public class VendorItem implements Serializable {
         this.item = item;
     }
 
-    public Vendor getVendor() {
+    public VendorType getVendor() {
         return vendor;
     }
 
-    public void setVendor(Vendor vendor) {
+    public void setVendor(VendorType vendor) {
         this.vendor = vendor;
     }
 
@@ -58,5 +63,26 @@ public class VendorItem implements Serializable {
 
     public ItemStack toItem() {
         return ItemStack.create(this.item.getId(), this.amount);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(vendor, item);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        final VendorItem other = (VendorItem) obj;
+
+        return Objects.equals(this.vendor, other.vendor)
+                && Objects.equals(this.item, other.item);
     }
 }

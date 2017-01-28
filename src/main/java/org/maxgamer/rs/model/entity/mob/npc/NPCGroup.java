@@ -7,15 +7,15 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author netherfoam
  */
 @Entity
 @Table(name = "NPCGroup")
-public class NPCGroup implements Serializable {
+public class NPCGroup {
     /*public static void reload() throws SQLException {
 		groups = new HashMap<Integer, NPCGroup>(512);
 		Connection con = Core.getDatabase().getConnection();
@@ -144,5 +144,25 @@ public class NPCGroup implements Serializable {
             }
         }
         return loot;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        final NPCGroup other = (NPCGroup) obj;
+
+        return Objects.equals(this.id, other.id);
     }
 }

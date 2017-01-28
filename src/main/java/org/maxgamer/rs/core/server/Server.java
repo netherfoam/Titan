@@ -19,7 +19,7 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.events.server.ServerShutdownEvent;
 import org.maxgamer.rs.model.interact.InteractionManager;
 import org.maxgamer.rs.model.item.AmmoType;
-import org.maxgamer.rs.model.item.ItemAmmo;
+import org.maxgamer.rs.model.item.ItemAmmoType;
 import org.maxgamer.rs.model.item.ground.GroundItemManager;
 import org.maxgamer.rs.model.item.vendor.VendorManager;
 import org.maxgamer.rs.model.javascript.DialogueUtil;
@@ -299,7 +299,7 @@ public class Server {
             database.addEntity(NPCGroupLoot.class);
             database.addEntity(NPCGroupLootGuarantee.class);
             database.addEntity(AmmoType.class);
-            database.addEntity(ItemAmmo.class);
+            database.addEntity(ItemAmmoType.class);
         }
         return database;
     }

@@ -1,11 +1,15 @@
 package org.maxgamer.rs.model.entity.mob.npc;
 
 import org.maxgamer.rs.model.item.ItemStack;
+import org.maxgamer.rs.model.item.ItemType;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
+ * Represents an item that is guaranteed to drop from a group of NPC's.
+ *
  * @author netherfoam
  */
 @Entity
@@ -14,16 +18,20 @@ public class NPCGroupLootGuarantee implements Serializable {
     @Id
     @MapsId
     @ManyToOne
+    @JoinColumn(name = "group_id")
     private NPCGroup group;
 
-    @Column
-    private int item_id;
+    @Id
+    @MapsId
+    @ManyToOne
+    @JoinColumn(name = "item_id")
+    private ItemType item;
 
     @Column
     private int amount;
 
     public ItemStack toItem() {
-        return ItemStack.create(item_id, amount);
+        return item.toItem(amount);
     }
 
     public NPCGroup getGroup() {
@@ -34,12 +42,12 @@ public class NPCGroupLootGuarantee implements Serializable {
         this.group = group;
     }
 
-    public int getItem_id() {
-        return item_id;
+    public ItemType getItem() {
+        return item;
     }
 
-    public void setItem_id(int item_id) {
-        this.item_id = item_id;
+    public void setItem(ItemType item) {
+        this.item = item;
     }
 
     public int getAmount() {
@@ -48,5 +56,26 @@ public class NPCGroupLootGuarantee implements Serializable {
 
     public void setAmount(int amount) {
         this.amount = amount;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(group, item);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        final NPCGroupLootGuarantee other = (NPCGroupLootGuarantee) obj;
+
+        return Objects.equals(this.group, other.group)
+                && Objects.equals(this.item, other.item);
     }
 }

@@ -5,15 +5,18 @@ import org.maxgamer.rs.model.item.WieldType;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 import static org.maxgamer.rs.model.entity.mob.Bonuses.*;
 
 /**
+ * Represents an item which is wieldable or wearable
+ *
  * @author netherfoam
  */
 @Entity
 @Table(name = "Equipment")
-public class Equipment implements Serializable {
+public class EquipmentType implements Serializable {
     @Id
     @MapsId
     @OneToOne
@@ -203,5 +206,25 @@ public class Equipment implements Serializable {
 
     public int getPowStrength() {
         return powStrength;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(item);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        final EquipmentType other = (EquipmentType) obj;
+
+        return Objects.equals(this.item, other.item);
     }
 }

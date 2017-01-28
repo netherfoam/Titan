@@ -14,7 +14,7 @@ import org.maxgamer.rs.model.interfaces.impl.dialogue.SpeechDialogue;
 import org.maxgamer.rs.model.interfaces.impl.dialogue.ThoughtDialogue;
 import org.maxgamer.rs.model.interfaces.impl.primary.VendorInterface;
 import org.maxgamer.rs.model.item.ItemStack;
-import org.maxgamer.rs.model.item.vendor.Vendor;
+import org.maxgamer.rs.model.item.vendor.VendorType;
 import org.maxgamer.rs.util.Chat;
 import org.maxgamer.rs.util.FiberLocal;
 import org.mozilla.javascript.Context;
@@ -244,7 +244,7 @@ public class DialogueUtil {
         Player player = getCause(Player.class);
 
         String shopName = cast(args, 0, String.class);
-        Vendor container = Core.getServer().getVendors().get(shopName);
+        VendorType container = Core.getServer().getVendors().get(shopName);
 
         if(container == null) {
             throw new IllegalArgumentException("No such shop exists with the name '" + shopName + "'");

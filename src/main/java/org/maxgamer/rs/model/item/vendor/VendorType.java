@@ -4,16 +4,16 @@ import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.item.ItemType;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author netherfoam
  */
 @Entity
 @Table(name = "Vendor")
-public class Vendor implements Serializable {
+public class VendorType {
     @Id
     @GeneratedValue
     private int id;
@@ -31,6 +31,7 @@ public class Vendor implements Serializable {
     @OneToMany(mappedBy = "vendor")
     private List<VendorItem> items = new LinkedList<VendorItem>();
 
+    // TODO: This should be stored by the server, not in the database entity!
     private transient VendorContainer container;
 
     /**
@@ -41,6 +42,7 @@ public class Vendor implements Serializable {
         if (this.currency == null) {
             this.currency = ItemStack.COINS.getDefinition();
         }
+
         this.container = new VendorContainer(this);
     }
 
@@ -88,7 +90,20 @@ public class Vendor implements Serializable {
         return items;
     }
 
-    public void setItems(List<VendorItem> items) {
-        this.items = items;
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        final VendorType other = (VendorType) obj;
+        return Objects.equals(this.id, other.id);
     }
 }

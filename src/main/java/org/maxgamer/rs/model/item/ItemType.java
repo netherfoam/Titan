@@ -6,6 +6,7 @@ import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.model.entity.mob.Bonuses;
 import org.maxgamer.rs.model.entity.mob.combat.AttackStyle;
 import org.maxgamer.rs.model.item.condition.ItemMetadataSet;
+import org.maxgamer.rs.model.item.weapon.EquipmentType;
 import org.maxgamer.rs.model.skill.SkillType;
 import org.maxgamer.rs.repository.ItemTypeRepository;
 import org.maxgamer.rs.util.BufferUtils;
@@ -14,7 +15,6 @@ import org.maxgamer.rs.util.Log;
 import javax.persistence.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.nio.ByteBuffer;
@@ -25,7 +25,7 @@ import java.util.*;
  */
 @Entity
 @Table(name = "Item")
-public class ItemType implements Serializable {
+public class ItemType {
     @Id
     protected int id;
     @Column
@@ -55,9 +55,9 @@ public class ItemType implements Serializable {
     @Column
     private double weight;
     @OneToOne(mappedBy = "item")
-    private org.maxgamer.rs.model.item.weapon.Equipment weapon;
+    private EquipmentType weapon;
     @OneToMany(mappedBy = "weapon")
-    private List<ItemAmmo> ammo = new LinkedList<ItemAmmo>();
+    private List<ItemAmmoType> ammo = new LinkedList<ItemAmmoType>();
     @OneToOne(mappedBy = "item")
     private AmmoType projectile;
     /*
@@ -142,11 +142,11 @@ public class ItemType implements Serializable {
         this.projectile = projectile;
     }
 
-    public List<ItemAmmo> getAmmo() {
+    public List<ItemAmmoType> getAmmo() {
         return ammo;
     }
 
-    public void setAmmo(List<ItemAmmo> ammo) {
+    public void setAmmo(List<ItemAmmoType> ammo) {
         this.ammo = ammo;
     }
 
@@ -195,7 +195,7 @@ public class ItemType implements Serializable {
      *
      * @return the weapon data, possibly null
      */
-    public org.maxgamer.rs.model.item.weapon.Equipment getWeapon() {
+    public EquipmentType getWeapon() {
         return weapon;
     }
 
@@ -638,9 +638,9 @@ public class ItemType implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        ItemType itemType = (ItemType) o;
+        ItemType that = (ItemType) o;
 
-        return id == itemType.id;
+        return this.id == that.id;
 
     }
 

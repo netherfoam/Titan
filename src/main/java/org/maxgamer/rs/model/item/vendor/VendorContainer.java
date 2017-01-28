@@ -22,7 +22,7 @@ public class VendorContainer extends Container {
     /**
      * The owning vendor
      */
-    private Vendor vendor;
+    private VendorType vendor;
 
     /**
      * The items currently available in this vendor
@@ -48,7 +48,7 @@ public class VendorContainer extends Container {
      * @throws NullPointerException     if there are any null values in the given
      *                                  stock
      */
-    public VendorContainer(Vendor vendor) {
+    public VendorContainer(VendorType vendor) {
         super(StackType.ALWAYS);
         this.vendor = vendor;
 

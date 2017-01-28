@@ -2,12 +2,16 @@ package org.maxgamer.rs.model.entity.mob.npc;
 
 import org.maxgamer.rs.model.entity.mob.npc.loot.CommonLootItem;
 import org.maxgamer.rs.model.entity.mob.npc.loot.LootItem;
-import org.maxgamer.rs.model.item.ItemStack;
+import org.maxgamer.rs.model.item.ItemType;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
+ * Represents an item that can be dropped by a group of NPC's. This item has a chance, and is not always
+ * guaranteed - it's picked from the pool of items which can be dropped at random.
+ *
  * @author netherfoam
  */
 @Entity
@@ -18,8 +22,11 @@ public class NPCGroupLoot implements Serializable {
     @ManyToOne
     private NPCGroup group;
 
-    @Column
-    private int item_id;
+    @Id
+    @MapsId
+    @ManyToOne
+    @JoinColumn(name = "item_id")
+    private ItemType item;
 
     @Column
     private int min;
@@ -32,7 +39,7 @@ public class NPCGroupLoot implements Serializable {
 
     public LootItem toLoot() {
         // TODO: Rare loot items?
-        return new CommonLootItem(ItemStack.create(item_id), chance, min, max);
+        return new CommonLootItem(item.toItem(), chance, min, max);
     }
 
     public NPCGroup getGroup() {
@@ -43,12 +50,12 @@ public class NPCGroupLoot implements Serializable {
         this.group = group;
     }
 
-    public int getItem_id() {
-        return item_id;
+    public ItemType getItem() {
+        return item;
     }
 
-    public void setItem_id(int item_id) {
-        this.item_id = item_id;
+    public void setItem(ItemType item) {
+        this.item = item;
     }
 
     public int getMin() {
@@ -73,5 +80,26 @@ public class NPCGroupLoot implements Serializable {
 
     public void setChance(double chance) {
         this.chance = chance;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(group, item);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        final NPCGroupLoot other = (NPCGroupLoot) obj;
+
+        return Objects.equals(this.group, other.group)
+                && Objects.equals(this.item, other.item);
     }
 }

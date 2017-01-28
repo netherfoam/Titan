@@ -2,6 +2,7 @@ package org.maxgamer.rs.model.item;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * @author netherfoam
@@ -53,5 +54,25 @@ public class AmmoType implements Serializable {
 
     public void setProjectile(int projectile) {
         this.projectile = projectile;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(item);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        final AmmoType other = (AmmoType) obj;
+
+        return Objects.equals(this.item, other.item);
     }
 }

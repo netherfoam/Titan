@@ -2,7 +2,7 @@ package org.maxgamer.rs.model.item;
 
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.model.entity.Interactable;
-import org.maxgamer.rs.model.item.weapon.Equipment;
+import org.maxgamer.rs.model.item.weapon.EquipmentType;
 import org.maxgamer.rs.repository.ItemTypeRepository;
 import org.maxgamer.rs.structure.YMLSerializable;
 import org.maxgamer.rs.structure.configs.ConfigSection;
@@ -116,7 +116,7 @@ public class ItemStack implements Comparable<ItemStack>, YMLSerializable, Intera
         return ItemStack.create(getDefinition().toCharges(charges).getId(), getAmount(), getHealth());
     }
 
-    public Equipment getWeapon() {
+    public EquipmentType getWeapon() {
         return getDefinition().getWeapon();
     }
 

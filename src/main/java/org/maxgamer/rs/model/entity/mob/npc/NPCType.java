@@ -8,6 +8,7 @@ import org.maxgamer.rs.util.BufferUtils;
 import javax.persistence.*;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.Objects;
 
 import static org.maxgamer.rs.model.entity.mob.Bonuses.*;
 
@@ -1057,5 +1058,25 @@ public class NPCType {
             //so any amount of this data could be rubbish.
             throw new IOException("NPC Format is bad!");
         }
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        final NPCType other = (NPCType) obj;
+
+        return Objects.equals(this.id, other.id);
     }
 }

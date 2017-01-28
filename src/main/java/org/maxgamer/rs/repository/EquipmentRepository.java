@@ -1,12 +1,12 @@
 package org.maxgamer.rs.repository;
 
-import org.maxgamer.rs.model.item.weapon.Equipment;
+import org.maxgamer.rs.model.item.weapon.EquipmentType;
 
 /**
  * @author netherfoam
  */
-public class EquipmentRepository extends AbstractRepository<Equipment> {
+public class EquipmentRepository extends AbstractRepository<EquipmentType> {
     public EquipmentRepository() {
-        super(Equipment.class);
+        super(EquipmentType.class);
     }
 }

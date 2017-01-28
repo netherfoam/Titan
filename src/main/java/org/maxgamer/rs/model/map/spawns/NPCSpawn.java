@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.FileNotFoundException;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -76,5 +77,25 @@ public class NPCSpawn {
 
         npc.setSpawn(l);
         return npc;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        final NPCSpawn other = (NPCSpawn) obj;
+
+        return Objects.equals(this.id, other.id);
     }
 }

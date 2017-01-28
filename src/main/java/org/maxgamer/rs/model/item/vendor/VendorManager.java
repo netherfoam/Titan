@@ -10,11 +10,11 @@ public class VendorManager {
 
     }
 
-    public Vendor get(String name) {
+    public VendorType get(String name) {
         return repository.findOneByName(name);
     }
 
-    public Vendor get(int id) {
+    public VendorType get(int id) {
         return repository.find(id);
     }
 }

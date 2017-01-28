@@ -7,7 +7,7 @@ import org.maxgamer.rs.model.interfaces.impl.side.VendorSideInterface;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.item.inventory.Container;
 import org.maxgamer.rs.model.item.inventory.ContainerListener;
-import org.maxgamer.rs.model.item.vendor.Vendor;
+import org.maxgamer.rs.model.item.vendor.VendorType;
 
 /**
  * @author netherfoam
@@ -30,10 +30,10 @@ public class VendorInterface extends PrimaryInterface implements ContainerListen
         SETTINGS.setInterfaceDepth(0);
     }
 
-    private Vendor vendor;
+    private VendorType vendor;
     private VendorSideInterface side;
 
-    public VendorInterface(Player p, Vendor vendor) {
+    public VendorInterface(Player p, VendorType vendor) {
         super(p);
         setChildId(620);
         this.vendor = vendor;
@@ -80,7 +80,7 @@ public class VendorInterface extends PrimaryInterface implements ContainerListen
         getPlayer().getWindow().close(side);
     }
 
-    public Vendor getVendor() {
+    public VendorType getVendor() {
         return vendor;
     }
 

@@ -1,16 +1,16 @@
 package org.maxgamer.rs.repository;
 
-import org.maxgamer.rs.model.item.vendor.Vendor;
+import org.maxgamer.rs.model.item.vendor.VendorType;
 
 /**
  * @author netherfoam
  */
-public class VendorRepository extends AbstractRepository<Vendor> {
+public class VendorRepository extends AbstractRepository<VendorType> {
     public VendorRepository() {
-        super(Vendor.class);
+        super(VendorType.class);
     }
 
-    public Vendor findOneByName(String name) {
-        return (Vendor) getManager().createQuery("FROM " + this.name() + " WHERE name = :name").setParameter("name", name).uniqueResult();
+    public VendorType findOneByName(String name) {
+        return (VendorType) getManager().createQuery("FROM " + this.name() + " WHERE name = :name").setParameter("name", name).uniqueResult();
     }
 }

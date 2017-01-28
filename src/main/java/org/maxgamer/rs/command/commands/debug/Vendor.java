@@ -7,6 +7,7 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
 import org.maxgamer.rs.model.interfaces.impl.primary.VendorInterface;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.item.vendor.VendorItem;
+import org.maxgamer.rs.model.item.vendor.VendorType;
 import org.maxgamer.rs.util.Erratic;
 
 /**
@@ -26,7 +27,7 @@ public class Vendor implements PlayerCommand {
             }
         }
 
-        org.maxgamer.rs.model.item.vendor.Vendor vendor = new org.maxgamer.rs.model.item.vendor.Vendor();
+        VendorType vendor = new VendorType();
         for (ItemStack item : items) {
             vendor.getItems().add(new VendorItem(vendor, item.getDefinition(), item.getAmount()));
         }

@@ -4,7 +4,7 @@ import org.maxgamer.rs.core.tick.Tickable;
 import org.maxgamer.rs.model.entity.mob.CombatStats;
 import org.maxgamer.rs.model.entity.mob.EquipmentHolder;
 import org.maxgamer.rs.model.entity.mob.Mob;
-import org.maxgamer.rs.model.item.ItemAmmo;
+import org.maxgamer.rs.model.item.ItemAmmoType;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.item.WieldType;
 import org.maxgamer.rs.model.item.inventory.Container;
@@ -17,7 +17,7 @@ import java.util.List;
  * @author netherfoam
  */
 public class RangeAttack extends Attack {
-    private ItemAmmo ammo;
+    private ItemAmmoType ammo;
 
     public RangeAttack(Mob attacker) {
         super(attacker, attacker.getCombatStats().getAttackAnimation(), -1);
@@ -78,9 +78,9 @@ public class RangeAttack extends Attack {
             }
 
             if (wep.getDefinition().getAmmo().isEmpty() == false) {
-                List<ItemAmmo> types = wep.getDefinition().getAmmo();
+                List<ItemAmmoType> types = wep.getDefinition().getAmmo();
 
-                for (ItemAmmo type : types) {
+                for (ItemAmmoType type : types) {
                     if (equip.contains(type.toItem())) {
                         ammo = type;
                         break;

@@ -112,10 +112,10 @@ public class AStar implements PathFinder {
             if (swCorner.z == start.z) {
                 int[][] clip = ignore.getClip();
 
-				/*
+                /*
                  * Applies the below clipping (# = point of interest) [?][?][?]
-				 * [?][#][?] [?][?][?]
-				 */
+                 * [?][#][?] [?][?][?]
+                 */
                 for (int i = 0; i < ignore.getSizeX(); i++) {
                     for (int j = 0; j < ignore.getSizeY(); j++) {
                         map.setAntiClip(swCorner.x + i, swCorner.y + j, clip[1][1]); // Apply
@@ -125,28 +125,28 @@ public class AStar implements PathFinder {
                     }
                 }
 
-				/*
+                /*
                  * Applies the below clipping (# = point of interest) [?][#][?]
-				 * [?][?][?] [?][#][?]
-				 */
+                 * [?][?][?] [?][#][?]
+                 */
                 for (int i = 0; i < ignore.getSizeX(); i++) {
                     map.setAntiClip(swCorner.x + i, swCorner.y - 1, clip[1][0]);
                     map.setAntiClip(swCorner.x + i, swCorner.y + ignore.getSizeY(), clip[1][2]);
                 }
 
-				/*
-				 * Applies the below clipping (# = point of interest) [?][?][?]
-				 * [#][?][#] [?][?][?]
-				 */
+                /*
+                 * Applies the below clipping (# = point of interest) [?][?][?]
+                 * [#][?][#] [?][?][?]
+                 */
                 for (int j = 0; j < ignore.getSizeY(); j++) {
                     map.setAntiClip(swCorner.x - 1, swCorner.y + j, clip[0][1]);
                     map.setAntiClip(swCorner.x + ignore.getSizeX(), swCorner.y + j, clip[2][1]);
                 }
 
-				/*
-				 * Applies the below clipping (# = point of interest) [#][?][#]
-				 * [?][?][?] [#][?][#]
-				 */
+                /*
+                 * Applies the below clipping (# = point of interest) [#][?][#]
+                 * [?][?][?] [#][?][#]
+                 */
                 map.setAntiClip(swCorner.x - 1, swCorner.y - 1, clip[0][0]);
                 map.setAntiClip(swCorner.x - 1, swCorner.y + ignore.getSizeY(), clip[0][2]);
                 map.setAntiClip(swCorner.x + ignore.getSizeX(), swCorner.y - 1, clip[2][0]);

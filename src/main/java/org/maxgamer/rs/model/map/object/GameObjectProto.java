@@ -35,8 +35,8 @@ public final class GameObjectProto {
     //private byte aByte2942;
     /*
      * private int anInt2945 = 0; private int anInt2946; private int anInt2948;
-	 * private int anInt2949; private int anInt2950;
-	 */
+     * private int anInt2949; private int anInt2950;
+     */
     //private int[][] anIntArrayArray2951;
     private String name;
     //private int anInt2953;
@@ -51,26 +51,26 @@ public final class GameObjectProto {
     //private int anInt2966;
     //private byte aByte2967;
     //
-	/*
-	 * private int anInt2970; private int anInt2972; private int anInt2973;
-	 */
+    /*
+     * private int anInt2970; private int anInt2972; private int anInt2973;
+     */
     //private short[] aShortArray2974;
     //private int anInt2975;
     //boolean aBoolean2976;
     //private int anInt2977;
     private int sizeY;
     //private int[] anIntArray2979;
-	/*
-	 * private int anInt2980; private int anInt2981; private int anInt2985;
-	 * private int anInt2986; private int anInt2987; private int anInt2988;
-	 * private int anInt2989; private int anInt2990;
-	 */
+    /*
+     * private int anInt2980; private int anInt2981; private int anInt2985;
+     * private int anInt2986; private int anInt2987; private int anInt2988;
+     * private int anInt2989; private int anInt2990;
+     */
     private int sizeX;
     //private byte[] aByteArray2994;
     //private short[] aShortArray2995;
     //private int anInt2996;
     //private int anInt2997;
-	/* private int hasOptions; */
+    /* private int hasOptions; */
 
     /* Something to do with object transforms */
     private int anInt2983;
@@ -98,44 +98,44 @@ public final class GameObjectProto {
     //private int anInt3008;
 
     public GameObjectProto() {
-		/*
-		 * anIntArray2937 = null; this.anInt2941 = -1; this.anInt2949 = 0;
-		 * anInt2929 = 128; aByte2932 = (byte) 0; anInt2954 = 128; anInt2946 =
-		 * 0;
-		 */
+        /*
+         * anIntArray2937 = null; this.anInt2941 = -1; this.anInt2949 = 0;
+         * anInt2929 = 128; aByte2932 = (byte) 0; anInt2954 = 128; anInt2946 =
+         * 0;
+         */
         this.clippingFlag = false;
-		/*
-		 * this.anInt2953 = 0; this.anInt2970 = 0;
-		 */
+        /*
+         * this.anInt2953 = 0; this.anInt2970 = 0;
+         */
         this.options = new String[5];
-		/*
-		 * this.anInt2962 = 0; this.anInt2966 = 64; anInt2968 = -1;
-		 * this.anInt2933 = -1; anInt2973 = 0; anInt2940 = 0; this.anInt2977 =
-		 * -1;
-		 */
+        /*
+         * this.anInt2962 = 0; this.anInt2966 = 64; anInt2968 = -1;
+         * this.anInt2933 = -1; anInt2973 = 0; anInt2940 = 0; this.anInt2977 =
+         * -1;
+         */
         this.sizeY = 1;
-		/* anInt2983 = -1; */
+        /* anInt2983 = -1; */
         this.name = "null";
-		/*
-		 * this.anInt2975 = -1; this.anInt2948 = 0; this.anInt2958 = -1;
-		 * this.aBoolean2976 = false; anInt2938 = 128; anInt2988 = 0;
-		 */
+        /*
+         * this.anInt2975 = -1; this.anInt2948 = 0; this.anInt2958 = -1;
+         * this.aBoolean2976 = false; anInt2938 = 128; anInt2988 = 0;
+         */
         this.sizeX = 1;
-		/*
-		 * anInt2989 = 0; anInt2980 = 0; this.anIntArray2979 = null;
-		 * this.anInt2990 = -1; this.anInt2950 = 256; anInt2997 = 0;
-		 */
+        /*
+         * anInt2989 = 0; anInt2980 = 0; this.anIntArray2979 = null;
+         * this.anInt2990 = -1; this.anInt2950 = 256; anInt2997 = 0;
+         */
         this.isSolid = true;
-		/*
-		 * this.anInt2996 = -1; this.anInt2986 = 960; anInt2964 = 0;
-		 * this.anInt2972 = 0; anInt2985 = -1; this.aBoolean3005 = false;
-		 * this.anInt2981 = 0; this.anInt2987 = 255; this.anInt3002 = -1;
-		 */
+        /*
+         * this.anInt2996 = -1; this.anInt2986 = 960; anInt2964 = 0;
+         * this.anInt2972 = 0; anInt2985 = -1; this.aBoolean3005 = false;
+         * this.anInt2981 = 0; this.anInt2987 = 255; this.anInt3002 = -1;
+         */
         this.actionCount = 2;
-		/*
-		 * this.anInt3006 = 256; this.anInt3008 = -1;
-		 */
-		/* this.hasOptions = -1; */
+        /*
+         * this.anInt3006 = 256; this.anInt3008 = -1;
+         */
+        /* this.hasOptions = -1; */
     }
 
     public static GameObjectProto decode(int id, ByteBuffer bb) throws IOException {
@@ -242,35 +242,35 @@ public final class GameObjectProto {
 
                                                     if ((~opcode) != -67) {
                                                         if ((~opcode) == -68) /*
-																						 * anInt2929
-																						 * =
-																						 */ buffer.readShort();
+                                                                                         * anInt2929
+                                                                                         * =
+                                                                                         */ buffer.readShort();
                                                         else if ((~opcode) != -70) {
                                                             if ((~opcode) == -71) /*
-																							 * anInt2973
-																							 * =
-																							 */ buffer.readUnsignedShort(); //buffer.readUShort(false) << -836995390;
+                                                                                             * anInt2973
+                                                                                             * =
+                                                                                             */ buffer.readUnsignedShort(); //buffer.readUShort(false) << -836995390;
                                                             else if ((~opcode) == -72) /*
-																									 * anInt2997
-																									 * =
-																									 */ buffer.readUnsignedShort(); //buffer.readUShort(false) << -1352000926;
+                                                                                                     * anInt2997
+                                                                                                     * =
+                                                                                                     */ buffer.readUnsignedShort(); //buffer.readUShort(false) << -1352000926;
                                                             else if ((~opcode) != -73) {
                                                                 if (opcode != 73) {
                                                                     if (opcode != 74) {
                                                                         if (opcode != 75) {
                                                                             if ((~opcode) != -78 && (~opcode) != -93) {
                                                                                 if (opcode == 78) {
-																					/*
-																					 * int
-																					 * anInt2996
-																					 * =
-																					 */
+                                                                                    /*
+                                                                                     * int
+                                                                                     * anInt2996
+                                                                                     * =
+                                                                                     */
                                                                                     buffer.readShort();
-																					/*
-																					 * int
-																					 * anInt2981
-																					 * =
-																					 */
+                                                                                    /*
+                                                                                     * int
+                                                                                     * anInt2981
+                                                                                     * =
+                                                                                     */
                                                                                     buffer.readUnsignedByte();
                                                                                 } else if (opcode != 79) {
                                                                                     if ((~opcode) != -82) {
@@ -281,66 +281,66 @@ public final class GameObjectProto {
                                                                                         } else if (opcode != 93) {
                                                                                             if (opcode == 94) {
                                                                                             } else if ((~opcode) == -96) {
-																								/*
-																								 * int
-																								 * anInt2985
-																								 * =
-																								 */
+                                                                                                /*
+                                                                                                 * int
+                                                                                                 * anInt2985
+                                                                                                 * =
+                                                                                                 */
                                                                                                 buffer.readUnsignedShort();
                                                                                             } else if ((~opcode) == -98) {
                                                                                             } else if (opcode == 98) {
                                                                                             } //this.aBoolean3005 = true;
                                                                                             else if ((~opcode) != -100) {
                                                                                                 if (opcode == 100) {
-																									/*
-																									 * int
-																									 * anInt2933
-																									 * =
-																									 */
+                                                                                                    /*
+                                                                                                     * int
+                                                                                                     * anInt2933
+                                                                                                     * =
+                                                                                                     */
                                                                                                     buffer.readUnsignedByte();
-																									/*
-																									 * int
-																									 * anInt2977
-																									 * =
-																									 */
+                                                                                                    /*
+                                                                                                     * int
+                                                                                                     * anInt2977
+                                                                                                     * =
+                                                                                                     */
                                                                                                     buffer.readShort();
                                                                                                 } else if (opcode == 101) /*
-																														 * anInt2962
-																														 * =
-																														 */ buffer.readUnsignedByte();
+                                                                                                                         * anInt2962
+                                                                                                                         * =
+                                                                                                                         */ buffer.readUnsignedByte();
                                                                                                 else if (opcode == 102) /*
-																														 * anInt2990
-																														 * =
-																														 */ buffer.readShort();
+                                                                                                                         * anInt2990
+                                                                                                                         * =
+                                                                                                                         */ buffer.readShort();
                                                                                                 else if ((~opcode) != -104) {
                                                                                                     if ((~opcode) == -105) /*
-																																		 * this
-																																		 * .
-																																		 * anInt2987
-																																		 * =
-																																		 */ buffer.readUnsignedByte();
+                                                                                                                                         * this
+                                                                                                                                         * .
+                                                                                                                                         * anInt2987
+                                                                                                                                         * =
+                                                                                                                                         */ buffer.readUnsignedByte();
                                                                                                     else if ((~opcode) != -106) {
                                                                                                         if (opcode == 106) {
                                                                                                             int i_64_ = buffer.readUnsignedByte();
                                                                                                             int[] anIntArray2937 = new int[i_64_];
                                                                                                             int[] anIntArray2979 = new int[i_64_];
-																											/*
-																											 * int
-																											 * anInt2964
-																											 * =
-																											 * 0
-																											 * ;
-																											 */
+                                                                                                            /*
+                                                                                                             * int
+                                                                                                             * anInt2964
+                                                                                                             * =
+                                                                                                             * 0
+                                                                                                             * ;
+                                                                                                             */
                                                                                                             for (int i_65_ = 0; (~i_65_) > (~i_64_); i_65_++) {
                                                                                                                 anIntArray2979[i_65_] = buffer.readShort();
                                                                                                                 int i_66_ = buffer.readUnsignedByte();
                                                                                                                 anIntArray2937[i_65_] = i_66_;
-																												/*
-																												 * anInt2964
-																												 * +=
-																												 * i_66_
-																												 * ;
-																												 */
+                                                                                                                /*
+                                                                                                                 * anInt2964
+                                                                                                                 * +=
+                                                                                                                 * i_66_
+                                                                                                                 * ;
+                                                                                                                 */
                                                                                                             }
                                                                                                         } else if ((~opcode) != -108) {
                                                                                                             if (opcode < 150 || (~opcode) <= -156) {
@@ -350,41 +350,41 @@ public final class GameObjectProto {
                                                                                                                     for (int i_68_ = 0; (~i_68_) > (~i_67_); i_68_++)
                                                                                                                         anIntArray2934[i_68_] = buffer.readShort();
                                                                                                                 } else if (opcode == 162) {
-																													/*
-																													 * int
-																													 * anInt2985
-																													 * =
-																													 */
+                                                                                                                    /*
+                                                                                                                     * int
+                                                                                                                     * anInt2985
+                                                                                                                     * =
+                                                                                                                     */
                                                                                                                     buffer.readInt();
                                                                                                                 } else if (opcode == 163) {
-																													/*
-																													 * byte
-																													 * aByte2930
-																													 * =
-																													 */
+                                                                                                                    /*
+                                                                                                                     * byte
+                                                                                                                     * aByte2930
+                                                                                                                     * =
+                                                                                                                     */
                                                                                                                     buffer.readByte();
-																													/*
-																													 * byte
-																													 * aByte2942
-																													 * =
-																													 */
+                                                                                                                    /*
+                                                                                                                     * byte
+                                                                                                                     * aByte2942
+                                                                                                                     * =
+                                                                                                                     */
                                                                                                                     buffer.readByte();
-																													/*
-																													 * byte
-																													 * aByte2967
-																													 * =
-																													 */
+                                                                                                                    /*
+                                                                                                                     * byte
+                                                                                                                     * aByte2967
+                                                                                                                     * =
+                                                                                                                     */
                                                                                                                     buffer.readByte();
-																													/*
-																													 * byte
-																													 * aByte2932
-																													 * =
-																													 */
+                                                                                                                    /*
+                                                                                                                     * byte
+                                                                                                                     * aByte2932
+                                                                                                                     * =
+                                                                                                                     */
                                                                                                                     buffer.readByte();
                                                                                                                 } else if (opcode == 164) /*
-																																		 * anInt2940
-																																		 * =
-																																		 */ buffer.readUnsignedShort();
+                                                                                                                                         * anInt2940
+                                                                                                                                         * =
+                                                                                                                                         */ buffer.readUnsignedShort();
                                                                                                                 else if ((~opcode) != -166) {
                                                                                                                     if ((~opcode) != -167) {
                                                                                                                         if ((~opcode) != -168) {
@@ -393,57 +393,57 @@ public final class GameObjectProto {
                                                                                                                             } else if ((~opcode) != -171) {
                                                                                                                                 if ((~opcode) != -172) {
                                                                                                                                     if (opcode == 173) {
-																																		/*
-																																		 * int
-																																		 * anInt3006
-																																		 * =
-																																		 */
+                                                                                                                                        /*
+                                                                                                                                         * int
+                                                                                                                                         * anInt3006
+                                                                                                                                         * =
+                                                                                                                                         */
                                                                                                                                         buffer.readShort();
-																																		/*
-																																		 * int
-																																		 * anInt2950
-																																		 * =
-																																		 */
+                                                                                                                                        /*
+                                                                                                                                         * int
+                                                                                                                                         * anInt2950
+                                                                                                                                         * =
+                                                                                                                                         */
                                                                                                                                         buffer.readShort();
                                                                                                                                     } else if ((~opcode) == -178) {
                                                                                                                                     } else if ((~opcode) == -179) /*
-																																											 * this
-																																											 * .
-																																											 * anInt2970
-																																											 * =
-																																											 */ buffer.readUnsignedByte();
+                                                                                                                                                                             * this
+                                                                                                                                                                             * .
+                                                                                                                                                                             * anInt2970
+                                                                                                                                                                             * =
+                                                                                                                                                                             */ buffer.readUnsignedByte();
                                                                                                                                     else if (opcode == 249) {
                                                                                                                                         int i_69_ = buffer.readUnsignedByte();
-																																		/*
-																																		 * if
-																																		 * (
-																																		 * aClass377_2944
-																																		 * ==
-																																		 * null
-																																		 * )
-																																		 * {
-																																		 * int
-																																		 * i_70_
-																																		 * =
-																																		 * Class48
-																																		 * .
-																																		 * method453
-																																		 * (
-																																		 * 423660257
-																																		 * ,
-																																		 * i_69_
-																																		 * )
-																																		 * ;
-																																		 * aClass377_2944
-																																		 * =
-																																		 * new
-																																		 * Class377
-																																		 * (
-																																		 * i_70_
-																																		 * )
-																																		 * ;
-																																		 * }
-																																		 */
+                                                                                                                                        /*
+                                                                                                                                         * if
+                                                                                                                                         * (
+                                                                                                                                         * aClass377_2944
+                                                                                                                                         * ==
+                                                                                                                                         * null
+                                                                                                                                         * )
+                                                                                                                                         * {
+                                                                                                                                         * int
+                                                                                                                                         * i_70_
+                                                                                                                                         * =
+                                                                                                                                         * Class48
+                                                                                                                                         * .
+                                                                                                                                         * method453
+                                                                                                                                         * (
+                                                                                                                                         * 423660257
+                                                                                                                                         * ,
+                                                                                                                                         * i_69_
+                                                                                                                                         * )
+                                                                                                                                         * ;
+                                                                                                                                         * aClass377_2944
+                                                                                                                                         * =
+                                                                                                                                         * new
+                                                                                                                                         * Class377
+                                                                                                                                         * (
+                                                                                                                                         * i_70_
+                                                                                                                                         * )
+                                                                                                                                         * ;
+                                                                                                                                         * }
+                                                                                                                                         */
                                                                                                                                         for (int i_71_ = 0; i_71_ < i_69_; i_71_++) {
                                                                                                                                             boolean bool = buffer.readUnsignedByte() == 1;
                                                                                                                                             buffer.read24BitInt();
@@ -454,98 +454,98 @@ public final class GameObjectProto {
                                                                                                                                         }
                                                                                                                                     }
                                                                                                                                 } else /*
-																																	 * this
-																																	 * .
-																																	 * anInt2953
-																																	 * =
-																																	 */buffer.readSmart();
+                                                                                                                                     * this
+                                                                                                                                     * .
+                                                                                                                                     * anInt2953
+                                                                                                                                     * =
+                                                                                                                                     */buffer.readSmart();
                                                                                                                             } else /*
-																																 * this
-																																 * .
-																																 * anInt2986
-																																 * =
-																																 */buffer.readSmart();
+                                                                                                                                 * this
+                                                                                                                                 * .
+                                                                                                                                 * anInt2986
+                                                                                                                                 * =
+                                                                                                                                 */buffer.readSmart();
                                                                                                                         } else /*
-																															 * this
-																															 * .
-																															 * anInt2945
-																															 * =
-																															 */buffer.readShort();
+                                                                                                                             * this
+                                                                                                                             * .
+                                                                                                                             * anInt2945
+                                                                                                                             * =
+                                                                                                                             */buffer.readShort();
                                                                                                                     } else /*
-																														 * anInt2989
-																														 * =
-																														 */buffer.readUnsignedShort();
+                                                                                                                         * anInt2989
+                                                                                                                         * =
+                                                                                                                         */buffer.readUnsignedShort();
                                                                                                                 } else /*
-																													 * anInt2988
-																													 * =
-																													 */buffer.readUnsignedShort();
+                                                                                                                     * anInt2988
+                                                                                                                     * =
+                                                                                                                     */buffer.readUnsignedShort();
                                                                                                             } else {
                                                                                                                 this.options[opcode - 150] = buffer.readPJStr1();
                                                                                                                 //if (!this.creator.aBoolean2516) this.options[-150 + opcode] = null;
                                                                                                             }
                                                                                                         } else /*
-																											 * this
-																											 * .
-																											 * anInt2958
-																											 * =
-																											 */buffer.readShort();
+                                                                                                             * this
+                                                                                                             * .
+                                                                                                             * anInt2958
+                                                                                                             * =
+                                                                                                             */buffer.readShort();
                                                                                                     } else {
                                                                                                     } //this.aBoolean2976 = true;
                                                                                                 } else {
                                                                                                 }
                                                                                             } else {
-																								/*
-																								 * this
-																								 * .
-																								 * anInt3002
-																								 * =
-																								 */
+                                                                                                /*
+                                                                                                 * this
+                                                                                                 * .
+                                                                                                 * anInt3002
+                                                                                                 * =
+                                                                                                 */
                                                                                                 buffer.readUnsignedByte();
-																								/*
-																								 * this
-																								 * .
-																								 * anInt3008
-																								 * =
-																								 */
+                                                                                                /*
+                                                                                                 * this
+                                                                                                 * .
+                                                                                                 * anInt3008
+                                                                                                 * =
+                                                                                                 */
                                                                                                 buffer.readShort();
                                                                                             }
                                                                                         } else {
-																							/*
-																							 * anInt2985
-																							 * =
-																							 */
+                                                                                            /*
+                                                                                             * anInt2985
+                                                                                             * =
+                                                                                             */
                                                                                             buffer.readShort();
                                                                                         }
                                                                                     } else {
-																						/*
-																						 * anInt2985
-																						 * =
-																						 * 256
-																						 * *
-																						 */
+                                                                                        /*
+                                                                                         * anInt2985
+                                                                                         * =
+                                                                                         * 256
+                                                                                         * *
+                                                                                         */
                                                                                         buffer.readUnsignedByte();
                                                                                     }
                                                                                 } else {
-																					/*
-																					 * this
-																					 * .
-																					 * anInt2949
-																					 * =
-																					 */
+                                                                                    /*
+                                                                                     * this
+                                                                                     * .
+                                                                                     * anInt2949
+                                                                                     * =
+                                                                                     */
                                                                                     buffer.readShort();
-																					/*
-																					 * this
-																					 * .
-																					 * anInt2972
-																					 * =
-																					 */
+                                                                                    /*
+                                                                                     * this
+                                                                                     * .
+                                                                                     * anInt2972
+                                                                                     * =
+                                                                                     */
                                                                                     buffer.readShort();
-																					/*
-																					 * this
-																					 * .
-																					 * anInt2981
-																					 * =
-																					 */
+                                                                                    /*
+                                                                                     * this
+                                                                                     * .
+                                                                                     * anInt2981
+                                                                                     * =
+                                                                                     */
                                                                                     buffer.readUnsignedByte();
                                                                                     int i_73_ = buffer.readUnsignedByte();
                                                                                     int[] anIntArray2926 = new int[i_73_];
@@ -579,22 +579,22 @@ public final class GameObjectProto {
                                                                                 this.objectIds[1 + i_76_] = i_75_;
                                                                             }
                                                                         } else /*
-																			 * this
-																			 * .
-																			 * anInt2975
-																			 * =
-																			 */buffer.readUnsignedByte();
+                                                                             * this
+                                                                             * .
+                                                                             * anInt2975
+                                                                             * =
+                                                                             */buffer.readUnsignedByte();
                                                                     } else this.clippingFlag = true;
                                                                 } else {
                                                                 }
                                                             } else /*
-																 * anInt2946
-																 * =
-																 */buffer.readUnsignedShort(); //buffer.readUShort(false) << -784917758;
+                                                                 * anInt2946
+                                                                 * =
+                                                                 */buffer.readUnsignedShort(); //buffer.readUShort(false) << -784917758;
                                                         } else /*
-															 * this.anInt2948
-															 * =
-															 */buffer.readUnsignedByte();
+                                                             * this.anInt2948
+                                                             * =
+                                                             */buffer.readUnsignedByte();
                                                     } else /* anInt2954 = */buffer.readShort();
                                                 } else {
                                                 }
@@ -616,17 +616,17 @@ public final class GameObjectProto {
                                     } else this.options[opcode + -30] = (buffer.readPJStr1());
                                 } else /* anInt2980 = */buffer.readByte() /* 5 */;
                             } else /* this.anInt2966 = */buffer.readUnsignedByte() /*
-																				 * <<
-																				 * -
-																				 * 69774750
-																				 */;
+                                                                                 * <<
+                                                                                 * -
+                                                                                 * 69774750
+                                                                                 */;
                         } else {
-							/* this.anInt2941 = */
+                            /* this.anInt2941 = */
                             buffer.readShort();
-							/*
-							 * if ((this.anInt2941 ^ 0xffffffff) == -65536)
-							 * this.anInt2941 = -1;
-							 */
+                            /*
+                             * if ((this.anInt2941 ^ 0xffffffff) == -65536)
+                             * this.anInt2941 = -1;
+                             */
                         }
                     } else {
                     }
@@ -641,16 +641,16 @@ public final class GameObjectProto {
     }
 
     final void setup() {
-		/*
-		 * if ((this.hasOptions ^ 0xffffffff) == 0) { this.hasOptions = 0; if
-		 * (this.aByteArray2994 != null && (this.aByteArray2994.length ^
-		 * 0xffffffff) == -2 && ((this.aByteArray2994[0] ^ 0xffffffff) == -11))
-		 * this.hasOptions = 1; for (int j = 0; j < 5; j++) { if
-		 * (this.options[j] != null) { this.hasOptions = 1; break; } } } if
-		 * ((this.anInt2941 ^ 0xffffffff) != 0 || this.aBoolean3005 ||
-		 * this.objectIds != null) { } if (this.anInt2975 != -1) return;
-		 * this.anInt2975 = this.actionCount == 0 ? 0 : 1;
-		 */
+        /*
+         * if ((this.hasOptions ^ 0xffffffff) == 0) { this.hasOptions = 0; if
+         * (this.aByteArray2994 != null && (this.aByteArray2994.length ^
+         * 0xffffffff) == -2 && ((this.aByteArray2994[0] ^ 0xffffffff) == -11))
+         * this.hasOptions = 1; for (int j = 0; j < 5; j++) { if
+         * (this.options[j] != null) { this.hasOptions = 1; break; } } } if
+         * ((this.anInt2941 ^ 0xffffffff) != 0 || this.aBoolean3005 ||
+         * this.objectIds != null) { } if (this.anInt2975 != -1) return;
+         * this.anInt2975 = this.actionCount == 0 ? 0 : 1;
+         */
     }
 
     public String getOption(int num) {

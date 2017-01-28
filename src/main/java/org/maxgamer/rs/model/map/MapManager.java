@@ -114,7 +114,7 @@ public class MapManager implements EventListener, Iterable<WorldMap> {
                     map = MapStructure.load(folder, name).read();
                     worlds.put(name, map);
 
-					/* Load all of the NPC spawns */
+                    /* Load all of the NPC spawns */
                     map.init();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -172,31 +172,31 @@ public class MapManager implements EventListener, Iterable<WorldMap> {
 
         // TODO: This can be optimised by grouping chunks and then doing that selection instead of doing 16,000 odd queries for loading all of F2P
         /*
-		try{
-			Connection con = Core.getDatabase().getConnection();
-			PreparedStatement ps = con.prepareStatement("SELECT * FROM npc_spawns WHERE map = ? AND x BETWEEN ? AND ? AND y BETWEEN ? AND ? AND z = ?");
-			int x = e.getChunkX() << WorldMap.CHUNK_BITS;
-			int y = e.getChunkY() << WorldMap.CHUNK_BITS;
-			int z = e.getChunkZ();
-			ps.setString(1, e.getMap().getName());
-			ps.setInt(2, x);
-			ps.setInt(3, x + WorldMap.CHUNK_SIZE - 1);
-			
-			ps.setInt(4, y);
-			ps.setInt(5, y + WorldMap.CHUNK_SIZE - 1);
-			
-			ps.setInt(6, z);
-			
-			ResultSet rs = ps.executeQuery();
-			while(rs.next()){
-				NPCSpawn spawn = new NPCSpawn(rs.getInt("id"));
-				spawn.reload(rs);
-				spawn.spawn();
-			}
-		}
-		catch(SQLException ex){
-			ex.printStackTrace();
-		}*/
+        try{
+            Connection con = Core.getDatabase().getConnection();
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM npc_spawns WHERE map = ? AND x BETWEEN ? AND ? AND y BETWEEN ? AND ? AND z = ?");
+            int x = e.getChunkX() << WorldMap.CHUNK_BITS;
+            int y = e.getChunkY() << WorldMap.CHUNK_BITS;
+            int z = e.getChunkZ();
+            ps.setString(1, e.getMap().getName());
+            ps.setInt(2, x);
+            ps.setInt(3, x + WorldMap.CHUNK_SIZE - 1);
+
+            ps.setInt(4, y);
+            ps.setInt(5, y + WorldMap.CHUNK_SIZE - 1);
+
+            ps.setInt(6, z);
+
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                NPCSpawn spawn = new NPCSpawn(rs.getInt("id"));
+                spawn.reload(rs);
+                spawn.spawn();
+            }
+        }
+        catch(SQLException ex){
+            ex.printStackTrace();
+        }*/
     }
 
     @EventHandler(priority = EventPriority.HIGH, skipIfCancelled = true)

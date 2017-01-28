@@ -321,7 +321,7 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
             }
         }
 
-		/* Second, we check if the player wants to use a special attack */
+        /* Second, we check if the player wants to use a special attack */
         CombatStyles styles = this.getWindow().getInterface(CombatStyles.class);
         if (styles != null) {
             JavaScriptAttack a = styles.attack();
@@ -329,8 +329,8 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
                 return a;
             }
         }
-		
-		/* Third, we resort to a generic Persona attack */
+
+        /* Third, we resort to a generic Persona attack */
         return super.nextAttack();
     }
 

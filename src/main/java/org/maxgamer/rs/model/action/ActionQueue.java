@@ -532,8 +532,7 @@ public class ActionQueue {
         @Override
         public void run() {
             if (cancel) {
-            }
-            else {
+            } else {
                 queue.req = null;
                 queue.tick();
             }

@@ -358,18 +358,18 @@ public class ItemType {
                 discard(buffer, opcode, 2);/* & 0xFFFF */
                 break;
             case 5:
-			/* modelRotation1 = */
+            /* modelRotation1 = */
                 discard(buffer, opcode, 2);/* & 0xFFFF */
                 break;
             case 6:
-			/* modelRotation2 = */
+            /* modelRotation2 = */
                 discard(buffer, opcode, 2);/* & 0xFFFF */
                 break;
             case 11:
                 //stackable = true;
                 break;
             case 12:
-			/* value = */
+            /* value = */
                 buffer.getInt();
                 break;
             case 23:
@@ -419,11 +419,11 @@ public class ItemType {
                 unnoted = true;
                 break;
             case 78:
-			/* colourEquip1 = */
+            /* colourEquip1 = */
                 buffer.getShort()/* & 0xFFFF */;
                 break;
             case 79:
-			/* colourEquip2 = */
+            /* colourEquip2 = */
                 buffer.getShort()/* & 0xFFFF */;
                 break;
             case 91:
@@ -431,7 +431,7 @@ public class ItemType {
                 discard(buffer, opcode, 2);
                 break;
             case 98:
-			/* certTemplateId = */
+            /* certTemplateId = */
                 discard(buffer, opcode, 2); /* & 0xFFFF */
                 break;
             case 110:
@@ -444,7 +444,7 @@ public class ItemType {
                 teamId = buffer.get() & 0xFF;
                 break;
             case 122:
-			/* lendTemplateId = */
+            /* lendTemplateId = */
                 buffer.getShort()/* & 0xFFFF */;
                 break;
             case 130:
@@ -495,7 +495,7 @@ public class ItemType {
                 buffer.get();
                 break;
             case 121:
-			/* lendId = */
+            /* lendId = */
                 buffer.getShort()/* & 0xFFFF */;
                 break;
             case 114:
@@ -529,7 +529,7 @@ public class ItemType {
                 // certId = buffer.getShort();
                 break;
             case 97:
-			/* certTemplateId = */
+            /* certTemplateId = */
                 buffer.getShort();
                 break;
             case 95:

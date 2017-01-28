@@ -53,8 +53,8 @@ public class InventoryInterface extends SideInterface { // TODO: Add 'ContainerI
         setAccessMask(INTERFACE_CONFIG.getValue(), 0, 27, 0);
         /*
          * This appears to be when a player uses an item on another item (Eg
-		 * 'Use with' -> 'other item')
-		 */
+         * 'Use with' -> 'other item')
+         */
         setAccessMask(new SettingsBuilder().setSecondaryOption(4, true).getValue(), 28, 55, 0);
 
         for (int i = 0; i < this.getPlayer().getInventory().getSize(); i++) {

@@ -59,11 +59,11 @@ public class ReferenceTable {
 
         t.flags = bb.get() & 0xFF;
 
-		/* the number of references */
+        /* the number of references */
         int size = bb.getShort() & 0xFFFF;
         t.references = new TreeMap<>();
 
-		/* read the ids */
+        /* read the ids */
         int[] ids = new int[size];
         int accumulator = 0;
         size = -1;
@@ -76,7 +76,7 @@ public class ReferenceTable {
         }
         size++;
 
-		/* and allocate specific entries within that array */
+        /* and allocate specific entries within that array */
         for (int id : ids) {
             t.references.put(id, new Reference());
             t.references.get(id).id = id;
@@ -88,24 +88,24 @@ public class ReferenceTable {
             }
         }
 
-		/* read the CRC32 checksums */
+        /* read the CRC32 checksums */
         for (int id : ids) {
             t.references.get(id).crc = bb.getInt();
         }
 
-		/* read the whirlpool digests if present */
+        /* read the whirlpool digests if present */
         if ((t.flags & FLAG_WHIRLPOOL) != 0) {
             for (int id : ids) {
                 bb.get(t.references.get(id).whirlpool);
             }
         }
 
-		/* read the version numbers */
+        /* read the version numbers */
         for (int id : ids) {
             t.references.get(id).version = bb.getInt();
         }
 
-		/* read the child sizes */
+        /* read the child sizes */
         int[][] members = new int[size][];
         for (int id : ids) {
             int length = bb.getShort() & 0xFFFF;
@@ -113,13 +113,13 @@ public class ReferenceTable {
             t.references.get(id).children = new TreeMap<>();
         }
 
-		/* read the child ids */
+        /* read the child ids */
         for (int id : ids) {
             /* reset the accumulator and size */
             accumulator = 0;
             size = -1;
 
-			/* loop through the array of ids */
+            /* loop through the array of ids */
             for (int i = 0; i < members[id].length; i++) {
                 int delta = bb.getShort() & 0xFFFF;
                 members[id][i] = accumulator += delta;
@@ -129,7 +129,7 @@ public class ReferenceTable {
             }
             size++;
 
-			/* and allocate specific entries within the array */
+            /* and allocate specific entries within the array */
             //for (int child : members[id]) {
             for (int i = 0; i < members[id].length; i++) {
                 int child = members[id][i];
@@ -140,7 +140,7 @@ public class ReferenceTable {
             //t.references.get(id).size = size;
         }
 
-		/* read the child identifiers if present */
+        /* read the child identifiers if present */
         if ((t.flags & FLAG_IDENTIFIERS) != 0) {
             for (int id : ids) {
                 //for (int child : members[id]) {
@@ -178,24 +178,24 @@ public class ReferenceTable {
      * @throws IOException if an I/O error occurs.
      */
     public ByteBuffer encode() throws IOException {
-		/* 
-		 * we can't (easily) predict the size ahead of time, so we write to a
-		 * stream and then to the buffer
-		 */
+        /*
+         * we can't (easily) predict the size ahead of time, so we write to a
+         * stream and then to the buffer
+         */
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
         DataOutputStream os = new DataOutputStream(bout);
         try {
-			/* write the header */
+            /* write the header */
             os.write(format);
             if (format >= 6) {
                 os.writeInt(version);
             }
             os.write(flags);
 
-			/* calculate and write the number of non-null entries */
+            /* calculate and write the number of non-null entries */
             os.writeShort(references.size());
 
-			/* write the ids */
+            /* write the ids */
             int last = 0;
             for (int id = 0; id < capacity(); id++) {
                 if (references.containsKey(id)) {
@@ -205,36 +205,36 @@ public class ReferenceTable {
                 }
             }
 
-			/* write the identifiers if required */
+            /* write the identifiers if required */
             if ((flags & FLAG_IDENTIFIERS) != 0) {
                 for (Reference entry : references.values()) {
                     os.writeInt(entry.identifier);
                 }
             }
 
-			/* write the CRC checksums */
+            /* write the CRC checksums */
             for (Reference entry : references.values()) {
                 os.writeInt(entry.crc);
             }
 
-			/* write the whirlpool digests if required */
+            /* write the whirlpool digests if required */
             if ((flags & FLAG_WHIRLPOOL) != 0) {
                 for (Reference entry : references.values()) {
                     os.write(entry.whirlpool);
                 }
             }
 
-			/* write the versions */
+            /* write the versions */
             for (Reference entry : references.values()) {
                 os.writeInt(entry.version);
             }
 
-			/* calculate and write the number of non-null child entries */
+            /* calculate and write the number of non-null child entries */
             for (Reference entry : references.values()) {
                 os.writeShort(entry.children.size());
             }
 
-			/* write the child ids */
+            /* write the child ids */
             for (Reference entry : references.values()) {
                 last = 0;
                 for (int id = 0; id < entry.capacity(); id++) {
@@ -247,7 +247,7 @@ public class ReferenceTable {
                 }
             }
 
-			/* write the child identifiers if required  */
+            /* write the child identifiers if required  */
             if ((flags & FLAG_IDENTIFIERS) != 0) {
                 for (Reference entry : references.values()) {
                     for (ChildReference child : entry.children.values()) {
@@ -256,7 +256,7 @@ public class ReferenceTable {
                 }
             }
 
-			/* convert the stream to a byte array and then wrap a buffer */
+            /* convert the stream to a byte array and then wrap a buffer */
             byte[] bytes = bout.toByteArray();
             return ByteBuffer.wrap(bytes);
         } finally {

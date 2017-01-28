@@ -144,39 +144,39 @@ public abstract class GameObject extends Entity implements Interactable {
         //Remove any old clip
         int[][] clip = this.getClip(); //A 3x3 clip array, referenced below
 
-		/*
+        /*
          * Applies the below clipping (# = point of interest) [?][?][?]
-		 * [?][#][?] [?][?][?]
-		 */
+         * [?][#][?] [?][?][?]
+         */
         Location swCorner = this.getLocation();
         for (int i = 0; i < this.getSizeX(); i++) {
             for (int j = 0; j < this.getSizeY(); j++) {
                 this.getLocation().getMap().addClip(swCorner.x + i, swCorner.y + j, swCorner.z, clip[1][1]); //Apply the center clip
             }
         }
-		
-		/*
-		 * Applies the below clipping (# = point of interest) [?][#][?]
-		 * [?][?][?] [?][#][?]
-		 */
+
+        /*
+         * Applies the below clipping (# = point of interest) [?][#][?]
+         * [?][?][?] [?][#][?]
+         */
         for (int i = 0; i < this.getSizeX(); i++) {
             this.getLocation().getMap().addClip(swCorner.x + i, swCorner.y - 1, swCorner.z, clip[1][0]);
             this.getLocation().getMap().addClip(swCorner.x + i, swCorner.y + this.getSizeY(), swCorner.z, clip[1][2]);
         }
-		
-		/*
-		 * Applies the below clipping (# = point of interest) [?][?][?]
-		 * [#][?][#] [?][?][?]
-		 */
+
+        /*
+         * Applies the below clipping (# = point of interest) [?][?][?]
+         * [#][?][#] [?][?][?]
+         */
         for (int j = 0; j < this.getSizeY(); j++) {
             this.getLocation().getMap().addClip(swCorner.x - 1, swCorner.y + j, swCorner.z, clip[0][1]);
             this.getLocation().getMap().addClip(swCorner.x + this.getSizeX(), swCorner.y + j, swCorner.z, clip[2][1]);
         }
-		
-		/*
-		 * Applies the below clipping (# = point of interest) [#][?][#]
-		 * [?][?][?] [#][?][#]
-		 */
+
+        /*
+         * Applies the below clipping (# = point of interest) [#][?][#]
+         * [?][?][?] [#][?][#]
+         */
         this.getLocation().getMap().addClip(swCorner.x - 1, swCorner.y - 1, swCorner.z, clip[0][0]);
         this.getLocation().getMap().addClip(swCorner.x - 1, swCorner.y + this.getSizeY(), swCorner.z, clip[0][2]);
         this.getLocation().getMap().addClip(swCorner.x + this.getSizeX(), swCorner.y - 1, swCorner.z, clip[2][0]);
@@ -309,8 +309,8 @@ public abstract class GameObject extends Entity implements Interactable {
             }
         }
         if (isSolid && getActionCount() != 2) {
-			/* TODO: This may cause issues with walking through objects, but fixes the lumbridge spinning wheel doorway!
-			 * If issues occur, try remove the && getActionCount() != 2 comparison */
+            /* TODO: This may cause issues with walking through objects, but fixes the lumbridge spinning wheel doorway!
+             * If issues occur, try remove the && getActionCount() != 2 comparison */
             if (type == 0) {
                 if (direction == Directions.NORTH) {
                     clips[1][1] |= ClipMasks.BLOCKED_WEST;
@@ -651,10 +651,10 @@ public abstract class GameObject extends Entity implements Interactable {
         //Remove any old clip
         int[][] clip = this.getClip(); //A 3x3 clip array, referenced below
 
-		/*
-		 * Removes the below clipping (# = point of interest) [?][?][?]
-		 * [?][#][?] [?][?][?]
-		 */
+        /*
+         * Removes the below clipping (# = point of interest) [?][?][?]
+         * [?][#][?] [?][?][?]
+         */
         Location old = this.getLocation();
         for (int i = 0; i < this.getSizeX(); i++) {
             for (int j = 0; j < this.getSizeY(); j++) {
@@ -662,28 +662,28 @@ public abstract class GameObject extends Entity implements Interactable {
             }
         }
 
-		/*
-		 * Removes the below clipping (# = point of interest) [?][#][?]
-		 * [?][?][?] [?][#][?]
-		 */
+        /*
+         * Removes the below clipping (# = point of interest) [?][#][?]
+         * [?][?][?] [?][#][?]
+         */
         for (int i = 0; i < this.getSizeX(); i++) {
             this.getLocation().getMap().removeClip(old.x + i, old.y - 1, old.z, clip[1][0]);
             this.getLocation().getMap().removeClip(old.x + i, old.y + this.getSizeY(), old.z, clip[1][2]);
         }
 
-		/*
-		 * Removes the below clipping (# = point of interest) [?][?][?]
-		 * [#][?][#] [?][?][?]
-		 */
+        /*
+         * Removes the below clipping (# = point of interest) [?][?][?]
+         * [#][?][#] [?][?][?]
+         */
         for (int j = 0; j < this.getSizeY(); j++) {
             this.getLocation().getMap().removeClip(old.x - 1, old.y + j, old.z, clip[0][1]);
             this.getLocation().getMap().removeClip(old.x + this.getSizeX(), old.y + j, old.z, clip[2][1]);
         }
 
-		/*
-		 * Removes the below clipping (# = point of interest) [#][?][#]
-		 * [?][?][?] [#][?][#]
-		 */
+        /*
+         * Removes the below clipping (# = point of interest) [#][?][#]
+         * [?][?][?] [#][?][#]
+         */
         this.getLocation().getMap().removeClip(old.x - 1, old.y - 1, old.z, clip[0][0]);
         this.getLocation().getMap().removeClip(old.x - 1, old.y + this.getSizeY(), old.z, clip[0][2]);
         this.getLocation().getMap().removeClip(old.x + this.getSizeX(), old.y - 1, old.z, clip[2][0]);

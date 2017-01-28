@@ -43,7 +43,7 @@ public class Prompter {
     public Prompter() {
         this.scanner = new Scanner(System.in);
 
-		/* Now we steal System.out */
+        /* Now we steal System.out */
         oldSysOut = System.out;
         oldSysOut.flush();
         newSysOutPrintStream = new PrintStream(this.newSysOut);

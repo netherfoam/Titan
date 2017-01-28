@@ -351,9 +351,9 @@ public class ConfigSection implements Map<String, Object> {
         if (o instanceof Map) {
             /*
              * If we're retrieving a map, then we should check if we can cast
-			 * it to a config section. This is typesafe in that it prevents us
-			 * from using a map that does not have keys as strings.
-			 */
+             * it to a config section. This is typesafe in that it prevents us
+             * from using a map that does not have keys as strings.
+             */
             HashMap<String, Object> result = new HashMap<>();
             for (Entry<?, ?> e : ((Map<?, ?>) o).entrySet()) {
                 if (!(e.getKey() instanceof String)) return o; //Key is not String, we can't help.

@@ -113,7 +113,7 @@ public class Session extends ServerSession {
      */
     /*
      * public void setEncryption(byte b){ this.encryption = b; }
-	 */
+     */
 
     /**
      * Gives the session a new raw data handler. The raw handler will be
@@ -209,13 +209,13 @@ public class Session extends ServerSession {
         this.lastPing = System.currentTimeMillis();
 
         //TODO
-		/*
-		 * if(this.inBuffer.available() + (end - start) >
-		 * Core.getWorldConfig().getInt("network.session-overflow", 8192)){
-		 * Log.debug(this +
-		 * " is attempting to process too much data, closing session.");
-		 * this.close(); }
-		 */
+        /*
+         * if(this.inBuffer.available() + (end - start) >
+         * Core.getWorldConfig().getInt("network.session-overflow", 8192)){
+         * Log.debug(this +
+         * " is attempting to process too much data, closing session.");
+         * this.close(); }
+         */
 
         Core.submit(new Runnable() {
             @Override

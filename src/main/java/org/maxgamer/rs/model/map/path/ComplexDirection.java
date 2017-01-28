@@ -25,10 +25,10 @@ public class ComplexDirection extends Direction {
         this.dir2 = dir2;
     }
 
-	/*
+    /*
      * public int conflict(Location from) { return conflictTo(from) |
-	 * conflictFrom(from); }
-	 */
+     * conflictFrom(from); }
+     */
 
     public int conflictTo(Location from) {
         return this.dir1.conflictTo(from) | dir2.conflictTo(from) | (from.getMap().getClip(from.x + dx, from.y + dy, from.z) & clipTo);

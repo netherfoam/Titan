@@ -10,19 +10,19 @@ import java.util.Map.Entry;
 public class Archive {
     /*public static Archive decode(Reference ref, CacheFile file) throws IOException{
         int size = ref.getChildCount();
-		if(size <= 1) throw new IOException("That file doesn't appear to be an archive...");
-		
-		ByteBuffer bb = file.getData();
-		Archive a = new Archive(size);
-		
+        if(size <= 1) throw new IOException("That file doesn't appear to be an archive...");
+
+        ByteBuffer bb = file.getData();
+        Archive a = new Archive(size);
+
         //int ptr = bb.limit();
         //int chunks = data[--ptr] & 0xff; //Last byte is the number of chunks
-		int chunks = bb.get(bb.limit() - 1) & 0xFF;
-		
+        int chunks = bb.get(bb.limit() - 1) & 0xFF;
+
         //RSInputStream stream = new RSInputStream(new RSByteArrayInputStream(data));
         //ptr -= chunks * (size * 4);
-		bb.position(bb.limit() - 1 - (chunks * size * 4));
-		
+        bb.position(bb.limit() - 1 - (chunks * size * 4));
+
         //stream.seek(ptr);
         int[] sizes = new int[size];
         for (int x = 0; chunks > x; x++) {
@@ -66,9 +66,9 @@ public class Archive {
         return true;
         
         for(int i = 0; i < size; i++){
-        	a.entries[i] = ByteBuffer.wrap(objects[i]);
+            a.entries[i] = ByteBuffer.wrap(objects[i]);
         }
-	}*/
+    }*/
 
     //private ByteBuffer[] entries;
     private HashMap<Integer, ByteBuffer> entries;
@@ -200,13 +200,13 @@ public class Archive {
     public int size() {
         return entries.size();
     }
-	
-	/*
-	public CacheFile encode(RSCompression compression){
-		CacheFile f = new CacheFile(compression);
-		
-		//TODO: Encode() to F
-		
-		return f;
-	}*/
+
+    /*
+    public CacheFile encode(RSCompression compression){
+        CacheFile f = new CacheFile(compression);
+
+        //TODO: Encode() to F
+
+        return f;
+    }*/
 }

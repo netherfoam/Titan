@@ -69,8 +69,7 @@ public abstract class Tickable {
         @Override
         public void run() {
             if (cancel) {
-            }
-            else {
+            } else {
                 tick.req = null;
                 tick.run();
             }

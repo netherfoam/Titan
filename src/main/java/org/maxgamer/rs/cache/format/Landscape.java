@@ -198,11 +198,11 @@ public class Landscape {
                             map.addClip(xOffset + localX, yOffset + localY, height, ClipMasks.BLOCKED_TILE);
                         }
 
-						/*
+                        /*
                          * if((flags & FLAG_ROOF) == FLAG_ROOF){ addClip(xOffset
-						 * + localX, yOffset + localY, z,
-						 * ClipMasks.BLOCKED_TILE); }
-						 */
+                         * + localX, yOffset + localY, z,
+                         * ClipMasks.BLOCKED_TILE); }
+                         */
 
                         if ((flags & WorldMap.FLAG_UNKNOWN) == WorldMap.FLAG_UNKNOWN) {
                             map.addClip(xOffset + localX, yOffset + localY, height, ClipMasks.BLOCKED_TILE);
@@ -243,43 +243,43 @@ public class Landscape {
 
     //May prove useful:
     /*
-	 * int flags = 0;
-	 * 
-	 * while (true) { int value = buffer.get() & 0xFF;;
-	 * 
-	 * if (value == 0) { TileObject tile = null; Position position;
-	 * 
-	 * if (plane == 0) { position = new Position(x + localX, y + localY, plane);
-	 * } else { position = new Position(x + localX, y + localY, plane - 1); }
-	 * 
-	 * if ((flags & BRIDGE_FLAG) != 0) { tile = new
-	 * TileObject(TileObject.Type.BRIDGE, position); }
-	 * 
-	 * if ((flags & FLAG_CLIP) != 0) { tile = new
-	 * TileObject(TileObject.Type.CLIPPED, position); } tiles.add(tile); break;
-	 * } if (value == 1) { int derp1 = buffer.get() & 0xFF;
-	 * //System.out.println("Derp1: " + derp1);
-	 * 
-	 * TileObject tile = null; Position position;
-	 * 
-	 * if (plane == 0) { position = new Position(x + localX, y + localY, plane);
-	 * } else { position = new Position(x + localX, y + localY, plane - 1); } if
-	 * ((flags & BRIDGE_FLAG) != 0) { tile = new
-	 * TileObject(TileObject.Type.BRIDGE, position); }
-	 * 
-	 * if ((flags & FLAG_CLIP) != 0) { tile = new
-	 * TileObject(TileObject.Type.CLIPPED, position); } tiles.add(tile); break;
-	 * } if (value <= 49) { int derp2 = buffer.get() & 0xFF;
-	 * //System.out.println("Derp2: " + derp2);
-	 * //tile_layer1_type[plane][localX][localY] = stream.readSignedByte();
-	 * //tile_layer1_shape[plane][localX][localY] = (byte) ((value - 2) / 4);
-	 * //tile_layer1_orientation[plane][localX][localY] = (byte) ((value - 2) +
-	 * i1 & 3); } else if (value <= 81) { flags = value - 49;
-	 * //System.out.println("Flag: " + flags);
-	 * //tile_flags[plane][localX][localY] = (byte) (value - 49); } else { //
-	 * flags = value - 81; //tile_layer0_type[plane][localX][localY] = (byte)
-	 * (value - 81); }
-	 */
+     * int flags = 0;
+     *
+     * while (true) { int value = buffer.get() & 0xFF;;
+     *
+     * if (value == 0) { TileObject tile = null; Position position;
+     *
+     * if (plane == 0) { position = new Position(x + localX, y + localY, plane);
+     * } else { position = new Position(x + localX, y + localY, plane - 1); }
+     *
+     * if ((flags & BRIDGE_FLAG) != 0) { tile = new
+     * TileObject(TileObject.Type.BRIDGE, position); }
+     *
+     * if ((flags & FLAG_CLIP) != 0) { tile = new
+     * TileObject(TileObject.Type.CLIPPED, position); } tiles.add(tile); break;
+     * } if (value == 1) { int derp1 = buffer.get() & 0xFF;
+     * //System.out.println("Derp1: " + derp1);
+     *
+     * TileObject tile = null; Position position;
+     *
+     * if (plane == 0) { position = new Position(x + localX, y + localY, plane);
+     * } else { position = new Position(x + localX, y + localY, plane - 1); } if
+     * ((flags & BRIDGE_FLAG) != 0) { tile = new
+     * TileObject(TileObject.Type.BRIDGE, position); }
+     *
+     * if ((flags & FLAG_CLIP) != 0) { tile = new
+     * TileObject(TileObject.Type.CLIPPED, position); } tiles.add(tile); break;
+     * } if (value <= 49) { int derp2 = buffer.get() & 0xFF;
+     * //System.out.println("Derp2: " + derp2);
+     * //tile_layer1_type[plane][localX][localY] = stream.readSignedByte();
+     * //tile_layer1_shape[plane][localX][localY] = (byte) ((value - 2) / 4);
+     * //tile_layer1_orientation[plane][localX][localY] = (byte) ((value - 2) +
+     * i1 & 3); } else if (value <= 81) { flags = value - 49;
+     * //System.out.println("Flag: " + flags);
+     * //tile_flags[plane][localX][localY] = (byte) (value - 49); } else { //
+     * flags = value - 81; //tile_layer0_type[plane][localX][localY] = (byte)
+     * (value - 81); }
+     */
 
     /**
      * Represents an object which has not yet been instantiated, but is inside a

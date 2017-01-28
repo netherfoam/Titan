@@ -75,7 +75,7 @@ public class ChecksumTable {
         int size = whirlpool ? (buffer.limit() / 8) : (buffer.get() & 0xFF);
         ChecksumTable table = new ChecksumTable(size);
 
-		/* calculate the whirlpool digest we expect to have at the end */
+        /* calculate the whirlpool digest we expect to have at the end */
         byte[] masterDigest = null;
         if (whirlpool) {
             byte[] temp = new byte[size * 72 + 1];
@@ -84,7 +84,7 @@ public class ChecksumTable {
             masterDigest = Whirlpool.whirlpool(temp, 0, temp.length);
         }
 
-		/* read the entries */
+        /* read the entries */
         buffer.position(1);
         for (int i = 0; i < size; i++) {
             int crc = buffer.getInt();
@@ -96,7 +96,7 @@ public class ChecksumTable {
             table.entries[i] = new Entry(crc, version, digest);
         }
 
-		/* read the trailing digest and check if it matches up */
+        /* read the trailing digest and check if it matches up */
         if (whirlpool) {
             byte[] bytes = new byte[buffer.remaining()];
             buffer.get(bytes);
@@ -113,7 +113,7 @@ public class ChecksumTable {
             }
         }
 
-		/* if it looks good return the table */
+        /* if it looks good return the table */
         return table;
     }
 
@@ -152,12 +152,12 @@ public class ChecksumTable {
         DataOutputStream os = new DataOutputStream(bout);
         try {
             /*
-			 * as the new whirlpool format is more complicated we must write the
-			 * number of entries
-			 */
+             * as the new whirlpool format is more complicated we must write the
+             * number of entries
+             */
             if (whirlpool) os.write(entries.length);
 
-			/* encode the individual entries */
+            /* encode the individual entries */
             for (int i = 0; i < entries.length; i++) {
                 Entry entry = entries[i];
                 os.writeInt(entry.getCrc());
@@ -165,7 +165,7 @@ public class ChecksumTable {
                 if (whirlpool) os.write(entry.getWhirlpool());
             }
 
-			/* compute (and encrypt) the digest of the whole table */
+            /* compute (and encrypt) the digest of the whole table */
             if (whirlpool) {
                 byte[] bytes = bout.toByteArray();
                 ByteBuffer temp = ByteBuffer.allocate(66);

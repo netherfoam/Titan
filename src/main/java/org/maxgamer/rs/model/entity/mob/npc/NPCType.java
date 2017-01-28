@@ -126,16 +126,16 @@ public class NPCType {
     protected NPCType() {
         /*
          * aBoolean3172 = true; aBoolean3169 = true; aBoolean3196 = false;
-		 * anInt3200 = -1; anInt3173 = -1; anInt3167 = -1; anInt3179 = -1;
-		 * renderEmote = -1; aByte3193 = (byte) -16; anInt3184 = 0; anInt3214 =
-		 * -1; aBoolean3210 = false; aByte3207 = (byte) 0; aByte3215 = (byte)
-		 * -96; anInt3181 = -1; configId = -1; anInt3216 = 255; isVisibleOnMap =
-		 * true; anInt3212 = -1; anInt3226 = -1; anInt3203 = -1; aBoolean3187 =
-		 * false; anInt3227 = -1; anInt3223 = -1; direction = (byte) 4;
-		 * configFileId = -1; isClickable = true; headIcons = -1; anInt3235 =
-		 * 32; aShort3213 = (short) 0; aByte3233 = (byte) -1; anInt3182 = -1;
-		 * aShort3237 = (short) 0;
-		 */
+         * anInt3200 = -1; anInt3173 = -1; anInt3167 = -1; anInt3179 = -1;
+         * renderEmote = -1; aByte3193 = (byte) -16; anInt3184 = 0; anInt3214 =
+         * -1; aBoolean3210 = false; aByte3207 = (byte) 0; aByte3215 = (byte)
+         * -96; anInt3181 = -1; configId = -1; anInt3216 = 255; isVisibleOnMap =
+         * true; anInt3212 = -1; anInt3226 = -1; anInt3203 = -1; aBoolean3187 =
+         * false; anInt3227 = -1; anInt3223 = -1; direction = (byte) 4;
+         * configFileId = -1; isClickable = true; headIcons = -1; anInt3235 =
+         * 32; aShort3213 = (short) 0; aByte3233 = (byte) -1; anInt3182 = -1;
+         * aShort3237 = (short) 0;
+         */
     }
 
     @PostLoad
@@ -260,7 +260,7 @@ public class NPCType {
         return powMagic;
     }
 
-	/* short aShort3237; */
+    /* short aShort3237; */
 
     //Serverside values
 
@@ -480,306 +480,306 @@ public class NPCType {
                             if (opcode != 42) {
                                 if (opcode != 60) {
                                     if (opcode == 93) {
-										/* d.isVisibleOnMap = false; */
+                                        /* d.isVisibleOnMap = false; */
                                     } else if (opcode == 95) {
                                         d.combatLevel = (bb.getShort() & 0xFFFF);
                                     } else if (opcode != 97) {
                                         if (opcode != 98) {
                                             if (opcode == 99) {
-												/* d.aBoolean3210 = true; */
+                                                /* d.aBoolean3210 = true; */
                                             } else if (opcode == 100) {
                                                 bb.get();
                                             } else if (opcode == 101) {
                                                 bb.get();
                                             } else if (opcode == 102) {
-												/* d.headIcons = ( */
+                                                /* d.headIcons = ( */
                                                 bb.getShort()/*
-																				 * &
-																				 * 0xFFFF
-																				 * )
-																				 */;
+                                                                                 * &
+                                                                                 * 0xFFFF
+                                                                                 * )
+                                                                                 */;
                                             } else if (opcode == 103) {
-												/* d.anInt3235 = ( */
+                                                /* d.anInt3235 = ( */
                                                 bb.getShort()/*
-																				 * &
-																				 * 0xFFFF
-																				 * )
-																				 */;
+                                                                                 * &
+                                                                                 * 0xFFFF
+                                                                                 * )
+                                                                                 */;
                                             } else if (opcode != 106 && opcode != 118) {
                                                 if (opcode != 107) {
                                                     if (opcode == 109) {
-														/*
-														 * d.aBoolean3169 =
-														 * false;
-														 */
+                                                        /*
+                                                         * d.aBoolean3169 =
+                                                         * false;
+                                                         */
                                                     } else if (opcode != 111) {
                                                         if (opcode == 113) {
-															/*
-															 * d.aShort3213 =
-															 * (short) (
-															 */
+                                                            /*
+                                                             * d.aShort3213 =
+                                                             * (short) (
+                                                             */
                                                             bb.getShort()/*
-																			 * &
-																			 * 0xFFFF
-																			 * )
-																			 */;
-															/*
-															 * d.aShort3237 =
-															 * (short) (
-															 */
+                                                                             * &
+                                                                             * 0xFFFF
+                                                                             * )
+                                                                             */;
+                                                            /*
+                                                             * d.aShort3237 =
+                                                             * (short) (
+                                                             */
                                                             bb.getShort()/*
-																			 * &
-																			 * 0xFFFF
-																			 * )
-																			 */;
+                                                                             * &
+                                                                             * 0xFFFF
+                                                                             * )
+                                                                             */;
                                                         } else if (opcode == 114) {
-															/* d.aByte3215 = */
+                                                            /* d.aByte3215 = */
                                                             bb.get();
-															/* d.aByte3193 = */
+                                                            /* d.aByte3193 = */
                                                             bb.get();
                                                         } else if (opcode != 119) {
                                                             if (opcode != 121) {
                                                                 if (opcode != 122) {
                                                                     if (opcode == 123) {
-																		/*
-																		 * d.
-																		 * anInt3203
-																		 * = (
-																		 */
+                                                                        /*
+                                                                         * d.
+                                                                         * anInt3203
+                                                                         * = (
+                                                                         */
                                                                         bb.getShort()/*
-																						 * &
-																						 * 0xFFFF
-																						 * )
-																						 */;
+                                                                                         * &
+                                                                                         * 0xFFFF
+                                                                                         * )
+                                                                                         */;
                                                                     } else if (opcode != 125) {
                                                                         if (opcode == 127) {
-																			/*
-																			 * d.
-																			 * renderEmote
-																			 * =
-																			 * (
-																			 */
+                                                                            /*
+                                                                             * d.
+                                                                             * renderEmote
+                                                                             * =
+                                                                             * (
+                                                                             */
                                                                             bb.getShort()/*
-																							 * &
-																							 * 0xFFFF
-																							 * )
-																							 */;
+                                                                                             * &
+                                                                                             * 0xFFFF
+                                                                                             * )
+                                                                                             */;
                                                                         } else if (opcode != 128) {
                                                                             if (opcode == 134) {
-																				/*
-																				 * d
-																				 * .
-																				 * anInt3173
-																				 * =
-																				 * (
-																				 */
+                                                                                /*
+                                                                                 * d
+                                                                                 * .
+                                                                                 * anInt3173
+                                                                                 * =
+                                                                                 * (
+                                                                                 */
                                                                                 bb.getShort()/*
-																								 * &
-																								 * 0xFFFF
-																								 * )
-																								 */;
-																				/*
-																				 * if
-																				 * (
-																				 * d
-																				 * .
-																				 * anInt3173
-																				 * ==
-																				 * 65535
-																				 * )
-																				 * {
-																				 * d
-																				 * .
-																				 * anInt3173
-																				 * =
-																				 * -
-																				 * 1
-																				 * ;
-																				 * }
-																				 * d
-																				 * .
-																				 * anInt3212
-																				 * =
-																				 * (
-																				 */
+                                                                                                 * &
+                                                                                                 * 0xFFFF
+                                                                                                 * )
+                                                                                                 */;
+                                                                                /*
+                                                                                 * if
+                                                                                 * (
+                                                                                 * d
+                                                                                 * .
+                                                                                 * anInt3173
+                                                                                 * ==
+                                                                                 * 65535
+                                                                                 * )
+                                                                                 * {
+                                                                                 * d
+                                                                                 * .
+                                                                                 * anInt3173
+                                                                                 * =
+                                                                                 * -
+                                                                                 * 1
+                                                                                 * ;
+                                                                                 * }
+                                                                                 * d
+                                                                                 * .
+                                                                                 * anInt3212
+                                                                                 * =
+                                                                                 * (
+                                                                                 */
                                                                                 bb.getShort()/*
-																								 * &
-																								 * 0xFFFF
-																								 * )
-																								 */;
-																				/*
-																				 * if
-																				 * (
-																				 * d
-																				 * .
-																				 * anInt3212
-																				 * ==
-																				 * 65535
-																				 * )
-																				 * {
-																				 * d
-																				 * .
-																				 * anInt3212
-																				 * =
-																				 * -
-																				 * 1
-																				 * ;
-																				 * }
-																				 */
-																				/*
-																				 * d
-																				 * .
-																				 * anInt3226
-																				 * =
-																				 * (
-																				 */
+                                                                                                 * &
+                                                                                                 * 0xFFFF
+                                                                                                 * )
+                                                                                                 */;
+                                                                                /*
+                                                                                 * if
+                                                                                 * (
+                                                                                 * d
+                                                                                 * .
+                                                                                 * anInt3212
+                                                                                 * ==
+                                                                                 * 65535
+                                                                                 * )
+                                                                                 * {
+                                                                                 * d
+                                                                                 * .
+                                                                                 * anInt3212
+                                                                                 * =
+                                                                                 * -
+                                                                                 * 1
+                                                                                 * ;
+                                                                                 * }
+                                                                                 */
+                                                                                /*
+                                                                                 * d
+                                                                                 * .
+                                                                                 * anInt3226
+                                                                                 * =
+                                                                                 * (
+                                                                                 */
                                                                                 bb.getShort()/*
-																								 * &
-																								 * 0xFFFF
-																								 * )
-																								 */;
-																				/*
-																				 * if
-																				 * (
-																				 * d
-																				 * .
-																				 * anInt3226
-																				 * ==
-																				 * 65535
-																				 * )
-																				 * {
-																				 * d
-																				 * .
-																				 * anInt3226
-																				 * =
-																				 * -
-																				 * 1
-																				 * ;
-																				 * }
-																				 * d
-																				 * .
-																				 * anInt3179
-																				 * =
-																				 * (
-																				 */
+                                                                                                 * &
+                                                                                                 * 0xFFFF
+                                                                                                 * )
+                                                                                                 */;
+                                                                                /*
+                                                                                 * if
+                                                                                 * (
+                                                                                 * d
+                                                                                 * .
+                                                                                 * anInt3226
+                                                                                 * ==
+                                                                                 * 65535
+                                                                                 * )
+                                                                                 * {
+                                                                                 * d
+                                                                                 * .
+                                                                                 * anInt3226
+                                                                                 * =
+                                                                                 * -
+                                                                                 * 1
+                                                                                 * ;
+                                                                                 * }
+                                                                                 * d
+                                                                                 * .
+                                                                                 * anInt3179
+                                                                                 * =
+                                                                                 * (
+                                                                                 */
                                                                                 bb.getShort()/*
-																								 * &
-																								 * 0xFFFF
-																								 * )
-																								 */;
-																				/*
-																				 * if
-																				 * (
-																				 * d
-																				 * .
-																				 * anInt3179
-																				 * ==
-																				 * 65535
-																				 * )
-																				 * {
-																				 * d
-																				 * .
-																				 * anInt3179
-																				 * =
-																				 * -
-																				 * 1
-																				 * ;
-																				 * }
-																				 */
-																				/*
-																				 * d
-																				 * .
-																				 * anInt3184
-																				 * =
-																				 * (
-																				 */
+                                                                                                 * &
+                                                                                                 * 0xFFFF
+                                                                                                 * )
+                                                                                                 */;
+                                                                                /*
+                                                                                 * if
+                                                                                 * (
+                                                                                 * d
+                                                                                 * .
+                                                                                 * anInt3179
+                                                                                 * ==
+                                                                                 * 65535
+                                                                                 * )
+                                                                                 * {
+                                                                                 * d
+                                                                                 * .
+                                                                                 * anInt3179
+                                                                                 * =
+                                                                                 * -
+                                                                                 * 1
+                                                                                 * ;
+                                                                                 * }
+                                                                                 */
+                                                                                /*
+                                                                                 * d
+                                                                                 * .
+                                                                                 * anInt3184
+                                                                                 * =
+                                                                                 * (
+                                                                                 */
                                                                                 bb.get()/*
-																							 * &
-																							 * 0xFF
-																							 * )
-																							 */;
+                                                                                             * &
+                                                                                             * 0xFF
+                                                                                             * )
+                                                                                             */;
                                                                             } else if (opcode == 135) {
-																				/*
-																				 * d
-																				 * .
-																				 * anInt3214
-																				 * =
-																				 * (
-																				 */
+                                                                                /*
+                                                                                 * d
+                                                                                 * .
+                                                                                 * anInt3214
+                                                                                 * =
+                                                                                 * (
+                                                                                 */
                                                                                 bb.get()/*
-																							 * &
-																							 * 0xFF
-																							 * )
-																							 */;
-																				/*
-																				 * d
-																				 * .
-																				 * anInt3178
-																				 * =
-																				 * (
-																				 */
+                                                                                             * &
+                                                                                             * 0xFF
+                                                                                             * )
+                                                                                             */;
+                                                                                /*
+                                                                                 * d
+                                                                                 * .
+                                                                                 * anInt3178
+                                                                                 * =
+                                                                                 * (
+                                                                                 */
                                                                                 bb.getShort()/*
-																								 * &
-																								 * 0xFFFF
-																								 * )
-																								 */;
+                                                                                                 * &
+                                                                                                 * 0xFFFF
+                                                                                                 * )
+                                                                                                 */;
                                                                             } else if (opcode != 136) {
                                                                                 if (opcode == 137) {
-																					/*
-																					 * d
-																					 * .
-																					 * anInt3223
-																					 * =
-																					 * (
-																					 */
+                                                                                    /*
+                                                                                     * d
+                                                                                     * .
+                                                                                     * anInt3223
+                                                                                     * =
+                                                                                     * (
+                                                                                     */
                                                                                     bb.getShort()/*
-																									 * &
-																									 * 0xFFFF
-																									 * )
-																									 */;
+                                                                                                     * &
+                                                                                                     * 0xFFFF
+                                                                                                     * )
+                                                                                                     */;
                                                                                 } else if (opcode == 138) {
-																					/*
-																					 * d
-																					 * .
-																					 * anInt3167
-																					 * =
-																					 */
+                                                                                    /*
+                                                                                     * d
+                                                                                     * .
+                                                                                     * anInt3167
+                                                                                     * =
+                                                                                     */
                                                                                     bb.getShort()/*
-																									 * &
-																									 * 0xFFFF
-																									 */;
+                                                                                                     * &
+                                                                                                     * 0xFFFF
+                                                                                                     */;
                                                                                 } else if (opcode != 139) {
                                                                                     if (opcode == 140) {
-																						/*
-																						 * d
-																						 * .
-																						 * anInt3216
-																						 * =
-																						 */
+                                                                                        /*
+                                                                                         * d
+                                                                                         * .
+                                                                                         * anInt3216
+                                                                                         * =
+                                                                                         */
                                                                                         bb.get()/*
-																									 * &
-																									 * 0xFF
-																									 */;
+                                                                                                     * &
+                                                                                                     * 0xFF
+                                                                                                     */;
                                                                                     } else if (opcode == 141) {
-																						/*
-																						 * d
-																						 * .
-																						 * aBoolean3187
-																						 * =
-																						 * true
-																						 * ;
-																						 */
+                                                                                        /*
+                                                                                         * d
+                                                                                         * .
+                                                                                         * aBoolean3187
+                                                                                         * =
+                                                                                         * true
+                                                                                         * ;
+                                                                                         */
                                                                                     } else if (opcode == 142) {
-																						/*
-																						 * d
-																						 * .
-																						 * anInt3200
-																						 * =
-																						 */
+                                                                                        /*
+                                                                                         * d
+                                                                                         * .
+                                                                                         * anInt3200
+                                                                                         * =
+                                                                                         */
                                                                                         bb.getShort()/*
-																										 * &
-																										 * 0xFFFF
-																										 */;
+                                                                                                         * &
+                                                                                                         * 0xFFFF
+                                                                                                         */;
                                                                                     } else if (opcode != 143) {
                                                                                         if (opcode < 150 || opcode >= 155) {
                                                                                             if (opcode == 155) {
@@ -789,17 +789,17 @@ public class NPCType {
                                                                                                 bb.get();
                                                                                             } else if (opcode != 158) {
                                                                                                 if (opcode == 159) {
-																									/*
-																									 * d
-																									 * .
-																									 * aByte3233
-																									 * =
-																									 * (
-																									 * byte
-																									 * )
-																									 * 0
-																									 * ;
-																									 */
+                                                                                                    /*
+                                                                                                     * d
+                                                                                                     * .
+                                                                                                     * aByte3233
+                                                                                                     * =
+                                                                                                     * (
+                                                                                                     * byte
+                                                                                                     * )
+                                                                                                     * 0
+                                                                                                     * ;
+                                                                                                     */
                                                                                                 } else if (opcode != 160) {
                                                                                                     if (opcode != 161) {
                                                                                                         if (opcode == 249) {
@@ -818,14 +818,14 @@ public class NPCType {
                                                                                                             }
                                                                                                         }
                                                                                                     } else {
-																										/*
-																										 * d
-																										 * .
-																										 * aBoolean3190
-																										 * =
-																										 * true
-																										 * ;
-																										 */
+                                                                                                        /*
+                                                                                                         * d
+                                                                                                         * .
+                                                                                                         * aBoolean3190
+                                                                                                         * =
+                                                                                                         * true
+                                                                                                         * ;
+                                                                                                         */
                                                                                                     }
                                                                                                 } else {
                                                                                                     int i_7_ = (bb.get() & 0xFF);
@@ -835,116 +835,116 @@ public class NPCType {
                                                                                                     }
                                                                                                 }
                                                                                             } else {
-																								/*
-																								 * d
-																								 * .
-																								 * aByte3233
-																								 * =
-																								 * (
-																								 * byte
-																								 * )
-																								 * 1
-																								 * ;
-																								 */
+                                                                                                /*
+                                                                                                 * d
+                                                                                                 * .
+                                                                                                 * aByte3233
+                                                                                                 * =
+                                                                                                 * (
+                                                                                                 * byte
+                                                                                                 * )
+                                                                                                 * 1
+                                                                                                 * ;
+                                                                                                 */
                                                                                             }
                                                                                         } else {
                                                                                             d.options[opcode - 150] = BufferUtils.readRS2String(bb); //bb.readRS2String();
-																							/*
-																							 * if
-																							 * (
-																							 * !
-																							 * (
-																							 * (
-																							 * Class183
-																							 * )
-																							 * aClass183_3195
-																							 * )
-																							 * .
-																							 * aBoolean2484
-																							 * )
-																							 * options
-																							 * [
-																							 * opcode
-																							 * +
-																							 * -
-																							 * 150
-																							 * ]
-																							 * =
-																							 * null
-																							 * ;
-																							 */
+                                                                                            /*
+                                                                                             * if
+                                                                                             * (
+                                                                                             * !
+                                                                                             * (
+                                                                                             * (
+                                                                                             * Class183
+                                                                                             * )
+                                                                                             * aClass183_3195
+                                                                                             * )
+                                                                                             * .
+                                                                                             * aBoolean2484
+                                                                                             * )
+                                                                                             * options
+                                                                                             * [
+                                                                                             * opcode
+                                                                                             * +
+                                                                                             * -
+                                                                                             * 150
+                                                                                             * ]
+                                                                                             * =
+                                                                                             * null
+                                                                                             * ;
+                                                                                             */
                                                                                         }
                                                                                     } else {
-																						/*
-																						 * d
-																						 * .
-																						 * aBoolean3196
-																						 * =
-																						 * true
-																						 * ;
-																						 */
+                                                                                        /*
+                                                                                         * d
+                                                                                         * .
+                                                                                         * aBoolean3196
+                                                                                         * =
+                                                                                         * true
+                                                                                         * ;
+                                                                                         */
                                                                                     }
                                                                                 } else {
-																					/*
-																					 * d
-																					 * .
-																					 * anInt3164
-																					 * =
-																					 * (
-																					 */
+                                                                                    /*
+                                                                                     * d
+                                                                                     * .
+                                                                                     * anInt3164
+                                                                                     * =
+                                                                                     * (
+                                                                                     */
                                                                                     bb.getShort()/*
-																									 * &
-																									 * 0xFFFF
-																									 * )
-																									 */;
+                                                                                                     * &
+                                                                                                     * 0xFFFF
+                                                                                                     * )
+                                                                                                     */;
                                                                                 }
                                                                             } else {
-																				/*
-																				 * d
-																				 * .
-																				 * anInt3181
-																				 * =
-																				 * (
-																				 */
+                                                                                /*
+                                                                                 * d
+                                                                                 * .
+                                                                                 * anInt3181
+                                                                                 * =
+                                                                                 * (
+                                                                                 */
                                                                                 bb.get()/*
-																							 * &
-																							 * 0xFF
-																							 * )
-																							 */;
-																				/*
-																				 * d
-																				 * .
-																				 * anInt3227
-																				 * =
-																				 * (
-																				 */
+                                                                                             * &
+                                                                                             * 0xFF
+                                                                                             * )
+                                                                                             */;
+                                                                                /*
+                                                                                 * d
+                                                                                 * .
+                                                                                 * anInt3227
+                                                                                 * =
+                                                                                 * (
+                                                                                 */
                                                                                 bb.getShort() /*
-																								 * &
-																								 * 0xFFFF
-																								 * )
-																								 */;
+                                                                                                 * &
+                                                                                                 * 0xFFFF
+                                                                                                 * )
+                                                                                                 */;
                                                                             }
                                                                         } else {
                                                                             bb.get();
                                                                         }
                                                                     } else {
-																		/*
-																		 * d.
-																		 * direction
-																		 * =
-																		 */
+                                                                        /*
+                                                                         * d.
+                                                                         * direction
+                                                                         * =
+                                                                         */
                                                                         bb.get();
                                                                     }
                                                                 } else {
-																	/*
-																	 * d.anInt3182
-																	 * = (
-																	 */
+                                                                    /*
+                                                                     * d.anInt3182
+                                                                     * = (
+                                                                     */
                                                                     bb.getShort() /*
-																					 * &
-																					 * 0xFFFF
-																					 * )
-																					 */;
+                                                                                     * &
+                                                                                     * 0xFFFF
+                                                                                     * )
+                                                                                     */;
                                                                 }
                                                             } else {
                                                                 int i_9_ = (bb.get() & 0xFF);
@@ -958,35 +958,35 @@ public class NPCType {
                                                                 }
                                                             }
                                                         } else {
-															/* d.aByte3207 = */
+                                                            /* d.aByte3207 = */
                                                             bb.get();
                                                         }
                                                     } else {
-														/*
-														 * d.aBoolean3172 =
-														 * false;
-														 */
+                                                        /*
+                                                         * d.aBoolean3172 =
+                                                         * false;
+                                                         */
                                                     }
                                                 } else {
-													/* d.isClickable = false; */
+                                                    /* d.isClickable = false; */
                                                 }
                                             } else {
-												/* d.configFileId = ( */
+                                                /* d.configFileId = ( */
                                                 bb.getShort()/*
-																					 * &
-																					 * 0xFFFF
-																					 * )
-																					 */;
-												/*
-												 * if (d.configFileId == 65535)
-												 * { d.configFileId = -1; }
-												 * d.configId = (
-												 */
+                                                                                     * &
+                                                                                     * 0xFFFF
+                                                                                     * )
+                                                                                     */;
+                                                /*
+                                                 * if (d.configFileId == 65535)
+                                                 * { d.configFileId = -1; }
+                                                 * d.configId = (
+                                                 */
                                                 bb.getShort()/* & 0xFFFF) */;
-												/*
-												 * if (d.configId == 65535) {
-												 * d.configId = -1; }
-												 */
+                                                /*
+                                                 * if (d.configId == 65535) {
+                                                 * d.configId = -1; }
+                                                 */
                                                 int i_12_ = -1;
                                                 if (opcode == 118) {
                                                     i_12_ = (bb.getShort() & 0xFFFF);

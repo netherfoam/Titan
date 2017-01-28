@@ -22,17 +22,17 @@ public class ObjectInteractAction extends Action {
     protected void run() throws SuspendExecution {
         /*
         if (end == -1) {
-			//First time run() has been invoked
-			end = Core.getServer().getTicks() + anim.getDelay();
-			getOwner().getUpdateMask().setAnimation(anim, 5);
-		}
-		
-		if (Core.getServer().getTicks() - 1 >= end) {
-			return true; //Done
-		}
-		else {
-			return false; //Not done.
-		}*/
+            //First time run() has been invoked
+            end = Core.getServer().getTicks() + anim.getDelay();
+            getOwner().getUpdateMask().setAnimation(anim, 5);
+        }
+
+        if (Core.getServer().getTicks() - 1 >= end) {
+            return true; //Done
+        }
+        else {
+            return false; //Not done.
+        }*/
 
         getOwner().getUpdateMask().setAnimation(anim, 5);
         wait(anim.getDelay());

@@ -66,34 +66,34 @@ public class AlchemySpell extends ItemSpell {
 
                 state.apply();
 
-				/*if (tick == 0) {
+                /*if (tick == 0) {
                     displayCast(source);
-				}
-				
-				tick++;
-				
-				if (tick >= 4) {
-					ContainerState state = c.getState();
-					try {
-						state.remove(slot, item.setAmount(1));
-					}
-					catch (ContainerException e) {
-						return true; //The item could not be removed
-					}
-					
-					try {
-						state.add(ItemStack.create(995, coins));
-					}
-					catch (ContainerException e) {
-						if (source instanceof Persona) {
-							((Persona) source).getLostAndFound().add(ItemStack.create(995, coins));
-						}
-					}
-					
-					state.apply();
-					return true;
-				}
-				return false;*/
+                }
+
+                tick++;
+
+                if (tick >= 4) {
+                    ContainerState state = c.getState();
+                    try {
+                        state.remove(slot, item.setAmount(1));
+                    }
+                    catch (ContainerException e) {
+                        return true; //The item could not be removed
+                    }
+
+                    try {
+                        state.add(ItemStack.create(995, coins));
+                    }
+                    catch (ContainerException e) {
+                        if (source instanceof Persona) {
+                            ((Persona) source).getLostAndFound().add(ItemStack.create(995, coins));
+                        }
+                    }
+
+                    state.apply();
+                    return true;
+                }
+                return false;*/
             }
 
             @Override

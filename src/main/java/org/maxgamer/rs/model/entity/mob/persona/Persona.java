@@ -502,10 +502,10 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
             // away.
             // Eg queuing an empty path, and then queuing a non-empty path.
 
-			/*
+            /*
              * Wait no, it occurs when the player has to move 1 tile to target
-			 * then move n tiles to second target in the same tick
-			 */
+             * then move n tiles to second target in the same tick
+             */
             throw new IllegalStateException("Movement update mask has already changed dir " + m.getDirection() + ", tele " + m.hasTeleported() + ", ActionQueue: " + getActions().toString());
         }
 

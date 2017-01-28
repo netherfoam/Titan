@@ -14,9 +14,9 @@ import java.nio.ByteBuffer;
  * @author netherfoam
  */
 public final class RSFont {
-    //	private int anInt1514;
-    //	private int anInt1517;
-    //	private int anInt1518;
+    //    private int anInt1514;
+    //    private int anInt1517;
+    //    private int anInt1518;
     private byte[] charWidths;
     private byte[][] sizes;
 
@@ -67,15 +67,15 @@ public final class RSFont {
                         }
                     }
                 }
-                //				this.anInt1518 = is_28_[32] + is_29_[32];
+                //                this.anInt1518 = is_28_[32] + is_29_[32];
             } else {
-                //				this.anInt1518 = buffer.readUnsignedByte();
+                //                this.anInt1518 = buffer.readUnsignedByte();
                 buffer.readUnsignedByte();
             }
             buffer.readUnsignedByte();
             buffer.readUnsignedByte();
-            //			this.anInt1517 = buffer.readUnsignedByte();
-            //			this.anInt1514 = buffer.readUnsignedByte();
+            //            this.anInt1517 = buffer.readUnsignedByte();
+            //            this.anInt1514 = buffer.readUnsignedByte();
             buffer.readUnsignedByte();
             buffer.readUnsignedByte();
         } finally {

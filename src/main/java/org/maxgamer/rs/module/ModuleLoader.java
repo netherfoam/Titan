@@ -339,8 +339,8 @@ public class ModuleLoader {
     public boolean unload(Module m) {
         try {
             // TODO: Reimplement this
-			/*ModuleUnloadEvent event = new ModuleUnloadEvent(m);
-			event.call();*/
+            /*ModuleUnloadEvent event = new ModuleUnloadEvent(m);
+            event.call();*/
 
             m.unload();
             m.getMeta().getLoader().close();

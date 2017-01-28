@@ -229,14 +229,14 @@ public class ItemStack implements Comparable<ItemStack>, YMLSerializable, Intera
      */
     /*
      * public int getEquipId(boolean male) { ItemProto p = getDefinition();
-	 * 
-	 * int wornId; if(male) wornId = p.maleWornModelId2; else wornId =
-	 * p.femaleWornModelId2; //if(male) return getDefinition().maleWornModelId1;
-	 * //else return getDefinition().femaleWornModelId1;
-	 * System.out.println(getDefinition().getId() + ": " + getName() +
-	 * " worn ID: " + wornId); System.out.println(getDefinition().toString());
-	 * return wornId; }
-	 */
+     *
+     * int wornId; if(male) wornId = p.maleWornModelId2; else wornId =
+     * p.femaleWornModelId2; //if(male) return getDefinition().maleWornModelId1;
+     * //else return getDefinition().femaleWornModelId1;
+     * System.out.println(getDefinition().getId() + ": " + getName() +
+     * " worn ID: " + wornId); System.out.println(getDefinition().toString());
+     * return wornId; }
+     */
     public String[] getInventoryOptions() {
         return getDefinition().getInventoryOptions();
     }

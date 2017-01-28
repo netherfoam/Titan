@@ -428,10 +428,10 @@ public class Game637Protocol extends GameProtocol {
             out.writeBits(1, 0);
         }
 
-		/*
+        /*
          * Now we loop through all players which must be sent to the player, or
-		 * updated, or removed.
-		 */
+         * updated, or removed.
+         */
         pit = localPlayers.iterator();
         while (pit.hasNext()) {
             Persona p = pit.next();
@@ -659,10 +659,10 @@ public class Game637Protocol extends GameProtocol {
         int mask = 0x0000;
         UpdateMask um = npc.getUpdateMask();
 
-		/*
-		 * Order is: ForceMovement Hits Graphics MobFacing SwitchID Animation
-		 * FacePosition ForceText
-		 */
+        /*
+         * Order is: ForceMovement Hits Graphics MobFacing SwitchID Animation
+         * FacePosition ForceText
+         */
 
         // "ForceMovement" is 0x2000 and refers to..? Moving the NPC?
         if (um.getHits() != null) {
@@ -727,11 +727,11 @@ public class Game637Protocol extends GameProtocol {
                 block.writeShort(mf.getTarget().getClientIndex());
             }
         }
-		/*
-		 * if (fm.getFaceMob() != 0) { mask |= 0x08;
-		 *
-		 * block.writeShort(fm.getFaceMob()); }
-		 */
+        /*
+         * if (fm.getFaceMob() != 0) { mask |= 0x08;
+         *
+         * block.writeShort(fm.getFaceMob()); }
+         */
         // "SwitchID" is 0x80 and probably refers to when a NPC
         // changes its display ID
         if (um.getAnimation() != null) {
@@ -745,12 +745,12 @@ public class Game637Protocol extends GameProtocol {
             block.writeByteS(a.getDelay());
         }
 
-		/*
-		 * if (fm.hasFacePositionChanged() && fm.getFaceMob() == 0) { mask |=
-		 * 0x40; Position face = fm.getTarget(); if (face != null) {
-		 * block.writeLEShortA(face.x * 2); block.writeLEShortA(face.y * 2); }
-		 * else { block.writeLEShortA(0); block.writeLEShortA(0); } }
-		 */
+        /*
+         * if (fm.hasFacePositionChanged() && fm.getFaceMob() == 0) { mask |=
+         * 0x40; Position face = fm.getTarget(); if (face != null) {
+         * block.writeLEShortA(face.x * 2); block.writeLEShortA(face.y * 2); }
+         * else { block.writeLEShortA(0); block.writeLEShortA(0); } }
+         */
 
         if (um.hasFacingChanged()) {
             Facing fm = npc.getFacing();
@@ -1467,10 +1467,10 @@ public class Game637Protocol extends GameProtocol {
             out.writeByteA(1); // Force reload
 
             out.startBitAccess();
-			/*
-			 * Bitshift right by 3, then dividing by two equals bitshift right
-			 * by 4
-			 */
+            /*
+             * Bitshift right by 3, then dividing by two equals bitshift right
+             * by 4
+             */
             int mapHash = getPlayer().getViewDistance().getTileSize() >> 4;
 
             ArrayList<Integer> regionids = new ArrayList<>();
@@ -1485,10 +1485,10 @@ public class Game637Protocol extends GameProtocol {
                             int rotation = 0;
                             out.writeBits(1, 1);
                             out.writeBits(2, c.getCacheZ());
-							/*
-							 * It appears X can only go up to 8191 inclusive for
-							 * DynamicMaps
-							 */
+                            /*
+                             * It appears X can only go up to 8191 inclusive for
+                             * DynamicMaps
+                             */
                             out.writeBits(10, c.getCacheX());
                             out.writeBits(11, c.getCacheY());
                             out.writeBits(2, rotation);
@@ -1515,7 +1515,7 @@ public class Game637Protocol extends GameProtocol {
                             keys = xtea.getKeys();
                         }
                     } catch (FileNotFoundException ex) {
-						/* There are no objects here. We send an empty XTEA key */
+                        /* There are no objects here. We send an empty XTEA key */
                     }
                 }
 

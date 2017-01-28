@@ -220,8 +220,7 @@ public abstract class Container implements Cloneable, Iterable<ItemStack>, YMLSe
         for (int i = 0; i < size; i++) {
             ItemStack item = get(i);
             if (item == null) {
-            }
-            else {
+            } else {
                 t.set(String.valueOf(i), item.serialize());
             }
         }

@@ -45,17 +45,17 @@ public class FileTable {
         return ft;
     }
 
-	/*public void write(int fileId, CacheFile file) throws IOException{
+    /*public void write(int fileId, CacheFile file) throws IOException{
         ByteBuffer bb = file.encode();
-		
-		if(files.get(fileId) == null){
-			//New file
-			
-			
-		}
-		throw new RuntimeException("Not implemented");
-		
-	}*/
+
+        if(files.get(fileId) == null){
+            //New file
+
+
+        }
+        throw new RuntimeException("Not implemented");
+
+    }*/
 
     /**
      * Fetches the file by the given ID. If the file has been fetched previously,

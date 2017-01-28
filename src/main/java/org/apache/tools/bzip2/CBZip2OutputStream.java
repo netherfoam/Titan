@@ -306,8 +306,8 @@ public class CBZip2OutputStream extends OutputStream implements BZip2Constants {
     protected static void hbMakeCodeLengths(char[] len, int[] freq, int alphaSize, int maxLen) {
         /*
          * Nodes and heap entries run from 1. Entry 0 for both the heap and
-		 * nodes is a sentinel.
-		 */
+         * nodes is a sentinel.
+         */
         final int[] heap = new int[MAX_ALPHA_SIZE * 2];
         final int[] weight = new int[MAX_ALPHA_SIZE * 2];
         final int[] parent = new int[MAX_ALPHA_SIZE * 2];
@@ -450,10 +450,10 @@ public class CBZip2OutputStream extends OutputStream implements BZip2Constants {
     }
 
     private static void hbMakeCodeLengths(final byte[] len, final int[] freq, final Data dat, final int alphaSize, final int maxLen) {
-		/*
-		 * Nodes and heap entries run from 1. Entry 0 for both the heap and
-		 * nodes is a sentinel.
-		 */
+        /*
+         * Nodes and heap entries run from 1. Entry 0 for both the heap and
+         * nodes is a sentinel.
+         */
         final int[] heap = dat.heap;
         final int[] weight = dat.weight;
         final int[] parent = dat.parent;
@@ -739,10 +739,10 @@ public class CBZip2OutputStream extends OutputStream implements BZip2Constants {
 
         this.data = new Data(this.blockSize100k);
 
-		/*
-		 * Write `magic' bytes h indicating file-format == huffmanised, followed
-		 * by a digit indicating blockSize100k.
-		 */
+        /*
+         * Write `magic' bytes h indicating file-format == huffmanised, followed
+         * by a digit indicating blockSize100k.
+         */
         bsPutUByte('h');
         bsPutUByte('0' + this.blockSize100k);
 
@@ -761,7 +761,7 @@ public class CBZip2OutputStream extends OutputStream implements BZip2Constants {
             inUse[i] = false;
         }
 
-		/* 20 is just a paranoia constant */
+        /* 20 is just a paranoia constant */
         this.allowableBlockSize = (this.blockSize100k * BZip2Constants.baseBlockSize) - 20;
     }
 
@@ -775,20 +775,20 @@ public class CBZip2OutputStream extends OutputStream implements BZip2Constants {
             return;
         }
 
-		/* sort the block and establish posn of original string */
+        /* sort the block and establish posn of original string */
         blockSort();
 
-		/*
-		 * A 6-byte block header, the value chosen arbitrarily as 0x314159265359
-		 * :-). A 32 bit value does not really give a strong enough guarantee
-		 * that the value will not appear by chance in the compressed
-		 * datastream. Worst-case probability of this event, for a 900k block,
-		 * is about 2.0e-3 for 32 bits, 1.0e-5 for 40 bits and 4.0e-8 for 48
-		 * bits. For a compressed file of size 100Gb -- about 100000 blocks --
-		 * only a 48-bit marker will do. NB: normal compression/ decompression
-		 * donot rely on these statistical properties. They are only important
-		 * when trying to recover blocks from damaged files.
-		 */
+        /*
+         * A 6-byte block header, the value chosen arbitrarily as 0x314159265359
+         * :-). A 32 bit value does not really give a strong enough guarantee
+         * that the value will not appear by chance in the compressed
+         * datastream. Worst-case probability of this event, for a 900k block,
+         * is about 2.0e-3 for 32 bits, 1.0e-5 for 40 bits and 4.0e-8 for 48
+         * bits. For a compressed file of size 100Gb -- about 100000 blocks --
+         * only a 48-bit marker will do. NB: normal compression/ decompression
+         * donot rely on these statistical properties. They are only important
+         * when trying to recover blocks from damaged files.
+         */
         bsPutUByte(0x31);
         bsPutUByte(0x41);
         bsPutUByte(0x59);
@@ -796,27 +796,27 @@ public class CBZip2OutputStream extends OutputStream implements BZip2Constants {
         bsPutUByte(0x53);
         bsPutUByte(0x59);
 
-		/* Now the block's CRC, so it is in a known place. */
+        /* Now the block's CRC, so it is in a known place. */
         bsPutInt(this.blockCRC);
 
-		/* Now a single bit indicating randomisation. */
+        /* Now a single bit indicating randomisation. */
         if (this.blockRandomised) {
             bsW(1, 1);
         } else {
             bsW(1, 0);
         }
 
-		/* Finally, block's contents proper. */
+        /* Finally, block's contents proper. */
         moveToFrontCodeAndSend();
     }
 
     private void endCompression() throws IOException {
-		/*
-		 * Now another magic 48-bit number, 0x177245385090, to indicate the end
-		 * of the last block. (sqrt(pi), if you want to know. I did want to use
-		 * e, but it contains too much repetition -- 27 18 28 18 28 46 -- for me
-		 * to feel statistically comfortable. Call me paranoid.)
-		 */
+        /*
+         * Now another magic 48-bit number, 0x177245385090, to indicate the end
+         * of the last block. (sqrt(pi), if you want to know. I did want to use
+         * e, but it contains too much repetition -- 27 18 28 18 28 46 -- for me
+         * to feel statistically comfortable. Call me paranoid.)
+         */
         bsPutUByte(0x17);
         bsPutUByte(0x72);
         bsPutUByte(0x45);
@@ -921,34 +921,34 @@ public class CBZip2OutputStream extends OutputStream implements BZip2Constants {
             }
         }
 
-		/* Decide how many coding tables to use */
+        /* Decide how many coding tables to use */
         // assert (this.nMTF > 0) : this.nMTF;
         final int nGroups = (this.nMTF < 200) ? 2 : (this.nMTF < 600) ? 3 : (this.nMTF < 1200) ? 4 : (this.nMTF < 2400) ? 5 : 6;
 
-		/* Generate an initial set of coding tables */
+        /* Generate an initial set of coding tables */
         sendMTFValues0(nGroups, alphaSize);
 
-		/*
-		 * Iterate up to N_ITERS times to improve the tables.
-		 */
+        /*
+         * Iterate up to N_ITERS times to improve the tables.
+         */
         final int nSelectors = sendMTFValues1(nGroups, alphaSize);
 
-		/* Compute MTF values for the selectors. */
+        /* Compute MTF values for the selectors. */
         sendMTFValues2(nGroups, nSelectors);
 
-		/* Assign actual codes for the tables. */
+        /* Assign actual codes for the tables. */
         sendMTFValues3(nGroups, alphaSize);
 
-		/* Transmit the mapping table. */
+        /* Transmit the mapping table. */
         sendMTFValues4();
 
-		/* Now the selectors. */
+        /* Now the selectors. */
         sendMTFValues5(nGroups, nSelectors);
 
-		/* Now the coding tables. */
+        /* Now the coding tables. */
         sendMTFValues6(nGroups, alphaSize);
 
-		/* And finally, the block data proper */
+        /* And finally, the block data proper */
         sendMTFValues7(nSelectors);
     }
 
@@ -1016,12 +1016,12 @@ public class CBZip2OutputStream extends OutputStream implements BZip2Constants {
             nSelectors = 0;
 
             for (int gs = 0; gs < this.nMTF; ) {
-				/* Set group start & end marks. */
+                /* Set group start & end marks. */
 
-				/*
-				 * Calculate the cost of this group as coded by each of the
-				 * coding tables.
-				 */
+                /*
+                 * Calculate the cost of this group as coded by each of the
+                 * coding tables.
+                 */
 
                 final int ge = Math.min(gs + G_SIZE - 1, nMTFShadow - 1);
 
@@ -1065,10 +1065,10 @@ public class CBZip2OutputStream extends OutputStream implements BZip2Constants {
                     }
                 }
 
-				/*
-				 * Find the coding table which is best for this group, and
-				 * record its identity in the selector table.
-				 */
+                /*
+                 * Find the coding table which is best for this group, and
+                 * record its identity in the selector table.
+                 */
                 int bt = -1;
                 for (int t = nGroups, bc = 999999999; --t >= 0; ) {
                     final int cost_t = cost[t];
@@ -1082,9 +1082,9 @@ public class CBZip2OutputStream extends OutputStream implements BZip2Constants {
                 selector[nSelectors] = (byte) bt;
                 nSelectors++;
 
-				/*
-				 * Increment the symbol frequencies for the selected table.
-				 */
+                /*
+                 * Increment the symbol frequencies for the selected table.
+                 */
                 final int[] rfreq_bt = rfreq[bt];
                 for (int i = gs; i <= ge; i++) {
                     rfreq_bt[sfmap[i]]++;
@@ -1093,9 +1093,9 @@ public class CBZip2OutputStream extends OutputStream implements BZip2Constants {
                 gs = ge + 1;
             }
 
-			/*
-			 * Recompute the tables based on the accumulated frequencies.
-			 */
+            /*
+             * Recompute the tables based on the accumulated frequencies.
+             */
             for (int t = 0; t < nGroups; t++) {
                 hbMakeCodeLengths(len[t], rfreq[t], this.data, alphaSize, 20);
             }
@@ -1684,12 +1684,12 @@ public class CBZip2OutputStream extends OutputStream implements BZip2Constants {
         for (int i = 65537; --i >= 0; ) {
             ftab[i] = 0;
         }
-		
-		/*
-		 * In the various block-sized structures, live data runs from 0 to
-		 * last+NUM_OVERSHOOT_BYTES inclusive. First, set up the overshoot area
-		 * for block.
-		 */
+
+        /*
+         * In the various block-sized structures, live data runs from 0 to
+         * last+NUM_OVERSHOOT_BYTES inclusive. First, set up the overshoot area
+         * for block.
+         */
         for (int i = 0; i < NUM_OVERSHOOT_BYTES; i++) {
             block[lastShadow + i + 2] = block[(i % (lastShadow + 1)) + 1];
         }
@@ -1718,11 +1718,11 @@ public class CBZip2OutputStream extends OutputStream implements BZip2Constants {
         }
 
         fmap[--ftab[((block[lastShadow + 1] & 0xff) << 8) + (block[1] & 0xff)]] = lastShadow;
-		
-		/*
-		 * Now ftab contains the first loc of every small bucket. Calculate the
-		 * running order, from smallest to largest big bucket.
-		 */
+
+        /*
+         * Now ftab contains the first loc of every small bucket. Calculate the
+         * running order, from smallest to largest big bucket.
+         */
         for (int i = 256; --i >= 0; ) {
             bigDone[i] = false;
             runningOrder[i] = i;
@@ -1745,23 +1745,23 @@ public class CBZip2OutputStream extends OutputStream implements BZip2Constants {
                 runningOrder[j] = vv;
             }
         }
-		
-		/*
-		 * The main sorting loop.
-		 */
+
+        /*
+         * The main sorting loop.
+         */
         for (int i = 0; i <= 255; i++) {
-			/*
-			 * Process big buckets, starting with the least full.
-			 */
+            /*
+             * Process big buckets, starting with the least full.
+             */
             final int ss = runningOrder[i];
 
             // Step 1:
-			/*
-			 * Complete the big bucket [ss] by quicksorting any unsorted small
-			 * buckets [ss, j]. Hopefully previous pointer-scanning phases have
-			 * already completed many of the small buckets [ss, j], so we don't
-			 * have to sort them at all.
-			 */
+            /*
+             * Complete the big bucket [ss] by quicksorting any unsorted small
+             * buckets [ss, j]. Hopefully previous pointer-scanning phases have
+             * already completed many of the small buckets [ss, j], so we don't
+             * have to sort them at all.
+             */
             for (int j = 0; j <= 255; j++) {
                 final int sb = (ss << 8) + j;
                 final int ftab_sb = ftab[sb];
@@ -1799,13 +1799,13 @@ public class CBZip2OutputStream extends OutputStream implements BZip2Constants {
                 ftab[(j << 8) + ss] |= SETMASK;
 
             // Step 3:
-			/*
-			 * The ss big bucket is now done. Record this fact, and update the
-			 * quadrant descriptors. Remember to update quadrants in the
-			 * overshoot area too, if necessary. The "if (i < 255)" test merely
-			 * skips this updating for the last bucket processed, since updating
-			 * for the last bucket is pointless.
-			 */
+            /*
+             * The ss big bucket is now done. Record this fact, and update the
+             * quadrant descriptors. Remember to update quadrants in the
+             * overshoot area too, if necessary. The "if (i < 255)" test merely
+             * skips this updating for the last bucket processed, since updating
+             * for the last bucket is pointless.
+             */
             bigDone[ss] = true;
 
             if (i < 255) {

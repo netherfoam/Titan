@@ -16,11 +16,11 @@ public class SimpleDirection extends Direction {
         super(dx, dy, clipTo, clipFrom);
     }
 
-	/*
+    /*
      * public int conflict(Location from) { //This seems to work now. return
-	 * (from.getMap().getClip(from.x + dx, from.y + dy, from.z) & clipTo) |
-	 * (from.getMap().getClip(from.x, from.y, from.z) & clipFrom); }
-	 */
+     * (from.getMap().getClip(from.x + dx, from.y + dy, from.z) & clipTo) |
+     * (from.getMap().getClip(from.x, from.y, from.z) & clipFrom); }
+     */
 
     public int conflictTo(Location from) {
         return (from.getMap().getClip(from.x + dx, from.y + dy, from.z) & clipTo);

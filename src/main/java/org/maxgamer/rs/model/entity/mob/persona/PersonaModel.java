@@ -70,9 +70,9 @@ public class PersonaModel extends MobModel implements YMLSerializable {
             out.writeShort(FLAG_EQUIP_ONLY | shield.getWeapon().getModel());
         }
 
-		/*
+        /*
          * If we're wearing a full body that hides arms, we notify the client
-		 */
+         */
         if (chest == null || chest.getWeapon() == null || !chest.getWeapon().isFull()) {
             out.writeShort(FLAG_MODEL_ONLY | look[3]); // Arms
         } else {

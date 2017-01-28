@@ -371,7 +371,7 @@ public class Cache {
     public Archive getArchive(int idx, int fileId) throws IOException {
         int uid = (idx << 24) | (fileId);
         Archive a = archives.get(uid);
-		/* We've got a previously parsed version of this file, return it */
+        /* We've got a previously parsed version of this file, return it */
         if (a != null) return a;
 
         CacheFile f = getFile(idx, fileId);
@@ -382,7 +382,7 @@ public class Cache {
         } catch (IOException e) {
             throw new IOException("Failed to decode archive, IDX: " + idx + ", File: " + fileId + (e.getMessage() == null ? "" : ": " + e.getMessage()), e);
         }
-		/* Cache the result */
+        /* Cache the result */
         archives.put(uid, a);
 
         return a;

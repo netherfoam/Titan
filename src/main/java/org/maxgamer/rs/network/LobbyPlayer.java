@@ -162,7 +162,7 @@ public class LobbyPlayer implements Client {
         if (s.isConnected()) s.close(true);
 
 		/*
-		 * RemoteClient remote =
+         * RemoteClient remote =
 		 * Core.getServer().getLogon().getRemoteServer(Core
 		 * .getServer().getLogon().getWorldId()).get(this.getName()); if(remote
 		 * != null && remote.getSessionId() ==

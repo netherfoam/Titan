@@ -20,7 +20,7 @@ public class Organise implements PlayerCommand {
 
     @Override
     public void execute(final Player p, String[] args) throws IOException {
-        HashMap<String, ArrayList<ItemStack>> words = new HashMap<String, ArrayList<ItemStack>>();
+        HashMap<String, ArrayList<ItemStack>> words = new HashMap<>();
 
         Container source = p.getBank();
 
@@ -37,7 +37,7 @@ public class Organise implements PlayerCommand {
 
                 ArrayList<ItemStack> group = words.get(part);
                 if (group == null) {
-                    group = new ArrayList<ItemStack>();
+                    group = new ArrayList<>();
                     words.put(part, group);
                 }
                 group.add(item);
@@ -48,7 +48,7 @@ public class Organise implements PlayerCommand {
         ContainerState after = source.getState();
         after.clear();
 
-        while (before.isEmpty() == false) {
+        while (!before.isEmpty()) {
             String name = mostCommon(words);
             if (name == null) {
                 throw new RuntimeException("Bad logic, there's items left but there's nothing to sort left?");

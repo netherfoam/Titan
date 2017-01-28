@@ -35,7 +35,7 @@ public class DeathAction extends Action {
 		/* Teleport the mob back to their spawn, if one exists */
         Location spawn = e.getSpawn();
         if (spawn != null) {
-			/* A mob could potentially have no spawn point defined */
+            /* A mob could potentially have no spawn point defined */
             getOwner().teleport(e.getSpawn());
         }
 

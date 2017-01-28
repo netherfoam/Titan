@@ -17,7 +17,7 @@ import java.util.Objects;
 @Table(name = "NPCGroup")
 public class NPCGroup {
     /*public static void reload() throws SQLException {
-		groups = new HashMap<Integer, NPCGroup>(512);
+        groups = new HashMap<Integer, NPCGroup>(512);
 		Connection con = Core.getDatabase().getConnection();
 		PreparedStatement ps = con.prepareStatement("SELECT * FROM NPCGroupLoot");
 		ResultSet rs = ps.executeQuery();

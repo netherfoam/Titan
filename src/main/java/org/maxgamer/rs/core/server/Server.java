@@ -119,7 +119,7 @@ public class Server {
      * 32767 is (Possibly?) the max number of NPCs. NPCs are stored separately
      * to players.
      */
-    private EntityList<NPC> npcs = new EntityList<NPC>(32767);
+    private EntityList<NPC> npcs = new EntityList<>(32767);
 
     /**
      * The primary server thread wrapper
@@ -176,7 +176,7 @@ public class Server {
      * Creates a new server.
      *
      * @param cfg The configuration used for this server
-     * @throws IOException         If the port could not be bound.
+     * @throws IOException If the port could not be bound.
      */
     public Server(ConfigSection cfg) throws IOException {
         this.config = cfg;
@@ -409,6 +409,7 @@ public class Server {
 
     /**
      * Fetch the active JavaScript scope. Never null
+     *
      * @return The root JS scope
      */
     public ScriptEnvironment getScriptEnvironment() {
@@ -436,7 +437,7 @@ public class Server {
                     for (Persona p : Server.this.getPersonas()) {
                         if (p instanceof Player) {
                             Player pl = (Player) p;
-                            if (pl.isLoaded() == false) continue;
+                            if (!pl.isLoaded()) continue;
                             //The way NIO works is the data is queued to be written,
                             //instead of actually being written to the client.
                             //Thus this is actually much faster because this thread isn't
@@ -675,7 +676,7 @@ public class Server {
     }
 
     public Collection<Client> getClients() {
-        ArrayList<Client> clients = new ArrayList<Client>(lobby.size() + personas.getCount());
+        ArrayList<Client> clients = new ArrayList<>(lobby.size() + personas.getCount());
         for (Persona p : personas) {
             if (p instanceof Client) clients.add((Client) p);
         }
@@ -750,7 +751,7 @@ public class Server {
                 ServerSaveEvent e = new ServerSaveEvent();
                 e.call();
 
-                if (Core.getServer().getClients().isEmpty() == false) {
+                if (!Core.getServer().getClients().isEmpty()) {
                     Core.getServer().getLogon().getAPI().save(Core.getServer().getClients());
                 }
                 int errors = getMaps().save();

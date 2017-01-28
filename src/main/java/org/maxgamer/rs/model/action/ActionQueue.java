@@ -25,7 +25,7 @@ public class ActionQueue {
     /**
      * The list of actions the owner wishes to execute in order
      */
-    private LinkedList<Action> queue = new LinkedList<Action>(); //FIFO queue
+    private LinkedList<Action> queue = new LinkedList<>(); //FIFO queue
     private Action current;
 
     /**
@@ -41,7 +41,7 @@ public class ActionQueue {
     }
 
     protected boolean isQueued() {
-        return req != null && req.cancel == false;
+        return req != null && !req.cancel;
     }
 
     protected Future<Void> queue(int delayMs) {
@@ -101,7 +101,7 @@ public class ActionQueue {
                 //We can assume that if the queue is not empty, we are currently
                 //subscribed to the server's ticker for the next tick.
 
-                if (isQueued() == false) {
+                if (!isQueued()) {
                     this.queue(0);
                 }
 
@@ -110,12 +110,12 @@ public class ActionQueue {
                 //If the new action is not cancellable (A foreground'ish action, like eating)
                 //then it should be prioritised over actions which are cancellable (background'ish
                 //actions, like walking & combat)
-                if (w.isCancellable() == false) {
+                if (!w.isCancellable()) {
                     for (Action a : this.queue) {
                         if (a.isCancellable()) {
                             this.insertBefore(a, w);
                             return;
-                        } else if (a.isCancellable() == false) {
+                        } else if (!a.isCancellable()) {
                             //This action shouldn't be run, we're busy!
                             return;
                         }
@@ -199,7 +199,7 @@ public class ActionQueue {
     public boolean hasUncancellable() {
         synchronized (this) {
             for (Action a : this.queue) {
-                if (a.isCancellable() == false) return true;
+                if (!a.isCancellable()) return true;
             }
         }
 
@@ -256,7 +256,7 @@ public class ActionQueue {
 
         synchronized (queue) {
             queue.addFirst(insert);
-            if (this.isQueued() == false) {
+            if (!this.isQueued()) {
                 this.queue(0);
             }
         }
@@ -334,7 +334,7 @@ public class ActionQueue {
             }
         }
         //Technically could be put in the queue again by onCancel() of w or any of the items it's paired with
-        assert isQueued(w) == false : "Removed " + w + " from queue, but it is still in the queue.";
+        assert !isQueued(w) : "Removed " + w + " from queue, but it is still in the queue.";
     }
 
     /**
@@ -344,7 +344,7 @@ public class ActionQueue {
      */
     public void clear() {
         synchronized (queue) {
-            Iterator<Action> wit = new ArrayList<Action>(queue).iterator();
+            Iterator<Action> wit = new ArrayList<>(queue).iterator();
             while (wit.hasNext()) {
                 Action w = wit.next();
 
@@ -361,12 +361,12 @@ public class ActionQueue {
      * @return
      */
     public void tick() {
-        if (Core.getServer().getThread().isServerThread() == false) {
+        if (!Core.getServer().getThread().isServerThread()) {
             throw new RuntimeException("ActionQueue should only be ticked on the Server thread.");
         }
 
         synchronized (queue) {
-            if (getOwner().isLoaded() == false) {
+            if (!getOwner().isLoaded()) {
                 //We should not process mobs which are not loaded.
                 return;
             }
@@ -496,13 +496,13 @@ public class ActionQueue {
                         s = a.getClass().getName();
                     }
                 }
-                sb.append(s + ", ");
+                sb.append(s).append(", ");
             }
-            if (queue.isEmpty() == false) {
+            if (!queue.isEmpty()) {
                 //Trim the last ", " off.
                 sb.replace(sb.length() - 2, sb.length(), "");
             }
-            sb.append("}, running=" + this.isQueued());
+            sb.append("}, running=").append(this.isQueued());
 
             return sb.toString();
         }
@@ -531,7 +531,8 @@ public class ActionQueue {
 
         @Override
         public void run() {
-            if (cancel) return;
+            if (cancel) {
+            }
             else {
                 queue.req = null;
                 queue.tick();

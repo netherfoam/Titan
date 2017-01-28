@@ -211,7 +211,7 @@ public class OutputStreamWrapper extends OutputStream {
     public void close() {
         try {
             o.close();
-        } catch (IOException e) {
+        } catch (IOException ignored) {
         }
     }
 

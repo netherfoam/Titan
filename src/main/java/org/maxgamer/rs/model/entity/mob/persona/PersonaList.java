@@ -25,7 +25,7 @@ public class PersonaList extends EntityList<Persona> {
      */
     public PersonaList(int max) {
         super(max);
-        personas = new HashMap<String, Persona>(max);
+        personas = new HashMap<>(max);
     }
 
     /**

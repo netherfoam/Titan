@@ -31,7 +31,7 @@ public class WorldHost extends ServerSession {
 
     private long lastPacket;
 
-    private HashMap<String, Profile> online = new HashMap<String, Profile>(64);
+    private HashMap<String, Profile> online = new HashMap<>(64);
 
     public WorldHost(SocketChannel channel, SelectionKey key, LogonServer server) {
         super(channel, key);
@@ -62,11 +62,9 @@ public class WorldHost extends ServerSession {
 
         try {
             this.handler.handle(in);
-        } catch (BufferUnderflowException e) {
+        } catch (BufferUnderflowException | IndexOutOfBoundsException e) {
             //If an IndexOutOfBoundsException or BufferUnderflowException is thrown here,
             //then the caller catches it and resets the buffer
-            bb.reset();
-        } catch (IndexOutOfBoundsException e) {
             bb.reset();
         }
     }
@@ -117,7 +115,7 @@ public class WorldHost extends ServerSession {
         super.close(flush);
 
         if (this.isAuthenticated()) {
-            ArrayList<Profile> profiles = new ArrayList<Profile>(online.values());
+            ArrayList<Profile> profiles = new ArrayList<>(online.values());
             for (Profile p : profiles) {
                 this.remove(p); //Notifies servers
             }
@@ -155,7 +153,7 @@ public class WorldHost extends ServerSession {
                 this.handler.handle(in);
             } finally {
                 //If an IndexOutOfBoundsException or BufferUnderflowException is thrown here,
-                //then the caller catches it and resets the bufe
+                //then the caller catches it and resets the buffer
             }
         }
     }
@@ -165,7 +163,7 @@ public class WorldHost extends ServerSession {
     }
 
     public String getName() {
-        if (activity != null && activity.isEmpty() == false) {
+        if (activity != null && !activity.isEmpty()) {
             return activity;
         }
         return region;

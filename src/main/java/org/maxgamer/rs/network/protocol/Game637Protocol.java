@@ -51,9 +51,9 @@ public class Game637Protocol extends GameProtocol {
     public static final int MAX_LOCAL_PLAYERS = 70;
     public static final int PLAYER_UPDATE_RADIUS = 30;
     public static final int MAX_LOCAL_NPCS = 255; // Protocol-limited
-    public static final PacketManager<Player> PACKET_MANAGER = new PacketManager<Player>();
+    public static final PacketManager<Player> PACKET_MANAGER = new PacketManager<>();
 
-    private static HashMap<Integer, CS2> scripts = new HashMap<Integer, CS2>();
+    private static HashMap<Integer, CS2> scripts = new HashMap<>();
     private static int MASK_GFX = 0x4000;
 
     // TOOD: Can this be turned into a Hash Set?
@@ -166,11 +166,11 @@ public class Game637Protocol extends GameProtocol {
     /**
      * An array of players who are within view distance of this player
      */
-    private ArrayList<Persona> localPlayers = new ArrayList<Persona>();
+    private ArrayList<Persona> localPlayers = new ArrayList<>();
     /**
      * An array of NPCs who are within view distance of this player
      */
-    private ArrayList<NPC> localNpcs = new ArrayList<NPC>(); // TODO: Limit this
+    private ArrayList<NPC> localNpcs = new ArrayList<>(); // TODO: Limit this
     private long lastPlayerUpdate = System.currentTimeMillis();
     /**
      * The last viewport we sent the player. Not null if the player has been
@@ -280,7 +280,7 @@ public class Game637Protocol extends GameProtocol {
             throw new NullPointerException("Script may not be null");
         }
 
-        if (script.isValidInvokation(params) == false) {
+        if (!script.isValidInvokation(params)) {
             StringBuilder given = new StringBuilder();
             for (Object o : params) {
                 if (o instanceof Number) {
@@ -293,7 +293,7 @@ public class Game637Protocol extends GameProtocol {
             }
 
             given.append(", required ");
-            given.append(script.getIntArgCount() + " ints and " + script.getStringArgCount() + " strings");
+            given.append(script.getIntArgCount()).append(" ints and ").append(script.getStringArgCount()).append(" strings");
 
             throw new IllegalArgumentException("Bad parameters. " + given.toString());
         }
@@ -386,7 +386,7 @@ public class Game637Protocol extends GameProtocol {
         // A MBR that overlaps with all entities that the player can see with their view distance.
         MBR visibleArea = viewport;
 
-        PriorityQueue<Persona> sorted = new PriorityQueue<Persona>(100, new Comparator<Persona>() {
+        PriorityQueue<Persona> sorted = new PriorityQueue<>(100, new Comparator<Persona>() {
             @Override
             public int compare(Persona p1, Persona p2) {
                 return getPlayer().getPriority(p2) - getPlayer().getPriority(p1);
@@ -397,7 +397,7 @@ public class Game637Protocol extends GameProtocol {
                 playerLoc.x - PLAYER_UPDATE_RADIUS, playerLoc.y - PLAYER_UPDATE_RADIUS, playerLoc.z}, new int[]{
                 playerLoc.x + PLAYER_UPDATE_RADIUS, playerLoc.y + PLAYER_UPDATE_RADIUS, 1})), 100, Persona.class));
 
-        ArrayList<Persona> nearby = new ArrayList<Persona>(sorted);
+        ArrayList<Persona> nearby = new ArrayList<>(sorted);
         nearby.remove(getPlayer()); // Don't send updates about ourself here.
 
         // Skip any hidden players
@@ -429,7 +429,7 @@ public class Game637Protocol extends GameProtocol {
         }
 
 		/*
-		 * Now we loop through all players which must be sent to the player, or
+         * Now we loop through all players which must be sent to the player, or
 		 * updated, or removed.
 		 */
         pit = localPlayers.iterator();
@@ -529,7 +529,7 @@ public class Game637Protocol extends GameProtocol {
         update = new RSOutgoingPacket(-1); // Dummy
 
         // Something about this sorting seems off?
-        PriorityQueue<NPC> sortedNpcs = new PriorityQueue<NPC>(100, new Comparator<NPC>() {
+        PriorityQueue<NPC> sortedNpcs = new PriorityQueue<>(100, new Comparator<NPC>() {
             @Override
             public int compare(NPC n1, NPC n2) {
                 return getPlayer().getLocation().distanceSq(n1.getLocation()) - getPlayer().getLocation().distanceSq(n2.getLocation());
@@ -545,7 +545,7 @@ public class Game637Protocol extends GameProtocol {
             }
         }
 
-        ArrayList<NPC> sortedNPCList = new ArrayList<NPC>(sortedNpcs);
+        ArrayList<NPC> sortedNPCList = new ArrayList<>(sortedNpcs);
 
         out.writeByte(localNpcs.size()); // Will never be > 255
 
@@ -559,7 +559,7 @@ public class Game637Protocol extends GameProtocol {
                 nit.remove();
                 continue;
             }
-            if (n.getLocation() == null || n.isHidden() || n.getLocation().z != getPlayer().getLocation().z || MBRUtil.isOverlap(visibleArea, n.getLocation()) == false || n.getUpdateMask().getMovement().hasTeleported() || sortedNPCList.indexOf(n) >= MAX_LOCAL_NPCS) {
+            if (n.getLocation() == null || n.isHidden() || n.getLocation().z != getPlayer().getLocation().z || !MBRUtil.isOverlap(visibleArea, n.getLocation()) || n.getUpdateMask().getMovement().hasTeleported() || sortedNPCList.indexOf(n) >= MAX_LOCAL_NPCS) {
                 change = true;
                 // The NPC is not visible to the player anymore.
                 out.writeBits(1, 1);
@@ -1038,7 +1038,6 @@ public class Game637Protocol extends GameProtocol {
         out.writeByteS(((tile.x & 0x7) << 4) | (tile.y & 0x7));
         out.writeShortA(item.getId());
         chunkUpdate(tile);
-        ;
         getPlayer().write(out);
     }
 
@@ -1053,7 +1052,7 @@ public class Game637Protocol extends GameProtocol {
      *                                  the player's last {@link Viewport} update.
      */
     public void chunkUpdate(Location tile) {
-        if (MBRUtil.isOverlap(viewport, tile) == false) {
+        if (!MBRUtil.isOverlap(viewport, tile)) {
             throw new IllegalArgumentException("Cannot update the tile " + tile + " for " + p + " because it is not contained in their last viewport.");
         }
 
@@ -1474,7 +1473,7 @@ public class Game637Protocol extends GameProtocol {
 			 */
             int mapHash = getPlayer().getViewDistance().getTileSize() >> 4;
 
-            ArrayList<Integer> regionids = new ArrayList<Integer>();
+            ArrayList<Integer> regionids = new ArrayList<>();
 
             for (int z = 0; z < 4; z++) {
                 for (int chunkX = (cx - mapHash); chunkX <= (cx + mapHash); chunkX++) {
@@ -1496,7 +1495,7 @@ public class Game637Protocol extends GameProtocol {
                             out.writeBits(1, 0);
 
                             int regionId = (((c.getCacheX() & ~0x7) << 5) + (c.getCacheY() >> 3));
-                            if (regionids.contains(regionId) == false) {
+                            if (!regionids.contains(regionId)) {
                                 regionids.add(regionId);
                             }
                         }
@@ -1551,7 +1550,7 @@ public class Game637Protocol extends GameProtocol {
         // Static objects are objects which are in the cache and must be removed
         // if hidden
         for (StaticGameObject g : m.getEntities(viewport, 40, StaticGameObject.class)) {
-            if (g.isHidden() == false) continue; // Object is visible, do not send it to them.
+            if (!g.isHidden()) continue; // Object is visible, do not send it to them.
             hideObject(g);
         }
     }
@@ -1577,7 +1576,7 @@ public class Game637Protocol extends GameProtocol {
             }
 
             Persona p = Core.getServer().getPersonas().get(index);
-            if (p == null || l.near(p.getLocation(), getPlayer().getViewDistance().getTileSize()) == false) {
+            if (p == null || !l.near(p.getLocation(), getPlayer().getViewDistance().getTileSize())) {
                 out.writeBits(18, 0);
             } else {
                 Location o = p.getLocation();

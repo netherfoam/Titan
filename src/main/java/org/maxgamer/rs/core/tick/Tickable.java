@@ -15,12 +15,13 @@ import org.maxgamer.rs.core.Core;
 public abstract class Tickable {
     private long lastTick = -1;
     private RunRequest req;
+
     public Tickable() {
 
     }
 
     public boolean isQueued() {
-        return req != null && req.cancel == false;
+        return req != null && !req.cancel;
     }
 
     public void queue(int delay) {
@@ -67,7 +68,8 @@ public abstract class Tickable {
 
         @Override
         public void run() {
-            if (cancel) return;
+            if (cancel) {
+            }
             else {
                 tick.req = null;
                 tick.run();

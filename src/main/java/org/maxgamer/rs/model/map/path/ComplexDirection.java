@@ -26,7 +26,7 @@ public class ComplexDirection extends Direction {
     }
 
 	/*
-	 * public int conflict(Location from) { return conflictTo(from) |
+     * public int conflict(Location from) { return conflictTo(from) |
 	 * conflictFrom(from); }
 	 */
 
@@ -47,7 +47,7 @@ public class ComplexDirection extends Direction {
         int to = from.getMap().getClip(from.x + dx, from.y + dy, from.z) & clipTo;
 
         int rangeFlags = (to & ClipMasks.WALL_ALLOW_RANGE_ALL) >> 22;
-        to = to & ~(rangeFlags << 0);
+        to = to & ~(rangeFlags);
         to = to & ~(rangeFlags << 9);
 
         return (to & this.clipTo) == 0;

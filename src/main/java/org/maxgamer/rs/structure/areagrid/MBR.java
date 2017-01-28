@@ -7,7 +7,7 @@ public interface MBR {
      * @param axis the dimension
      * @return the length of the dimension requested
      */
-    public int getDimension(int axis);
+    int getDimension(int axis);
 
     /**
      * Fetches the number of dimensions this MBR represents. This may be one,
@@ -15,7 +15,7 @@ public interface MBR {
      *
      * @return the number of dimensions.
      */
-    public int getDimensions();
+    int getDimensions();
 
     /**
      * Fetches the minimum value (smallest value) on the given axis.
@@ -23,5 +23,5 @@ public interface MBR {
      * @param axis the axis
      * @return the smallest value
      */
-    public int getMin(int axis);
+    int getMin(int axis);
 }

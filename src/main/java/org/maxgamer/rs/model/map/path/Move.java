@@ -12,6 +12,7 @@ import org.maxgamer.rs.model.map.object.GameObject;
 public class Move {
     private int buffer = 8;
     private int radius = 0;
+
     public Move() {
 
     }
@@ -84,7 +85,7 @@ public class Move {
             // The destination is a solid game object
             AStar finder = (AStar) finder();
             Path path = finder.findPath(mob, dest.getLocation().add(-radius, -radius), getMax(dest).add(radius, radius), dest);
-            if (path.isEmpty() == false && !path.hasFailed()) {
+            if (!path.isEmpty() && !path.hasFailed()) {
                 path.removeLast();
             }
             return path;

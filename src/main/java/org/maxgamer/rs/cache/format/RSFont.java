@@ -24,7 +24,7 @@ public final class RSFont {
         RSInputStream buffer = new RSInputStream(new ByteBufferInputStream(bb));
         try {
             int i = buffer.readUnsignedByte();
-            if ((i ^ 0xffffffff) != -1) {
+            if ((~i) != -1) {
                 throw new RuntimeException("");
             }
             boolean bool = buffer.readUnsignedByte() == 1;
@@ -33,10 +33,10 @@ public final class RSFont {
             if (bool) {
                 int[] is_28_ = new int[256];
                 int[] is_29_ = new int[256];
-                for (int i_30_ = 0; (i_30_ ^ 0xffffffff) > -257; i_30_++) {
+                for (int i_30_ = 0; (~i_30_) > -257; i_30_++) {
                     is_28_[i_30_] = buffer.readUnsignedByte();
                 }
-                for (int i_31_ = 0; (i_31_ ^ 0xffffffff) > -257; i_31_++) {
+                for (int i_31_ = 0; (~i_31_) > -257; i_31_++) {
                     is_29_[i_31_] = buffer.readUnsignedByte();
                 }
                 byte[][] is_32_ = new byte[256][];
@@ -49,7 +49,7 @@ public final class RSFont {
                     }
                 }
                 byte[][] is_36_ = new byte[256][];
-                for (int i_37_ = 0; (i_37_ ^ 0xffffffff) > -257; i_37_++) {
+                for (int i_37_ = 0; (~i_37_) > -257; i_37_++) {
                     is_36_[i_37_] = new byte[is_28_[i_37_]];
                     byte i_38_ = 0;
                     for (int i_39_ = 0; i_39_ < is_36_[i_37_].length; i_39_++) {
@@ -58,7 +58,7 @@ public final class RSFont {
                     }
                 }
                 this.sizes = new byte[256][256];
-                for (int i_40_ = 0; (i_40_ ^ 0xffffffff) > -257; i_40_++) {
+                for (int i_40_ = 0; (~i_40_) > -257; i_40_++) {
                     if (i_40_ != 32 && i_40_ != 160) {
                         for (int i_41_ = 0; i_41_ < 256; i_41_++) {
                             if (i_41_ != 32 && i_41_ != 160) {
@@ -83,8 +83,8 @@ public final class RSFont {
         }
     }
 
-    static final int method4003(int i, int i_1_, byte[][] is, boolean bool, int[] is_2_, byte[][] is_3_, int[] is_4_, byte[] is_5_) {
-        if (bool != false) {
+    static int method4003(int i, int i_1_, byte[][] is, boolean bool, int[] is_2_, byte[][] is_3_, int[] is_4_, byte[] is_5_) {
+        if (bool) {
             return 25;
         }
         int i_6_ = is_4_[i_1_];
@@ -107,7 +107,7 @@ public final class RSFont {
         byte[] is_14_ = is[i];
         int i_15_ = -i_6_ + i_10_;
         int i_16_ = -i_8_ + i_10_;
-        for (int i_17_ = i_10_; (i_11_ ^ 0xffffffff) < (i_17_ ^ 0xffffffff); i_17_++) {
+        for (int i_17_ = i_10_; (~i_11_) < (~i_17_); i_17_++) {
             int i_18_ = is_14_[i_16_++] + is_13_[i_15_++];
             if (i_18_ < i_12_) {
                 i_12_ = i_18_;

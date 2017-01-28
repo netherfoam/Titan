@@ -24,7 +24,7 @@ public abstract class GameObject extends Entity implements Interactable {
     /**
      * The previously loaded game object definitions
      */
-    private static HashMap<Integer, GameObjectProto> definitions = new HashMap<Integer, GameObjectProto>(65000);
+    private static HashMap<Integer, GameObjectProto> definitions = new HashMap<>(65000);
     /**
      * The data for this object. This could represent anything, generally health
      * or the number of harvests it has remaining.
@@ -73,7 +73,7 @@ public abstract class GameObject extends Entity implements Interactable {
     }
 
     public static GameObjectProto getDefinition(int id) {
-        if (definitions.containsKey(id) == false) {
+        if (!definitions.containsKey(id)) {
             //The gameobject has not been loaded before.
             try {
                 //Each Archive from the IDX file has up to 256 subfiles
@@ -145,7 +145,7 @@ public abstract class GameObject extends Entity implements Interactable {
         int[][] clip = this.getClip(); //A 3x3 clip array, referenced below
 
 		/*
-		 * Applies the below clipping (# = point of interest) [?][?][?]
+         * Applies the below clipping (# = point of interest) [?][?][?]
 		 * [?][#][?] [?][?][?]
 		 */
         Location swCorner = this.getLocation();
@@ -237,7 +237,7 @@ public abstract class GameObject extends Entity implements Interactable {
         if (this.isSolid()) {
             clipping |= ClipMasks.OBJECT_BLOCK;
         }
-        if (this.hasRangeBlockClipFlag() == false) {
+        if (!this.hasRangeBlockClipFlag()) {
             clipping |= ClipMasks.OBJECT_ALLOW_RANGE;
         }
         return clipping;
@@ -588,8 +588,7 @@ public abstract class GameObject extends Entity implements Interactable {
 
     @Override
     public boolean isVisible(Entity to) {
-        if (isHidden()) return false;
-        return super.isVisible(to);
+        return !isHidden() && super.isVisible(to);
     }
 
     /**
@@ -764,13 +763,13 @@ public abstract class GameObject extends Entity implements Interactable {
     public String toString() {
         //return "ID: " + getId() + ", Type: " + getType() + ", Facing: " + Directions.getName(getFacing()) + " Size: " + getSizeX() + "x" + getSizeY() + " AC: " + getActionCount() + ", S:" + isSolid() + " R:" + hasRangeBlockClipFlag();
         StringBuilder sb = new StringBuilder();
-        if (this.getName() != null && this.getName().isEmpty() == false && this.getName().equals("null") == false) {
+        if (this.getName() != null && !this.getName().isEmpty() && !this.getName().equals("null")) {
             sb.append(this.getName());
         }
-        sb.append("(" + this.getId() + ")");
-        sb.append(" type=" + this.getType() + ",hidden=" + this.isHidden());
-        sb.append(",facing: " + Directions.getName(this.getFacing()));
-        sb.append(",ac=" + this.getActionCount() + ",solid=" + this.isSolid() + ",low=" + this.hasRangeBlockClipFlag());
+        sb.append("(").append(this.getId()).append(")");
+        sb.append(" type=").append(this.getType()).append(",hidden=").append(this.isHidden());
+        sb.append(",facing: ").append(Directions.getName(this.getFacing()));
+        sb.append(",ac=").append(this.getActionCount()).append(",solid=").append(this.isSolid()).append(",low=").append(this.hasRangeBlockClipFlag());
         return sb.toString();
     }
 

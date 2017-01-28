@@ -131,7 +131,7 @@ public class NPC extends Mob implements Interactable {
         Persona killer = null;
         for (int i = 0; i < killers.length; i++) {
             if (killers[i] == null) continue;
-            if (killers[i] instanceof Persona == false) continue;
+            if (!(killers[i] instanceof Persona)) continue;
             killer = (Persona) killers[i];
             break;
         }
@@ -294,13 +294,13 @@ public class NPC extends Mob implements Interactable {
             // Eg queuing an empty path, and then queuing a non-empty path.
 
 			/*
-			 * Wait no, it occurs when the player has to move 1 tile to target
+             * Wait no, it occurs when the player has to move 1 tile to target
 			 * then move n tiles to second target in the same tick
 			 */
             throw new IllegalStateException("Movement update mask has already changed dir " + m.getDirection() + ", tele " + m.hasTeleported() + ", ActionQueue: " + this.getActions().toString());
         }
 
-        if (path != null && path.isEmpty() == false) {
+        if (path != null && !path.isEmpty()) {
             Direction next = path.next();
 
             int dx = next.dx;
@@ -334,8 +334,9 @@ public class NPC extends Mob implements Interactable {
                 }
             }
 
-            if (path.isEmpty()) return true; // We are done walking
-            else return false; // We have area left to traverse.
+            // We are done walking
+// We have area left to traverse.
+            return path.isEmpty();
         }
 
         return true; // Finished
@@ -353,8 +354,7 @@ public class NPC extends Mob implements Interactable {
 
     @Override
     public boolean isAttackable(Mob src) {
-        if (getDefinition().hasInteraction("Attack")) return true;
-        return false;
+        return getDefinition().hasInteraction("Attack");
     }
 
     @Override

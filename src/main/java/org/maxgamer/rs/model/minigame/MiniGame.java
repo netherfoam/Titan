@@ -50,8 +50,8 @@ public abstract class MiniGame extends Tickable implements EventListener {
      * Constructs a new {@code MiniGame} with empty arguments.
      */
     public MiniGame() {
-        this.mobs = new CopyOnWriteArrayList<Mob>();
-        this.players = new ConcurrentHashMap<String, Persona>();
+        this.mobs = new CopyOnWriteArrayList<>();
+        this.players = new ConcurrentHashMap<>();
         this.configs = new ConfigSection();
         this.rules = new boolean[MiniGameRule.values().length];
         this.setMapBuilder(new MapBuilder());
@@ -193,7 +193,6 @@ public abstract class MiniGame extends Tickable implements EventListener {
             Mob mob = it.next();
             if (mob == null || mob.isDestroyed()) {
                 removeMob(mob);
-                continue;
             }
         }
         tickMiniGame();
@@ -207,9 +206,7 @@ public abstract class MiniGame extends Tickable implements EventListener {
      * @return true if the persona is playing; return false otherwise
      */
     public boolean isPlaying(Persona persona) {
-        if (!persona.isLoaded() || persona.isDestroyed())
-            return false;
-        return players.containsKey(persona.getName());
+        return !(!persona.isLoaded() || persona.isDestroyed()) && players.containsKey(persona.getName());
     }
 
     /**
@@ -262,7 +259,7 @@ public abstract class MiniGame extends Tickable implements EventListener {
     @SuppressWarnings("unchecked")
     public <N extends NPC> N getNPC(int id, Class<N> cast) {
         for (Mob mob : mobs)
-            if (mob instanceof NPC && ((NPC) mob).getId() == id)
+            if (mob instanceof NPC && mob.getId() == id)
                 return (N) mob;
         return null;
     }

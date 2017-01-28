@@ -8,13 +8,13 @@ public enum DamageType {
 
     private byte netcode;
 
-    private DamageType(int code) {
+    DamageType(int code) {
         this.netcode = (byte) code;
     }
 
     public static byte getCode(DamageType base, boolean active, boolean max) {
         int v = base.toByte();
-        if (active == false) v += 14;
+        if (!active) v += 14;
         if (max) v += 10;
         return (byte) v;
     }

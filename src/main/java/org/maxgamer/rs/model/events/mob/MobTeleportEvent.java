@@ -9,6 +9,7 @@ public class MobTeleportEvent extends MobEvent implements Cancellable {
     private Location to;
     private boolean cancel = false;
     private TeleportCause cause;
+
     public MobTeleportEvent(Mob mob, Location fromLocation, Location toLocation, TeleportCause cause) {
         super(mob);
         this.from = fromLocation;
@@ -50,7 +51,7 @@ public class MobTeleportEvent extends MobEvent implements Cancellable {
         this.cancel = cancel;
     }
 
-    public static enum TeleportCause {
+    public enum TeleportCause {
         SPELL,
         SERVER
     }

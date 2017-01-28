@@ -20,9 +20,9 @@ public class AncientCombatSpell extends CombatSpell {
         if (multi) {
             for (Mob t : target.getLocation().getNearby(Mob.class, 1)) {
                 if (t == src) continue; //Don't target yourself
-                if (t.isAttackable(src) == false) continue; //Can't attack that target
+                if (!t.isAttackable(src)) continue; //Can't attack that target
                 //TODO: Check if the neighbour target is attackable first.
-                if (super.prepare(src, t, damage) == false) {
+                if (!super.prepare(src, t, damage)) {
                     return false;
                 }
             }

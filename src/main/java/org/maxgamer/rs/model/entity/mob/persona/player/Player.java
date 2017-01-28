@@ -320,7 +320,7 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
                 return a;
             }
         }
-		
+
 		/* Second, we check if the player wants to use a special attack */
         CombatStyles styles = this.getWindow().getInterface(CombatStyles.class);
         if (styles != null) {
@@ -412,7 +412,7 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 
         if (this.gamepane != null) {
             for (Interface interf : getWindow().getInterfaces()) {
-                if (interf.isMobile() == false) {
+                if (!interf.isMobile()) {
                     getWindow().close(interf);
                 }
             }
@@ -441,7 +441,7 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
         if (this.getFriends().isFriend(p.getName())) {
             priority += 50; // You're my friend
         }
-        if (p instanceof Player && ((Player) p).getRights() > Rights.USER) {
+        if (p instanceof Player && p.getRights() > Rights.USER) {
             priority += 25; // You're an admin
         }
 
@@ -590,12 +590,12 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
                 return false;
             }
         } catch (IOException e) {
-            if (this.isDestroyed() == false) {
+            if (!this.isDestroyed()) {
                 Core.submit(new Runnable() {
                     @Override
                     public void run() {
                         // Destroy the player session, the check is necessary.
-                        if (isDestroyed() == false) destroy();
+                        if (!isDestroyed()) destroy();
                         getSession().close(true);
                     }
                 }, false);
@@ -632,7 +632,7 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
                 }
             }
         }
-        LinkedList<Client> list = new LinkedList<Client>();
+        LinkedList<Client> list = new LinkedList<>();
         list.add(this);
         Core.getServer().getLogon().getAPI().save(list);
 

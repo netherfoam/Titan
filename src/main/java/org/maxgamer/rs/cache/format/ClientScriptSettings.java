@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public final class ClientScriptSettings {
 
-    private static final ConcurrentHashMap<Integer, ClientScriptSettings> widgetScripts = new ConcurrentHashMap<Integer, ClientScriptSettings>();
+    private static final ConcurrentHashMap<Integer, ClientScriptSettings> widgetScripts = new ConcurrentHashMap<>();
 
     private String defaultStringValue;
     private int defaultIntValue;
@@ -25,14 +25,14 @@ public final class ClientScriptSettings {
         defaultStringValue = "null";
     }
 
-    public static final ClientScriptSettings getSettings(int scriptId) {
+    public static ClientScriptSettings getSettings(int scriptId) {
         ClientScriptSettings script = widgetScripts.get(scriptId);
         if (script != null)
             return script;
         ByteBuffer data = null;
         try {
             ReferenceTable table = Core.getCache().getReferenceTable(IDX.CLIENTSCRIPT_SETTINGS);
-            Reference ref = table.getReference(scriptId >>> 0xba9ed5a8);
+            Reference ref = table.getReference(scriptId >>> 8);
             Archive archive = Core.getCache().getArchive(IDX.CLIENTSCRIPT_SETTINGS, ref.getId());
             ChildReference child = ref.getChild(scriptId & 0xff);
             data = archive.get(child.getId());
@@ -112,7 +112,7 @@ public final class ClientScriptSettings {
         else if (opcode == 5 || opcode == 6 || opcode == 7 || opcode == 8) {
             int count = stream.readUnsignedShort();
             int loop = opcode == 7 || opcode == 8 ? stream.readUnsignedShort() : count;
-            values = new HashMap<Long, Object>(getHashMapSize(count));
+            values = new HashMap<>(getHashMapSize(count));
             for (int i = 0; i < loop; i++) {
                 int key = opcode == 7 || opcode == 8 ? stream.readUnsignedShort() : stream.readInt();
                 Object value = opcode == 5 || opcode == 7 ? stream.readPJStr1() : stream.readInt();
@@ -123,11 +123,11 @@ public final class ClientScriptSettings {
 
     private int getHashMapSize(int size) {
         size--;
-        size |= size >>> -1810941663;
-        size |= size >>> 2010624802;
-        size |= size >>> 10996420;
-        size |= size >>> 491045480;
-        size |= size >>> 1388313616;
+        size |= size >>> 1;
+        size |= size >>> 2;
+        size |= size >>> 4;
+        size |= size >>> 8;
+        size |= size >>> 16;
         return 1 + size;
     }
 }

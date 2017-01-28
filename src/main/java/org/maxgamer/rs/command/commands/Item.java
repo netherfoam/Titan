@@ -18,7 +18,7 @@ import java.util.Map;
  */
 public class Item implements PlayerCommand {
     private TrieSet names = new TrieSet();
-    private HashMap<String, Integer> items = new HashMap<String, Integer>(20000);
+    private HashMap<String, Integer> items = new HashMap<>(20000);
     private boolean ready = false;
 
     public Item() {
@@ -47,7 +47,7 @@ public class Item implements PlayerCommand {
     @Override
     public void execute(Player sender, String[] args) {
         synchronized (this) {
-            if (ready == false) {
+            if (!ready) {
                 sender.sendMessage("Command not fully loaded yet.");
                 return;
             }

@@ -25,7 +25,7 @@ public class Rank implements GenericCommand {
             return;
         }
 
-        if (p instanceof Player == false) {
+        if (!(p instanceof Player)) {
             sender.sendMessage("Only players have rights. Bots have rights of 0.");
             return;
         }
@@ -39,10 +39,8 @@ public class Rank implements GenericCommand {
         try {
             pl.setRights(Integer.parseInt(args[1]));
             sender.sendMessage(pl.getName() + "'s new rights: " + pl.getRights());
-            return;
         } catch (NumberFormatException e) {
             sender.sendMessage("Arg1 must be an integer (Rights level, 0-2)");
-            return;
         }
     }
 

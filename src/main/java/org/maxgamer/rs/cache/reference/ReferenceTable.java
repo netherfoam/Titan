@@ -61,7 +61,7 @@ public class ReferenceTable {
 
 		/* the number of references */
         int size = bb.getShort() & 0xFFFF;
-        t.references = new TreeMap<Integer, Reference>();
+        t.references = new TreeMap<>();
 
 		/* read the ids */
         int[] ids = new int[size];
@@ -110,12 +110,12 @@ public class ReferenceTable {
         for (int id : ids) {
             int length = bb.getShort() & 0xFFFF;
             members[id] = new int[length];
-            t.references.get(id).children = new TreeMap<Integer, ChildReference>();
+            t.references.get(id).children = new TreeMap<>();
         }
 
 		/* read the child ids */
         for (int id : ids) {
-			/* reset the accumulator and size */
+            /* reset the accumulator and size */
             accumulator = 0;
             size = -1;
 

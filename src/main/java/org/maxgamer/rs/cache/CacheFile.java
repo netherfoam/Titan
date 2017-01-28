@@ -25,6 +25,7 @@ public class CacheFile {
     public CacheFile(RSCompression compression) {
         this.compression = compression;
     }
+
     protected CacheFile() {
 
     }
@@ -44,7 +45,7 @@ public class CacheFile {
         int size;
         if ((fileId + 1) * ReferenceTable.IDX_BLOCK_LEN > index.size()) {
             /* End of file, this is a bad fileId requested */
-			/* Note that this doesn't catch all no such file requests. */
+            /* Note that this doesn't catch all no such file requests. */
             throw new FileNotFoundException();
         }
 
@@ -143,11 +144,7 @@ public class CacheFile {
 		 * or not supplied.
 		 */
 
-        try {
-            f.payload = f.compression.decode(payload, key);
-        } catch (IOException e) {
-            throw e;
-        }
+        f.payload = f.compression.decode(payload, key);
 
         //payload.position(payload.limit());
 		/* Restore previous limit */
@@ -201,7 +198,7 @@ public class CacheFile {
         ByteBuffer buf = ByteBuffer.allocate(header + compressed.remaining());
 
 		/* write the header, with the optional uncompressed length */
-        buf.put((byte) compression.getId());
+        buf.put(compression.getId());
         //buf.putInt(compressed.remaining());
         if (compression == RSCompression.NONE) {
             buf.putInt(compressed.remaining());

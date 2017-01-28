@@ -22,11 +22,12 @@ import java.util.List;
  */
 public class Equipment extends Container {
     public static final int SIZE = 14;
-    private static final HashMap<String, EquipmentSet> SETS = new HashMap<String, EquipmentSet>();
+    private static final HashMap<String, EquipmentSet> SETS = new HashMap<>();
     private EquipmentSet currentSet;
     private ItemStack[] items;
     private Mob owner;
     private int[] bonus;
+
     /**
      * Creates a new Equipment set
      *
@@ -226,7 +227,7 @@ public class Equipment extends Container {
         Container inv = null;
         if (getOwner() instanceof InventoryHolder) {
             inv = ((InventoryHolder) getOwner()).getInventory();
-            if (inventorySlot == -1 || item.matches(inv.get(inventorySlot)) == false) {
+            if (inventorySlot == -1 || !item.matches(inv.get(inventorySlot))) {
                 inventorySlot = inv.getSlotOf(item);
             }
         }
@@ -292,6 +293,5 @@ public class Equipment extends Container {
         } else {
             getOwner().getModel().setRenderAnimationId(1426);
         }
-        return;
     }
 }

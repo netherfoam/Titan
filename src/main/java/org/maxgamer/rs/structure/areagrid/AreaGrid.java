@@ -104,7 +104,7 @@ public class AreaGrid<T> {
 
         dx = Math.min(this.grid.length - X, dx);
 
-        HashSet<T> objects = new HashSet<T>(guess);
+        HashSet<T> objects = new HashSet<>(guess);
 
         //We must put it in each grid that it overlaps with.
         for (int xOffset = 0; xOffset <= dx; xOffset++) {
@@ -170,7 +170,7 @@ public class AreaGrid<T> {
 
         dx = Math.min(this.grid.length - X - 1, dx);
 
-        HashSet<U> objects = new HashSet<U>(guess);
+        HashSet<U> objects = new HashSet<>(guess);
         //We must put it in each grid that it overlaps with.
         for (int xOffset = 0; xOffset <= dx; xOffset++) {
             dy = Math.min(this.grid[X + xOffset].length - Y - 1, dy);
@@ -349,7 +349,7 @@ public class AreaGrid<T> {
 
         public ArrayList<Item> getObjects() {
             if (this.objects == null) {
-                this.objects = new ArrayList<Item>(); //Default size here may be nice?
+                this.objects = new ArrayList<>(); //Default size here may be nice?
             }
             return this.objects;
         }
@@ -368,15 +368,8 @@ public class AreaGrid<T> {
         public boolean equals(Object o) {
             if (o instanceof Item) {
                 Item i = (Item) o;
-                if (i.object != this.object) {
-                    return false;
-                }
+                return i.object == this.object && MBRUtil.isEqual(this.mbr, i.mbr, 2);
 
-                if (MBRUtil.isEqual(this.mbr, i.mbr, 2) == false) {
-                    return false;
-                }
-
-                return true;
             }
             return false;
         }

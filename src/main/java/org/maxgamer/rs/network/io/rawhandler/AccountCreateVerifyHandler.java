@@ -64,7 +64,7 @@ public class AccountCreateVerifyHandler extends RawHandler {
         Log.debug("Account verification for Email " + email);
 
 		/*
-		 * Return codes are: 2: Valid user, display green mark 7: Server is busy
+         * Return codes are: 2: Valid user, display green mark 7: Server is busy
 		 * 9: Account can't be created at this time 20: Username already taken
 		 * 22: Please supply a valid username
 		 */

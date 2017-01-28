@@ -17,7 +17,7 @@ public class Notes implements YMLSerializable {
     /**
      * ArrayList of the notes, with a maximum capacity of 30.
      */
-    private ArrayList<Note> notes = new ArrayList<Note>(MAX_NOTES);
+    private ArrayList<Note> notes = new ArrayList<>(MAX_NOTES);
     /**
      * The note which the player selected.
      */
@@ -62,7 +62,7 @@ public class Notes implements YMLSerializable {
      * empty.
      */
     public ArrayList<Note> getNotes() {
-        return (ArrayList<Note>) this.notes;
+        return this.notes;
     }
 
     /**

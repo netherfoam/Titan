@@ -9,6 +9,7 @@ import org.maxgamer.rs.model.item.inventory.ContainerState;
 import org.maxgamer.rs.model.skill.SkillType;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Represents some kind of spell that a player or mob may cast
@@ -43,10 +44,8 @@ public abstract class Spell {
             return false;
         }
 
-        ArrayList<ItemStack> runes = new ArrayList<ItemStack>(this.runes.length);
-        for (ItemStack rune : this.runes) {
-            runes.add(rune);
-        }
+        ArrayList<ItemStack> runes = new ArrayList<>(this.runes.length);
+        Collections.addAll(runes, this.runes);
 
         if (mob instanceof InventoryHolder) {
             if (mob instanceof EquipmentHolder) {
@@ -96,10 +95,8 @@ public abstract class Spell {
     }
 
     public boolean takeConsumables(Mob mob) {
-        ArrayList<ItemStack> runes = new ArrayList<ItemStack>(this.runes.length);
-        for (ItemStack rune : this.runes) {
-            runes.add(rune);
-        }
+        ArrayList<ItemStack> runes = new ArrayList<>(this.runes.length);
+        Collections.addAll(runes, this.runes);
 
         if (mob instanceof InventoryHolder) {
             if (mob instanceof EquipmentHolder) {

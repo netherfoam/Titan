@@ -59,7 +59,8 @@ public enum SkillType {
      * Nice name of skill
      */
     private String name;
-    private SkillType(int id, int max, int targetId, String name) {
+
+    SkillType(int id, int max, int targetId, String name) {
         this.id = (byte) id;
         this.max = max;
         this.name = name;

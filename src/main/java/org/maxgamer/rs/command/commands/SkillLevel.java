@@ -36,7 +36,6 @@ public class SkillLevel implements PlayerCommand {
             p.sendMessage("Set " + s.getName() + " level to " + level);
         } catch (NumberFormatException e) {
             p.sendMessage("Invalid level supplied, given " + args[1]);
-            return;
         }
     }
 

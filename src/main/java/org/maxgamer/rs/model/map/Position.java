@@ -92,18 +92,16 @@ public class Position implements MBR {
         int dx = Math.abs(to.x - this.x);
         int dy = Math.abs(to.y - this.y);
 
-        if (dx == 1 && dy == 0) return true; //East or west of
-        if (dx == 0 && dy == 1) return true; //North or south of
-        return false; //Not North,East,South or West of target.
+        //East or west of
+        return dx == 1 && dy == 0 || dx == 0 && dy == 1;
     }
 
     public boolean isDiagonal(Position to) {
         int dx = Math.abs(to.x - this.x);
         int dy = Math.abs(to.y - this.y);
 
-        if (dx == 0 || dy == 0) return false; //The tile is a neighbour
-        if (dx > 1 || dx < -1 || dy > 1 || dy < -1) return false; //Too far away
-        return true; //It must be diagonal then
+        //The tile is a neighbour
+        return !(dx == 0 || dy == 0) && !(dx > 1 || dx < -1 || dy > 1 || dy < -1);
     }
 
     @Override
@@ -111,10 +109,8 @@ public class Position implements MBR {
         if (o == null) return false;
         if (o.getClass() != this.getClass()) return false;
         Position p = (Position) o;
-        if (p.x != this.x) return false;
-        if (p.y != this.y) return false;
+        return p.x == this.x && p.y == this.y;
 
-        return true;
     }
 
     @Override

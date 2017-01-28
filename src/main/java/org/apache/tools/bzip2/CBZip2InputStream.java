@@ -96,6 +96,7 @@ public class CBZip2InputStream extends InputStream implements BZip2Constants {
      * All memory intensive stuff. This field is initialized by initBlock().
      */
     private CBZip2InputStream.Data data;
+
     /**
      * Constructs a new CBZip2InputStream which decompresses bytes read from the
      * specified stream.
@@ -436,7 +437,7 @@ public class CBZip2InputStream extends InputStream implements BZip2Constants {
 
         makeMaps();
         final int alphaSize = this.nInUse + 2;
-		
+
 		/* Now the selectors */
         final int nGroups = bsR(3);
         final int nSelectors = bsR(15);
@@ -586,7 +587,6 @@ public class CBZip2InputStream extends InputStream implements BZip2Constants {
                         if (thech >= 0) {
                             bsBuffShadow = (bsBuffShadow << 8) | thech;
                             bsLiveShadow += 8;
-                            continue;
                         } else {
                             throw new IOException("unexpected end of stream");
                         }
@@ -601,7 +601,6 @@ public class CBZip2InputStream extends InputStream implements BZip2Constants {
                             if (thech >= 0) {
                                 bsBuffShadow = (bsBuffShadow << 8) | thech;
                                 bsLiveShadow += 8;
-                                continue;
                             } else {
                                 throw new IOException("unexpected end of stream");
                             }
@@ -666,7 +665,6 @@ public class CBZip2InputStream extends InputStream implements BZip2Constants {
                     if (thech >= 0) {
                         bsBuffShadow = (bsBuffShadow << 8) | thech;
                         bsLiveShadow += 8;
-                        continue;
                     } else {
                         throw new IOException("unexpected end of stream");
                     }
@@ -681,7 +679,6 @@ public class CBZip2InputStream extends InputStream implements BZip2Constants {
                         if (thech >= 0) {
                             bsBuffShadow = (bsBuffShadow << 8) | thech;
                             bsLiveShadow += 8;
-                            continue;
                         } else {
                             throw new IOException("unexpected end of stream");
                         }
@@ -716,7 +713,6 @@ public class CBZip2InputStream extends InputStream implements BZip2Constants {
                 if (thech >= 0) {
                     bsBuffShadow = (bsBuffShadow << 8) | thech;
                     bsLiveShadow += 8;
-                    continue;
                 } else {
                     throw new IOException("unexpected end of stream");
                 }
@@ -881,7 +877,7 @@ public class CBZip2InputStream extends InputStream implements BZip2Constants {
         }
     }
 
-    private static final class Data extends Object {
+    private static final class Data {
 
         // (with blockSize 900k)
         final boolean[] inUse = new boolean[256]; //      256 byte

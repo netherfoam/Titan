@@ -12,8 +12,8 @@ import java.util.List;
  */
 public class CraftableBuilder {
     /**
-    * The input items, these are used up during the crafting process. Eg a bronze bar
-    */
+     * The input items, these are used up during the crafting process. Eg a bronze bar
+     */
     protected List<ItemStack> inputs = new LinkedList<>();
 
     /**
@@ -43,6 +43,7 @@ public class CraftableBuilder {
 
     /**
      * Adds the given catalyst item to this builder
+     *
      * @param item the item to add
      * @return this
      */
@@ -56,6 +57,7 @@ public class CraftableBuilder {
 
     /**
      * Adds the given catalyst item to this builder
+     *
      * @param type the item type to add
      * @return this
      */
@@ -67,6 +69,7 @@ public class CraftableBuilder {
 
     /**
      * Adds the given input item to this builder
+     *
      * @param item the input item
      * @return this
      */
@@ -80,6 +83,7 @@ public class CraftableBuilder {
 
     /**
      * Adds the given input item to this builder
+     *
      * @param type the item type to add
      * @return this
      */
@@ -91,6 +95,7 @@ public class CraftableBuilder {
 
     /**
      * Adds the given output item to this builder
+     *
      * @param item the output item
      * @return this
      */
@@ -104,6 +109,7 @@ public class CraftableBuilder {
 
     /**
      * Adds the given output item to this builder
+     *
      * @param type the item type to add
      * @return this
      */
@@ -115,6 +121,7 @@ public class CraftableBuilder {
 
     /**
      * Sets the experience given for crafting this
+     *
      * @param exp the experience granted
      * @return this
      */
@@ -128,7 +135,8 @@ public class CraftableBuilder {
 
     /**
      * Sets the skill and level required to craft this
-     * @param type the skill type
+     *
+     * @param type  the skill type
      * @param level the level
      * @return this
      */
@@ -144,6 +152,7 @@ public class CraftableBuilder {
 
     /**
      * Transforms this into a Craftable
+     *
      * @return the craftable item
      */
     public Craftable build() {

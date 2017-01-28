@@ -131,7 +131,6 @@ public class VendorInterface extends PrimaryInterface implements ContainerListen
             //If we made it here, they're attempting to buy form the shop.
             if (!vendor.getContainer().buy(player, item, slotId)) {
                 player.sendMessage("Transaction failed!");
-                return;
             }
         }
     }

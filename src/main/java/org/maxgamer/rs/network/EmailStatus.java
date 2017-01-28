@@ -8,7 +8,7 @@ public enum EmailStatus {
 
     private byte networkId;
 
-    private EmailStatus(byte networkId) {
+    EmailStatus(byte networkId) {
         this.networkId = networkId;
     }
 

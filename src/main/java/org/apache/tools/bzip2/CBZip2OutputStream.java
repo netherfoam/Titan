@@ -305,7 +305,7 @@ public class CBZip2OutputStream extends OutputStream implements BZip2Constants {
      */
     protected static void hbMakeCodeLengths(char[] len, int[] freq, int alphaSize, int maxLen) {
         /*
-		 * Nodes and heap entries run from 1. Entry 0 for both the heap and
+         * Nodes and heap entries run from 1. Entry 0 for both the heap and
 		 * nodes is a sentinel.
 		 */
         final int[] heap = new int[MAX_ALPHA_SIZE * 2];
@@ -1453,7 +1453,6 @@ public class CBZip2OutputStream extends OutputStream implements BZip2Constants {
                                                                                         i2 -= lastPlus1;
                                                                                     }
                                                                                     workDoneShadow++;
-                                                                                    continue X;
                                                                                 } else if ((quadrant[i1 + 3] > quadrant[i2 + 3])) {
                                                                                     continue HAMMER;
                                                                                 } else {
@@ -1500,33 +1499,27 @@ public class CBZip2OutputStream extends OutputStream implements BZip2Constants {
                                             } // while x > 0
                                             else {
                                                 if ((block[i1] & 0xff) > (block[i2] & 0xff)) {
-                                                    continue HAMMER;
                                                 } else {
                                                     break HAMMER;
                                                 }
                                             }
                                         } else if ((block[i1 + 5] & 0xff) > (block[i2 + 5] & 0xff)) {
-                                            continue HAMMER;
                                         } else {
                                             break HAMMER;
                                         }
                                     } else if ((block[i1 + 4] & 0xff) > (block[i2 + 4] & 0xff)) {
-                                        continue HAMMER;
                                     } else {
                                         break HAMMER;
                                     }
                                 } else if ((block[i1 + 3] & 0xff) > (block[i2 + 3] & 0xff)) {
-                                    continue HAMMER;
                                 } else {
                                     break HAMMER;
                                 }
                             } else if ((block[i1 + 2] & 0xff) > (block[i2 + 2] & 0xff)) {
-                                continue HAMMER;
                             } else {
                                 break HAMMER;
                             }
                         } else if ((block[i1 + 1] & 0xff) > (block[i2 + 1] & 0xff)) {
-                            continue HAMMER;
                         } else {
                             break HAMMER;
                         }
@@ -1969,7 +1962,7 @@ public class CBZip2OutputStream extends OutputStream implements BZip2Constants {
         this.nMTF = wr + 1;
     }
 
-    private static final class Data extends Object {
+    private static final class Data {
 
         // with blockSize 900k
         final boolean[] inUse = new boolean[256]; // 256 byte

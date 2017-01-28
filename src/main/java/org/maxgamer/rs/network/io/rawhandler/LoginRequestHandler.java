@@ -54,8 +54,8 @@ public class LoginRequestHandler extends RawHandler {
     }
 
     private void logon() throws AuthenticationException {
-        if (Core.getServer().getLogon().isConnected() == false) {
-            throw new AuthenticationException("LoginServer is offline, so login request has been declined.", AuthResult.ACCOUNT_INACCESSIBLE.LOGIN_SERVER_OFFLINE);
+        if (!Core.getServer().getLogon().isConnected()) {
+            throw new AuthenticationException("LoginServer is offline, so login request has been declined.", AuthResult.LOGIN_SERVER_OFFLINE);
         }
     }
 
@@ -130,7 +130,7 @@ public class LoginRequestHandler extends RawHandler {
             InputStreamWrapper in = new InputStreamWrapper(block);
             String name = in.readString();
 
-            if (name.matches("[A-Za-z0-9_\\- ]{1,20}") == false) {
+            if (!name.matches("[A-Za-z0-9_\\- ]{1,20}")) {
                 Log.debug("User supplied invalid username: " + name);
                 getSession().write(AuthResult.CHANGE_NAME.getCode());
 
@@ -190,13 +190,11 @@ public class LoginRequestHandler extends RawHandler {
             getSession().write(AuthResult.MALFORMED_PACKET.getCode());
             getSession().close(true);
 
-            return;
         } catch (AuthenticationException e) {
             Log.debug(e.getMessage());
             getSession().write(e.getCode().getCode());
             getSession().close(true);
 
-            return;
         }
     }
 

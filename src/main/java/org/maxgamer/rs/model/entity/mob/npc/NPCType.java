@@ -125,7 +125,7 @@ public class NPCType {
 
     protected NPCType() {
         /*
-		 * aBoolean3172 = true; aBoolean3169 = true; aBoolean3196 = false;
+         * aBoolean3172 = true; aBoolean3169 = true; aBoolean3196 = false;
 		 * anInt3200 = -1; anInt3173 = -1; anInt3167 = -1; anInt3179 = -1;
 		 * renderEmote = -1; aByte3193 = (byte) -16; anInt3184 = 0; anInt3214 =
 		 * -1; aBoolean3210 = false; aByte3207 = (byte) 0; aByte3215 = (byte)

@@ -21,7 +21,7 @@ public class Status implements GenericCommand {
     public void execute(CommandSender s, String[] args) {
         s.sendMessage("Server Status:");
         s.sendMessage("Players: " + Core.getServer().getPersonas().getCount() + "/" + Core.getServer().getPersonas().getMax() + ", NPCs: " + Core.getServer().getNPCs().getCount() + "/" + Core.getServer().getNPCs().getMax());
-        Log.info("Primary Thread Load: " + String.format("%.2f", (Core.getServer().getThread().getUsage() * 100)) + "%, " + ", Ticks/sec: " + ((double) (Core.getServer().getTicks() - lastTick) / (double) ((System.currentTimeMillis() - lastPrint) / 1000.0)) + ", Active Threads: " + Thread.activeCount());
+        Log.info("Primary Thread Load: " + String.format("%.2f", (Core.getServer().getThread().getUsage() * 100)) + "%, " + ", Ticks/sec: " + ((double) (Core.getServer().getTicks() - lastTick) / ((System.currentTimeMillis() - lastPrint) / 1000.0)) + ", Active Threads: " + Thread.activeCount());
         s.sendMessage("RAM (JVM): " + (Runtime.getRuntime().totalMemory() / 1024 / 1024) + "MB, RAM (Used): " + ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024 / 1024) + "MB");
         long period = 0;
         int up = 0;

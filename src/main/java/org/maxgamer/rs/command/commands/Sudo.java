@@ -39,9 +39,7 @@ public class Sudo implements GenericCommand {
 
             //Copy the remaining arguments
             String[] newArgs = new String[args.length - 2];
-            for (int i = 0; i < newArgs.length; i++) {
-                newArgs[i] = args[i + 2];
-            }
+            System.arraycopy(args, 2, newArgs, 0, newArgs.length);
 
             if (c instanceof PlayerCommand) {
                 ((PlayerCommand) c).execute(p, newArgs);

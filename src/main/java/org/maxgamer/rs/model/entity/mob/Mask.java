@@ -4,7 +4,7 @@ package org.maxgamer.rs.model.entity.mob;
  * @author netherfoam
  */
 public interface Mask {
-    public boolean hasChanged();
+    boolean hasChanged();
 
-    public void reset();
+    void reset();
 }

@@ -27,7 +27,7 @@ public class GroundItemOptionsHandler implements PacketProcessor<Player> {
     public static final int EXAMINE = 69; //EXAMINE
 
 	/*
-	 * Sample Data: Item 8334(Oak lectern) has option 0(Study) opcode 22, Size:
+     * Sample Data: Item 8334(Oak lectern) has option 0(Study) opcode 22, Size:
 	 * 7Data: 0x80 C 16 8E 20 15 C Item 0(Dwarf remains) has option 1(Pickup)
 	 * opcode 54, Size: 7Data: 0x96 C 0 0 C 15 0 Item 4653(Fire) has option
 	 * 2(Study) option 1, [null] opcode 54, Size: 7Data: 0x96 C 2D 12 C 15 0

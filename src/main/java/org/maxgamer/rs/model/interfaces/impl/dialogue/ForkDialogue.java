@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public abstract class ForkDialogue extends Dialogue {
     public static final int MAX_OPTIONS = 5;
 
-    private ArrayList<String> options = new ArrayList<String>();
+    private ArrayList<String> options = new ArrayList<>();
     private String title;
 
     public ForkDialogue(Player p) {

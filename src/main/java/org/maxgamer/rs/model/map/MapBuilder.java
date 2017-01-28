@@ -15,7 +15,7 @@ public class MapBuilder {
     /**
      * The chunks which have been added
      */
-    private HashMap<Integer, Chunk> parts = new HashMap<Integer, Chunk>();
+    private HashMap<Integer, Chunk> parts = new HashMap<>();
 
     /**
      * Adds the given chunk to the given coordinates. If the chunk is null,
@@ -31,7 +31,7 @@ public class MapBuilder {
             /* Delete requested */
             parts.remove(key(chunkX, chunkY, chunkZ));
         } else {
-			/* Add the chunk at the coordinates */
+            /* Add the chunk at the coordinates */
             parts.put(key(chunkX, chunkY, chunkZ), c);
         }
     }
@@ -82,8 +82,7 @@ public class MapBuilder {
         }
 		
 		/* Construct the DynamicMap */
-        DynamicMap map = new DynamicMap(name, chunks);
-        return map;
+        return new DynamicMap(name, chunks);
     }
 
     /**
@@ -98,6 +97,6 @@ public class MapBuilder {
         if (chunkX >= 2048 || chunkX < 0 || chunkY >= 2048 || chunkY < 0 || chunkZ >= 4 || chunkZ < 0) {
             throw new IllegalArgumentException("ChunkX and ChunkY must range from 0-2047 inclusive (given x:" + chunkX + " and y: " + chunkY + "), and chunkZ must range from 0-3 inclusive (Given z: " + chunkZ + ")");
         }
-        return (chunkZ << 30) | (chunkX << 15) | (chunkY << 0);
+        return (chunkZ << 30) | (chunkX << 15) | (chunkY);
     }
 }

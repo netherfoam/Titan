@@ -11,7 +11,7 @@ import java.util.ArrayList;
  */
 public class CheatLog {
     private Client c;
-    private ArrayList<String> violations = new ArrayList<String>();
+    private ArrayList<String> violations = new ArrayList<>();
     private int severity = 0;
 
     private long lastTick;

@@ -21,7 +21,7 @@ public class EquipmentSet {
      */
     public EquipmentSet(String name) {
         this.name = name;
-        this.equipmentMap = new HashMap<WieldType, ItemStack[]>();
+        this.equipmentMap = new HashMap<>();
     }
 
     /**

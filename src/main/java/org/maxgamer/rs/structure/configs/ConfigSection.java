@@ -42,7 +42,7 @@ public class ConfigSection implements Map<String, Object> {
         map = (Map<String, Object>) parser.load(string);
 
         if (map == null) {
-            map = new HashMap<String, Object>();
+            map = new HashMap<>();
         }
     }
 
@@ -60,7 +60,7 @@ public class ConfigSection implements Map<String, Object> {
         map = (Map<String, Object>) parser.load(in);
 
         if (map == null) {
-            map = new HashMap<String, Object>();
+            map = new HashMap<>();
         }
     }
 
@@ -134,7 +134,7 @@ public class ConfigSection implements Map<String, Object> {
             if (node.isEmpty() && parts.length > 1) {
                 StringBuilder sb = new StringBuilder(parts[0]);
                 for (int i = 1; i < parts.length - 1; i++) {
-                    sb.append("." + parts[i]);
+                    sb.append(".").append(parts[i]);
                 }
                 set(sb.toString(), null);
             }
@@ -157,10 +157,10 @@ public class ConfigSection implements Map<String, Object> {
     public <K, V> Map<K, V> getMap(String key, Class<K> k, Class<V> v, Map<K, V> fallback) {
         Object o = getObject(key);
         if (o == null) return fallback;
-        if (o instanceof Map == false) return fallback;
+        if (!(o instanceof Map)) return fallback;
 
         Map<?, ?> map = (Map<?, ?>) o;
-        Map<K, V> results = new HashMap<K, V>();
+        Map<K, V> results = new HashMap<>();
         for (Entry<?, ?> e : map.entrySet()) {
             if (k.isInstance(e.getKey()) && v.isInstance(e.getValue())) {
                 results.put((K) e.getKey(), (V) e.getValue());
@@ -232,7 +232,7 @@ public class ConfigSection implements Map<String, Object> {
 
         if (o instanceof Collection) {
             Collection<?> set = (Collection<?>) o;
-            List<T> results = new ArrayList<T>(set.size());
+            List<T> results = new ArrayList<>(set.size());
 
             for (Object p : set) {
                 if (clazz.isInstance(p)) {
@@ -245,7 +245,7 @@ public class ConfigSection implements Map<String, Object> {
 
         if (o instanceof Map) {
             Map<?, ?> map = (Map<?, ?>) o;
-            List<T> results = new ArrayList<T>(map.size());
+            List<T> results = new ArrayList<>(map.size());
 
             for (Object p : map.keySet()) {
                 if (clazz.isInstance(p)) {
@@ -302,7 +302,7 @@ public class ConfigSection implements Map<String, Object> {
                 Map<String, Object> map = (Map<String, Object>) o;
                 return new ConfigSection(map);
             }
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         return fallback;
     }
@@ -338,7 +338,7 @@ public class ConfigSection implements Map<String, Object> {
         Map<String, Object> last = map;
         for (int i = 0; i < parts.length - 1; i++) {
             Object q = last.get(parts[i]);
-            if (q == null || q instanceof Map == false) {
+            if (q == null || !(q instanceof Map)) {
                 return null;
             }
             last = (Map<String, Object>) q;
@@ -350,13 +350,13 @@ public class ConfigSection implements Map<String, Object> {
 
         if (o instanceof Map) {
             /*
-			 * If we're retrieving a map, then we should check if we can cast
+             * If we're retrieving a map, then we should check if we can cast
 			 * it to a config section. This is typesafe in that it prevents us
 			 * from using a map that does not have keys as strings.
 			 */
-            HashMap<String, Object> result = new HashMap<String, Object>();
+            HashMap<String, Object> result = new HashMap<>();
             for (Entry<?, ?> e : ((Map<?, ?>) o).entrySet()) {
-                if (e.getKey() instanceof String == false) return o; //Key is not String, we can't help.
+                if (!(e.getKey() instanceof String)) return o; //Key is not String, we can't help.
 
                 result.put((String) e.getKey(), e.getValue());
             }
@@ -502,7 +502,7 @@ public class ConfigSection implements Map<String, Object> {
                 String s = (String) o;
                 try {
                     return Util.parseBoolean(s);
-                } catch (ParseException e) {
+                } catch (ParseException ignored) {
                 }
             }
             return (Boolean) o; //This will probably fail.
@@ -550,7 +550,7 @@ public class ConfigSection implements Map<String, Object> {
     }
 
     @Override
-    public void putAll(Map<? extends String, ? extends Object> m) {
+    public void putAll(Map<? extends String, ?> m) {
         map.putAll(m);
     }
 

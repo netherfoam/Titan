@@ -35,7 +35,6 @@ public class SpawnObject implements PlayerCommand {
             player.sendMessage("Spawned object at your location.");
         } catch (NumberFormatException e) {
             player.sendMessage("Invalid object ID number given " + args[0]);
-            return;
         }
     }
 

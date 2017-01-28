@@ -34,7 +34,7 @@ public final class GameObjectProto {
     //private int anInt2941;
     //private byte aByte2942;
     /*
-	 * private int anInt2945 = 0; private int anInt2946; private int anInt2948;
+     * private int anInt2945 = 0; private int anInt2946; private int anInt2948;
 	 * private int anInt2949; private int anInt2950;
 	 */
     //private int[][] anIntArrayArray2951;
@@ -168,7 +168,7 @@ public final class GameObjectProto {
         }
     }
 
-    private final void method3854(RSInputStream buffer) throws IOException {
+    private void method3854(RSInputStream buffer) throws IOException {
         int length = buffer.readUnsignedByte();
         for (int j = 0; j < length; j++) {
             buffer.skip(1);
@@ -186,7 +186,7 @@ public final class GameObjectProto {
         return false;
     }
 
-    private final void readObject(RSInputStream buffer, int opcode) throws IOException {
+    private void readObject(RSInputStream buffer, int opcode) throws IOException {
         if (opcode == 1 || opcode == 5) {
             boolean creator_Boolean = false; //A boolean from the creator class in the client
             if (opcode == 5 && creator_Boolean) method3854(buffer);
@@ -214,8 +214,8 @@ public final class GameObjectProto {
             short[] aShortArray3003 = new short[length];
             short[] aShortArray2965 = new short[length];
             for (int j = 0; j < length; j++) {
-                aShortArray3003[j] = (short) (buffer.readShort());
-                aShortArray2965[j] = (short) (buffer.readShort());
+                aShortArray3003[j] = buffer.readShort();
+                aShortArray2965[j] = buffer.readShort();
             }
         }
         if (opcode == 62) {
@@ -223,42 +223,42 @@ public final class GameObjectProto {
         if (opcode == 65) /* anInt2938 = */ buffer.readShort();
 
         else if (opcode != 15) {
-            if ((opcode ^ 0xffffffff) != -18) {
+            if ((~opcode) != -18) {
                 if (opcode != 18) {
                     if (opcode != 21) {
 
 
-                        if ((opcode ^ 0xffffffff) != -25) {
+                        if ((~opcode) != -25) {
 
                             if (opcode != 28) {
 
-                                if ((opcode ^ 0xffffffff) != -40) {
-                                    if ((opcode ^ 0xffffffff) > -31 || opcode >= 35) {
+                                if ((~opcode) != -40) {
+                                    if ((~opcode) > -31 || opcode >= 35) {
 
-                                        if ((opcode ^ 0xffffffff) != -42) {
-                                            if ((opcode ^ 0xffffffff) != -43) {
+                                        if ((~opcode) != -42) {
+                                            if ((~opcode) != -43) {
 
                                                 if (opcode != 64) {
 
-                                                    if ((opcode ^ 0xffffffff) != -67) {
-                                                        if ((opcode ^ 0xffffffff) == -68) /*
+                                                    if ((~opcode) != -67) {
+                                                        if ((~opcode) == -68) /*
 																						 * anInt2929
 																						 * =
 																						 */ buffer.readShort();
-                                                        else if ((opcode ^ 0xffffffff) != -70) {
-                                                            if ((opcode ^ 0xffffffff) == -71) /*
+                                                        else if ((~opcode) != -70) {
+                                                            if ((~opcode) == -71) /*
 																							 * anInt2973
 																							 * =
 																							 */ buffer.readUnsignedShort(); //buffer.readUShort(false) << -836995390;
-                                                            else if ((opcode ^ 0xffffffff) == -72) /*
+                                                            else if ((~opcode) == -72) /*
 																									 * anInt2997
 																									 * =
 																									 */ buffer.readUnsignedShort(); //buffer.readUShort(false) << -1352000926;
-                                                            else if ((opcode ^ 0xffffffff) != -73) {
+                                                            else if ((~opcode) != -73) {
                                                                 if (opcode != 73) {
                                                                     if (opcode != 74) {
                                                                         if (opcode != 75) {
-                                                                            if ((opcode ^ 0xffffffff) != -78 && (opcode ^ 0xffffffff) != -93) {
+                                                                            if ((~opcode) != -78 && (~opcode) != -93) {
                                                                                 if (opcode == 78) {
 																					/*
 																					 * int
@@ -273,24 +273,24 @@ public final class GameObjectProto {
 																					 */
                                                                                     buffer.readUnsignedByte();
                                                                                 } else if (opcode != 79) {
-                                                                                    if ((opcode ^ 0xffffffff) != -82) {
+                                                                                    if ((~opcode) != -82) {
                                                                                         if (opcode == 82) {
                                                                                         } else if (opcode == 88) {
-                                                                                        } else if ((opcode ^ 0xffffffff) == -90) {
+                                                                                        } else if ((~opcode) == -90) {
                                                                                         } else if (opcode == 91) {
                                                                                         } else if (opcode != 93) {
                                                                                             if (opcode == 94) {
-                                                                                            } else if ((opcode ^ 0xffffffff) == -96) {
+                                                                                            } else if ((~opcode) == -96) {
 																								/*
 																								 * int
 																								 * anInt2985
 																								 * =
 																								 */
                                                                                                 buffer.readUnsignedShort();
-                                                                                            } else if ((opcode ^ 0xffffffff) == -98) {
+                                                                                            } else if ((~opcode) == -98) {
                                                                                             } else if (opcode == 98) {
                                                                                             } //this.aBoolean3005 = true;
-                                                                                            else if ((opcode ^ 0xffffffff) != -100) {
+                                                                                            else if ((~opcode) != -100) {
                                                                                                 if (opcode == 100) {
 																									/*
 																									 * int
@@ -312,14 +312,14 @@ public final class GameObjectProto {
 																														 * anInt2990
 																														 * =
 																														 */ buffer.readShort();
-                                                                                                else if ((opcode ^ 0xffffffff) != -104) {
-                                                                                                    if ((opcode ^ 0xffffffff) == -105) /*
+                                                                                                else if ((~opcode) != -104) {
+                                                                                                    if ((~opcode) == -105) /*
 																																		 * this
 																																		 * .
 																																		 * anInt2987
 																																		 * =
 																																		 */ buffer.readUnsignedByte();
-                                                                                                    else if ((opcode ^ 0xffffffff) != -106) {
+                                                                                                    else if ((~opcode) != -106) {
                                                                                                         if (opcode == 106) {
                                                                                                             int i_64_ = buffer.readUnsignedByte();
                                                                                                             int[] anIntArray2937 = new int[i_64_];
@@ -331,7 +331,7 @@ public final class GameObjectProto {
 																											 * 0
 																											 * ;
 																											 */
-                                                                                                            for (int i_65_ = 0; (i_65_ ^ 0xffffffff) > (i_64_ ^ 0xffffffff); i_65_++) {
+                                                                                                            for (int i_65_ = 0; (~i_65_) > (~i_64_); i_65_++) {
                                                                                                                 anIntArray2979[i_65_] = buffer.readShort();
                                                                                                                 int i_66_ = buffer.readUnsignedByte();
                                                                                                                 anIntArray2937[i_65_] = i_66_;
@@ -342,12 +342,12 @@ public final class GameObjectProto {
 																												 * ;
 																												 */
                                                                                                             }
-                                                                                                        } else if ((opcode ^ 0xffffffff) != -108) {
-                                                                                                            if (opcode < 150 || (opcode ^ 0xffffffff) <= -156) {
+                                                                                                        } else if ((~opcode) != -108) {
+                                                                                                            if (opcode < 150 || (~opcode) <= -156) {
                                                                                                                 if (opcode == 160) {
                                                                                                                     int i_67_ = buffer.readUnsignedByte();
                                                                                                                     int[] anIntArray2934 = new int[i_67_];
-                                                                                                                    for (int i_68_ = 0; (i_68_ ^ 0xffffffff) > (i_67_ ^ 0xffffffff); i_68_++)
+                                                                                                                    for (int i_68_ = 0; (~i_68_) > (~i_67_); i_68_++)
                                                                                                                         anIntArray2934[i_68_] = buffer.readShort();
                                                                                                                 } else if (opcode == 162) {
 																													/*
@@ -385,13 +385,13 @@ public final class GameObjectProto {
 																																		 * anInt2940
 																																		 * =
 																																		 */ buffer.readUnsignedShort();
-                                                                                                                else if ((opcode ^ 0xffffffff) != -166) {
-                                                                                                                    if ((opcode ^ 0xffffffff) != -167) {
-                                                                                                                        if ((opcode ^ 0xffffffff) != -168) {
-                                                                                                                            if ((opcode ^ 0xffffffff) == -169) {
+                                                                                                                else if ((~opcode) != -166) {
+                                                                                                                    if ((~opcode) != -167) {
+                                                                                                                        if ((~opcode) != -168) {
+                                                                                                                            if ((~opcode) == -169) {
                                                                                                                             } else if (opcode == 169) {
-                                                                                                                            } else if ((opcode ^ 0xffffffff) != -171) {
-                                                                                                                                if ((opcode ^ 0xffffffff) != -172) {
+                                                                                                                            } else if ((~opcode) != -171) {
+                                                                                                                                if ((~opcode) != -172) {
                                                                                                                                     if (opcode == 173) {
 																																		/*
 																																		 * int
@@ -405,8 +405,8 @@ public final class GameObjectProto {
 																																		 * =
 																																		 */
                                                                                                                                         buffer.readShort();
-                                                                                                                                    } else if ((opcode ^ 0xffffffff) == -178) {
-                                                                                                                                    } else if ((opcode ^ 0xffffffff) == -179) /*
+                                                                                                                                    } else if ((~opcode) == -178) {
+                                                                                                                                    } else if ((~opcode) == -179) /*
 																																											 * this
 																																											 * .
 																																											 * anInt2970
@@ -549,13 +549,13 @@ public final class GameObjectProto {
                                                                                     buffer.readUnsignedByte();
                                                                                     int i_73_ = buffer.readUnsignedByte();
                                                                                     int[] anIntArray2926 = new int[i_73_];
-                                                                                    for (int i_74_ = 0; (i_73_ ^ 0xffffffff) < (i_74_ ^ 0xffffffff); i_74_++)
+                                                                                    for (int i_74_ = 0; (~i_73_) < (~i_74_); i_74_++)
                                                                                         anIntArray2926[i_74_] = buffer.readShort();
                                                                                 }
                                                                             } else {
                                                                                 // Opcode 77 or 92
                                                                                 anInt2983 = buffer.readShort();
-                                                                                if ((anInt2983 ^ 0xffffffff) == -65536) {
+                                                                                if ((~anInt2983) == -65536) {
                                                                                     anInt2983 = -1;
                                                                                 }
                                                                                 int anInt2968 = buffer.readShort();
@@ -601,7 +601,7 @@ public final class GameObjectProto {
                                             } else {
                                                 int i_78_ = (buffer.readUnsignedByte());
                                                 byte[] aByteArray2955 = new byte[i_78_];
-                                                for (int i_79_ = 0; ((i_78_ ^ 0xffffffff) < (i_79_ ^ 0xffffffff)); i_79_++)
+                                                for (int i_79_ = 0; ((~i_78_) < (~i_79_)); i_79_++)
                                                     aByteArray2955[i_79_] = (buffer.readByte());
                                             }
                                         } else {
@@ -609,8 +609,8 @@ public final class GameObjectProto {
                                             short[] aShortArray2974 = new short[i_80_];
                                             short[] aShortArray2995 = new short[i_80_];
                                             for (int i_81_ = 0; i_80_ > i_81_; i_81_++) {
-                                                aShortArray2995[i_81_] = (short) (buffer.readShort());
-                                                aShortArray2974[i_81_] = (short) (buffer.readShort());
+                                                aShortArray2995[i_81_] = buffer.readShort();
+                                                aShortArray2974[i_81_] = buffer.readShort();
                                             }
                                         }
                                     } else this.options[opcode + -30] = (buffer.readPJStr1());

@@ -148,7 +148,7 @@ public enum RSCompression {
             }
 
             int decompressedLength = copy.getInt();
-			
+
 			/* create the streams */
             InputStream is = new GZIPInputStream(new ByteBufferInputStream(copy));
             try {
@@ -227,7 +227,7 @@ public enum RSCompression {
      *
      * @param id the unique ID for this zip type
      */
-    private RSCompression(int id) {
+    RSCompression(int id) {
         this.id = (byte) id;
     }
 

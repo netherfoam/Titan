@@ -40,7 +40,6 @@ public class JavaScriptCallFiber extends Fiber<Object> {
      * when execution starts. This also loads the core.js library
      * file raising a RuntimeException if the file can't be loaded.
      * can't be loaded.
-     *
      */
     public JavaScriptCallFiber(ScriptableObject scope, String module, String function, Object... args) {
         this.scope = scope;
@@ -90,8 +89,7 @@ public class JavaScriptCallFiber extends Fiber<Object> {
             }
 
             return true;
-        }
-        finally {
+        } finally {
             Context.exit();
         }
     }
@@ -107,16 +105,15 @@ public class JavaScriptCallFiber extends Fiber<Object> {
         ScriptableObject module;
         try {
             module = (ScriptableObject) require.call(context, scope, require, new String[]{this.module});
-        }
-        catch(JavaScriptException e) {
+        } catch (JavaScriptException e) {
             // If the module was not found, we skip safely
-            if(e.getMessage().startsWith("Error: Module ") && e.getMessage().endsWith(" not found.")) {
+            if (e.getMessage().startsWith("Error: Module ") && e.getMessage().endsWith(" not found.")) {
                 return null;
             }
             throw e;
         }
 
-        if(module == null || module == Undefined.instance) {
+        if (module == null || module == Undefined.instance) {
             logger.debug("module " + this.module + " not found");
 
             return null;
@@ -125,7 +122,7 @@ public class JavaScriptCallFiber extends Fiber<Object> {
         // TODO: Check a Function is returned (not a variable etc)
         Function f = (Function) module.get(this.function);
 
-        if(f == null || f == Undefined.instance) {
+        if (f == null || f == Undefined.instance) {
             logger.debug("function " + this.function + " not found in module " + this.module);
 
             return null;
@@ -133,16 +130,14 @@ public class JavaScriptCallFiber extends Fiber<Object> {
 
         try {
             return startContinuation(f, context, scope, module, args);
-        }
-        catch(ContinuationPending pending) {
-            while(true) {
+        } catch (ContinuationPending pending) {
+            while (true) {
                 // We pause and wait for a resume() call
                 Fiber.park();
 
                 try {
                     return context.resumeContinuation(pending.getContinuation(), scope, result);
-                }
-                catch(ContinuationPending next) {
+                } catch (ContinuationPending next) {
                     pending = next;
                 }
             }

@@ -96,11 +96,8 @@ public class EntityList<E extends Entity> implements Iterable<E> {
      */
     public boolean remove(int slot) {
         //This is threadsafe because we don't lookup.
-        if (set(slot, null) == null) {
-            return false; //We didn't change anything
-        }
+        return set(slot, null) != null;
 
-        return true; //We removed an entity
     }
 
     /**

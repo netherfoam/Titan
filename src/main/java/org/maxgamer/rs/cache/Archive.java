@@ -9,7 +9,7 @@ import java.util.Map.Entry;
 
 public class Archive {
     /*public static Archive decode(Reference ref, CacheFile file) throws IOException{
-		int size = ref.getChildCount();
+        int size = ref.getChildCount();
 		if(size <= 1) throw new IOException("That file doesn't appear to be an archive...");
 		
 		ByteBuffer bb = file.getData();
@@ -79,7 +79,7 @@ public class Archive {
      * @param size the size of the archive.
      */
     public Archive(int size) {
-        this.entries = new HashMap<Integer, ByteBuffer>(size);
+        this.entries = new HashMap<>(size);
     }
 
     /**
@@ -184,7 +184,7 @@ public class Archive {
      * @return a read only copy of all subfiles
      */
     public HashMap<Integer, ByteBuffer> getAll() {
-        HashMap<Integer, ByteBuffer> buffers = new HashMap<Integer, ByteBuffer>(this.entries.size());
+        HashMap<Integer, ByteBuffer> buffers = new HashMap<>(this.entries.size());
         for (Entry<Integer, ByteBuffer> e : entries.entrySet()) {
             ByteBuffer bb = e.getValue();
             if (bb != null) buffers.put(e.getKey(), bb.asReadOnlyBuffer());

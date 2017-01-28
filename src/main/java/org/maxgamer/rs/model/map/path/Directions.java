@@ -12,7 +12,7 @@ import java.util.Map.Entry;
 public class Directions {
     //Old, work mostly. But these do not check the blocked or wall flags.
     /*
-	 * public static final SimpleDirection NORTH = new SimpleDirection(0, 1,
+     * public static final SimpleDirection NORTH = new SimpleDirection(0, 1,
 	 * 0x48240000); public static final SimpleDirection SOUTH = new
 	 * SimpleDirection(0, -1, 0x40a40000); public static final SimpleDirection
 	 * EAST = new SimpleDirection(1, 0, 0x60240000); public static final
@@ -42,7 +42,7 @@ public class Directions {
     public static final ComplexDirection[] COMPLEX = new ComplexDirection[]{NORTH_EAST, SOUTH_EAST, SOUTH_WEST, NORTH_WEST};
     public static final Direction[] ALL = new Direction[]{NORTH, NORTH_EAST, EAST, SOUTH_EAST, SOUTH, SOUTH_WEST, WEST, NORTH_WEST};
 
-    private static HashMap<String, Direction> names = new HashMap<String, Direction>();
+    private static HashMap<String, Direction> names = new HashMap<>();
 
     static {
         for (Field f : Directions.class.getFields()) {

@@ -7,10 +7,7 @@ import org.maxgamer.rs.structure.YMLSerializable;
 import org.maxgamer.rs.structure.configs.ConfigSection;
 import org.maxgamer.rs.util.IntList;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.*;
 
 /**
  * @author Netherfoam
@@ -30,7 +27,7 @@ public abstract class Container implements Cloneable, Iterable<ItemStack>, YMLSe
      * The ContainerListeners which want to be notified when something changes
      * in this container.
      */
-    private LinkedList<ContainerListener> listeners = new LinkedList<ContainerListener>();
+    private LinkedList<ContainerListener> listeners = new LinkedList<>();
 
     /**
      * Constructors & Item Stacking
@@ -222,7 +219,8 @@ public abstract class Container implements Cloneable, Iterable<ItemStack>, YMLSe
 
         for (int i = 0; i < size; i++) {
             ItemStack item = get(i);
-            if (item == null) continue; // Don't set null items
+            if (item == null) {
+            }
             else {
                 t.set(String.valueOf(i), item.serialize());
             }
@@ -309,7 +307,7 @@ public abstract class Container implements Cloneable, Iterable<ItemStack>, YMLSe
         this.setItem(slot, item);
         modCount++;
 
-        for (ContainerListener l : new ArrayList<ContainerListener>(this.listeners)) {
+        for (ContainerListener l : new ArrayList<>(this.listeners)) {
             try {
                 l.onSet(this, slot, old);
             } catch (Exception e) {
@@ -340,7 +338,7 @@ public abstract class Container implements Cloneable, Iterable<ItemStack>, YMLSe
         ItemStack[] proto1 = this.getItems();
         IntList updates1 = new IntList(items.length);
         for (ItemStack iStack : items) {
-            if (Container.remove(iStack, proto1, updates1, -1) == false) {
+            if (!Container.remove(iStack, proto1, updates1, -1)) {
                 return false; // Failed to remove it.
             }
         }
@@ -348,16 +346,16 @@ public abstract class Container implements Cloneable, Iterable<ItemStack>, YMLSe
         ItemStack[] proto2 = to.getItems();
         IntList updates2 = new IntList(items.length);
         for (ItemStack iStack : items) {
-            if (Container.add(iStack, proto2, to.getStackType(), updates2, -1) == false) {
+            if (!Container.add(iStack, proto2, to.getStackType(), updates2, -1)) {
                 return false; // Failed to add it.
             }
         }
 
-        while (updates1.isEmpty() == false) {
+        while (!updates1.isEmpty()) {
             int slot = updates1.pop();
             this.set(slot, proto1[slot]);
         }
-        while (updates2.isEmpty() == false) {
+        while (!updates2.isEmpty()) {
             int slot = updates2.pop();
             to.set(slot, proto2[slot]);
         }
@@ -385,13 +383,13 @@ public abstract class Container implements Cloneable, Iterable<ItemStack>, YMLSe
 
         for (int a = 0; a < list.length; a++) {
             ItemStack add = list[a];
-            if (Container.add(add, proto, getStackType(), updates, preferredSlot) == false) {
+            if (!Container.add(add, proto, getStackType(), updates, preferredSlot)) {
                 throw new ContainerException();
             }
         }
 
         // Now we change the actual inventory.
-        while (updates.isEmpty() == false) {
+        while (!updates.isEmpty()) {
             int slot = updates.pop();
             this.set(slot, proto[slot]);
         }
@@ -470,12 +468,12 @@ public abstract class Container implements Cloneable, Iterable<ItemStack>, YMLSe
         ItemStack[] proto = this.getItems();
         for (int i = 0; i < list.length; i++) {
             ItemStack item = list[i];
-            if (Container.remove(item, proto, updates, preferredSlot) == false) {
+            if (!Container.remove(item, proto, updates, preferredSlot)) {
                 throw new ContainerException();
             }
         }
 
-        while (updates.isEmpty() == false) {
+        while (!updates.isEmpty()) {
             int slot = updates.pop();
             this.set(slot, proto[slot]);
         }
@@ -577,7 +575,7 @@ public abstract class Container implements Cloneable, Iterable<ItemStack>, YMLSe
         // given slot.
         int freeSpot = -1;
 
-        if (reverse == false) {
+        if (!reverse) {
             slot++;
             for (int i = slot; i >= 0; i--) {
                 if (this.get(i) == null) {
@@ -621,11 +619,7 @@ public abstract class Container implements Cloneable, Iterable<ItemStack>, YMLSe
      */
     public final void insert(int slotFrom, int slotTo) {
         boolean reverse;
-        if (slotFrom > slotTo) {
-            reverse = true;
-        } else {
-            reverse = false;
-        }
+        reverse = slotFrom > slotTo;
 
         ItemStack item = this.get(slotFrom);
         // Delete it from it's old position.
@@ -690,7 +684,7 @@ public abstract class Container implements Cloneable, Iterable<ItemStack>, YMLSe
         for (int i = 0; i < needles.length; i++) {
             ItemStack needle = needles[i];
 
-            if (Container.remove(needle, proto, updates, -1) == false) {
+            if (!Container.remove(needle, proto, updates, -1)) {
                 return false; // Failed to remove, does not contain enough.
             }
         }
@@ -777,7 +771,7 @@ public abstract class Container implements Cloneable, Iterable<ItemStack>, YMLSe
         IntList updates = new IntList(list.length);
 
         for (ItemStack item : list) {
-            if (Container.add(item, proto, getStackType(), updates, -1) == false) {
+            if (!Container.add(item, proto, getStackType(), updates, -1)) {
                 return false;
             }
         }
@@ -1003,10 +997,8 @@ public abstract class Container implements Cloneable, Iterable<ItemStack>, YMLSe
      * @return a list of items in this container.
      */
     public ArrayList<ItemStack> toList() {
-        ArrayList<ItemStack> list = new ArrayList<ItemStack>(this.getSize());
-        for (ItemStack item : this.getContents()) {
-            list.add(item);
-        }
+        ArrayList<ItemStack> list = new ArrayList<>(this.getSize());
+        Collections.addAll(list, this.getContents());
         return list;
     }
 
@@ -1014,7 +1006,7 @@ public abstract class Container implements Cloneable, Iterable<ItemStack>, YMLSe
     public String toString() {
         StringBuilder sb = new StringBuilder(getClass().getSimpleName() + ": {");
         for (int i = 0; i < getSize(); i++) {
-            sb.append("[" + i + "]: " + get(i) + "\n");
+            sb.append("[").append(i).append("]: ").append(get(i)).append("\n");
         }
         sb.append("}");
         return sb.toString();

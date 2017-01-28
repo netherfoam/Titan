@@ -26,7 +26,7 @@ public class AreaManager implements EventListener {
 
     public AreaManager(WorldMap map) {
         this.map = map;
-        this.areas = new AreaGrid<Area>(map.width(), map.height(), WorldMap.CHUNK_SIZE);
+        this.areas = new AreaGrid<>(map.width(), map.height(), WorldMap.CHUNK_SIZE);
     }
 
     public HashSet<Area> getAreas(MBR overlap) {

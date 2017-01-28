@@ -25,7 +25,7 @@ public abstract class Action {
      * B, then B is paired with A. If A is cancelled, B should be cancelled and
      * visa versa. If A terminates, B should not be cancelled.
      */
-    protected LinkedList<Action> paired = new LinkedList<Action>();
+    protected LinkedList<Action> paired = new LinkedList<>();
     /**
      * The Fiber which runs this action
      */
@@ -57,12 +57,12 @@ public abstract class Action {
     public static void wait(int ticks) throws SuspendExecution {
         Core.getServer().getThread().assertThread();
 
-        if (Fiber.isCurrentFiber() == false) {
+        if (!Fiber.isCurrentFiber()) {
             throw new RuntimeException("wait() may only be invoked by a Fiber.");
         }
         while (ticks-- > 0) {
             /* There's a bug in Quasar which means that Fiber.park() won't directly
-			 * work for us. See ActionFiber.park() for more details. */
+             * work for us. See ActionFiber.park() for more details. */
             ActionFiber.park();
         }
     }
@@ -94,7 +94,7 @@ public abstract class Action {
                     ClassLoader cl = this.getClass().getClassLoader();
                     StringBuilder sb = new StringBuilder(cl.getClass().getCanonicalName());
                     while (((cl = cl.getParent())) != null) {
-                        sb.append(" < " + cl.getClass().getCanonicalName());
+                        sb.append(" < ").append(cl.getClass().getCanonicalName());
                     }
                     Log.warning(sb.toString());
                 }
@@ -133,7 +133,7 @@ public abstract class Action {
         }
 
         paired.add(a);
-        if (a.paired.contains(this) == false) a.paired.add(this);
+        if (!a.paired.contains(this)) a.paired.add(this);
     }
 
     /**

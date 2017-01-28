@@ -48,7 +48,7 @@ public class IDX {
     public static final int THEORA = 35;
     public static final int VORBIS = 36;
 
-    private static HashMap<String, Integer> names = new HashMap<String, Integer>();
+    private static HashMap<String, Integer> names = new HashMap<>();
 
     static {
         for (Field f : IDX.class.getFields()) {

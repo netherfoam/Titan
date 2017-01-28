@@ -27,13 +27,13 @@ public class ItemOnObjectHandler implements PacketProcessor<Player> {
         int itemUsed = in.readShort();
         int objX = in.readShort();
         @SuppressWarnings("unused")
-        boolean run = in.readByteS() != 0 ? true : false;
+        boolean run = in.readByteS() != 0;
         int objectId = in.readShortA();
         int objY = in.readLEShortA();
 
         Location l = new Location(player.getMap(), objX, objY, player.getLocation().z);
 
-        if (player.getLocation().near(l, 25) == false) {
+        if (!player.getLocation().near(l, 25)) {
             player.getCheats().log(20, "Player attempted to use an item on an object that was too far away!");
             return;
         }
@@ -46,7 +46,7 @@ public class ItemOnObjectHandler implements PacketProcessor<Player> {
             return;
         }
 
-        if (player.getInventory().contains(item) == false) {
+        if (!player.getInventory().contains(item)) {
             player.getCheats().log(20, "Player attempted to use an item they do not have on an object");
             return;
         }

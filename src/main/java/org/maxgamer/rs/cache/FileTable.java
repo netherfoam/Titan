@@ -14,11 +14,12 @@ public class FileTable {
     protected FileChannel index;
     protected FileChannel data;
     protected HashMap<Integer, CacheFile> files;
+
     public FileTable(int idx, int size) {
         this();
 
         this.idx = idx;
-        this.files = new HashMap<Integer, CacheFile>(256);
+        this.files = new HashMap<>(256);
         this.size = size;
     }
 
@@ -45,7 +46,7 @@ public class FileTable {
     }
 
 	/*public void write(int fileId, CacheFile file) throws IOException{
-		ByteBuffer bb = file.encode();
+        ByteBuffer bb = file.encode();
 		
 		if(files.get(fileId) == null){
 			//New file

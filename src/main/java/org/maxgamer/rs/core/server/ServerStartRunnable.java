@@ -38,13 +38,12 @@ public class ServerStartRunnable implements Runnable {
             Core.submit(server.getAutosave(), server.getAutosave().getInterval(), true);
 
             File startup = new File("startup.js");
-            if(startup.exists()) {
+            if (startup.exists()) {
                 JavaScriptCallFiber js = new JavaScriptCallFiber(server.getScriptEnvironment(), "startup", "run");
                 js.start();
                 try {
                     js.join();
-                }
-                catch(ExecutionException e) {
+                } catch (ExecutionException e) {
                     // Unwrap our exception here
                     throw e.getCause();
                 }

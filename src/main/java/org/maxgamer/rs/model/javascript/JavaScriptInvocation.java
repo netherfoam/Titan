@@ -73,7 +73,7 @@ public class JavaScriptInvocation implements java.util.concurrent.Callable<Objec
         // Invoke require("my/module.js")
         ScriptableObject module = (ScriptableObject) require.call(context, scope, require, new String[]{this.module});
 
-        if(module == null || module == Undefined.instance) {
+        if (module == null || module == Undefined.instance) {
             logger.debug("module " + this.module + " not found");
 
             return null;
@@ -82,7 +82,7 @@ public class JavaScriptInvocation implements java.util.concurrent.Callable<Objec
         // TODO: Check a Function is returned (not a variable etc)
         Function f = (Function) module.get(this.function);
 
-        if(f == null || f == Undefined.instance) {
+        if (f == null || f == Undefined.instance) {
             logger.debug("function " + this.function + " not found in module " + this.module);
 
             return null;

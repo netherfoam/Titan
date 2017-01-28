@@ -8,7 +8,7 @@ import java.util.ArrayList;
  * @author netherfoam
  */
 public class InfiniteContainer extends Container {
-    private ArrayList<ItemStack> items = new ArrayList<ItemStack>();
+    private ArrayList<ItemStack> items = new ArrayList<>();
 
     public InfiniteContainer(StackType stack) {
         super(stack);

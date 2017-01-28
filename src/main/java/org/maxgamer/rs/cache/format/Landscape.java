@@ -43,7 +43,8 @@ public class Landscape {
     /**
      * The list of objects in this landscape in no particular order
      */
-    private ArrayList<ObjectData> objects = new ArrayList<ObjectData>(4096);
+    private ArrayList<ObjectData> objects = new ArrayList<>(4096);
+
     private Landscape() {
         //Private constructor
     }
@@ -198,7 +199,7 @@ public class Landscape {
                         }
 
 						/*
-						 * if((flags & FLAG_ROOF) == FLAG_ROOF){ addClip(xOffset
+                         * if((flags & FLAG_ROOF) == FLAG_ROOF){ addClip(xOffset
 						 * + localX, yOffset + localY, z,
 						 * ClipMasks.BLOCKED_TILE); }
 						 */
@@ -351,8 +352,7 @@ public class Landscape {
                     d = Directions.WEST;
                     break;
             }
-            StaticGameObject g = new StaticGameObject(objectId, type, new Location(map, xOffset + localX, yOffset + localY, zOffset + height), d);
-            return g;
+            return new StaticGameObject(objectId, type, new Location(map, xOffset + localX, yOffset + localY, zOffset + height), d);
         }
     }
 }

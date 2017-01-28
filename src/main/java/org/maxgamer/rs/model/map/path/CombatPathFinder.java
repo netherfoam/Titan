@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class CombatPathFinder implements PathFinder {
     @Override
     public Path findPath(Location start, Position min, Position max, int xSize, int ySize) {
-        ArrayList<Direction> dirs = new ArrayList<Direction>();
+        ArrayList<Direction> dirs = new ArrayList<>();
 
         //The closest point
         Position best = getClosest(start, min, max);
@@ -47,7 +47,7 @@ public class CombatPathFinder implements PathFinder {
 
         System.out.println("Dx " + dx + ", dy " + dy);
 
-        if (fail == false) {
+        if (!fail) {
             //Dirs now leads us onto the enemy's tile.
             Direction d = dirs.remove(dirs.size() - 1); //Take the last direction.
             if (d instanceof ComplexDirection) {

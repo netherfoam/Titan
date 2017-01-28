@@ -6,7 +6,9 @@ import java.util.HashMap;
  * @author netherfoam
  */
 public class LunarBook extends Spellbook {
-    private HashMap<Integer, Spell> spells = new HashMap<Integer, Spell>();
+    public static final LunarBook LUNAR = new LunarBook();
+
+    private HashMap<Integer, Spell> spells = new HashMap<>();
 
     protected LunarBook() {
         super(430);

@@ -33,7 +33,7 @@ public abstract class BackgroundAction extends Action {
                 state = PROCESSING;
                 calculate();
 
-                if (isCancelRequested() == false) {
+                if (!isCancelRequested()) {
                     state = CALCULATED;
                 }
             }

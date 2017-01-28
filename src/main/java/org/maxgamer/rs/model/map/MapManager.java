@@ -17,7 +17,7 @@ import java.util.Iterator;
 
 public class MapManager implements EventListener, Iterable<WorldMap> {
     private File folder;
-    private HashMap<String, WorldMap> worlds = new HashMap<String, WorldMap>(4);
+    private HashMap<String, WorldMap> worlds = new HashMap<>(4);
 
     public MapManager(File folder) {
         this.folder = folder;
@@ -45,14 +45,11 @@ public class MapManager implements EventListener, Iterable<WorldMap> {
     }
 
     public boolean isPersisted(WorldMap map) {
-        if (worlds.get(map.getName()) != null) {
-            return true;
-        }
-        return false;
+        return worlds.get(map.getName()) != null;
     }
 
     public void persist(NPC npc) {
-        if (isPersisted(npc.getMap()) == false) {
+        if (!isPersisted(npc.getMap())) {
             throw new IllegalArgumentException("Map is not persisted!");
         }
 
@@ -141,11 +138,8 @@ public class MapManager implements EventListener, Iterable<WorldMap> {
         }
 
         File f = new File(folder, name + MapStructure.EXTENSION);
-        if (f.exists()) {
-            return true;
-        }
+        return f.exists();
 
-        return false;
     }
 
     /**
@@ -173,12 +167,11 @@ public class MapManager implements EventListener, Iterable<WorldMap> {
 
     @EventHandler(priority = EventPriority.LOW, skipIfCancelled = true)
     public void onLoad(ChunkLoadEvent e) {
-        if (isPersisted(e.getMap()) == false) {
-            return;
+        if (!isPersisted(e.getMap())) {
         }
 
         // TODO: This can be optimised by grouping chunks and then doing that selection instead of doing 16,000 odd queries for loading all of F2P
-		/*
+        /*
 		try{
 			Connection con = Core.getDatabase().getConnection();
 			PreparedStatement ps = con.prepareStatement("SELECT * FROM npc_spawns WHERE map = ? AND x BETWEEN ? AND ? AND y BETWEEN ? AND ? AND z = ?");
@@ -208,8 +201,7 @@ public class MapManager implements EventListener, Iterable<WorldMap> {
 
     @EventHandler(priority = EventPriority.HIGH, skipIfCancelled = true)
     public void onUnload(ChunkUnloadEvent e) {
-        if (isPersisted(e.getMap()) == false) {
-            return;
+        if (!isPersisted(e.getMap())) {
         }
 
         // TODO: Delete the NPC if it was spawned from the database

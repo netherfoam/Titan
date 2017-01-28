@@ -59,7 +59,7 @@ public enum PrayerGroup {
 
     private PrayerType[] types;
 
-    private PrayerGroup(PrayerType... types) {
+    PrayerGroup(PrayerType... types) {
         this.types = types;
     }
 
@@ -70,7 +70,7 @@ public enum PrayerGroup {
      * @return an array of groups that the given prayer is in.
      */
     public static LinkedList<PrayerGroup> getGroups(PrayerType type) {
-        LinkedList<PrayerGroup> groups = new LinkedList<PrayerGroup>();
+        LinkedList<PrayerGroup> groups = new LinkedList<>();
         for (PrayerGroup g : values()) {
             if (g.contains(type)) {
                 groups.add(g);

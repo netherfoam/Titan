@@ -26,7 +26,7 @@ public final class DegradeHandler {
      * @see #getDegradeSequence()
      * @see #onDegrade(ItemStack)
      */
-    public static final boolean degrade(Degradable degradable, ItemStack degradeFrom, Container from, Container to) {
+    public static boolean degrade(Degradable degradable, ItemStack degradeFrom, Container from, Container to) {
         degradeFrom = Objects.requireNonNull(degradeFrom, "The item to degrade from cannot be NULL");
         from = Objects.requireNonNull(from, "The container to remove the degrading item cannot be NULL");
         to = Objects.requireNonNull(to, "The container to add the new item cannot be NULL");
@@ -68,7 +68,7 @@ public final class DegradeHandler {
      * @see #getDegradeSequence()
      * @see #onDegrade(ItemStack)
      */
-    public static final boolean degrade(Degradable degradable, ItemStack degradeFrom, Container container) {
+    public static boolean degrade(Degradable degradable, ItemStack degradeFrom, Container container) {
         return degrade(degradable, degradeFrom, container, container);
     }
 

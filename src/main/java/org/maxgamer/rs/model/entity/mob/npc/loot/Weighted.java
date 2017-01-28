@@ -9,5 +9,5 @@ public interface Weighted {
     /**
      * The weight of this object. Usually between 1 and 100.
      */
-    public double getWeight();
+    double getWeight();
 }

@@ -74,7 +74,6 @@ public class BankInterface extends PrimaryInterface {
                     bank.apply();
                 } catch (ContainerException e) {
                     // No space
-                    continue;
                 }
             }
             return;
@@ -195,7 +194,7 @@ public class BankInterface extends PrimaryInterface {
     //getPlayer().getProtocol().invoke(150, "", "", "Withdraw-All but one", "Withdraw-All", "Withdraw-X", "Withdraw-" + getPlayer().getConfig().getInt("input.bank"), "Withdraw-10", "Withdraw-5", "Withdraw-1", 0, 0, 6, 10, 95, (getChildId() << 16) | 93);
     //getPlayer().getProtocol().invoke(151, "", "", "Withdraw-All but one", "Withdraw-All", "Withdraw-X", "Withdraw-" + getPlayer().getConfig().getInt("input.bank"), "Withdraw-10", "Withdraw-5", "Withdraw-1", 0, 0, 6, 10, 95, (getChildId() << 16) | 93);
     /*
-	 * for(int slot = 0; slot < getPlayer().getBank().getSize(); slot++){
+     * for(int slot = 0; slot < getPlayer().getBank().getSize(); slot++){
 	 * getPlayer().getProtocol().invoke(153, "9", "8", "7", "6", "5", "4", "3",
 	 * "2", "1", 0, 0, 0, -1, 0, slot, (getChildId() << 16) | 93, slot, 95); }
 	 */

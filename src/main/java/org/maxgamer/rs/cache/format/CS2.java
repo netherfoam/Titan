@@ -129,7 +129,7 @@ public class CS2 {
         }
 
 		/*
-		 * //If we were successful, these should be equal. If our file is
+         * //If we were successful, these should be equal. If our file is
 		 * corrupt, these will probably be different. if(bb.position() !=
 		 * bb.limit() - 2 - footerLength - 12){ throw new
 		 * IOException("Bad script, locations don't match up. Position(): " +

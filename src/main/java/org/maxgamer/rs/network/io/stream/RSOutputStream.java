@@ -123,7 +123,7 @@ public class RSOutputStream {
     public void writeTriByte(int v) {
         writeByte(v >> 16);
         writeByte(v >> 8);
-        writeByte(v >> 0);
+        writeByte(v);
     }
 
     /**

@@ -29,7 +29,7 @@ public class VendorType {
     private ItemType currency = null;
 
     @OneToMany(mappedBy = "vendor")
-    private List<VendorItem> items = new LinkedList<VendorItem>();
+    private List<VendorItem> items = new LinkedList<>();
 
     // TODO: This should be stored by the server, not in the database entity!
     private transient VendorContainer container;

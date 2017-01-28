@@ -71,7 +71,7 @@ public class ModuleCmd implements GenericCommand {
                     return;
                 }
                 File f = new File("modules", args[1] + ".jar");
-                if (f.exists() == false) {
+                if (!f.exists()) {
                     sender.sendMessage("Module " + args[1] + ".jar not found in modules/ folder");
                     return;
                 }

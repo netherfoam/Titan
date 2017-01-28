@@ -221,7 +221,7 @@ public enum AuthResult {
      */
     private byte code;
 
-    private AuthResult(int code) {
+    AuthResult(int code) {
         this.code = (byte) code;
     }
 

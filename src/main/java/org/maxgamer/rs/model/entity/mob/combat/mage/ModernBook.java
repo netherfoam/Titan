@@ -9,7 +9,9 @@ import java.util.HashMap;
  * @author netherfoam
  */
 public class ModernBook extends Spellbook {
-    private HashMap<Integer, Spell> spells = new HashMap<Integer, Spell>();
+    public static final ModernBook MODERN = new ModernBook();
+
+    private HashMap<Integer, Spell> spells = new HashMap<>();
 
     protected ModernBook() {
         super(192);

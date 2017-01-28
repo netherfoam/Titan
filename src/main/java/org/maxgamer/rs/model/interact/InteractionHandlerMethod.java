@@ -101,21 +101,21 @@ public class InteractionHandlerMethod {
     public void run(Mob source, Interactable target, Use usage) throws SuspendExecution, NotHandledException {
         Class<?>[] types = method.getParameterTypes();
 
-        if (types[0].isInstance(source) == false) {
+        if (!types[0].isInstance(source)) {
             if (this.debug) {
                 Log.debug("The interaction method " + this + " declined arg0=" + source + " because it's not an instance of " + types[0]);
             }
             throw new NotHandledException();
         }
 
-        if (types[1].isInstance(target) == false) {
+        if (!types[1].isInstance(target)) {
             if (this.debug) {
                 Log.debug("The interaction method " + this + " declined arg1=" + target + " because it's not an instance of " + types[1]);
             }
             throw new NotHandledException();
         }
 
-        if (types[2].isInstance(usage) == false) {
+        if (!types[2].isInstance(usage)) {
             if (this.debug) {
                 Log.debug("The interaction method " + this + " declined arg2=" + usage.getClass().getName() + " because it's not an instance of " + types[2]);
             }

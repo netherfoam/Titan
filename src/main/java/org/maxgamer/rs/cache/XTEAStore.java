@@ -26,7 +26,7 @@ public class XTEAStore {
     /**
      * A hashmap of (IDX << 24) | (fileId) to XTEA Key for that file
      */
-    private HashMap<Integer, XTEAKey> keys = new HashMap<Integer, XTEAKey>(1024);
+    private HashMap<Integer, XTEAKey> keys = new HashMap<>(1024);
 
     public XTEAStore(File file) {
         this.file = file;
@@ -34,7 +34,7 @@ public class XTEAStore {
 
     public static void loadFormatUnpacked(Cache c, File folder, XTEAStore convert) throws IOException {
         for (File f : folder.listFiles()) {
-            if (f.getName().endsWith(".txt") == false) continue; //Only pack .txt files
+            if (!f.getName().endsWith(".txt")) continue; //Only pack .txt files
 
             int regionId = Integer.parseInt(f.getName().substring(0, f.getName().indexOf(".")));
 
@@ -141,7 +141,7 @@ public class XTEAStore {
      * @throws IOException if there was an IO error
      */
     private void save(File f) throws IOException {
-        if (f.exists() == false) {
+        if (!f.exists()) {
             if (f.getParentFile() != null) {
                 f.getParentFile().mkdirs();
             }

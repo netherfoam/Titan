@@ -326,9 +326,8 @@ public class ItemMetadataSet {
         Integer stored = getInt(key);
         if (stored == value) return true;
 
-        if (stored == null || value == null) return false;
+        return !(stored == null || value == null) && stored.equals(value);
 
-        return stored.equals(value);
     }
 
     /**
@@ -342,9 +341,8 @@ public class ItemMetadataSet {
         String stored = getString(key);
         if (stored == value) return true;
 
-        if (stored == null || value == null) return false;
+        return !(stored == null || value == null) && stored.equals(value);
 
-        return stored.equals(value);
     }
 
     /**

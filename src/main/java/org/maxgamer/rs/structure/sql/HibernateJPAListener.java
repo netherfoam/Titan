@@ -27,12 +27,12 @@ public class HibernateJPAListener extends EmptyInterceptor {
             PreUpdate.class,
     };
 
-    private HashMap<Class<?>, List<Method>> hooks = new HashMap<Class<?>, List<Method>>();
+    private HashMap<Class<?>, List<Method>> hooks = new HashMap<>();
 
     private List<Method> getHooks(Class<?> clazz) {
         List<Method> hooks = this.hooks.get(clazz);
         if (hooks == null) {
-            hooks = new ArrayList<Method>(1);
+            hooks = new ArrayList<>(1);
             Class<?> type = clazz;
 
             while (type != Object.class) {
@@ -61,9 +61,7 @@ public class HibernateJPAListener extends EmptyInterceptor {
             if (m.getAnnotation(type) == null) continue;
             try {
                 m.invoke(entity);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
+            } catch (IllegalAccessException | InvocationTargetException e) {
                 e.printStackTrace();
             }
         }

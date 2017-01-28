@@ -192,7 +192,7 @@ public class Craftable {
 
     private void runItems(Container c) throws CraftFail {
         for (ItemStack catalyst : this.catalysts) {
-            if (c.contains(catalyst) == false) {
+            if (!c.contains(catalyst)) {
                 if (catalyst.getAmount() == 1) {
                     throw new CraftFail("You need a " + catalyst.getName() + " to craft that.");
                 } else {

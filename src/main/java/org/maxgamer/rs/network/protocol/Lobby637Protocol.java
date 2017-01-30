@@ -23,7 +23,7 @@ public class Lobby637Protocol extends LobbyProtocol {
             @Override
             public void process(LobbyPlayer c, RSIncomingPacket p) throws Exception {
                 //Heartbeat packet.
-                //TODO: We should probably send some kind of response.
+                c.write(new RSOutgoingPacket(99));
             }
         });
 

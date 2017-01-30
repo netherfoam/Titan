@@ -16,4 +16,6 @@ public abstract class LobbyProtocol extends ProtocolHandler<LobbyPlayer> {
     public abstract PacketManager<LobbyPlayer> getPacketManager();
 
     public abstract void sendAuth(AuthResult result, String lastIp, long lastSeen);
+    
+    public abstract void sendWorldData();
 }

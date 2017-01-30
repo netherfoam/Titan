@@ -389,7 +389,7 @@ public class Server {
      * @param uuid the UUID for the session
      * @return the client or null if not found
      */
-    public Client getClient(int uuid) {
+    public Client getClient(long uuid) {
         for (Persona p : personas) {
             if (p instanceof Client) {
                 Client c = (Client) p;

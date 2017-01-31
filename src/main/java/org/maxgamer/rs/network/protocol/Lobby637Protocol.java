@@ -1,6 +1,9 @@
 package org.maxgamer.rs.network.protocol;
 
+import java.util.Collection;
+
 import org.maxgamer.rs.core.Core;
+import org.maxgamer.rs.logon.game.LogonAPI.RemoteWorld;
 import org.maxgamer.rs.network.AuthResult;
 import org.maxgamer.rs.network.EmailStatus;
 import org.maxgamer.rs.network.LobbyPlayer;
@@ -31,7 +34,7 @@ public class Lobby637Protocol extends LobbyProtocol {
             @Override
             public void process(LobbyPlayer c, RSIncomingPacket p) throws Exception {
                 //World query packet
-                c.sendWorldData();
+            	c.getProtocol().sendWorldData();
             }
         });
     }
@@ -42,7 +45,7 @@ public class Lobby637Protocol extends LobbyProtocol {
 
     @Override
     public int getRevision() {
-        return 639;
+        return 637;
     }
 
     @Override
@@ -172,6 +175,74 @@ public class Lobby637Protocol extends LobbyProtocol {
         byte[] data = bb.getPayload();
         getPlayer().getSession().write((byte) data.length);
         getPlayer().getSession().write(data);
+    }
+
+    @Override
+    public void sendWorldData() {
+        RSOutgoingPacket out = new RSOutgoingPacket(98);
+
+        boolean sendWorldConfig = true;
+        
+        out.writeByte((byte) 1);
+        out.writeByte((byte) 2);
+        out.writeByte((byte) (sendWorldConfig ? 1 : 0));
+
+        Collection<RemoteWorld> worlds = Core.getServer().getLogon().getAPI().getWorlds();
+
+        if(sendWorldConfig) {
+	        out.writeSmart(worlds.size());
+	
+	        for (RemoteWorld w : worlds) {
+	            /**
+	             * The country code for this world. This is used for the flag icon
+	             * next to the Location. If this world has an activity (not empty)
+	             * this will be ignored.
+	             */
+	            out.writeSmart(w.getCountry());
+	            /**
+	             * The location for the world. If this world has an activity, that
+	             * activity will override this.
+	             */
+	            out.writePJStr2(w.getName());
+	        }
+	        
+	        //Maybe one of these are currently selected world?
+	        //I'm not terribly sure about either of these three.
+	        out.writeSmart(0); //WorldStart
+	        out.writeSmart(worlds.size() + 1); //WorldEnd
+	        out.writeSmart(worlds.size()); //WorldCount
+	
+	        for (RemoteWorld w : worlds) {
+	
+	            out.writeSmart(w.getWorldId());
+	            /**
+	             * The location for the world. If we send a location (Say 0), with
+	             * region "Australia" then we send another world with location 0 and
+	             * region "America", then both worlds will appear as "Australia".
+	             *
+	             * This means we need to send a unique location for each unique
+	             * world.
+	             */
+	            out.writeByte((byte) (w.getWorldId() - 1));
+	            out.writeInt(w.getFlags());
+	
+	            /**
+	             * If we send a non-empty string to the client, then it will display
+	             * the activity as the primary text field, instead of displaying the
+	             * country flag.
+	             */
+	            out.writePJStr2(w.getActivity());
+	            out.writePJStr2(w.getIP());
+	        }
+	        out.writeInt(0x94DA4A87); // != 0
+        }
+        
+        for (RemoteWorld remote : Core.getServer().getLogon().getAPI().getWorlds()) {
+            out.writeSmart(remote.getWorldId());
+            out.writeShort((short) remote.size());
+        }
+        
+        getPlayer().write(out);
     }
 
     @Override

@@ -23,6 +23,7 @@ data/cache.yml
 modules/*
 cache/*
 bin/*
+lib/*
 config/world.yml
 config/logon.yml
 crash/

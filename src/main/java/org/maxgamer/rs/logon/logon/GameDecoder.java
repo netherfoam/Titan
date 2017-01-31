@@ -29,7 +29,7 @@ public class GameDecoder extends OpcodeDecoder<LSIncomingPacket> implements Hand
         String name = in.readPJStr1();
         String pass = in.readPJStr1();
         String ip = in.readPJStr1();
-        int clientUUID = in.readInt();
+        long clientUUID = in.readLong();
 
         LSOutgoingPacket out = new LSOutgoingPacket(3);
         AuthResult result = AuthResult.SUCCESS;

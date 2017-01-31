@@ -116,10 +116,8 @@ public class LoginRequestHandler extends RawHandler {
 
             //Client UUID
             rsaEncrypted.readLong(); // client key, appears to be 0 always
-            rsaEncrypted.readInt(); // always 0
-
-            int uuid = rsaEncrypted.readInt(); // other client key, randomly generated every time client starts
-
+            long uuid = rsaEncrypted.readLong(); // other client key, randomly generated every time client starts
+            
             //The rest of the packet is encrypted
             byte[] block = new byte[packetLength - rsaPayload.length - 6];
             buffer.read(block);

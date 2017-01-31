@@ -10,9 +10,9 @@ public class AuthRequestEvent extends LSEvent {
     private AuthResult result;
     private String ip;
     private String name;
-    private int uuid;
+    private long uuid;
 
-    public AuthRequestEvent(AuthResult result, String ip, String name, int clientUUID) {
+    public AuthRequestEvent(AuthResult result, String ip, String name, long clientUUID) {
         this.result = result;
         this.ip = ip;
         this.name = name;
@@ -23,7 +23,7 @@ public class AuthRequestEvent extends LSEvent {
         return name;
     }
 
-    public int getClientUUID() {
+    public long getClientUUID() {
         return uuid;
     }
 

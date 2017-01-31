@@ -30,7 +30,7 @@ public class LogonAPI {
         return Collections.unmodifiableCollection(worlds.values());
     }
 
-    public boolean authenticate(Session session, String name, String pass, int clientUUID, boolean lobby) {
+    public boolean authenticate(Session session, String name, String pass, long clientUUID, boolean lobby) {
         AuthRequest r = new AuthRequest();
         r.session = session;
         r.name = name;
@@ -46,7 +46,7 @@ public class LogonAPI {
         out.writePJStr1(name);
         out.writePJStr1(pass);
         out.writePJStr1(session.getIP().getAddress().getHostAddress());
-        out.writeInt(clientUUID);
+        out.writeLong(clientUUID);
         try {
             logon.write(out);
             return true;
@@ -112,7 +112,7 @@ public class LogonAPI {
         protected Session session;
         protected String name;
         protected String pass;
-        protected int clientUUID;
+        protected long clientUUID;
         protected boolean lobby;
 
         protected AuthRequest() {

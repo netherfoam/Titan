@@ -58,7 +58,7 @@ public interface Client extends YMLSerializable, CommandSender {
      *
      * @return
      */
-    public long getUUID();
+    long getUUID();
 
     /**
      * This method is under the contract that it should remove this Client from

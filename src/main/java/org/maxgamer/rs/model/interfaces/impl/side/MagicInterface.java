@@ -29,7 +29,7 @@ public class MagicInterface extends SideInterface {
     public void onClick(int option, int buttonId, int slotId, int itemId) {
         Spellbook book = getPlayer().getSpellbook();
 
-        if ((option == 5 && book == AncientBook.ANCIENT) || (option == 0 && book == ModernBook.MODERN)) { //Autocast swaps location depending on book
+        if ((option == 5 && book == AncientBook.ANCIENT) || (option == 0 && book == ModernBook.MODERN || book == LunarBook.LUNAR)) { //Autocast swaps location depending on book
             Spell s = book.getSpell(buttonId);
             if (s == null) {
                 getPlayer().getCheats().log(5, "Player attempted to cast a spell which is not listed in their spellbook");
@@ -53,7 +53,7 @@ public class MagicInterface extends SideInterface {
             }
 
             if (s instanceof TeleportSpell) {
-                final TeleportSpell t = (TeleportSpell) s;
+                TeleportSpell t = (TeleportSpell) s;
                 t.cast(getPlayer());
             }
         }
@@ -72,12 +72,6 @@ public class MagicInterface extends SideInterface {
             return;
         }
 
-        if (!target.isAttackable(getPlayer())) {
-            //This can legitimately occur when a player tries to cast a spell on an NPC
-            getPlayer().sendMessage("You can't attack that.");
-            return;
-        }
-
         Spellbook book = getPlayer().getSpellbook();
         Spell s = book.getSpell(buttonId);
 
@@ -92,6 +86,18 @@ public class MagicInterface extends SideInterface {
         }
 
         TargetSpell t = (TargetSpell) s;
+
+        if (t.isHostile() && !target.isAttackable(getPlayer())) {
+            //This can legitimately occur when a player tries to cast a spell on an NPC
+            getPlayer().sendMessage("You can't attack that.");
+            return;
+        }
+
+        if(t.isFriendly() && target.isAttackable(getPlayer())) {
+            getPlayer().sendMessage("Your target is hostile");
+            return;
+        }
+
         this.nextAttack = new MagicAttack(getPlayer(), t);
         getPlayer().setTarget(target);
     }

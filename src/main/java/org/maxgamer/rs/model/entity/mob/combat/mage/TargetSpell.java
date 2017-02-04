@@ -28,6 +28,14 @@ public abstract class TargetSpell extends Spell {
         this.range = range;
     }
 
+    public boolean isFriendly() {
+        return false;
+    }
+
+    public boolean isHostile() {
+        return true;
+    }
+
     public int getProjectileId() {
         return projectileId;
     }

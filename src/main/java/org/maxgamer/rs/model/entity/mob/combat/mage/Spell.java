@@ -48,30 +48,28 @@ public abstract class Spell {
         Collections.addAll(runes, this.runes);
 
         if (mob instanceof InventoryHolder) {
-            if (mob instanceof EquipmentHolder) {
-                Container equip = ((EquipmentHolder) mob).getEquipment();
+            Container equip = ((EquipmentHolder) mob).getEquipment();
 
-                ItemStack wep = equip.get(WieldType.WEAPON.getSlot());
-                if (wep != null) {
-                    String name = wep.getName().toLowerCase();
-                    if (name.contains("staff")) {
-                        ItemStack free = null;
-                        if (name.contains("air")) {
-                            free = Spellbook.AIR_RUNE;
-                        } else if (name.contains("water")) {
-                            free = Spellbook.WATER_RUNE;
-                        } else if (name.contains("earth")) {
-                            free = Spellbook.EARTH_RUNE;
-                        } else if (name.contains("fire")) {
-                            free = Spellbook.FIRE_RUNE;
-                        }
+            ItemStack wep = equip.get(WieldType.WEAPON.getSlot());
+            if (wep != null) {
+                String name = wep.getName().toLowerCase();
+                if (name.contains("staff")) {
+                    ItemStack free = null;
+                    if (name.contains("air")) {
+                        free = Spellbook.AIR_RUNE;
+                    } else if (name.contains("water")) {
+                        free = Spellbook.WATER_RUNE;
+                    } else if (name.contains("earth")) {
+                        free = Spellbook.EARTH_RUNE;
+                    } else if (name.contains("fire")) {
+                        free = Spellbook.FIRE_RUNE;
+                    }
 
-                        if (free != null) {
-                            for (int i = 0; i < runes.size(); i++) {
-                                if (runes.get(i).matches(free)) {
-                                    runes.remove(i);
-                                    i--;
-                                }
+                    if (free != null) {
+                        for (int i = 0; i < runes.size(); i++) {
+                            if (runes.get(i).matches(free)) {
+                                runes.remove(i);
+                                i--;
                             }
                         }
                     }

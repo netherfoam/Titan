@@ -1,3 +1,5 @@
+importClass(org.maxgamer.rs.model.skill.SkillType);
+
 module.exports = {
     bury: function(player, item){
     	if(!player.getInventory().contains(item)){

@@ -75,7 +75,7 @@ public class LogonServer extends ServerHost<WorldHost> {
 
         boolean isNew = false;
 
-        if (cfgFile.exists() == false) {
+        if (!cfgFile.exists()) {
             File dist = new File("config" + File.separatorChar + "logon.yml.dist");
             if (dist.exists()) {
                 try {
@@ -154,7 +154,7 @@ public class LogonServer extends ServerHost<WorldHost> {
 
                         try {
                             Thread.sleep(3000);
-                        } catch (InterruptedException e) {
+                        } catch (InterruptedException ignored) {
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -177,7 +177,7 @@ public class LogonServer extends ServerHost<WorldHost> {
                 }
             }
             //This world ID is free.
-            if (taken == false) {
+            if (!taken) {
                 return i;
             }
         }
@@ -197,7 +197,6 @@ public class LogonServer extends ServerHost<WorldHost> {
             return null;
         }
 
-        WorldHost w = new WorldHost(channel, key, this);
-        return w;
+        return new WorldHost(channel, key, this);
     }
 }

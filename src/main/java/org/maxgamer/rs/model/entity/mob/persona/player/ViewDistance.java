@@ -35,7 +35,7 @@ public enum ViewDistance {
     private int tiles;
     private byte id;
 
-    private ViewDistance(int tiles, int id) {
+    ViewDistance(int tiles, int id) {
         this.tiles = tiles;
         this.id = (byte) id;
     }
@@ -94,7 +94,6 @@ public enum ViewDistance {
         int maxX = Calc.betweeni(offset.x, offset.x + m.width() - 1, (center.x & ~0x7) + (chunks * 8) + 7);
         int maxY = Calc.betweeni(offset.y, offset.y + m.height() - 1, (center.y & ~0x7) + (chunks * 8) + 7);
 
-        Cube cube = new Cube(new int[]{minX, minY, 0}, new int[]{maxX - minX, maxY - minY, 3}); //TODO: Should this really be 4? not 3?
-        return cube;
+        return new Cube(new int[]{minX, minY, 0}, new int[]{maxX - minX, maxY - minY, 3});
     }
 }

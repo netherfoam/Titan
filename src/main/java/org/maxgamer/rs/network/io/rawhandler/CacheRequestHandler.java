@@ -15,7 +15,7 @@ import java.util.HashMap;
  */
 public class CacheRequestHandler extends RawHandler {
     int running = 0;
-    private HashMap<Integer, Integer> requests = new HashMap<Integer, Integer>(2048); //HashSet of all files requested
+    private HashMap<Integer, Integer> requests = new HashMap<>(2048); //HashSet of all files requested
 
     public CacheRequestHandler(Session s) {
         super(s);

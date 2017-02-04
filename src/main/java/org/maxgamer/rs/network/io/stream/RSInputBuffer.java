@@ -103,7 +103,7 @@ public class RSInputBuffer {
      * @return the next long
      */
     public long readLong() {
-        return ((long) ((readInt() & 0xFFFFFFFF)) | (long) ((readInt() << 32)));
+        return ((long) ((readInt())) | (long) ((readInt() << 0)));
     }
 
     /**
@@ -253,8 +253,7 @@ public class RSInputBuffer {
      * @return A little-endian type A short.
      */
     public int readLEShortA() {
-        int i = (readByte() - 128 & 0xFF) | ((readByte() & 0xFF) << 8);
-        return i;
+        return (readByte() - 128 & 0xFF) | ((readByte() & 0xFF) << 8);
     }
 
     /**
@@ -263,8 +262,7 @@ public class RSInputBuffer {
      * @return A little-endian short.
      */
     public int readLEShort() {
-        int i = (readByte() & 0xFF) | ((readByte() & 0xFF) << 8);
-        return i;
+        return (readByte() & 0xFF) | ((readByte() & 0xFF) << 8);
     }
 
     /**
@@ -291,8 +289,7 @@ public class RSInputBuffer {
      * @return A type A short.
      */
     public int readShortA() {
-        int i = ((readByte() & 0xFF) << 8) | (readByte() - 128 & 0xFF);
-        return i;
+        return ((readByte() & 0xFF) << 8) | (readByte() - 128 & 0xFF);
     }
 
     /**

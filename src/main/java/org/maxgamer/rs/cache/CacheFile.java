@@ -25,6 +25,7 @@ public class CacheFile {
     public CacheFile(RSCompression compression) {
         this.compression = compression;
     }
+
     protected CacheFile() {
 
     }
@@ -44,33 +45,33 @@ public class CacheFile {
         int size;
         if ((fileId + 1) * ReferenceTable.IDX_BLOCK_LEN > index.size()) {
             /* End of file, this is a bad fileId requested */
-			/* Note that this doesn't catch all no such file requests. */
+            /* Note that this doesn't catch all no such file requests. */
             throw new FileNotFoundException();
         }
 
-		/* Our temporary buffer. This is going to use a maximum of TOTAL_BLOCK_LEN bytes */
+        /* Our temporary buffer. This is going to use a maximum of TOTAL_BLOCK_LEN bytes */
         ByteBuffer bb = ByteBuffer.allocate(ReferenceTable.TOTAL_BLOCK_LEN);
 
-		/* We are reading 6 bytes (2x TriByte) here */
+        /* We are reading 6 bytes (2x TriByte) here */
         bb.limit(ReferenceTable.IDX_BLOCK_LEN);
         if (index.read(bb, fileId * ReferenceTable.IDX_BLOCK_LEN) != ReferenceTable.IDX_BLOCK_LEN) {
-			/* TODO: Should this be thrown ? */
+            /* TODO: Should this be thrown ? */
             throw new IOException("End of file channel. Could not read " + ReferenceTable.TOTAL_BLOCK_LEN + " bytes");
         }
         bb.flip();
 
-		/* The size of the whole file in bytes */
+        /* The size of the whole file in bytes */
         size = getTriByte(bb);
 
-		/* Files are split into 'blocks' across the whole file. Each block is
-		 * TOTAL_BLOCK_LEN bytes. Eg a single file can be spread across multiple
-		 * blocks, which could be littered throughout the cache. This is the
-		 * location of the first block. This may be zero, in which case the file
-		 * does not exist.
-		 */
+        /* Files are split into 'blocks' across the whole file. Each block is
+         * TOTAL_BLOCK_LEN bytes. Eg a single file can be spread across multiple
+         * blocks, which could be littered throughout the cache. This is the
+         * location of the first block. This may be zero, in which case the file
+         * does not exist.
+         */
         int startBlock = getTriByte(bb);
 
-		/* Error checking */
+        /* Error checking */
         if (size < 0 || size > 1000000) {
             throw new IOException("Bad size. Given " + size);
         }
@@ -86,27 +87,27 @@ public class CacheFile {
         int block = startBlock;
 
         while (payload.remaining() > 0) {
-			/* The number of bytes we want to read */
+            /* The number of bytes we want to read */
             int blockSize = Math.min(ReferenceTable.BLOCK_LEN, payload.remaining());
 
-			/* This also flips our buffer */
+            /* This also flips our buffer */
             bb.position(0);
-			/* Reset the temporary buffer so that it can only store exactly the number of bytes we want */
+            /* Reset the temporary buffer so that it can only store exactly the number of bytes we want */
             bb.limit(ReferenceTable.BLOCK_HEADER_LEN + blockSize);
 
             data.read(bb, block * ReferenceTable.TOTAL_BLOCK_LEN);
             bb.flip();
 
-			/* This read is exactly BLOCK_HEADER_LEN bytes long */
-			/* The id of the current file we're reading */
+            /* This read is exactly BLOCK_HEADER_LEN bytes long */
+            /* The id of the current file we're reading */
             int currentFile = bb.getShort() & 0xFFFF;
-			/* The current chunk we're reading. This should be sequential, 0 to n */
+            /* The current chunk we're reading. This should be sequential, 0 to n */
             int currentChunk = bb.getShort() & 0xFFFF;
 
-			/* The ID of the next block to read from */
+            /* The ID of the next block to read from */
             int nextBlock = getTriByte(bb);
 
-			/* The IDX this file belongs to */
+            /* The IDX this file belongs to */
             int currentIndex = bb.get() & 0xFF;
 
             if (currentChunk != chunk) {
@@ -139,21 +140,17 @@ public class CacheFile {
         //+4 if compressed, else +0, since compressed files are prepended with an integer specifying decompressed length
         payload.limit(payload.position() + length + (f.compression == RSCompression.NONE ? 0 : 4)); /* Only read length bytes, the new limit is <= the old limit */
 
-		/* The following will most likely throw an exception if the given key was invalid
-		 * or not supplied.
-		 */
+        /* The following will most likely throw an exception if the given key was invalid
+         * or not supplied.
+         */
 
-        try {
-            f.payload = f.compression.decode(payload, key);
-        } catch (IOException e) {
-            throw e;
-        }
+        f.payload = f.compression.decode(payload, key);
 
         //payload.position(payload.limit());
-		/* Restore previous limit */
+        /* Restore previous limit */
         payload.limit(limit);
 
-		/* The version is the last two bytes */
+        /* The version is the last two bytes */
         if (payload.remaining() >= 2) {
             f.version = payload.getShort();
         } else {
@@ -184,24 +181,24 @@ public class CacheFile {
     public ByteBuffer encode() throws IOException {
         ByteBuffer data = getData(); /* Read only copy */
 
-		/* grab the data as a byte array for compression */
+        /* grab the data as a byte array for compression */
         byte[] bytes = new byte[data.limit()];
         data.mark();
         data.get(bytes);
         data.reset();
 
-		/* compress the data */
+        /* compress the data */
         ByteBuffer compressed = compression.encode(data, null);
 
-		/* calculate the size of the header and trailer and allocate a buffer */
+        /* calculate the size of the header and trailer and allocate a buffer */
         int header = 5;
         if (this.version != -1) {
             header += 2;
         }
         ByteBuffer buf = ByteBuffer.allocate(header + compressed.remaining());
 
-		/* write the header, with the optional uncompressed length */
-        buf.put((byte) compression.getId());
+        /* write the header, with the optional uncompressed length */
+        buf.put(compression.getId());
         //buf.putInt(compressed.remaining());
         if (compression == RSCompression.NONE) {
             buf.putInt(compressed.remaining());
@@ -210,12 +207,12 @@ public class CacheFile {
         }
         buf.put(compressed);
 
-		/* write the trailer with the optional version */
+        /* write the trailer with the optional version */
         if (this.version != -1) {
             buf.putShort((short) version);
         }
 
-		/* flip the buffer and return it */
+        /* flip the buffer and return it */
         buf.flip();
         return buf;
     }

@@ -52,9 +52,9 @@ public class InventoryInterface extends SideInterface { // TODO: Add 'ContainerI
         super.onOpen();
         setAccessMask(INTERFACE_CONFIG.getValue(), 0, 27, 0);
         /*
-		 * This appears to be when a player uses an item on another item (Eg
-		 * 'Use with' -> 'other item')
-		 */
+         * This appears to be when a player uses an item on another item (Eg
+         * 'Use with' -> 'other item')
+         */
         setAccessMask(new SettingsBuilder().setSecondaryOption(4, true).getValue(), 28, 55, 0);
 
         for (int i = 0; i < this.getPlayer().getInventory().getSize(); i++) {
@@ -136,7 +136,7 @@ public class InventoryInterface extends SideInterface { // TODO: Add 'ContainerI
         // must decrease the
         // option number by 1.
         for (int i = option; i >= 0; i--) {
-            if (INTERFACE_CONFIG.hasSecondaryOption(i) == false) {
+            if (!INTERFACE_CONFIG.hasSecondaryOption(i)) {
                 option--;
             }
         }
@@ -175,12 +175,12 @@ public class InventoryInterface extends SideInterface { // TODO: Add 'ContainerI
 
         AStar finder = new AStar(5);
         Path path = finder.findPath(getPlayer(), target);
-        if (path.hasFailed() == false) {
-            if (path.isEmpty() == false) {
+        if (!path.hasFailed()) {
+            if (!path.isEmpty()) {
                 path.removeLast();
             }
 
-            if (path.isEmpty() == false) {
+            if (!path.isEmpty()) {
                 WalkAction walk = new WalkAction(getPlayer(), path) {
                     @Override
                     public void run() throws SuspendExecution {

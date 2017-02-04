@@ -39,16 +39,16 @@ public class PrayerSet implements YMLSerializable {
     /**
      * The currently active prayers for this Persona
      */
-    private HashSet<PrayerType> active = new HashSet<PrayerType>();
+    private HashSet<PrayerType> active = new HashSet<>();
     /**
      * The quick prayers for this Persona
      */
-    private HashSet<PrayerType> quickPrayers = new HashSet<PrayerType>();
+    private HashSet<PrayerType> quickPrayers = new HashSet<>();
     /**
      * The current skill bonuses for the active prayer set. These are cached and
      * are set whenever setEnabled() is called.
      */
-    private HashMap<SkillType, Double> bonuses = new HashMap<SkillType, Double>(5);
+    private HashMap<SkillType, Double> bonuses = new HashMap<>(5);
 
     /**
      * Constructs a new Prayer object for the given Persona
@@ -114,10 +114,7 @@ public class PrayerSet implements YMLSerializable {
             player.sendMessage("You need a prayer level of at least " + key.getLevelReq() + " to use this prayer.");
             return false;
         }
-        if (!checkPrayer()) {
-            return false;
-        }
-        return true;
+        return checkPrayer();
     }
 
     /**
@@ -281,7 +278,7 @@ public class PrayerSet implements YMLSerializable {
      * @return a deep copy of the currently active prayers
      */
     public HashSet<PrayerType> getActivePrayers() {
-        return new HashSet<PrayerType>(active); //Deep copy
+        return new HashSet<>(active); //Deep copy
     }
 
     /**
@@ -439,7 +436,7 @@ public class PrayerSet implements YMLSerializable {
                 setEnabled(false, prayers);
 
                 if (p instanceof Player) { //Out of prayer message
-                    ((Player) p).sendMessage("You have run out of prayer points. You can recharge at an altar.");
+                    p.sendMessage("You have run out of prayer points. You can recharge at an altar.");
                 }
                 drainTicker = null; //Cancelled task.
             } else {

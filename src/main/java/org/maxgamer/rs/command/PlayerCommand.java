@@ -16,7 +16,7 @@ public interface PlayerCommand extends Command {
      *               include the command name! Eg: Doing ::hello world! means that the
      *               args value is 'world!', and not ['hello', 'world!']!
      */
-    public void execute(Player player, String[] args) throws Exception;
+    void execute(Player player, String[] args) throws Exception;
 
-    public int getRankRequired();
+    int getRankRequired();
 }

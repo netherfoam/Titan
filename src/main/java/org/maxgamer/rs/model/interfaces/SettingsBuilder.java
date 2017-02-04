@@ -20,7 +20,7 @@ public class SettingsBuilder {
     private int value;
 
     public static void main(String[] args) {
-        System.out.println(convert((0 << 16) | 2));
+        System.out.println(convert(2));
     }
 
     /**
@@ -43,7 +43,7 @@ public class SettingsBuilder {
         }
         for (int i = 0; i < 10; i++) {
             if (b.hasSecondaryOption(i)) {
-                sb.append("sb.setSecondaryOption(" + i + ", true);\n");
+                sb.append("sb.setSecondaryOption(").append(i).append(", true);\n");
             }
         }
 
@@ -54,8 +54,8 @@ public class SettingsBuilder {
         boolean self = b.canUseOnSelf();
         boolean component = b.canUseOnInterfaceComponent();
 
-        sb.append("sb.setUseOnSettings(" + ground + ", " + npc + ", " + object + ", " + players + ", " + self + ", " + component + ");\n");
-        sb.append("sb.setInterfaceDepth(" + b.getInterfaceDepth() + ");\n");
+        sb.append("sb.setUseOnSettings(").append(ground).append(", ").append(npc).append(", ").append(object).append(", ").append(players).append(", ").append(self).append(", ").append(component).append(");\n");
+        sb.append("sb.setInterfaceDepth(").append(b.getInterfaceDepth()).append(");\n");
 
         if (b.isUseOnTarget()) {
             sb.append("sb.setIsUseOnTarget(true);\n");

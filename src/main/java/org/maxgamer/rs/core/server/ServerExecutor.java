@@ -34,13 +34,7 @@ public class ServerExecutor implements Executor {
      * @return true if the current thread is the server thread
      */
     public boolean isServerThread() {
-        if (this.thread == null) {
-            return false;
-        }
-        if (Thread.currentThread().getId() == this.thread.getId()) {
-            return true;
-        }
-        return false;
+        return this.thread != null && Thread.currentThread().getId() == this.thread.getId();
     }
 
     /**

@@ -16,11 +16,11 @@ public class SimpleDirection extends Direction {
         super(dx, dy, clipTo, clipFrom);
     }
 
-	/*
-	 * public int conflict(Location from) { //This seems to work now. return
-	 * (from.getMap().getClip(from.x + dx, from.y + dy, from.z) & clipTo) |
-	 * (from.getMap().getClip(from.x, from.y, from.z) & clipFrom); }
-	 */
+    /*
+     * public int conflict(Location from) { //This seems to work now. return
+     * (from.getMap().getClip(from.x + dx, from.y + dy, from.z) & clipTo) |
+     * (from.getMap().getClip(from.x, from.y, from.z) & clipFrom); }
+     */
 
     public int conflictTo(Location from) {
         return (from.getMap().getClip(from.x + dx, from.y + dy, from.z) & clipTo);
@@ -37,7 +37,7 @@ public class SimpleDirection extends Direction {
         int to = from.getMap().getClip(from.x + dx, from.y + dy, from.z) & clipTo;
 
         int rangeFlags = (to & ClipMasks.WALL_ALLOW_RANGE_ALL) >> 22;
-        to = to & ~(rangeFlags << 0);
+        to = to & ~(rangeFlags);
         to = to & ~(rangeFlags << 9);
 
         return (to & this.clipTo) == 0;

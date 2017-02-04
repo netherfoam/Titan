@@ -28,17 +28,21 @@ import java.util.LinkedList;
 public class DialogueUtil {
     private static FiberLocal<Mob> cause = new FiberLocal<>();
 
+    private DialogueUtil() {
+        //Private constructor
+    }
+
     private static <E> E cast(Object[] args, int index, Class<E> type) {
         return cast(args, index, type, null);
     }
 
     private static <E> E cast(Object[] args, int index, Class<E> type, E fallback) {
         // Safely handle omitted values
-        if(index >= args.length) return fallback;
+        if (index >= args.length) return fallback;
 
         Object arg = args[index];
 
-        if(arg instanceof ScriptableObject) {
+        if (arg instanceof ScriptableObject) {
             return (E) Context.jsToJava(arg, type);
         }
 
@@ -47,6 +51,7 @@ public class DialogueUtil {
 
     /**
      * Splits the given message into sets of messages, with each set containing SpeechDialogue.MAX_LINES lines at most
+     *
      * @param message the message
      * @return the set of messages
      */
@@ -55,7 +60,7 @@ public class DialogueUtil {
 
         final String[] lines = Chat.lines(message, 50);
 
-        for(int i = 0; lines.length - i > 0; i += maxLines) {
+        for (int i = 0; lines.length - i > 0; i += maxLines) {
             String[] set = Arrays.copyOfRange(lines, i, i + Math.min(lines.length - i, maxLines));
 
             sets.add(set);
@@ -66,10 +71,11 @@ public class DialogueUtil {
 
     /**
      * Sets the current cause of the dialogue. This is used for convenience, eg. to access the player that started the chat
+     *
      * @param m
      */
     public static void setCause(Fiber<?> fiber, Mob m) {
-        if(m == null) {
+        if (m == null) {
             cause.remove(fiber);
         } else {
             cause.set(fiber, m);
@@ -93,7 +99,7 @@ public class DialogueUtil {
         SpeechDialogue dialogue = new SpeechDialogue(player) {
             @Override
             public void onContinue() {
-                if(split.isEmpty()) {
+                if (split.isEmpty()) {
                     currentFiber.unpark();
 
                     return;
@@ -104,7 +110,7 @@ public class DialogueUtil {
             }
         };
 
-        if(speaker instanceof NPC) {
+        if (speaker instanceof NPC) {
             NPC npc = (NPC) speaker;
             dialogue.setFace(npc.getId(), npc.getName(), emote);
         } else if (!(speaker instanceof Persona) || speaker != player) {
@@ -132,7 +138,7 @@ public class DialogueUtil {
             }
         };
 
-        for(String option : options) {
+        for (String option : options) {
             dialogue.add(option);
         }
 
@@ -159,7 +165,7 @@ public class DialogueUtil {
         ThoughtDialogue dialogue = new ThoughtDialogue(player) {
             @Override
             public void onContinue() {
-                if(split.isEmpty()) {
+                if (split.isEmpty()) {
                     currentFiber.unpark();
 
                     return;
@@ -195,7 +201,7 @@ public class DialogueUtil {
             }
         };
 
-        for(ItemStack item : items) {
+        for (ItemStack item : items) {
             dialogue.add(item);
         }
 
@@ -246,7 +252,7 @@ public class DialogueUtil {
         String shopName = cast(args, 0, String.class);
         VendorType container = Core.getServer().getVendors().get(shopName);
 
-        if(container == null) {
+        if (container == null) {
             throw new IllegalArgumentException("No such shop exists with the name '" + shopName + "'");
         }
 
@@ -264,9 +270,5 @@ public class DialogueUtil {
         player.getWindow().open(dialogue);
 
         throw cx.captureContinuation();
-    }
-
-    private DialogueUtil() {
-        //Private constructor
     }
 }

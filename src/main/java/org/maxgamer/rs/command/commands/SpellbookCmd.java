@@ -1,6 +1,9 @@
 package org.maxgamer.rs.command.commands;
 
 import org.maxgamer.rs.command.PlayerCommand;
+import org.maxgamer.rs.model.entity.mob.combat.mage.AncientBook;
+import org.maxgamer.rs.model.entity.mob.combat.mage.LunarBook;
+import org.maxgamer.rs.model.entity.mob.combat.mage.ModernBook;
 import org.maxgamer.rs.model.entity.mob.combat.mage.Spellbook;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
@@ -15,14 +18,14 @@ public class SpellbookCmd implements PlayerCommand {
         Spellbook book;
         if (args.length < 1) {
             book = player.getSpellbook();
-            if (book == Spellbook.ANCIENT) {
-                book = Spellbook.LUNAR;
-            } else if (book == Spellbook.LUNAR) {
-                book = Spellbook.MODERN;
-            } else if (book == Spellbook.MODERN) {
-                book = Spellbook.ANCIENT;
+            if (book == AncientBook.ANCIENT) {
+                book = LunarBook.LUNAR;
+            } else if (book == LunarBook.LUNAR) {
+                book = ModernBook.MODERN;
+            } else if (book == ModernBook.MODERN) {
+                book = AncientBook.ANCIENT;
             } else {
-                book = Spellbook.MODERN;
+                book = ModernBook.MODERN;
             }
 
             player.setSpellbook(book);
@@ -32,11 +35,11 @@ public class SpellbookCmd implements PlayerCommand {
 
         String b = args[0].toLowerCase();
         if ("modern".startsWith(b) || b.equals("0")) {
-            book = Spellbook.MODERN;
+            book = ModernBook.MODERN;
         } else if ("ancient".startsWith(b) || b.equals("1")) {
-            book = Spellbook.ANCIENT;
+            book = AncientBook.ANCIENT;
         } else if ("lunar".startsWith(b) || b.equalsIgnoreCase("2")) {
-            book = Spellbook.LUNAR;
+            book = LunarBook.LUNAR;
         } else {
             player.sendMessage("Unrecognised spellbook " + args[0] + " valid options are modern, ancient or lunar");
             return;

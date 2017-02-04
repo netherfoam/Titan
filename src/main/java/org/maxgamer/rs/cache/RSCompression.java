@@ -148,13 +148,13 @@ public enum RSCompression {
             }
 
             int decompressedLength = copy.getInt();
-			
-			/* create the streams */
+
+            /* create the streams */
             InputStream is = new GZIPInputStream(new ByteBufferInputStream(copy));
             try {
                 ByteArrayOutputStream os = new ByteArrayOutputStream(decompressedLength);
                 try {
-					/* copy data between the streams */
+                    /* copy data between the streams */
                     byte[] buf = new byte[4096];
                     int len = 0;
                     while ((len = is.read(buf, 0, buf.length)) != -1) {
@@ -164,7 +164,7 @@ public enum RSCompression {
                     os.close();
                 }
 
-				/* return the uncompressed bytes */
+                /* return the uncompressed bytes */
                 byte[] inflated = os.toByteArray();
                 if (inflated.length != decompressedLength) {
                     throw new IOException("Bad length header for GZIP.decode()");
@@ -179,13 +179,13 @@ public enum RSCompression {
 
         @Override
         public ByteBuffer encode(ByteBuffer bb, XTEAKey key) throws IOException {
-			/* Create the streams */
+            /* Create the streams */
             InputStream is = new ByteBufferInputStream(bb.asReadOnlyBuffer());
             try {
                 ByteArrayOutputStream bout = new ByteArrayOutputStream(); //OPTIMIZE: Could parse an estimate for the stream size
                 OutputStream os = new GZIPOutputStream(bout);
                 try {
-					/* copy data between the streams */
+                    /* copy data between the streams */
                     byte[] buf = new byte[4096];
                     int len = 0;
                     while ((len = is.read(buf, 0, buf.length)) != -1) {
@@ -195,7 +195,7 @@ public enum RSCompression {
                     os.close();
                 }
 
-				/* return the compressed bytes */
+                /* return the compressed bytes */
                 byte[] compressed = bout.toByteArray();
                 ByteBuffer result = ByteBuffer.allocate(4 + compressed.length);
 
@@ -203,7 +203,7 @@ public enum RSCompression {
                 result.put(compressed);
 
                 if (key != null) {
-					/* The compressed length is not encrypted */
+                    /* The compressed length is not encrypted */
                     key.encipher(result, 0, result.limit());
                 }
 
@@ -227,7 +227,7 @@ public enum RSCompression {
      *
      * @param id the unique ID for this zip type
      */
-    private RSCompression(int id) {
+    RSCompression(int id) {
         this.id = (byte) id;
     }
 

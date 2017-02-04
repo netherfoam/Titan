@@ -35,8 +35,8 @@ public class TrieSet {
      * @return The path to it. Note, this path is bottom -> up.
      */
     private Path nearestPath(String s) {
-        List<Path> potential = new ArrayList<Path>();
-        List<Path> next = new ArrayList<Path>();
+        List<Path> potential = new ArrayList<>();
+        List<Path> next = new ArrayList<>();
 
         TrieNode node = getNode(s);
 
@@ -205,7 +205,7 @@ public class TrieSet {
      */
     public HashSet<String> matches(String s) {
         //Values in this section of the map
-        HashSet<String> keys = new HashSet<String>();
+        HashSet<String> keys = new HashSet<>();
 
         TrieNode node = top;
         //Find the node matching String s
@@ -243,11 +243,11 @@ public class TrieSet {
 
         out.println("Size: " + this.size() + ", Empty: " + this.isEmpty());
 
-        LinkedList<TrieNode> nodes = new LinkedList<TrieNode>();
+        LinkedList<TrieNode> nodes = new LinkedList<>();
         nodes.add(top);
 
         while (!nodes.isEmpty()) {
-            LinkedList<TrieNode> next = new LinkedList<TrieNode>();
+            LinkedList<TrieNode> next = new LinkedList<>();
 
             for (TrieNode node : nodes) {
                 System.out.print("   " + node.getChildMap().size() + "   ");
@@ -264,11 +264,11 @@ public class TrieSet {
         //No such value is stored... Not ambiguous.. I guess..
         if (base == null) return false;
 
-        LinkedList<TrieNode> nodes = new LinkedList<TrieNode>();
+        LinkedList<TrieNode> nodes = new LinkedList<>();
         nodes.add(base);
 
         while (!nodes.isEmpty()) {
-            LinkedList<TrieNode> next = new LinkedList<TrieNode>();
+            LinkedList<TrieNode> next = new LinkedList<>();
 
             if (nodes.size() > 1) {
                 return true;
@@ -291,7 +291,7 @@ public class TrieSet {
     public int size() {
         int size = 0;
 
-        LinkedList<TrieNode> nodes = new LinkedList<TrieNode>();
+        LinkedList<TrieNode> nodes = new LinkedList<>();
 
         //Start at the top node
         nodes.add(top);
@@ -299,7 +299,7 @@ public class TrieSet {
 
         while (!nodes.isEmpty()) {
             //Build a list of the nodes we need to search next
-            LinkedList<TrieNode> subNodes = new LinkedList<TrieNode>();
+            LinkedList<TrieNode> subNodes = new LinkedList<>();
 
             //Loop through all current nodes
             for (TrieNode node : nodes) {
@@ -410,7 +410,7 @@ public class TrieSet {
 
     private class TrieNode {
         private boolean isWord;
-        private HashMap<Character, TrieNode> children = new HashMap<Character, TrieNode>(5);
+        private HashMap<Character, TrieNode> children = new HashMap<>(5);
 
         public TrieNode() {
             this(false);
@@ -460,7 +460,7 @@ public class TrieSet {
         }
 
         public HashSet<String> getChildKeys() {
-            HashSet<String> values = new HashSet<String>();
+            HashSet<String> values = new HashSet<>();
 
             //Loop through this nodes children
             for (Entry<Character, TrieNode> entry : this.children.entrySet()) {

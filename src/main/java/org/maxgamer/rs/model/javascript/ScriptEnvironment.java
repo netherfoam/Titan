@@ -53,24 +53,24 @@ public class ScriptEnvironment extends ScriptableObject {
         Context.exit();
     }
 
-    public void register(Class<?> nativeMethods) {
-        ((ImporterTopLevel) getParentScope()).defineFunctionProperties(getMethods(nativeMethods), nativeMethods, ScriptableObject.DONTENUM);
-    }
-
     private static String[] getMethods(Class<?> clazz) {
         ArrayList<String> methods = new ArrayList<>();
-        for(Method m : clazz.getMethods()) {
-            if((m.getModifiers() & (Modifier.STATIC | Modifier.PUBLIC)) == 0) continue;
-            if(m.getParameterTypes().length != 4) continue;
-            if(!m.getParameterTypes()[0].equals(Context.class)) continue;
-            if(!m.getParameterTypes()[1].equals(Scriptable.class)) continue;
-            if(!m.getParameterTypes()[2].equals(Object[].class)) continue;
-            if(!m.getParameterTypes()[3].equals(Function.class)) continue;
+        for (Method m : clazz.getMethods()) {
+            if ((m.getModifiers() & (Modifier.STATIC | Modifier.PUBLIC)) == 0) continue;
+            if (m.getParameterTypes().length != 4) continue;
+            if (!m.getParameterTypes()[0].equals(Context.class)) continue;
+            if (!m.getParameterTypes()[1].equals(Scriptable.class)) continue;
+            if (!m.getParameterTypes()[2].equals(Object[].class)) continue;
+            if (!m.getParameterTypes()[3].equals(Function.class)) continue;
 
             methods.add(m.getName());
         }
 
         return methods.toArray(new String[methods.size()]);
+    }
+
+    public void register(Class<?> nativeMethods) {
+        ((ImporterTopLevel) getParentScope()).defineFunctionProperties(getMethods(nativeMethods), nativeMethods, ScriptableObject.DONTENUM);
     }
 
     @Override

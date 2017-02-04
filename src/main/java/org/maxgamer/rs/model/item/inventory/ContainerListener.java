@@ -14,5 +14,5 @@ public interface ContainerListener {
      * @param slot the slot that was modified inside the container
      * @param old  the previous item at the slot
      */
-    public abstract void onSet(Container c, int slot, ItemStack old);
+    void onSet(Container c, int slot, ItemStack old);
 }

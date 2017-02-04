@@ -38,17 +38,17 @@ public class StaticFunctions {
     }
 
     public static Object random(Context cx, Scriptable thisObj, Object[] args, Function funObj) {
-        if(args.length == 0) {
+        if (args.length == 0) {
             // No args? Here's a random number
             return random.nextInt();
-        } else if(args.length == 1) {
+        } else if (args.length == 1) {
             Object arg = args[0];
 
-            if(arg instanceof ScriptableObject) {
+            if (arg instanceof ScriptableObject) {
                 arg = Context.jsToJava(arg, List.class);
             }
 
-            if(arg instanceof Collection) {
+            if (arg instanceof Collection) {
                 List<?> options = new ArrayList<>((Collection<?>) arg);
                 return options.get(random.nextInt(options.size()));
             }

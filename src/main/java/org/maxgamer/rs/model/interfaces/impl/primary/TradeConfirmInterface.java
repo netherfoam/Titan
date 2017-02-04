@@ -63,12 +63,11 @@ public class TradeConfirmInterface extends PrimaryInterface implements Container
 
     public TradeConfirmInterface getPartnerInterface() {
         Interface otherInterf = partner.getWindow().getInterface(this.getChildId());
-        if (otherInterf instanceof TradeConfirmInterface == false) {
+        if (!(otherInterf instanceof TradeConfirmInterface)) {
             //Somehow the partner's trade interface was removed and didn't notify us.
             return null;
         }
-        TradeConfirmInterface other = (TradeConfirmInterface) otherInterf;
-        return other;
+        return (TradeConfirmInterface) otherInterf;
     }
 
     @Override
@@ -86,7 +85,7 @@ public class TradeConfirmInterface extends PrimaryInterface implements Container
         if (buttonId == 21) {
             this.accept = true;
 
-            if (other.isAccepted() == false) {
+            if (!other.isAccepted()) {
                 this.setString(34, "Waiting for other player...");
                 other.setString(34, "The other player has accepted");
                 return;
@@ -124,7 +123,6 @@ public class TradeConfirmInterface extends PrimaryInterface implements Container
         if (buttonId == 22 || buttonId == 6) {
             other.getPlayer().getWindow().close(other);
             this.getPlayer().getWindow().close(this);
-            return;
         }
     }
 

@@ -79,10 +79,10 @@ public class UpdateMask implements Mask {
     public void addHit(Mob from, Damage d) {
         assert Core.getServer().getThread().isServerThread() : "Current thread is " + Thread.currentThread() + ", must be server thread.";
 
-        if (hits == null) hits = new HashMap<Mob, ArrayList<Damage>>(1);
+        if (hits == null) hits = new HashMap<>(1);
         ArrayList<Damage> list = hits.get(from);
         if (list == null) {
-            list = new ArrayList<Damage>(1);
+            list = new ArrayList<>(1);
             hits.put(from, list);
         }
         list.add(d);
@@ -180,13 +180,7 @@ public class UpdateMask implements Mask {
         if (hits != null) {
             return true;
         }
-        if (facing) {
-            return true;
-        }
-        if (say != null) {
-            return true;
-        }
+        return facing || say != null;
 
-        return false;
     }
 }

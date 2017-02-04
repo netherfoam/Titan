@@ -23,7 +23,7 @@ public abstract class ServerHost<T extends ServerSession> implements Runnable {
     /**
      * The map of SelectionKey to ServerSessions used by this host
      */
-    private HashMap<SelectionKey, T> sessions = new HashMap<SelectionKey, T>();
+    private HashMap<SelectionKey, T> sessions = new HashMap<>();
 
     /**
      * The last used selector
@@ -68,7 +68,7 @@ public abstract class ServerHost<T extends ServerSession> implements Runnable {
         Iterator<T> sit = sessions.values().iterator();
         while (sit.hasNext()) {
             T t = sit.next();
-            if (t.isConnected() == false) {
+            if (!t.isConnected()) {
                 sit.remove();
             }
         }
@@ -113,7 +113,7 @@ public abstract class ServerHost<T extends ServerSession> implements Runnable {
         try {
             this.selector.close();
             this.serverChannel.close();
-        } catch (IOException e) {
+        } catch (IOException ignored) {
         }
         this.thread = null;
     }
@@ -141,8 +141,7 @@ public abstract class ServerHost<T extends ServerSession> implements Runnable {
     public void run() {
         try {
             try {
-                Selector selector = initSelector();
-                this.selector = selector;
+                this.selector = initSelector();
             } catch (BindException e) {
                 e.printStackTrace();
                 Log.severe("Failed to bind socket. Is there another server running on port " + port + "?");
@@ -157,7 +156,7 @@ public abstract class ServerHost<T extends ServerSession> implements Runnable {
                         SelectionKey key = sit.next();
                         sit.remove();
 
-                        if (key.isValid() == false) {
+                        if (!key.isValid()) {
                             ServerSession session = sessions.get(key);
                             session.close(false);
                             sessions.remove(key);

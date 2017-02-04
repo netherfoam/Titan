@@ -15,7 +15,7 @@ public interface GenericCommand extends Command {
      *               include the command name! Eg: Doing ::hello world! means that the
      *               args value is 'world!', and not ['hello', 'world!']!
      */
-    public void execute(CommandSender sender, String[] args) throws Exception;
+    void execute(CommandSender sender, String[] args) throws Exception;
 
-    public int getRankRequired();
+    int getRankRequired();
 }

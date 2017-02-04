@@ -39,7 +39,7 @@ public class MoveHandler implements PacketProcessor<Player> {
         }
 
         boolean run = in.readByte() != 0;
-        if (run == false || p.getRights() < Rights.ADMIN) { //User holds CTRL + Click to "run once"
+        if (!run || p.getRights() < Rights.ADMIN) { //User holds CTRL + Click to "run once"
             if (p.getFacing() != null) {
                 p.setFacing(null);
             }

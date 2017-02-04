@@ -15,7 +15,7 @@ public class MapBuilder {
     /**
      * The chunks which have been added
      */
-    private HashMap<Integer, Chunk> parts = new HashMap<Integer, Chunk>();
+    private HashMap<Integer, Chunk> parts = new HashMap<>();
 
     /**
      * Adds the given chunk to the given coordinates. If the chunk is null,
@@ -31,7 +31,7 @@ public class MapBuilder {
             /* Delete requested */
             parts.remove(key(chunkX, chunkY, chunkZ));
         } else {
-			/* Add the chunk at the coordinates */
+            /* Add the chunk at the coordinates */
             parts.put(key(chunkX, chunkY, chunkZ), c);
         }
     }
@@ -56,12 +56,12 @@ public class MapBuilder {
      * @throws EncryptedException if part of the map can't be decrpyted
      */
     public DynamicMap create(String name) throws EncryptedException {
-		/* The maximum of each coordinate we were given */
+        /* The maximum of each coordinate we were given */
         int maxX = 0;
         int maxY = 0;
         int maxZ = 0;
-		
-		/* Extract our maximums */
+
+        /* Extract our maximums */
         for (int i : parts.keySet()) {
             maxY = Math.max(maxY, i & 0x7FFF);
             i >>= 15;
@@ -69,21 +69,20 @@ public class MapBuilder {
             i >>= 15;
             maxZ = Math.max(maxZ, i & 0x3);
         }
-		
-		/* Create our 3D chunk array */
+
+        /* Create our 3D chunk array */
         Chunk[][][] chunks = new Chunk[maxX + 1][maxY + 1][maxZ + 1];
         for (int i = 0; i <= maxX; i++) {
             for (int j = 0; j <= maxY; j++) {
                 for (int k = 0; k <= maxZ; k++) {
-					/* It's likely that a lot of these will be null if our map has holes */
+                    /* It's likely that a lot of these will be null if our map has holes */
                     chunks[i][j][k] = parts.get(key(i, j, k));
                 }
             }
         }
-		
-		/* Construct the DynamicMap */
-        DynamicMap map = new DynamicMap(name, chunks);
-        return map;
+
+        /* Construct the DynamicMap */
+        return new DynamicMap(name, chunks);
     }
 
     /**
@@ -98,6 +97,6 @@ public class MapBuilder {
         if (chunkX >= 2048 || chunkX < 0 || chunkY >= 2048 || chunkY < 0 || chunkZ >= 4 || chunkZ < 0) {
             throw new IllegalArgumentException("ChunkX and ChunkY must range from 0-2047 inclusive (given x:" + chunkX + " and y: " + chunkY + "), and chunkZ must range from 0-3 inclusive (Given z: " + chunkZ + ")");
         }
-        return (chunkZ << 30) | (chunkX << 15) | (chunkY << 0);
+        return (chunkZ << 30) | (chunkX << 15) | (chunkY);
     }
 }

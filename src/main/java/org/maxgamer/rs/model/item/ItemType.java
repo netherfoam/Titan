@@ -57,7 +57,7 @@ public class ItemType {
     @OneToOne(mappedBy = "item")
     private EquipmentType weapon;
     @OneToMany(mappedBy = "weapon")
-    private List<ItemAmmoType> ammo = new LinkedList<ItemAmmoType>();
+    private List<ItemAmmoType> ammo = new LinkedList<>();
     @OneToOne(mappedBy = "item")
     private AmmoType projectile;
     /*
@@ -73,11 +73,11 @@ public class ItemType {
     private transient String[] inventoryOptions = new String[]{null, null, null, null, "Drop"};
     private transient boolean unnoted;
 
-	/*
-	 * private int[] originalModelColors; private int[] modifiedModelColors;
-	 * private int[] textureColour1; private int[] textureColour2; private
-	 * byte[] unknownArray1; private int[] unknownArray2;
-	 */
+    /*
+     * private int[] originalModelColors; private int[] modifiedModelColors;
+     * private int[] textureColour1; private int[] textureColour2; private
+     * byte[] unknownArray1; private int[] unknownArray2;
+     */
     /*
      * private int colourEquip1; private int colourEquip2; private int certId;
      * private int certTemplateId;
@@ -104,9 +104,9 @@ public class ItemType {
      * 751 skill requirement Index 752 level requirement ^
      */
     private transient HashMap<Integer, Object> clientScriptData;
-	/*
-	 * private int lendId; private int lendTemplateId;
-	 */
+    /*
+     * private int lendId; private int lendTemplateId;
+     */
     private transient ItemMetadataSet flags;
 
     private ItemType() {
@@ -187,7 +187,7 @@ public class ItemType {
     public Map<Integer, Object> getScriptData() {
         if (clientScriptData == null)
             return Collections.emptyMap();
-        return new HashMap<Integer, Object>(clientScriptData);
+        return new HashMap<>(clientScriptData);
     }
 
     /**
@@ -354,25 +354,22 @@ public class ItemType {
     private void readValues(ByteBuffer buffer, int opcode) {
         switch (opcode) {
             case 4:
-			/* modelZoom = */
+            /* modelZoom = */
                 discard(buffer, opcode, 2);/* & 0xFFFF */
-                ;
                 break;
             case 5:
-			/* modelRotation1 = */
+            /* modelRotation1 = */
                 discard(buffer, opcode, 2);/* & 0xFFFF */
-                ;
                 break;
             case 6:
-			/* modelRotation2 = */
+            /* modelRotation2 = */
                 discard(buffer, opcode, 2);/* & 0xFFFF */
-                ;
                 break;
             case 11:
                 //stackable = true;
                 break;
             case 12:
-			/* value = */
+            /* value = */
                 buffer.getInt();
                 break;
             case 23:
@@ -422,11 +419,11 @@ public class ItemType {
                 unnoted = true;
                 break;
             case 78:
-			/* colourEquip1 = */
+            /* colourEquip1 = */
                 buffer.getShort()/* & 0xFFFF */;
                 break;
             case 79:
-			/* colourEquip2 = */
+            /* colourEquip2 = */
                 buffer.getShort()/* & 0xFFFF */;
                 break;
             case 91:
@@ -434,9 +431,8 @@ public class ItemType {
                 discard(buffer, opcode, 2);
                 break;
             case 98:
-			/* certTemplateId = */
+            /* certTemplateId = */
                 discard(buffer, opcode, 2); /* & 0xFFFF */
-                ;
                 break;
             case 110:
                 discard(buffer, opcode, 2);
@@ -448,7 +444,7 @@ public class ItemType {
                 teamId = buffer.get() & 0xFF;
                 break;
             case 122:
-			/* lendTemplateId = */
+            /* lendTemplateId = */
                 buffer.getShort()/* & 0xFFFF */;
                 break;
             case 130:
@@ -461,7 +457,7 @@ public class ItemType {
             case 249: {
                 int length = buffer.get() & 0xFF;
                 if (clientScriptData == null) {
-                    clientScriptData = new HashMap<Integer, Object>();
+                    clientScriptData = new HashMap<>();
                 }
                 for (int index = 0; index < length; index++) {
                     boolean stringInstance = buffer.get() == 1;
@@ -499,7 +495,7 @@ public class ItemType {
                 buffer.get();
                 break;
             case 121:
-			/* lendId = */
+            /* lendId = */
                 buffer.getShort()/* & 0xFFFF */;
                 break;
             case 114:
@@ -533,7 +529,7 @@ public class ItemType {
                 // certId = buffer.getShort();
                 break;
             case 97:
-			/* certTemplateId = */
+            /* certTemplateId = */
                 buffer.getShort();
                 break;
             case 95:

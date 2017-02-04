@@ -24,7 +24,7 @@ public abstract class GameObject extends Entity implements Interactable {
     /**
      * The previously loaded game object definitions
      */
-    private static HashMap<Integer, GameObjectProto> definitions = new HashMap<Integer, GameObjectProto>(65000);
+    private static HashMap<Integer, GameObjectProto> definitions = new HashMap<>(65000);
     /**
      * The data for this object. This could represent anything, generally health
      * or the number of harvests it has remaining.
@@ -73,7 +73,7 @@ public abstract class GameObject extends Entity implements Interactable {
     }
 
     public static GameObjectProto getDefinition(int id) {
-        if (definitions.containsKey(id) == false) {
+        if (!definitions.containsKey(id)) {
             //The gameobject has not been loaded before.
             try {
                 //Each Archive from the IDX file has up to 256 subfiles
@@ -144,39 +144,39 @@ public abstract class GameObject extends Entity implements Interactable {
         //Remove any old clip
         int[][] clip = this.getClip(); //A 3x3 clip array, referenced below
 
-		/*
-		 * Applies the below clipping (# = point of interest) [?][?][?]
-		 * [?][#][?] [?][?][?]
-		 */
+        /*
+         * Applies the below clipping (# = point of interest) [?][?][?]
+         * [?][#][?] [?][?][?]
+         */
         Location swCorner = this.getLocation();
         for (int i = 0; i < this.getSizeX(); i++) {
             for (int j = 0; j < this.getSizeY(); j++) {
                 this.getLocation().getMap().addClip(swCorner.x + i, swCorner.y + j, swCorner.z, clip[1][1]); //Apply the center clip
             }
         }
-		
-		/*
-		 * Applies the below clipping (# = point of interest) [?][#][?]
-		 * [?][?][?] [?][#][?]
-		 */
+
+        /*
+         * Applies the below clipping (# = point of interest) [?][#][?]
+         * [?][?][?] [?][#][?]
+         */
         for (int i = 0; i < this.getSizeX(); i++) {
             this.getLocation().getMap().addClip(swCorner.x + i, swCorner.y - 1, swCorner.z, clip[1][0]);
             this.getLocation().getMap().addClip(swCorner.x + i, swCorner.y + this.getSizeY(), swCorner.z, clip[1][2]);
         }
-		
-		/*
-		 * Applies the below clipping (# = point of interest) [?][?][?]
-		 * [#][?][#] [?][?][?]
-		 */
+
+        /*
+         * Applies the below clipping (# = point of interest) [?][?][?]
+         * [#][?][#] [?][?][?]
+         */
         for (int j = 0; j < this.getSizeY(); j++) {
             this.getLocation().getMap().addClip(swCorner.x - 1, swCorner.y + j, swCorner.z, clip[0][1]);
             this.getLocation().getMap().addClip(swCorner.x + this.getSizeX(), swCorner.y + j, swCorner.z, clip[2][1]);
         }
-		
-		/*
-		 * Applies the below clipping (# = point of interest) [#][?][#]
-		 * [?][?][?] [#][?][#]
-		 */
+
+        /*
+         * Applies the below clipping (# = point of interest) [#][?][#]
+         * [?][?][?] [#][?][#]
+         */
         this.getLocation().getMap().addClip(swCorner.x - 1, swCorner.y - 1, swCorner.z, clip[0][0]);
         this.getLocation().getMap().addClip(swCorner.x - 1, swCorner.y + this.getSizeY(), swCorner.z, clip[0][2]);
         this.getLocation().getMap().addClip(swCorner.x + this.getSizeX(), swCorner.y - 1, swCorner.z, clip[2][0]);
@@ -237,7 +237,7 @@ public abstract class GameObject extends Entity implements Interactable {
         if (this.isSolid()) {
             clipping |= ClipMasks.OBJECT_BLOCK;
         }
-        if (this.hasRangeBlockClipFlag() == false) {
+        if (!this.hasRangeBlockClipFlag()) {
             clipping |= ClipMasks.OBJECT_ALLOW_RANGE;
         }
         return clipping;
@@ -309,8 +309,8 @@ public abstract class GameObject extends Entity implements Interactable {
             }
         }
         if (isSolid && getActionCount() != 2) {
-			/* TODO: This may cause issues with walking through objects, but fixes the lumbridge spinning wheel doorway!
-			 * If issues occur, try remove the && getActionCount() != 2 comparison */
+            /* TODO: This may cause issues with walking through objects, but fixes the lumbridge spinning wheel doorway!
+             * If issues occur, try remove the && getActionCount() != 2 comparison */
             if (type == 0) {
                 if (direction == Directions.NORTH) {
                     clips[1][1] |= ClipMasks.BLOCKED_WEST;
@@ -588,8 +588,7 @@ public abstract class GameObject extends Entity implements Interactable {
 
     @Override
     public boolean isVisible(Entity to) {
-        if (isHidden()) return false;
-        return super.isVisible(to);
+        return !isHidden() && super.isVisible(to);
     }
 
     /**
@@ -652,10 +651,10 @@ public abstract class GameObject extends Entity implements Interactable {
         //Remove any old clip
         int[][] clip = this.getClip(); //A 3x3 clip array, referenced below
 
-		/*
-		 * Removes the below clipping (# = point of interest) [?][?][?]
-		 * [?][#][?] [?][?][?]
-		 */
+        /*
+         * Removes the below clipping (# = point of interest) [?][?][?]
+         * [?][#][?] [?][?][?]
+         */
         Location old = this.getLocation();
         for (int i = 0; i < this.getSizeX(); i++) {
             for (int j = 0; j < this.getSizeY(); j++) {
@@ -663,28 +662,28 @@ public abstract class GameObject extends Entity implements Interactable {
             }
         }
 
-		/*
-		 * Removes the below clipping (# = point of interest) [?][#][?]
-		 * [?][?][?] [?][#][?]
-		 */
+        /*
+         * Removes the below clipping (# = point of interest) [?][#][?]
+         * [?][?][?] [?][#][?]
+         */
         for (int i = 0; i < this.getSizeX(); i++) {
             this.getLocation().getMap().removeClip(old.x + i, old.y - 1, old.z, clip[1][0]);
             this.getLocation().getMap().removeClip(old.x + i, old.y + this.getSizeY(), old.z, clip[1][2]);
         }
 
-		/*
-		 * Removes the below clipping (# = point of interest) [?][?][?]
-		 * [#][?][#] [?][?][?]
-		 */
+        /*
+         * Removes the below clipping (# = point of interest) [?][?][?]
+         * [#][?][#] [?][?][?]
+         */
         for (int j = 0; j < this.getSizeY(); j++) {
             this.getLocation().getMap().removeClip(old.x - 1, old.y + j, old.z, clip[0][1]);
             this.getLocation().getMap().removeClip(old.x + this.getSizeX(), old.y + j, old.z, clip[2][1]);
         }
 
-		/*
-		 * Removes the below clipping (# = point of interest) [#][?][#]
-		 * [?][?][?] [#][?][#]
-		 */
+        /*
+         * Removes the below clipping (# = point of interest) [#][?][#]
+         * [?][?][?] [#][?][#]
+         */
         this.getLocation().getMap().removeClip(old.x - 1, old.y - 1, old.z, clip[0][0]);
         this.getLocation().getMap().removeClip(old.x - 1, old.y + this.getSizeY(), old.z, clip[0][2]);
         this.getLocation().getMap().removeClip(old.x + this.getSizeX(), old.y - 1, old.z, clip[2][0]);
@@ -764,13 +763,13 @@ public abstract class GameObject extends Entity implements Interactable {
     public String toString() {
         //return "ID: " + getId() + ", Type: " + getType() + ", Facing: " + Directions.getName(getFacing()) + " Size: " + getSizeX() + "x" + getSizeY() + " AC: " + getActionCount() + ", S:" + isSolid() + " R:" + hasRangeBlockClipFlag();
         StringBuilder sb = new StringBuilder();
-        if (this.getName() != null && this.getName().isEmpty() == false && this.getName().equals("null") == false) {
+        if (this.getName() != null && !this.getName().isEmpty() && !this.getName().equals("null")) {
             sb.append(this.getName());
         }
-        sb.append("(" + this.getId() + ")");
-        sb.append(" type=" + this.getType() + ",hidden=" + this.isHidden());
-        sb.append(",facing: " + Directions.getName(this.getFacing()));
-        sb.append(",ac=" + this.getActionCount() + ",solid=" + this.isSolid() + ",low=" + this.hasRangeBlockClipFlag());
+        sb.append("(").append(this.getId()).append(")");
+        sb.append(" type=").append(this.getType()).append(",hidden=").append(this.isHidden());
+        sb.append(",facing: ").append(Directions.getName(this.getFacing()));
+        sb.append(",ac=").append(this.getActionCount()).append(",solid=").append(this.isSolid()).append(",low=").append(this.hasRangeBlockClipFlag());
         return sb.toString();
     }
 

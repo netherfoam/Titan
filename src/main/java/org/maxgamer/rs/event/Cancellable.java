@@ -11,12 +11,12 @@ public interface Cancellable {
      *
      * @return true if this action is cancelled.
      */
-    public boolean isCancelled();
+    boolean isCancelled();
 
     /**
      * Sets whether this action is cancelled or not.
      *
      * @param cancel Whether to cancel it or not.
      */
-    public void setCancelled(boolean cancel);
+    void setCancelled(boolean cancel);
 }

@@ -6,7 +6,9 @@ import java.util.HashMap;
  * @author netherfoam
  */
 public class AncientBook extends Spellbook {
-    private HashMap<Integer, Spell> spells = new HashMap<Integer, Spell>();
+    public static final AncientBook ANCIENT = new AncientBook();
+
+    private HashMap<Integer, Spell> spells = new HashMap<>();
 
     protected AncientBook() {
         super(193);

@@ -18,7 +18,7 @@ public abstract class Follow extends Action {
     /**
      * The mob who is being folloewd
      */
-    private WeakReference<Mob> target = new WeakReference<Mob>(null);
+    private WeakReference<Mob> target = new WeakReference<>(null);
     private PathFinder pathFinder = new AStar(8);
 
     /**
@@ -32,7 +32,7 @@ public abstract class Follow extends Action {
         if (owner == null) throw new NullPointerException("Follow owner may not be null");
         if (target == null) throw new NullPointerException("Target may not be null");
 
-        this.target = new WeakReference<Mob>(target);
+        this.target = new WeakReference<>(target);
         this.pathFinder = finder;
     }
 
@@ -85,11 +85,8 @@ public abstract class Follow extends Action {
 
         Location d = getTarget().getLocation();
 
-        if (d == null || getTarget() == null) return false;
+        return !(d == null || getTarget() == null) && d.near(getOwner().getLocation(), distance);
 
-        if (d.near(getOwner().getLocation(), distance) == false) return false;
-
-        return true;
     }
 
     @Override
@@ -133,14 +130,14 @@ public abstract class Follow extends Action {
                 continue;
             }
 
-            if (isSatisfied() == false) {
+            if (!isSatisfied()) {
                 //The mob wants to get closer to their target!
                 if (path == null || path.isEmpty()) {
                     //Plan a new path to the target
                     Location dest = getTarget().getLocation();
 
                     path = pathFinder.findPath(mob.getLocation(), dest, dest, mob.getSizeX(), mob.getSizeY());
-                    if (path.hasFailed() == false && path.isEmpty() == false) {
+                    if (!path.hasFailed() && !path.isEmpty()) {
                         path.removeLast();
                     }
                 }

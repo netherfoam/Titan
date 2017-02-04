@@ -16,14 +16,14 @@ public class NPCOptions {
             clicker.setTarget(target);
         }
     };
-    private final static HashMap<String, NPCOption> options = new HashMap<String, NPCOption>();
+    private final static HashMap<String, NPCOption> options = new HashMap<>();
 
     static {
         for (Field f : NPCOptions.class.getDeclaredFields()) {
             try {
                 if ((f.getModifiers() & Modifier.STATIC) == 0) continue; //Field is not static.
                 Object v = f.get(null);
-                if (v instanceof NPCOption == false) continue;
+                if (!(v instanceof NPCOption)) continue;
 
                 NPCOption option = (NPCOption) v;
                 options.put(option.getText().toUpperCase(), option);

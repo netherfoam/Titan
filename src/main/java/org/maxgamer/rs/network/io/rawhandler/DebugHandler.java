@@ -18,7 +18,7 @@ public class DebugHandler extends RawHandler {
         int i = 0;
 
         StringBuilder sb = new StringBuilder();
-        while (b.isEmpty() == false) {
+        while (!b.isEmpty()) {
             sb.append(String.format("%X ", b.readByte()));
             i++;
             if (i >= 20) {

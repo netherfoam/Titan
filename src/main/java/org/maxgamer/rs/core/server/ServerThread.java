@@ -59,7 +59,7 @@ public class ServerThread extends Thread {
     public ServerThread(ServerExecutor sex, String name) {
         super(name);
         this.sex = sex;
-        this.queue = new ArrayList<Runnable>();
+        this.queue = new ArrayList<>();
     }
 
     @Override
@@ -78,7 +78,7 @@ public class ServerThread extends Thread {
                 }
 
                 time = System.currentTimeMillis();
-                tasks = new ArrayList<Runnable>(queue);
+                tasks = new ArrayList<>(queue);
                 queue.clear();
             }
 
@@ -102,7 +102,7 @@ public class ServerThread extends Thread {
             if (lastPrint + 120000 < System.currentTimeMillis()) {
                 Log.info("Server Status:");
                 Log.info("Players: " + Core.getServer().getPersonas().getCount() + "/" + Core.getServer().getPersonas().getMax() + ", NPCs: " + Core.getServer().getNPCs().getCount() + "/" + Core.getServer().getNPCs().getMax());
-                Log.info("Primary Thread Load: " + String.format("%.2f", (getUsage() * 100)) + "%, " + ", Ticks/sec: " + ((double) (Core.getServer().getTicks() - lastTicks) / (double) ((System.currentTimeMillis() - lastPrint) / 1000.0)) + ", Active Threads: " + Thread.activeCount());
+                Log.info("Primary Thread Load: " + String.format("%.2f", (getUsage() * 100)) + "%, " + ", Ticks/sec: " + ((double) (Core.getServer().getTicks() - lastTicks) / ((System.currentTimeMillis() - lastPrint) / 1000.0)) + ", Active Threads: " + Thread.activeCount());
                 Log.info("RAM (JVM): " + (Runtime.getRuntime().totalMemory() / 1024 / 1024) + "MB, RAM (Used): " + ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024 / 1024) + "MB");
                 long period = 0;
                 int up = 0;

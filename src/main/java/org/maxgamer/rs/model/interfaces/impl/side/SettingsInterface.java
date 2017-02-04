@@ -24,7 +24,7 @@ public class SettingsInterface extends SideInterface {
         //and THEN send that combination - eg. player.getProtocol().sendConfig(1438, combination);
         //Where combination = (3612 << (filter ? 4 : 3)) | (clanChatColor) | (taskMasterEmote??)
         player.getProtocol().sendConfig(1438, player.getConfig().getInt("clanchat.colour", 0));//Clan chat colour
-        player.getProtocol().sendConfig(1438, (player.getConfig().getBoolean("profanity.filter", false) == false ? (3612 << 3) : (3612 << 4)));//Profanity filter
+        player.getProtocol().sendConfig(1438, (!player.getConfig().getBoolean("profanity.filter", false) ? (3612 << 3) : (3612 << 4)));//Profanity filter
     }
 
     @Override
@@ -36,12 +36,12 @@ public class SettingsInterface extends SideInterface {
     public void onClick(int option, int buttonId, int slotId, int itemId) {
         switch (buttonId) {
             case 3://Profanity Filter TODO: fix since somehow it'll still be default on login.
-                if (player.getConfig().getBoolean("profanity.filter", false) == true) player.getConfig().set("profanity.filter", false);
+                if (player.getConfig().getBoolean("profanity.filter", false)) player.getConfig().set("profanity.filter", false);
                 else player.getConfig().set("profanity.filter", true);
-                player.getProtocol().sendConfig(1438, player.getConfig().getBoolean("profanity.filter") == false ? 3612 << 3 : 3612 << 4);
+                player.getProtocol().sendConfig(1438, !player.getConfig().getBoolean("profanity.filter") ? 3612 << 3 : 3612 << 4);
                 break;
             case 4://Chat effects
-                if (player.getConfig().getBoolean("chat.effects", true) == true) player.getConfig().set("chat.effects", false);
+                if (player.getConfig().getBoolean("chat.effects", true)) player.getConfig().set("chat.effects", false);
                 else player.getConfig().set("chat.effects", true);
                 player.getProtocol().sendConfig(171, player.getConfig().getBoolean("chat.effects") ? 0 : 1);
                 break;

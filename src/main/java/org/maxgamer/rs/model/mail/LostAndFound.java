@@ -30,7 +30,7 @@ public class LostAndFound implements YMLSerializable {
      * will be at the start of the list, while most recently lost items will be
      * at the end of the list.
      */
-    private LinkedList<ItemStack> mail = new LinkedList<ItemStack>();
+    private LinkedList<ItemStack> mail = new LinkedList<>();
 
     private Tickable replacer = null;
 
@@ -81,9 +81,9 @@ public class LostAndFound implements YMLSerializable {
                         return;
                     }
 
-                    if (isEmpty() == false) {
+                    if (!isEmpty()) {
                         find();
-                        if (isEmpty() == false) {
+                        if (!isEmpty()) {
                             this.queue(100);
                             return;
                         }
@@ -130,10 +130,7 @@ public class LostAndFound implements YMLSerializable {
             }
         }
 
-        if (mail.isEmpty()) {
-            return false;
-        }
-        return true;
+        return !mail.isEmpty();
     }
 
     @Override

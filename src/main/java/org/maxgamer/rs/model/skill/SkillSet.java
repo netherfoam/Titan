@@ -24,7 +24,7 @@ public class SkillSet implements YMLSerializable {
      * woodcutting or smithing) and the Skill is an instance of Skill, which
      * holds the current exp and modifier.
      */
-    protected final HashMap<SkillType, Skill> skills = new HashMap<SkillType, Skill>();
+    protected final HashMap<SkillType, Skill> skills = new HashMap<>();
     /**
      * The owner of this skillset
      */
@@ -84,7 +84,7 @@ public class SkillSet implements YMLSerializable {
         if (t == null) throw new NullPointerException();
         if (exp < 0) throw new IllegalArgumentException("Exp must be >= 0");
 
-        if (skills.containsKey(t) == false) {
+        if (!skills.containsKey(t)) {
             skills.put(t, new Skill(t, 0));
         }
 
@@ -123,7 +123,7 @@ public class SkillSet implements YMLSerializable {
                 owner.getModel().setCombatLevel(combat);
             }
 
-            if (initializing == false) {
+            if (!initializing) {
                 MobLevelupEvent e = new MobLevelupEvent(owner, previousLevel, t);
                 e.call();
             }
@@ -137,7 +137,7 @@ public class SkillSet implements YMLSerializable {
      * @return the amount of exp in the level
      */
     public double getExp(SkillType t) {
-        if (skills.containsKey(t) == false) {
+        if (!skills.containsKey(t)) {
             return 0;
         }
 
@@ -153,7 +153,7 @@ public class SkillSet implements YMLSerializable {
     public void addExp(SkillType t, double exp) {
         if (t == null) throw new NullPointerException();
 
-        if (skills.containsKey(t) == false) {
+        if (!skills.containsKey(t)) {
             skills.put(t, new Skill(t, 0));
         }
         double old = skills.get(t).getExp();
@@ -184,7 +184,7 @@ public class SkillSet implements YMLSerializable {
      */
     public int getLevel(SkillType t) {
         if (t == null) throw new NullPointerException("SkillType may not be null");
-        if (skills.containsKey(t) == false) {
+        if (!skills.containsKey(t)) {
             return 0;
         }
 
@@ -201,7 +201,7 @@ public class SkillSet implements YMLSerializable {
      * @return the level, plus modifiers if requested
      */
     public int getLevel(SkillType t, boolean modifier) {
-        if (skills.containsKey(t) == false) {
+        if (!skills.containsKey(t)) {
             return 0;
         }
 
@@ -225,7 +225,7 @@ public class SkillSet implements YMLSerializable {
         if (t == null) throw new NullPointerException("SkillType may not be null");
         if (getLevel(t, false) + modifier < 0) modifier = -getLevel(t, false);
 
-        if (skills.containsKey(t) == false) {
+        if (!skills.containsKey(t)) {
             skills.put(t, new Skill(t, 0));
         }
         skills.get(t).setModifier(modifier);
@@ -252,7 +252,7 @@ public class SkillSet implements YMLSerializable {
      */
     public double getModifier(SkillType t) {
         if (t == null) throw new NullPointerException("SkillType may not be null");
-        if (skills.containsKey(t) == false) {
+        if (!skills.containsKey(t)) {
             return 0;
         }
         return skills.get(t).getModifier();
@@ -283,7 +283,7 @@ public class SkillSet implements YMLSerializable {
             throw new IllegalArgumentException("Multiplier must be >= 0");
         }
 
-        if (skills.containsKey(t) == false) {
+        if (!skills.containsKey(t)) {
             skills.put(t, new Skill(t, 0));
         }
 
@@ -375,7 +375,7 @@ public class SkillSet implements YMLSerializable {
     }
 
     private void normalize() {
-        if (this.normalizer == null || this.normalizer.isQueued() == false) {
+        if (this.normalizer == null || !this.normalizer.isQueued()) {
             this.normalizer = new Tickable() {
                 @Override
                 public void tick() {
@@ -390,7 +390,7 @@ public class SkillSet implements YMLSerializable {
                             setModifier(s.getType(), Calc.mind(mod + 1, 0));
                         }
                     }
-                    if (isNormalized() == false) {
+                    if (!isNormalized()) {
                         this.queue(50);
                     } else {
                         normalizer = null; // We are done, indicate so
@@ -458,7 +458,7 @@ public class SkillSet implements YMLSerializable {
                     if (skill.getTargetExp() > 0) {
                         p.getProtocol().sendConfig(1969 + skill.getType().getTargetId(), (int) skill.getTargetExp());
                     } else {
-                        p.getProtocol().sendConfig(1969 + skill.getType().getTargetId(), (int) skill.getTargetLevel());
+                        p.getProtocol().sendConfig(1969 + skill.getType().getTargetId(), skill.getTargetLevel());
                     }
                 }
             }

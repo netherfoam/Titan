@@ -45,7 +45,7 @@ public class SpawnNPC implements PlayerCommand {
                 NPC n = new NPC(Integer.parseInt(args[0]), l);
                 p.sendMessage("Spawned NPC " + args[0] + ": " + n.getDefinition().getName() + " temporarily at " + l);
             } else {
-                if (Core.getServer().getMaps().isPersisted(p.getMap()) == false) {
+                if (!Core.getServer().getMaps().isPersisted(p.getMap())) {
                     p.sendMessage("The map you are in is not persistent. You should persist the map before spawning NPC's permanently in it.");
                     return;
                 }
@@ -57,10 +57,8 @@ public class SpawnNPC implements PlayerCommand {
             }
         } catch (WorldFullException e) {
             p.sendMessage("World has no more room for NPC's");
-            return;
         } catch (NumberFormatException e) {
             p.sendMessage("Invalid number supplied for NPC ID, given " + args[0]);
-            return;
         }
     }
 

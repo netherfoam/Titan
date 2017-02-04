@@ -55,6 +55,7 @@ public class ClipMasks {
     public static final int WALL_ALLOW_RANGE_ALL = WALL_ALLOW_RANGE_NORTH | WALL_ALLOW_RANGE_SOUTH | WALL_ALLOW_RANGE_EAST | WALL_ALLOW_RANGE_WEST | WALL_ALLOW_RANGE_NORTH_WEST | WALL_ALLOW_RANGE_NORTH_EAST | WALL_ALLOW_RANGE_SOUTH_EAST | WALL_ALLOW_RANGE_SOUTH_WEST;
     //Unknown
     public static final int DECORATION_BLOCK = 0x40000;
+
     private ClipMasks() {
         //Private constructor
     }
@@ -93,7 +94,7 @@ public class ClipMasks {
      */
     public static String[] getClipNames(int lookup) {
         try {
-            ArrayList<String> values = new ArrayList<String>();
+            ArrayList<String> values = new ArrayList<>();
 
             for (Field f : ClipMasks.class.getDeclaredFields()) {
                 if (f.getType().isPrimitive()) {

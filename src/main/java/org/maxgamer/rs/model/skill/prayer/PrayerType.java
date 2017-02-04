@@ -32,8 +32,8 @@ public enum PrayerType {
      * HashMaps for each book containing slotID/prayerID + Key
      */
     static {
-        normalprayers = new HashMap<Integer, PrayerType>();
-        ancientprayers = new HashMap<Integer, PrayerType>();
+        normalprayers = new HashMap<>();
+        ancientprayers = new HashMap<>();
         for (PrayerType v : EnumSet.range(PrayerType.THICK_SKIN, PrayerType.AUGURY)) {
             normalprayers.put(v.slotid, v);
         }
@@ -71,7 +71,7 @@ public enum PrayerType {
      */
     private int headicon;
 
-    private PrayerType(int slotid, int levelreq, double drainrate, boolean ancientprayer, int configvalue, int headicon) {
+    PrayerType(int slotid, int levelreq, double drainrate, boolean ancientprayer, int configvalue, int headicon) {
         this.slotid = slotid;
         this.levelreq = levelreq;
         this.drainrate = drainrate;

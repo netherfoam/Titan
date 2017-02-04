@@ -34,7 +34,7 @@ public class FiberLocal<T> {
     }
 
     public synchronized T set(Fiber<?> fiber, T value) {
-        if(fiber == null) throw new NullPointerException("Fiber may not be null");
+        if (fiber == null) throw new NullPointerException("Fiber may not be null");
 
         return properties.put(fiber, value);
     }

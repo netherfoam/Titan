@@ -31,7 +31,7 @@ public class PrayerOrbInterface extends Interface {
                 player.getPrayer().switchQuickPrayers();
                 break;
             case 1:
-                player.getPrayer().setQuickPrayerEditing(player.getPrayer().isSelectingQuickPrayers() ? false : true);
+                player.getPrayer().setQuickPrayerEditing(!player.getPrayer().isSelectingQuickPrayers());
                 break;
         }
     }

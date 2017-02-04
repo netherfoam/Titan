@@ -120,7 +120,7 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
      * A map of <Key, Serializable> which are attached to this persona. These
      * are written on save() and are loaded in the load() call.
      */
-    protected HashMap<String, YMLSerializable> attachments = new HashMap<String, YMLSerializable>();
+    protected HashMap<String, YMLSerializable> attachments = new HashMap<>();
     /**
      * The existing config file, possibly empty if the player is new.
      */
@@ -502,14 +502,14 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
             // away.
             // Eg queuing an empty path, and then queuing a non-empty path.
 
-			/*
-			 * Wait no, it occurs when the player has to move 1 tile to target
-			 * then move n tiles to second target in the same tick
-			 */
+            /*
+             * Wait no, it occurs when the player has to move 1 tile to target
+             * then move n tiles to second target in the same tick
+             */
             throw new IllegalStateException("Movement update mask has already changed dir " + m.getDirection() + ", tele " + m.hasTeleported() + ", ActionQueue: " + getActions().toString());
         }
 
-        if (path != null && path.isEmpty() == false) {
+        if (path != null && !path.isEmpty()) {
             Direction next = path.next();
 
             if (next.conflict(getLocation()) != 0) {
@@ -526,7 +526,7 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
             // clip in the
             // game world may change (Eg door opens or, more importantly,
             // closes!)
-            if (this.isRunning() && path.isEmpty() == false) { // TODO: If NPC's ever run, this check will need to be removed
+            if (this.isRunning() && !path.isEmpty()) { // TODO: If NPC's ever run, this check will need to be removed
                 Direction dir2 = path.peek(); // Not remove()!
 
                 dx += dir2.dx;
@@ -579,8 +579,9 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
                 }
             }
 
-            if (path.isEmpty()) return true; // We are done walking
-            else return false; // We have area left to traverse.
+            // We are done walking
+// We have area left to traverse.
+            return path.isEmpty();
         }
 
         return true; // Finished
@@ -675,7 +676,7 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
                     return; // Cancelled
                 }
 
-                int healthTick = (int) (Core.getServer().getTicks() % 6);
+                int healthTick = Core.getServer().getTicks() % 6;
                 if (!isDead() && healthTick == 0) {
                     // Regeneration tick
                     if (getHealth() > getMaxHealth()) {
@@ -763,7 +764,7 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
                 throw new RuntimeException("Failed to load map.", e);
             }
 
-            if (l.getMap().isLoaded(l.getChunkX(), l.getChunkY(), l.z) == false) {
+            if (!l.getMap().isLoaded(l.getChunkX(), l.getChunkY(), l.z)) {
                 throw new RuntimeException("Failed to load map at " + l);
             }
         }
@@ -993,14 +994,14 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
         try {
             state.remove(items);
             return true;
-        } catch (ContainerException e) {
+        } catch (ContainerException ignored) {
         }
 
         state = this.getEquipment().getState();
         try {
             state.remove(items);
             return true;
-        } catch (ContainerException e) {
+        } catch (ContainerException ignored) {
         }
 
         return false;

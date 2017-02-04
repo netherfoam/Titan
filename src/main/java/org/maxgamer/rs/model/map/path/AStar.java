@@ -30,8 +30,7 @@ public class AStar implements PathFinder {
         int maxX = Calc.maxi(start.x, min.x, max.x);
         int maxY = Calc.maxi(start.y, min.y, max.y);
 
-        NodeMap map = new NodeMap(buffer, new Position(minX, minY), new Position(maxX, maxY));
-        return map;
+        return new NodeMap(buffer, new Position(minX, minY), new Position(maxX, maxY));
     }
 
     private static Position getClosest(Position from, Position min, Position max) {
@@ -72,13 +71,7 @@ public class AStar implements PathFinder {
     }
 
     private static boolean isContained(Position to, Position min, Position max) {
-        if (to.x < min.x || to.x > max.x) {
-            return false;
-        }
-        if (to.y < min.y || to.y > max.y) {
-            return false;
-        }
-        return true;
+        return !(to.x < min.x || to.x > max.x) && !(to.y < min.y || to.y > max.y);
     }
 
     private static void toPath(Path path, Node end) {
@@ -119,10 +112,10 @@ public class AStar implements PathFinder {
             if (swCorner.z == start.z) {
                 int[][] clip = ignore.getClip();
 
-				/*
+                /*
                  * Applies the below clipping (# = point of interest) [?][?][?]
-				 * [?][#][?] [?][?][?]
-				 */
+                 * [?][#][?] [?][?][?]
+                 */
                 for (int i = 0; i < ignore.getSizeX(); i++) {
                     for (int j = 0; j < ignore.getSizeY(); j++) {
                         map.setAntiClip(swCorner.x + i, swCorner.y + j, clip[1][1]); // Apply
@@ -132,28 +125,28 @@ public class AStar implements PathFinder {
                     }
                 }
 
-				/*
-				 * Applies the below clipping (# = point of interest) [?][#][?]
-				 * [?][?][?] [?][#][?]
-				 */
+                /*
+                 * Applies the below clipping (# = point of interest) [?][#][?]
+                 * [?][?][?] [?][#][?]
+                 */
                 for (int i = 0; i < ignore.getSizeX(); i++) {
                     map.setAntiClip(swCorner.x + i, swCorner.y - 1, clip[1][0]);
                     map.setAntiClip(swCorner.x + i, swCorner.y + ignore.getSizeY(), clip[1][2]);
                 }
 
-				/*
-				 * Applies the below clipping (# = point of interest) [?][?][?]
-				 * [#][?][#] [?][?][?]
-				 */
+                /*
+                 * Applies the below clipping (# = point of interest) [?][?][?]
+                 * [#][?][#] [?][?][?]
+                 */
                 for (int j = 0; j < ignore.getSizeY(); j++) {
                     map.setAntiClip(swCorner.x - 1, swCorner.y + j, clip[0][1]);
                     map.setAntiClip(swCorner.x + ignore.getSizeX(), swCorner.y + j, clip[2][1]);
                 }
 
-				/*
-				 * Applies the below clipping (# = point of interest) [#][?][#]
-				 * [?][?][?] [#][?][#]
-				 */
+                /*
+                 * Applies the below clipping (# = point of interest) [#][?][#]
+                 * [?][?][?] [#][?][#]
+                 */
                 map.setAntiClip(swCorner.x - 1, swCorner.y - 1, clip[0][0]);
                 map.setAntiClip(swCorner.x - 1, swCorner.y + ignore.getSizeY(), clip[0][2]);
                 map.setAntiClip(swCorner.x + ignore.getSizeX(), swCorner.y - 1, clip[2][0]);
@@ -171,14 +164,14 @@ public class AStar implements PathFinder {
 
         StopWatch w = Core.getTimings().start(this.getClass().getSimpleName() + "-pathfinder");
         try {
-            PriorityQueue<Node> open = new PriorityQueue<Node>(128); // TODO: Guesstimate a size.
+            PriorityQueue<Node> open = new PriorityQueue<>(128); // TODO: Guesstimate a size.
             Node top = new Node(null, null, start, getClosest(start, min, max));
             open.add(top);
 
             Node bestNode = top;
             int bestDistance = top.location.distanceSq(getClosest(top.location, min, max));
 
-            while (open.isEmpty() == false) {
+            while (!open.isEmpty()) {
                 Node n = open.poll();
 
                 Position target = getClosest(n.location, min, max);

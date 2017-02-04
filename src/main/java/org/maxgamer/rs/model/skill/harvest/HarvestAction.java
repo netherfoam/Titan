@@ -30,7 +30,7 @@ public class HarvestAction extends Action {
         this.target = target;
         this.harvest = harvest;
 
-        if (target.hasData() == false) {
+        if (!target.hasData()) {
             target.setData(harvest.getResidualAmount());
         }
         this.harvestTime = 0;
@@ -49,7 +49,7 @@ public class HarvestAction extends Action {
     protected void run() throws SuspendExecution {
         if (tool == null) {
             if (getOwner() instanceof Player) {
-                ((Player) getOwner()).sendMessage("You need the appropriate tool to do that.");
+                getOwner().sendMessage("You need the appropriate tool to do that.");
                 return;
             }
         }

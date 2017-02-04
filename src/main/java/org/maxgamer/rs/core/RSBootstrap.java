@@ -28,7 +28,7 @@ public class RSBootstrap {
                 }
             }
 
-            if (gameOnly == false) {
+            if (!gameOnly) {
                 LogonServer.init(Core.getServer().getCommands(), Core.getServer().getEvents());
             }
 

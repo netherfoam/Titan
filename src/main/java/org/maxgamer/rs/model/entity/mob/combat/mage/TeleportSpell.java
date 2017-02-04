@@ -26,7 +26,7 @@ public class TeleportSpell extends Spell {
             return;
         }
 
-        if (this.hasRequirements(source) == false || this.takeConsumables(source) == false) {
+        if (!this.hasRequirements(source) || !this.takeConsumables(source)) {
             return;
         }
 

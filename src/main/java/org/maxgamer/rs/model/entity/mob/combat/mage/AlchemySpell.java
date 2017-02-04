@@ -32,12 +32,12 @@ public class AlchemySpell extends ItemSpell {
         final int coins = (int) (item.getDefinition().getValue() * multiplier);
         if (coins <= 0) { //Would destroy item for no reward
             if (source instanceof Player) {
-                ((Player) source).sendMessage("You can't cast that spell on that item.");
+                source.sendMessage("You can't cast that spell on that item.");
             }
             return;
         }
 
-        if (this.hasRequirements(source) == false || takeConsumables(source) == false) { //This checks runes as well
+        if (!this.hasRequirements(source) || !takeConsumables(source)) { //This checks runes as well
             return;
         }
 
@@ -66,34 +66,34 @@ public class AlchemySpell extends ItemSpell {
 
                 state.apply();
 
-				/*if (tick == 0) {
-					displayCast(source);
-				}
-				
-				tick++;
-				
-				if (tick >= 4) {
-					ContainerState state = c.getState();
-					try {
-						state.remove(slot, item.setAmount(1));
-					}
-					catch (ContainerException e) {
-						return true; //The item could not be removed
-					}
-					
-					try {
-						state.add(ItemStack.create(995, coins));
-					}
-					catch (ContainerException e) {
-						if (source instanceof Persona) {
-							((Persona) source).getLostAndFound().add(ItemStack.create(995, coins));
-						}
-					}
-					
-					state.apply();
-					return true;
-				}
-				return false;*/
+                /*if (tick == 0) {
+                    displayCast(source);
+                }
+
+                tick++;
+
+                if (tick >= 4) {
+                    ContainerState state = c.getState();
+                    try {
+                        state.remove(slot, item.setAmount(1));
+                    }
+                    catch (ContainerException e) {
+                        return true; //The item could not be removed
+                    }
+
+                    try {
+                        state.add(ItemStack.create(995, coins));
+                    }
+                    catch (ContainerException e) {
+                        if (source instanceof Persona) {
+                            ((Persona) source).getLostAndFound().add(ItemStack.create(995, coins));
+                        }
+                    }
+
+                    state.apply();
+                    return true;
+                }
+                return false;*/
             }
 
             @Override

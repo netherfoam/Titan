@@ -168,12 +168,11 @@ public class TradeInterface extends PrimaryInterface implements ContainerListene
 
     public TradeInterface getPartnerInterface() {
         Interface otherInterf = partner.getWindow().getInterface(this.getChildId());
-        if (otherInterf instanceof TradeInterface == false) {
+        if (!(otherInterf instanceof TradeInterface)) {
             //Somehow the partner's trade interface was removed and didn't notify us.
             return null;
         }
-        TradeInterface other = (TradeInterface) otherInterf;
-        return other;
+        return (TradeInterface) otherInterf;
     }
 
     @Override
@@ -192,15 +191,15 @@ public class TradeInterface extends PrimaryInterface implements ContainerListene
 
         if (buttonId == 16) {
             //Accept
-            if (isAccepted() == false) {
-                if (getPlayer().getInventory().hasRoom(yours.getContents()) == false) {
+            if (!isAccepted()) {
+                if (!getPlayer().getInventory().hasRoom(yours.getContents())) {
                     //Ensure we have enough room for the player to hold the traded items
                     getPlayer().sendMessage("You'll need more space to accept that.");
                     return;
                 }
                 setAccepted(true);
 
-                if (other.isAccepted() == true) {
+                if (other.isAccepted()) {
                     //Next stage interface
                     TradeConfirmInterface confirmMine = new TradeConfirmInterface(player, mine, yours, partner);
                     TradeConfirmInterface confirmYours = new TradeConfirmInterface(other.player, other.mine, other.yours, other.partner);
@@ -344,7 +343,6 @@ public class TradeInterface extends PrimaryInterface implements ContainerListene
         if (buttonId == 12 || buttonId == 18) {
             partner.getWindow().close(other);
             getPlayer().getWindow().close(this);
-            return;
         }
     }
 

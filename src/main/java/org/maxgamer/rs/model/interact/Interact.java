@@ -21,7 +21,7 @@ public @interface Interact {
      *
      * @return true if this interaction invocation is to be debugged, false otherwise
      */
-    public boolean debug() default false;
+    boolean debug() default false;
 
-    public boolean cancellable() default true;
+    boolean cancellable() default true;
 }

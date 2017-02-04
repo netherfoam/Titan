@@ -178,7 +178,6 @@ public class TradeSideInterface extends SideInterface {
 
             inv.apply();
             min.apply();
-            return;
         }
     }
 }

@@ -71,7 +71,7 @@ public class InputStreamWrapper extends InputStream {
             byte value = data[i];
 
             for (int j = 0; j < 8 && (i * 8 + j) < num_bools; j++) {
-                values[i * 8 + j] = (value & 0x1) == 1 ? true : false;
+                values[i * 8 + j] = (value & 0x1) == 1;
                 value >>= 1;
             }
         }
@@ -227,9 +227,9 @@ public class InputStreamWrapper extends InputStream {
      */
     public synchronized long readLong() throws IOException {
         if (this.littleEndian) {
-            return ((long) ((readInt() & 0xFFFFFFFF)) | (long) ((readInt() << 32)));
+            return ((long) ((readInt())) | (long) ((readInt() << 0)));
         } else {
-            return (readInt() << 32) | (readInt() & 0xFFFFFFFF);
+            return (readInt() << 0) | (readInt());
         }
     }
 
@@ -320,7 +320,7 @@ public class InputStreamWrapper extends InputStream {
     public void close() {
         try {
             i.close();
-        } catch (IOException e) {
+        } catch (IOException ignored) {
         }
     }
 

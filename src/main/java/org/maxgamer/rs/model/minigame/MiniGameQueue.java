@@ -53,9 +53,8 @@ public abstract class MiniGameQueue extends Tickable {
         MiniGame game = null;
         for (int i = 0; i < gamesRunning.length; i++) {
             MiniGame minigame = gamesRunning[i];
-            if (minigame == null || !!minigame.isRunning() || minigame.isTerminated()) {
+            if (minigame == null || minigame.isRunning() || minigame.isTerminated()) {
                 gamesRunning = ArrayUtility.removeIndex(gamesRunning, i);
-                continue;
             }
         }
         try {

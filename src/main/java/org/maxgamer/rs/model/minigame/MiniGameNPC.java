@@ -79,7 +79,7 @@ public class MiniGameNPC<M extends MiniGame> extends NPC {
      */
     public MiniGameNPC<M> transform(int npcId) {
         try {
-            MiniGameNPC<M> replacement = new MiniGameNPC<M>(minigame, npcId, getLocation());
+            MiniGameNPC<M> replacement = new MiniGameNPC<>(minigame, npcId, getLocation());
             replacement.setSpawn(getLocation().add(0, 0));
             replacement.configs = configs;
             this.destroy();

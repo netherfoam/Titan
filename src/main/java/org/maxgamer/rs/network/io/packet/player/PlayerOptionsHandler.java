@@ -73,7 +73,7 @@ public class PlayerOptionsHandler implements PacketProcessor<Player> {
             player.getCheats().log(5, "Player attempted to interact with a NULL player");
         }
 
-        if (player.getProtocol().isVisible(target) == false) {
+        if (!player.getProtocol().isVisible(target)) {
             player.getCheats().log(30, "Player attempted to interact with a Persona that wasn't on screen. ID: " + target.getName());
             return;
         }

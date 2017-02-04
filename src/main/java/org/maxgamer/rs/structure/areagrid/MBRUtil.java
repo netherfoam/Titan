@@ -73,11 +73,11 @@ public class MBRUtil {
     public static String toString(MBR mbr) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < mbr.getDimensions(); i++) {
-            sb.append(mbr.getMin(i) + ",");
+            sb.append(mbr.getMin(i)).append(",");
         }
         sb.append(" .. ");
         for (int i = 0; i < mbr.getDimensions(); i++) {
-            sb.append(mbr.getDimension(i) + "x");
+            sb.append(mbr.getDimension(i)).append("x");
         }
         return sb.toString();
     }

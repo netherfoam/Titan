@@ -96,6 +96,7 @@ public class CBZip2InputStream extends InputStream implements BZip2Constants {
      * All memory intensive stuff. This field is initialized by initBlock().
      */
     private CBZip2InputStream.Data data;
+
     /**
      * Constructs a new CBZip2InputStream which decompresses bytes read from the
      * specified stream.
@@ -412,7 +413,7 @@ public class CBZip2InputStream extends InputStream implements BZip2Constants {
 
         int inUse16 = 0;
 
-		/* Receive the mapping table */
+        /* Receive the mapping table */
         for (int i = 0; i < 16; i++) {
             if (bsGetBit()) {
                 inUse16 |= 1 << i;
@@ -436,8 +437,8 @@ public class CBZip2InputStream extends InputStream implements BZip2Constants {
 
         makeMaps();
         final int alphaSize = this.nInUse + 2;
-		
-		/* Now the selectors */
+
+        /* Now the selectors */
         final int nGroups = bsR(3);
         final int nSelectors = bsR(15);
 
@@ -448,8 +449,8 @@ public class CBZip2InputStream extends InputStream implements BZip2Constants {
             }
             selectorMtf[i] = (byte) j;
         }
-		
-		/* Undo the MTF values for the selectors. */
+
+        /* Undo the MTF values for the selectors. */
         for (int v = nGroups; --v >= 0; ) {
             pos[v] = (byte) v;
         }
@@ -467,8 +468,8 @@ public class CBZip2InputStream extends InputStream implements BZip2Constants {
         }
 
         final char[][] len = dataShadow.temp_charArray2d;
-		
-		/* Now the coding tables */
+
+        /* Now the coding tables */
         for (int t = 0; t < nGroups; t++) {
             int curr = bsR(5);
             final char[] len_t = len[t];
@@ -529,12 +530,12 @@ public class CBZip2InputStream extends InputStream implements BZip2Constants {
         final int[][] base = dataShadow.base;
         final int[][] perm = dataShadow.perm;
         final int limitLast = this.blockSize100k * 100000;
-		
-		/*
-		 * Setting up the unzftab entries here is not strictly necessary, but it
-		 * does save having to do it later in a separate pass, and so saves a
-		 * block's worth of cache misses.
-		 */
+
+        /*
+         * Setting up the unzftab entries here is not strictly necessary, but it
+         * does save having to do it later in a separate pass, and so saves a
+         * block's worth of cache misses.
+         */
         for (int i = 256; --i >= 0; ) {
             yy[i] = (char) i;
             unzftab[i] = 0;
@@ -586,7 +587,6 @@ public class CBZip2InputStream extends InputStream implements BZip2Constants {
                         if (thech >= 0) {
                             bsBuffShadow = (bsBuffShadow << 8) | thech;
                             bsLiveShadow += 8;
-                            continue;
                         } else {
                             throw new IOException("unexpected end of stream");
                         }
@@ -601,7 +601,6 @@ public class CBZip2InputStream extends InputStream implements BZip2Constants {
                             if (thech >= 0) {
                                 bsBuffShadow = (bsBuffShadow << 8) | thech;
                                 bsLiveShadow += 8;
-                                continue;
                             } else {
                                 throw new IOException("unexpected end of stream");
                             }
@@ -630,12 +629,12 @@ public class CBZip2InputStream extends InputStream implements BZip2Constants {
                 final char tmp = yy[nextSym - 1];
                 unzftab[seqToUnseq[tmp] & 0xff]++;
                 ll8[lastShadow] = seqToUnseq[tmp];
-				
-				/*
-				 * This loop is hammered during decompression, hence avoid
-				 * native method call overhead of System.arraycopy for very
-				 * small ranges to copy.
-				 */
+
+                /*
+                 * This loop is hammered during decompression, hence avoid
+                 * native method call overhead of System.arraycopy for very
+                 * small ranges to copy.
+                 */
                 if (nextSym <= 16) {
                     for (int j = nextSym - 1; j > 0; ) {
                         yy[j] = yy[--j];
@@ -666,7 +665,6 @@ public class CBZip2InputStream extends InputStream implements BZip2Constants {
                     if (thech >= 0) {
                         bsBuffShadow = (bsBuffShadow << 8) | thech;
                         bsLiveShadow += 8;
-                        continue;
                     } else {
                         throw new IOException("unexpected end of stream");
                     }
@@ -681,7 +679,6 @@ public class CBZip2InputStream extends InputStream implements BZip2Constants {
                         if (thech >= 0) {
                             bsBuffShadow = (bsBuffShadow << 8) | thech;
                             bsLiveShadow += 8;
-                            continue;
                         } else {
                             throw new IOException("unexpected end of stream");
                         }
@@ -716,7 +713,6 @@ public class CBZip2InputStream extends InputStream implements BZip2Constants {
                 if (thech >= 0) {
                     bsBuffShadow = (bsBuffShadow << 8) | thech;
                     bsLiveShadow += 8;
-                    continue;
                 } else {
                     throw new IOException("unexpected end of stream");
                 }
@@ -881,7 +877,7 @@ public class CBZip2InputStream extends InputStream implements BZip2Constants {
         }
     }
 
-    private static final class Data extends Object {
+    private static final class Data {
 
         // (with blockSize 900k)
         final boolean[] inUse = new boolean[256]; //      256 byte

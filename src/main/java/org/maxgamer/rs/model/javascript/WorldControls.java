@@ -19,11 +19,11 @@ public class WorldControls {
 
     private static <E> E cast(Object[] args, int index, Class<E> type, E fallback) {
         // Safely handle omitted values
-        if(index >= args.length) return fallback;
+        if (index >= args.length) return fallback;
 
         Object arg = args[index];
 
-        if(arg instanceof ScriptableObject) {
+        if (arg instanceof ScriptableObject) {
             return (E) Context.jsToJava(arg, type);
         }
 
@@ -32,9 +32,10 @@ public class WorldControls {
 
     /**
      * Animates the given mob and blocks until the animation is complete
+     *
      * @param cx
      * @param thisObj
-     * @param args the mob, animation id and priority (optional)
+     * @param args    the mob, animation id and priority (optional)
      * @param funObj
      */
     public static void animate(Context cx, Scriptable thisObj, Object[] args, Function funObj) {
@@ -44,7 +45,7 @@ public class WorldControls {
 
         Animation a = new Animation(animation.intValue());
 
-        if(priority != null) {
+        if (priority != null) {
             mob.animate(a, priority.intValue());
         } else {
             mob.animate(a);

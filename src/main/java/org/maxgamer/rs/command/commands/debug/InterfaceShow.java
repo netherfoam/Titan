@@ -53,7 +53,6 @@ public class InterfaceShow implements PlayerCommand {
             p.getProtocol().sendInterface(true, parent, childPos, childId);
         } catch (NumberFormatException e) {
             p.sendMessage("All 3 args must be integers. One is not. Given " + args[0] + ", " + args[1] + ", " + args[2]);
-            return;
         }
     }
 

@@ -22,6 +22,7 @@ public class MapStructure {
     private File file;
     private RandomAccessFile raf;
     private FileChannel channel;
+
     public MapStructure(File f) throws FileNotFoundException {
         this.file = f;
         this.raf = new RandomAccessFile(f, "rw");
@@ -32,7 +33,7 @@ public class MapStructure {
         File f = new File(folder, map.getName() + EXTENSION);
 
         File parent = f.getAbsoluteFile().getParentFile();
-        if (parent.isDirectory() == false) {
+        if (!parent.isDirectory()) {
             parent.mkdirs();
         }
 
@@ -103,8 +104,7 @@ public class MapStructure {
         try {
             this.channel.read(buffer, 0);
             buffer.flip();
-            int type = buffer.get() & 0xFF;
-            return type;
+            return buffer.get() & 0xFF;
         } catch (BufferUnderflowException e) {
             throw new IOException(e.getMessage());
         }

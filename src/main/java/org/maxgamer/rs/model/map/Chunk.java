@@ -103,7 +103,7 @@ public class Chunk {
     }
 
     public int getClip(int x, int y) {
-        if (this.isLoaded() == false) {
+        if (!this.isLoaded()) {
             return ClipMasks.UNLOADED_TILE;
         }
         if (this.clip == null) {

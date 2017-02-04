@@ -30,7 +30,7 @@ public class DamageLog {
      */
     public DamageLog(Mob owner) {
         this.owner = owner;
-        this.hits = new HashMap<Mob, ArrayList<Damage>>();
+        this.hits = new HashMap<>();
     }
 
     public Mob getOwner() {
@@ -79,7 +79,7 @@ public class DamageLog {
         if (m != null) {
             this.lastAttacked = Core.getServer().getTicks();
 
-            if (getOwner().isRetaliate() && getOwner().getActions().hasUncancellable() == false && getOwner().getTarget() == null && m.isAttackable(getOwner()) && m.isHidden() == false && m.isDead() == false && m.getLocation().z == getOwner().getLocation().z) {
+            if (getOwner().isRetaliate() && !getOwner().getActions().hasUncancellable() && getOwner().getTarget() == null && m.isAttackable(getOwner()) && !m.isHidden() && !m.isDead() && m.getLocation().z == getOwner().getLocation().z) {
                 getOwner().getActions().clear(); //Cancel any actions previously given if possible
                 getOwner().setTarget(m);
             }
@@ -98,7 +98,7 @@ public class DamageLog {
     public void damage(final Mob from, final Damage d) {
         ArrayList<Damage> list = hits.get(from);
         if (list == null) {
-            list = new ArrayList<Damage>();
+            list = new ArrayList<>();
             hits.put(from, list);
         }
 
@@ -140,7 +140,7 @@ public class DamageLog {
     public List<Damage> getHits(Mob from) {
         ArrayList<Damage> list = hits.get(from);
         if (list == null) {
-            return Collections.<Damage>emptyList();
+            return Collections.emptyList();
         }
 
         return Collections.unmodifiableList(list);
@@ -153,7 +153,7 @@ public class DamageLog {
      */
     public void reset() {
         setLastAttacker(null);
-        this.hits = new HashMap<Mob, ArrayList<Damage>>();
+        this.hits = new HashMap<>();
     }
 
     /**
@@ -204,10 +204,8 @@ public class DamageLog {
      * @return true if in combat, false if not in combat
      */
     public boolean isInCombat() {
-        if (getOwner().getTarget() != null) return true;
-        if (getLastAttacker() != null) return true;
+        return getOwner().getTarget() != null || getLastAttacker() != null;
 
-        return false;
     }
 
     /**

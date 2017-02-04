@@ -13,11 +13,11 @@ public class Loot {
     /**
      * The random item selector
      */
-    private WeightedPicker<LootItem> picker = new WeightedPicker<LootItem>();
+    private WeightedPicker<LootItem> picker = new WeightedPicker<>();
     /**
      * The items which are guaranteed to be chosen (Weight is >= 100)
      */
-    private LinkedList<LootItem> guarantee = new LinkedList<LootItem>();
+    private LinkedList<LootItem> guarantee = new LinkedList<>();
 
     /**
      * Adds the given item to this loot set. If the loots weight >= 100, then
@@ -75,7 +75,7 @@ public class Loot {
      * @return A list of items which this NPC should drop.
      */
     public LinkedList<LootItem> next() {
-        LinkedList<LootItem> items = new LinkedList<LootItem>(guarantee);
+        LinkedList<LootItem> items = new LinkedList<>(guarantee);
         LootItem spec = random();
         if (spec != null && spec.getItemStack() != null) {
             items.add(0, spec); //Puts the special item on top
@@ -95,9 +95,8 @@ public class Loot {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(256);
-        sb.append("Possible: " + picker.toString());
-        sb.append("Always: " + guarantee.toString());
-        return sb.toString();
+        String sb = "Possible: " + picker.toString() +
+                "Always: " + guarantee.toString();
+        return sb;
     }
 }

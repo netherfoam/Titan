@@ -56,9 +56,9 @@ public class Cache {
      * A hashmap of (IDX << 24) | (FileID) to archive. This is a cache used by
      * the getArchive() method.
      */
-    private HashMap<Integer, Archive> archives = new HashMap<Integer, Archive>();
+    private HashMap<Integer, Archive> archives = new HashMap<>();
 
-    private HashMap<Integer, ByteBuffer> raws = new HashMap<Integer, ByteBuffer>();
+    private HashMap<Integer, ByteBuffer> raws = new HashMap<>();
 
     /**
      * Constructs a new cache
@@ -197,12 +197,10 @@ public class Cache {
                 tables[i] = FileTable.decode(i, idx, data);
             } catch (FileNotFoundException e) {
                 //Occurs for a few IDX values
-                continue;
             } catch (Exception e) {
                 //Failed outright. Corrupt cache or bad parsing.
                 e.printStackTrace();
                 System.out.println("Error parsing IDX " + i + " index.");
-                continue;
             }
         }
 
@@ -233,7 +231,7 @@ public class Cache {
 
     public void rebuildChecksum() {
         this.checksum = new ChecksumTable(this.tables.length);
-		/* Generate reference tables and build checksum */
+        /* Generate reference tables and build checksum */
         for (int i = 0; i < this.tables.length; i++) {
             //Checksum info
             int crc = 0;
@@ -255,13 +253,11 @@ public class Cache {
             } catch (FileNotFoundException e) {
                 //Occurs for a few IDX values
                 whirlpool = Whirlpool.whirlpool(new byte[0], 0, 0);
-                continue;
             } catch (Exception e) {
                 //Failed outright. Corrupt cache or bad parsing.
                 e.printStackTrace();
                 System.out.println("Error parsing IDX " + i + " index.");
                 whirlpool = Whirlpool.whirlpool(new byte[0], 0, 0);
-                continue;
             } finally {
                 //Append found values to checksum table.
                 //This clause is called nomatter what happens with exceptions.
@@ -375,7 +371,7 @@ public class Cache {
     public Archive getArchive(int idx, int fileId) throws IOException {
         int uid = (idx << 24) | (fileId);
         Archive a = archives.get(uid);
-		/* We've got a previously parsed version of this file, return it */
+        /* We've got a previously parsed version of this file, return it */
         if (a != null) return a;
 
         CacheFile f = getFile(idx, fileId);
@@ -386,7 +382,7 @@ public class Cache {
         } catch (IOException e) {
             throw new IOException("Failed to decode archive, IDX: " + idx + ", File: " + fileId + (e.getMessage() == null ? "" : ": " + e.getMessage()), e);
         }
-		/* Cache the result */
+        /* Cache the result */
         archives.put(uid, a);
 
         return a;
@@ -406,7 +402,7 @@ public class Cache {
 
         this.indexes = null;
         this.data = null;
-        this.archives = new HashMap<Integer, Archive>();
+        this.archives = new HashMap<>();
         this.refs = null;
         this.tables = null;
     }

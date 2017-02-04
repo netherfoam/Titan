@@ -21,12 +21,12 @@ final public class Graph<T> {
     /**
      * These are basically the nodes of the graph
      */
-    private HashMap<T, GraphNode<T>> nodes = new HashMap<T, GraphNode<T>>();
+    private HashMap<T, GraphNode<T>> nodes = new HashMap<>();
 
     /**
      * It holds a list of the already evaluated nodes
      */
-    private List<GraphNode<T>> evaluatedNodes = new ArrayList<GraphNode<T>>();
+    private List<GraphNode<T>> evaluatedNodes = new ArrayList<>();
 
     /**
      * The main constructor
@@ -71,7 +71,7 @@ final public class Graph<T> {
      * @return a generic GraphNode object
      */
     private GraphNode<T> createNode(T value) {
-        GraphNode<T> node = new GraphNode<T>();
+        GraphNode<T> node = new GraphNode<>();
         node.value = value;
         return node;
     }
@@ -81,9 +81,9 @@ final public class Graph<T> {
      */
     public ArrayList<T> generateDependencies() {
         List<GraphNode<T>> orphanNodes = getOrphanNodes();
-        List<GraphNode<T>> nextNodesToDisplay = new ArrayList<GraphNode<T>>();
+        List<GraphNode<T>> nextNodesToDisplay = new ArrayList<>();
 
-        ArrayList<T> order = new ArrayList<T>();
+        ArrayList<T> order = new ArrayList<>();
         if (orphanNodes != null) {
             for (GraphNode<T> node : orphanNodes) {
                 order.add(node.value);
@@ -111,14 +111,14 @@ final public class Graph<T> {
                     List<GraphNode<T>> goingOutNodes = node.getGoingOutNodes();
                     if (goingOutNodes != null) {
                         if (nextNodesToDisplay == null)
-                            nextNodesToDisplay = new ArrayList<GraphNode<T>>();
+                            nextNodesToDisplay = new ArrayList<>();
                         // add these too, so they get a chance to be displayed
                         // as well
                         nextNodesToDisplay.addAll(goingOutNodes);
                     }
                 } else {
                     if (nextNodesToDisplay == null)
-                        nextNodesToDisplay = new ArrayList<GraphNode<T>>();
+                        nextNodesToDisplay = new ArrayList<>();
                     // the checked node should be carried
                     nextNodesToDisplay.add(node);
                 }
@@ -168,7 +168,7 @@ final public class Graph<T> {
             GraphNode<T> node = nodes.get(key);
             if (node.getComingInNodes() == null) {
                 if (orphanNodes == null)
-                    orphanNodes = new ArrayList<GraphNode<T>>();
+                    orphanNodes = new ArrayList<>();
                 orphanNodes.add(node);
             }
         }

@@ -128,7 +128,7 @@ public class Transparent {
 
             int i = 0;
 
-            HashMap<String, Object> attributes = new HashMap<String, Object>(1);
+            HashMap<String, Object> attributes = new HashMap<>(1);
             while (fit.hasNext()) {
                 Field f = fit.next();
 
@@ -146,7 +146,7 @@ public class Transparent {
 
             while (ait.hasNext()) {
                 e = ait.next();
-                sb.append(", " + e.getKey());
+                sb.append(", ").append(e.getKey());
 
                 values[i++] = e.getValue();
             }
@@ -170,15 +170,7 @@ public class Transparent {
                 f.setAccessible(true);
                 this.identifiers[i] = f.get(this);
             }
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalArgumentException e) {
-            throw new RuntimeException(e);
-        } catch (NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        } catch (SecurityException e) {
-            throw new RuntimeException(e);
-        } catch (InstantiationException e) {
+        } catch (IllegalAccessException | InstantiationException | SecurityException | NoSuchFieldException | IllegalArgumentException e) {
             throw new RuntimeException(e);
         }
     }
@@ -201,7 +193,7 @@ public class Transparent {
 
             int i = 0;
 
-            HashMap<String, Object> attributes = new HashMap<String, Object>(fields.size());
+            HashMap<String, Object> attributes = new HashMap<>(fields.size());
             while (fit.hasNext()) {
                 Field f = fit.next();
 
@@ -214,12 +206,12 @@ public class Transparent {
             Object[] values = new Object[attributes.size()];
             Iterator<Entry<String, Object>> ait = attributes.entrySet().iterator();
             Entry<String, Object> e = ait.next();
-            sb.append(e.getKey() + " = ?");
+            sb.append(e.getKey()).append(" = ?");
             values[i++] = e.getValue();
 
             while (ait.hasNext()) {
                 e = ait.next();
-                sb.append(", " + e.getKey() + " = ?");
+                sb.append(", ").append(e.getKey()).append(" = ?");
                 values[i++] = e.getValue();
             }
 
@@ -229,9 +221,9 @@ public class Transparent {
 
             //BUG: This will match the literal String 'null'
             if (identifiers[i] == null) {
-                sb.append(" " + keys[i] + " IS NULL OR " + keys[i] + " = ?");
+                sb.append(" ").append(keys[i]).append(" IS NULL OR ").append(keys[i]).append(" = ?");
             } else {
-                sb.append(" " + keys[i] + " = ?");
+                sb.append(" ").append(keys[i]).append(" = ?");
             }
             i++;
 
@@ -239,9 +231,9 @@ public class Transparent {
                 //"Nothing compares to null!"
                 // - Not even null itself. This is a best of both worlds workaround.
                 if (identifiers[i] == null) {
-                    sb.append(" AND (" + keys[i] + " IS NULL OR " + keys[i] + " = ?)");
+                    sb.append(" AND (").append(keys[i]).append(" IS NULL OR ").append(keys[i]).append(" = ?)");
                 } else {
-                    sb.append(" AND " + keys[i] + " = ?");
+                    sb.append(" AND ").append(keys[i]).append(" = ?");
                 }
 
                 i++;
@@ -263,15 +255,7 @@ public class Transparent {
                 f.setAccessible(true);
                 this.identifiers[i] = f.get(this);
             }
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalArgumentException e) {
-            throw new RuntimeException(e);
-        } catch (NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        } catch (SecurityException e) {
-            throw new RuntimeException(e);
-        } catch (InstantiationException e) {
+        } catch (IllegalAccessException | InstantiationException | SecurityException | NoSuchFieldException | IllegalArgumentException e) {
             throw new RuntimeException(e);
         }
     }
@@ -292,11 +276,11 @@ public class Transparent {
             int i = 0;
 
             String k = keys[i++];
-            sb.append(k + " = ?");
+            sb.append(k).append(" = ?");
 
             while (i < keys.length) {
                 k = keys[i++];
-                sb.append(" AND " + k + " = ?");
+                sb.append(" AND ").append(k).append(" = ?");
             }
             sb.append(" LIMIT 1");
 
@@ -339,9 +323,7 @@ public class Transparent {
                     }
                 }
             }
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        } catch (InstantiationException e) {
+        } catch (IllegalAccessException | InstantiationException e) {
             throw new RuntimeException(e);
         }
     }
@@ -352,7 +334,7 @@ public class Transparent {
      * @return All fields in this transparent object with the @Mapping annotation
      */
     private HashSet<Field> getFields() {
-        HashSet<Field> fields = new HashSet<Field>();
+        HashSet<Field> fields = new HashSet<>();
         for (Field f : getClass().getDeclaredFields()) {
             Annotation a = f.getAnnotation(Mapping.class);
             if (a == null) continue;
@@ -376,12 +358,11 @@ public class Transparent {
                     for (int i = 0; i < arr.length; i++) {
                         arr[i] = Array.get(v, i);
                     }
-                    sb.append(f.getName() + " = " + Arrays.toString(arr) + "\n");
+                    sb.append(f.getName()).append(" = ").append(Arrays.toString(arr)).append("\n");
                 } else {
-                    sb.append(f.getName() + " = " + f.get(this) + "\n");
+                    sb.append(f.getName()).append(" = ").append(f.get(this)).append("\n");
                 }
-            } catch (IllegalArgumentException e) {
-            } catch (IllegalAccessException e) {
+            } catch (IllegalArgumentException | IllegalAccessException ignored) {
             }
         }
         return sb.toString();

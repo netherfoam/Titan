@@ -24,7 +24,7 @@ public class InteractionManager {
     /**
      * A list of all of the handlers that are registered with us.
      */
-    private ArrayList<InteractionHandlerMethod> handlers = new ArrayList<InteractionHandlerMethod>();
+    private ArrayList<InteractionHandlerMethod> handlers = new ArrayList<>();
 
     /**
      * Constructs a new InteractionManager
@@ -63,7 +63,7 @@ public class InteractionManager {
 
             @Override
             protected void run() throws SuspendExecution {
-                ArrayList<InteractionHandlerMethod> successes = new ArrayList<InteractionHandlerMethod>(1);
+                ArrayList<InteractionHandlerMethod> successes = new ArrayList<>(1);
 
                 if (target instanceof Entity && ((Entity) target).isDestroyed()) {
                     // A sanity check to ensure that nobody makes interactions with removed entities
@@ -89,7 +89,6 @@ public class InteractionManager {
                             Log.info(h.toString() + " refused to handle interaction between " + source + " => " + target + " with usage " + usage + ".");
                         }
                         // That handler didn't want to handle that interaction, so we try again with any others!
-                        continue;
                     } finally {
                         this.method = null;
                     }
@@ -138,7 +137,7 @@ public class InteractionManager {
                 continue;
             }
 
-            if (m.isAccessible() == false) {
+            if (!m.isAccessible()) {
                 // This could occur if the method is in an inner class
                 m.setAccessible(true);
             }
@@ -160,7 +159,7 @@ public class InteractionManager {
             this.handlers.add(method);
         }
 
-        if (foundAny == false) {
+        if (!foundAny) {
             Log.warning("Class " + handler.getClass() + " has no declared methods with @Interact annotation, but implements InteractionHandler.");
             Log.warning("Did you forget to register a handler with @Interact?");
         }

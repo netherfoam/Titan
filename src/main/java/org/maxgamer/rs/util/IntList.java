@@ -95,9 +95,7 @@ public class IntList {
     public void condense() {
         if (size - 1 == this.data.length) return;
         int[] vals = new int[size];
-        for (int i = 0; i < this.data.length; i++) {
-            vals[i] = this.data[i];
-        }
+        System.arraycopy(this.data, 0, vals, 0, this.data.length);
         this.data = vals;
     }
 
@@ -110,9 +108,7 @@ public class IntList {
             // The new values list
             int[] vals = new int[data.length * 2];
             // Copy the old values
-            for (int i = 0; i < data.length; i++) {
-                vals[i] = this.data[i];
-            }
+            System.arraycopy(this.data, 0, vals, 0, data.length);
             this.data = vals;
         }
     }

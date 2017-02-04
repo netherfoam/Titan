@@ -29,7 +29,7 @@ public class Warp implements PlayerCommand {
             List<Destination> destinations = repository.findAll();
             StringBuilder sb = new StringBuilder(destinations.size() * 12);
             for (Destination d : destinations) {
-                sb.append(d.name + ", ");
+                sb.append(d.name).append(", ");
             }
             if (sb.length() > 0) {
                 // Trim off the last ", "

@@ -113,7 +113,6 @@ public class VendorSideInterface extends SideInterface {
 
             if (!vendor.sell(player, item, slotId)) {
                 player.sendMessage("Transaction failed!");
-                return;
             }
         }
     }

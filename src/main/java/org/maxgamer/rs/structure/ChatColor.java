@@ -18,7 +18,7 @@ public enum ChatColor implements CharSequence {
 
     private String text;
 
-    private ChatColor(String text) {
+    ChatColor(String text) {
         this.text = "<col=" + text + ">";
     }
 

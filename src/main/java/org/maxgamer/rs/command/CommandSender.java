@@ -7,7 +7,7 @@ package org.maxgamer.rs.command;
  * @author netherfoam
  */
 public interface CommandSender {
-    public void sendMessage(String msg);
+    void sendMessage(String msg);
 
-    public String getName();
+    String getName();
 }

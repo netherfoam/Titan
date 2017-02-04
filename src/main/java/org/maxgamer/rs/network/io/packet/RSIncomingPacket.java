@@ -51,8 +51,7 @@ public class RSIncomingPacket extends RSInputBuffer implements ByteReader {
                 }
             }
 
-            RSIncomingPacket p = new RSIncomingPacket(opcode, b, length);
-            return p;
+            return new RSIncomingPacket(opcode, b, length);
         } catch (Exception e) {
             throw new IOException(e);
         }

@@ -18,7 +18,7 @@ import java.util.HashMap;
  */
 public class EquipmentInterface extends SideInterface {
     public static final int EQUIPMENT_CONTAINER_ID = 94;
-    private static HashMap<Integer, WieldType> BUTTON_TO_SLOT = new HashMap<Integer, WieldType>();
+    private static HashMap<Integer, WieldType> BUTTON_TO_SLOT = new HashMap<>();
 
     static {
         BUTTON_TO_SLOT.put(8, WieldType.HAT);

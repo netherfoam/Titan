@@ -40,7 +40,7 @@ public class ModuleLoader {
         if (folder == null) {
             throw new NullPointerException("Folder may not be null.");
         }
-        this.modules = new HashMap<String, Module>();
+        this.modules = new HashMap<>();
         this.folder = folder;
         this.field = field;
     }
@@ -55,23 +55,20 @@ public class ModuleLoader {
 
         long startMem = r.totalMemory() - r.freeMemory();
 
-        if (folder.exists() == false) {
+        if (!folder.exists()) {
             folder.mkdirs();
         }
 
         File[] files = folder.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File parent, String name) {
-                if (name.endsWith(".jar")) {
-                    return true;
-                }
+                return name.endsWith(".jar");
 
-                return false;
             }
         });
 
-        HashMap<String, File> names = new HashMap<String, File>();
-        HashMap<String, ConfigSection> moduleYMLs = new HashMap<String, ConfigSection>();
+        HashMap<String, File> names = new HashMap<>();
+        HashMap<String, ConfigSection> moduleYMLs = new HashMap<>();
         for (File f : files) {
             try {
                 ConfigSection info = readModuleYML(f);
@@ -90,7 +87,7 @@ public class ModuleLoader {
         }
 
         Log.debug("Graphing dependencies...");
-        Graph<String> dependencies = new Graph<String>();
+        Graph<String> dependencies = new Graph<>();
         for (String name : names.keySet()) {
             ConfigSection config = moduleYMLs.get(name);
 
@@ -111,7 +108,7 @@ public class ModuleLoader {
         Log.debug("Dependency tree generated!");
 
         for (String name : names.keySet()) {
-            if (deps.contains(name) == false) {
+            if (!deps.contains(name)) {
                 deps.add(0, name);
             }
         }
@@ -247,7 +244,7 @@ public class ModuleLoader {
                 m.load();
                 // TODO: Reimplement this
                 /*ModuleLoadEvent event = new ModuleLoadEvent(m);
-				event.call();*/
+                event.call();*/
             } catch (Throwable t) {
                 Log.severe("Error calling module load() on " + m.getName() + " (" + f.getName() + ").");
                 try {
@@ -271,7 +268,7 @@ public class ModuleLoader {
         } finally {
             try {
                 jar.close();
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
         }
         return null;
@@ -342,8 +339,8 @@ public class ModuleLoader {
     public boolean unload(Module m) {
         try {
             // TODO: Reimplement this
-			/*ModuleUnloadEvent event = new ModuleUnloadEvent(m);
-			event.call();*/
+            /*ModuleUnloadEvent event = new ModuleUnloadEvent(m);
+            event.call();*/
 
             m.unload();
             m.getMeta().getLoader().close();

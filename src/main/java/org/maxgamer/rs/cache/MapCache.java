@@ -12,7 +12,7 @@ import java.util.HashMap;
  * @author netherfoam
  */
 public class MapCache {
-    private static HashMap<String, SoftReference<ByteBuffer>> objects = new HashMap<String, SoftReference<ByteBuffer>>(400);
+    private static HashMap<String, SoftReference<ByteBuffer>> objects = new HashMap<>(400);
 
     /**
      * Fetches the objects at the given zoneX and zoneY
@@ -23,9 +23,9 @@ public class MapCache {
      * @throws IOException
      */
     public static ByteBuffer getObjects(int zoneX, int zoneY) throws IOException {
-    	return getObjects(Core.getCache(), zoneX, zoneY);
+        return getObjects(Core.getCache(), zoneX, zoneY);
     }
-    
+
     /**
      * Fetches the objects at the given zoneX and zoneY
      *
@@ -50,16 +50,12 @@ public class MapCache {
         }
 
         //We haven't got a previously decrypted map data.
-        try {
-            int fileId = cache.getFileId(IDX.LANDSCAPES, key);
-            CacheFile c = cache.getFile(IDX.LANDSCAPES, fileId);
+        int fileId = cache.getFileId(IDX.LANDSCAPES, key);
+        CacheFile c = cache.getFile(IDX.LANDSCAPES, fileId);
 
-            bb = c.getData();
-            objects.put(key, new SoftReference<ByteBuffer>(bb));
-            return bb.asReadOnlyBuffer(); //This is necessary, as we're storing the above bb in the objects map
-        } catch (IOException e) {
-            throw e;
-        }
+        bb = c.getData();
+        objects.put(key, new SoftReference<ByteBuffer>(bb));
+        return bb.asReadOnlyBuffer(); //This is necessary, as we're storing the above bb in the objects map
     }
 
     /**
@@ -77,8 +73,7 @@ public class MapCache {
             int fileId = Core.getCache().getFileId(IDX.LANDSCAPES, "m" + zoneX + "_" + zoneY);
             CacheFile f = Core.getCache().getFile(IDX.LANDSCAPES, fileId);
 
-            ByteBuffer bb = f.getData();
-            return bb;
+            return f.getData();
         } catch (FileNotFoundException e) {
             //We return null on file not found.
             return null;

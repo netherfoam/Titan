@@ -14,7 +14,7 @@ import java.util.HashMap;
  * @author netherfoam
  */
 public class ItemStack implements Comparable<ItemStack>, YMLSerializable, Interactable {
-    private static HashMap<String, WeakReference<ItemStack>> cache = new HashMap<String, WeakReference<ItemStack>>();
+    private static HashMap<String, WeakReference<ItemStack>> cache = new HashMap<>();
     /**
      * The generic currency in the game
      */
@@ -63,7 +63,7 @@ public class ItemStack implements Comparable<ItemStack>, YMLSerializable, Intera
 
         if (ref == null || (item = ref.get()) == null) {
             item = new ItemStack(id, amount, health);
-            ref = new WeakReference<ItemStack>(item);
+            ref = new WeakReference<>(item);
             cache.put(id + "-" + amount + "-" + health, ref);
         }
         return item;
@@ -86,7 +86,7 @@ public class ItemStack implements Comparable<ItemStack>, YMLSerializable, Intera
         ItemStack item;
         if (ref == null || (item = ref.get()) == null) {
             item = new ItemStack(id, amount, health);
-            ref = new WeakReference<ItemStack>(item);
+            ref = new WeakReference<>(item);
             cache.put(id + "-" + amount + "-" + health, ref);
         }
         return item;
@@ -139,8 +139,7 @@ public class ItemStack implements Comparable<ItemStack>, YMLSerializable, Intera
         if (this.getId() == 10828) {
             return ItemStack.create(10843, this.getAmount(), this.getHealth());
         } else {
-            ItemStack item = ItemStack.create(this.getId() - 1, this.getAmount(), this.getHealth());
-            return item;
+            return ItemStack.create(this.getId() - 1, this.getAmount(), this.getHealth());
         }
     }
 
@@ -153,7 +152,7 @@ public class ItemStack implements Comparable<ItemStack>, YMLSerializable, Intera
     }
 
     public int getHealth() {
-        return (int) health;
+        return health;
     }
 
     public ItemStack setHealth(int health) {
@@ -165,8 +164,7 @@ public class ItemStack implements Comparable<ItemStack>, YMLSerializable, Intera
     }
 
     public boolean matches(ItemStack i) {
-        if (i == null) return false;
-        return (i.id == this.id || getDefinition().stacksWith(i.id) || i.getDefinition().stacksWith(this.id)) && i.health == this.health;
+        return i != null && (i.id == this.id || getDefinition().stacksWith(i.id) || i.getDefinition().stacksWith(this.id)) && i.health == this.health;
     }
 
     @Override
@@ -191,13 +189,11 @@ public class ItemStack implements Comparable<ItemStack>, YMLSerializable, Intera
     @Override
     public boolean equals(Object o) {
         if (o == null) return false;
-        if (o instanceof ItemStack == false) return false;
+        if (!(o instanceof ItemStack)) return false;
         ItemStack i = (ItemStack) o;
         if (i.id != this.id) return false;
-        if (i.amount != this.amount) return false;
-        if (i.health != this.health) return false;
+        return i.amount == this.amount && i.health == this.health;
 
-        return true;
     }
 
     public String getName() {
@@ -232,15 +228,15 @@ public class ItemStack implements Comparable<ItemStack>, YMLSerializable, Intera
      * @return
      */
     /*
-	 * public int getEquipId(boolean male) { ItemProto p = getDefinition();
-	 * 
-	 * int wornId; if(male) wornId = p.maleWornModelId2; else wornId =
-	 * p.femaleWornModelId2; //if(male) return getDefinition().maleWornModelId1;
-	 * //else return getDefinition().femaleWornModelId1;
-	 * System.out.println(getDefinition().getId() + ": " + getName() +
-	 * " worn ID: " + wornId); System.out.println(getDefinition().toString());
-	 * return wornId; }
-	 */
+     * public int getEquipId(boolean male) { ItemProto p = getDefinition();
+     *
+     * int wornId; if(male) wornId = p.maleWornModelId2; else wornId =
+     * p.femaleWornModelId2; //if(male) return getDefinition().maleWornModelId1;
+     * //else return getDefinition().femaleWornModelId1;
+     * System.out.println(getDefinition().getId() + ": " + getName() +
+     * " worn ID: " + wornId); System.out.println(getDefinition().toString());
+     * return wornId; }
+     */
     public String[] getInventoryOptions() {
         return getDefinition().getInventoryOptions();
     }

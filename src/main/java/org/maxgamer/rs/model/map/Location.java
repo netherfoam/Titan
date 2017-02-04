@@ -218,8 +218,7 @@ public class Location extends Position implements MBR, Locatable {
     public <T extends MBR> HashSet<T> getNearby(Class<T> clazz, int radius, boolean allHeights) {
         MBR q = new Cube(new int[]{this.x - radius, this.y - radius, allHeights ? 0 : this.z}, new int[]{radius * 2 + 1, radius * 2 + 1, allHeights ? 3 : 0});
 
-        HashSet<T> entities = getMap().getEntities(q, radius * radius + 4, clazz);
-        return entities;
+        return getMap().getEntities(q, radius * radius + 4, clazz);
     }
 
     /**
@@ -232,8 +231,7 @@ public class Location extends Position implements MBR, Locatable {
      */
     public <T extends MBR> HashSet<T> getNearby(Class<T> clazz, int radX, int radY) {
         MBR q = new Cube(new int[]{this.x - radX, this.y - radY, this.z}, new int[]{radX * 2, radY * 2, 0});
-        HashSet<T> entities = getMap().getEntities(q, radX * radY + 4, clazz);
-        return entities;
+        return getMap().getEntities(q, radX * radY + 4, clazz);
     }
 
     /**
@@ -313,8 +311,7 @@ public class Location extends Position implements MBR, Locatable {
     public Direction getDirection(Position to) {
         int dx = to.x - this.x;
         int dy = to.y - this.y;
-        Direction d = Directions.get(dx, dy); //Throws an IllegalArgumentException if positions aren't next to each other
-        return d;
+        return Directions.get(dx, dy);
     }
 
     @Override
@@ -329,10 +326,8 @@ public class Location extends Position implements MBR, Locatable {
         Location p = (Location) o;
         if (p.x != this.x) return false;
         if (p.y != this.y) return false;
-        if (p.z != this.z) return false;
-        if (p.map != this.map) return false;
+        return p.z == this.z && p.map == this.map;
 
-        return true;
     }
 
     @Override
@@ -358,7 +353,7 @@ public class Location extends Position implements MBR, Locatable {
 
         for (T object : getNearby(type, radius)) {
             /* Ask if the object is valid to the filter */
-            if (filter.accept(object) == false) continue;
+            if (!filter.accept(object)) continue;
 
             if (closest == null || distSq > object.getLocation().distanceSq(this)) {
                 closest = object;
@@ -406,9 +401,6 @@ public class Location extends Position implements MBR, Locatable {
     }
 
     public boolean near(Location l, int distance) {
-        if (super.near(l, distance) && l.z == this.z && this.map == l.map) {
-            return true;
-        }
-        return false;
+        return super.near(l, distance) && l.z == this.z && this.map == l.map;
     }
 }

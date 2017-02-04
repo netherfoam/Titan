@@ -14,12 +14,12 @@ public interface YMLSerializable {
      *
      * @return the map
      */
-    public ConfigSection serialize();
+    ConfigSection serialize();
 
     /**
      * Deserializes this object from the given map.
      *
      * @param map the map.
      */
-    public void deserialize(ConfigSection map);
+    void deserialize(ConfigSection map);
 }

@@ -43,7 +43,7 @@ public class Prompter {
     public Prompter() {
         this.scanner = new Scanner(System.in);
 
-		/* Now we steal System.out */
+        /* Now we steal System.out */
         oldSysOut = System.out;
         oldSysOut.flush();
         newSysOutPrintStream = new PrintStream(this.newSysOut);
@@ -89,7 +89,6 @@ public class Prompter {
                     this.println("Integers may not contain decimals.");
                 }
                 this.print("An integer is required: ");
-                continue;
             }
         }
     }
@@ -118,7 +117,6 @@ public class Prompter {
                     this.println("Integers may not contain decimals.");
                 }
                 this.print("An integer is required: ");
-                continue;
             }
         }
     }
@@ -173,7 +171,7 @@ public class Prompter {
                 continue;
             }
 
-            if (s.matches(pattern.pattern()) == false) {
+            if (!s.matches(pattern.pattern())) {
                 this.print("String was not of the correct format: ");
                 continue;
             }
@@ -198,7 +196,7 @@ public class Prompter {
                 return fallback;
             }
 
-            if (s.matches(pattern.pattern()) == false) {
+            if (!s.matches(pattern.pattern())) {
                 this.print("String was not of the correct format: ");
                 continue;
             }
@@ -226,7 +224,6 @@ public class Prompter {
                 return Util.parseBoolean(s);
             } catch (ParseException e) {
                 this.print("A true/false value is required: ");
-                continue;
             }
         }
     }
@@ -250,7 +247,6 @@ public class Prompter {
                 return Util.parseBoolean(s);
             } catch (ParseException e) {
                 this.print("A true/false value is required: ");
-                continue;
             }
         }
     }

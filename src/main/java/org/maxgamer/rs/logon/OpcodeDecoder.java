@@ -8,7 +8,7 @@ import java.util.HashMap;
  * @author netherfoam
  */
 public class OpcodeDecoder<T> {
-    private HashMap<Integer, Method> handlers = new HashMap<Integer, Method>();
+    private HashMap<Integer, Method> handlers = new HashMap<>();
 
     public OpcodeDecoder() {
         for (Method method : this.getClass().getMethods()) {

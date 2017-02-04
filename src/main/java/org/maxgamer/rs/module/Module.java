@@ -50,8 +50,7 @@ public abstract class Module {
      * @return
      */
     public final File getFolder() {
-        File f = new File("modules", getName().toLowerCase());
-        return f;
+        return new File("modules", getName().toLowerCase());
     }
 
     /**

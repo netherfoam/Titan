@@ -15,7 +15,7 @@ public class MobFacing extends Facing {
         if (target == null) {
             throw new NullPointerException("Target may not be null");
         }
-        this.target = new WeakReference<Mob>(target);
+        this.target = new WeakReference<>(target);
     }
 
     public Mob getTarget() {

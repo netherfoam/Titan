@@ -32,7 +32,7 @@ public class TickableWrapper implements Comparable<TickableWrapper> {
 
     @Override
     public int compareTo(TickableWrapper t2) {
-        return (int) (this.getPeriod() - t2.getPeriod());
+        return this.getPeriod() - t2.getPeriod();
     }
 
     @Override

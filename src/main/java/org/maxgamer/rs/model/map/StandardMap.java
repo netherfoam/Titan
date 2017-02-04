@@ -64,9 +64,6 @@ public class StandardMap extends WorldMap {
             }
         } catch (FileNotFoundException e) {
             //That map literally doesn't exist.
-            return;
-        } catch (IOException e) {
-            throw e;
         }
     }
 

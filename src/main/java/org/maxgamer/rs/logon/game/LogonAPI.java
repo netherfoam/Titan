@@ -15,9 +15,10 @@ import java.util.HashSet;
  * @author netherfoam
  */
 public class LogonAPI {
-    protected HashMap<Integer, AuthRequest> authRequests = new HashMap<Integer, AuthRequest>();
-    protected HashMap<Integer, RemoteWorld> worlds = new HashMap<Integer, RemoteWorld>();
+    protected HashMap<Integer, AuthRequest> authRequests = new HashMap<>();
+    protected HashMap<Integer, RemoteWorld> worlds = new HashMap<>();
     private LogonConnection logon;
+
     public LogonAPI(LogonConnection logon) {
         this.logon = logon;
     }
@@ -120,7 +121,7 @@ public class LogonAPI {
     }
 
     public static class RemoteWorld {
-        protected HashSet<String> players = new HashSet<String>();
+        protected HashSet<String> players = new HashSet<>();
         protected String ip;
         protected String name;
         protected String activity;

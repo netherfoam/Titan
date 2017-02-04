@@ -71,36 +71,36 @@ public class AnimationDefinition {
                 for (int i = 0; i < length; i++) {
                     this.components[i] = bb.readUnsignedShort();
                 }
-                for (int i = 0; (length ^ 0xffffffff) < (i ^ 0xffffffff); i++) {
+                for (int i = 0; (~length) < (~i); i++) {
                     this.components[i] = ((bb.readUnsignedShort() << 10) - -this.components[i]);
                 }
-            } else if ((opcode ^ 0xffffffff) == -3) {
+            } else if ((~opcode) == -3) {
                 this.anInt828 = bb.readUnsignedShort();
-            } else if ((opcode ^ 0xffffffff) != -4) {
-                if ((opcode ^ 0xffffffff) == -6) {
+            } else if ((~opcode) != -4) {
+                if ((~opcode) == -6) {
                     this.anInt829 = bb.readUnsignedByte();
-                } else if ((opcode ^ 0xffffffff) == -7) {
+                } else if ((~opcode) == -7) {
                     this.anInt820 = bb.readUnsignedShort();
                 } else if (opcode != 7) {
-                    if ((opcode ^ 0xffffffff) != -9) {
-                        if ((opcode ^ 0xffffffff) == -10) {
+                    if ((~opcode) != -9) {
+                        if ((~opcode) == -10) {
                             this.anInt821 = bb.readUnsignedByte();
-                        } else if ((opcode ^ 0xffffffff) == -11) {
+                        } else if ((~opcode) == -11) {
                             this.anInt816 = bb.readUnsignedByte();
-                        } else if ((opcode ^ 0xffffffff) != -12) {
+                        } else if ((~opcode) != -12) {
                             if (opcode != 12) {
-                                if ((opcode ^ 0xffffffff) != -14) {
+                                if ((~opcode) != -14) {
                                     if (opcode != 14) {
-                                        if ((opcode ^ 0xffffffff) == -16) {
+                                        if ((~opcode) == -16) {
                                             this.aBoolean825 = true;
-                                        } else if ((opcode ^ 0xffffffff) != -17) {
+                                        } else if ((~opcode) != -17) {
                                             if (opcode != 18) {
                                                 if (opcode != 19) {
                                                     if (opcode == 20) {
                                                         if (((this.anIntArray810) == null) || ((this.anIntArray815) == null)) {
                                                             this.anIntArray810 = (new int[(this.anIntArrayArray822).length]);
                                                             this.anIntArray815 = (new int[(this.anIntArrayArray822).length]);
-                                                            for (int i_49_ = 0; ((i_49_ ^ 0xffffffff) > ((this.anIntArrayArray822).length ^ 0xffffffff)); i_49_++) {
+                                                            for (int i_49_ = 0; ((~i_49_) > (~(this.anIntArrayArray822).length)); i_49_++) {
                                                                 this.anIntArray810[i_49_] = 256;
                                                                 this.anIntArray815[i_49_] = 256;
                                                             }
@@ -112,7 +112,7 @@ public class AnimationDefinition {
                                                 } else {
                                                     if ((this.anIntArray808) == null) {
                                                         this.anIntArray808 = (new int[(this.anIntArrayArray822).length]);
-                                                        for (int i_51_ = 0; (((this.anIntArrayArray822).length ^ 0xffffffff) < (i_51_ ^ 0xffffffff)); i_51_++) {
+                                                        for (int i_51_ = 0; ((~(this.anIntArrayArray822).length) < (~i_51_)); i_51_++) {
                                                             this.anIntArray808[i_51_] = 255;
                                                         }
                                                     }
@@ -130,12 +130,12 @@ public class AnimationDefinition {
                                 } else {
                                     final int i_52_ = bb.readUnsignedShort();
                                     this.anIntArrayArray822 = new int[i_52_][];
-                                    for (int i_53_ = 0; ((i_53_ ^ 0xffffffff) > (i_52_ ^ 0xffffffff)); i_53_++) {
+                                    for (int i_53_ = 0; ((~i_53_) > (~i_52_)); i_53_++) {
                                         final int i_54_ = bb.readUnsignedByte();
                                         if (i_54_ > 0) {
                                             this.anIntArrayArray822[i_53_] = new int[i_54_];
                                             this.anIntArrayArray822[i_53_][0] = (bb.read24BitInt());
-                                            for (int i_55_ = 1; ((i_55_ ^ 0xffffffff) > (i_54_ ^ 0xffffffff)); i_55_++) {
+                                            for (int i_55_ = 1; ((~i_55_) > (~i_54_)); i_55_++) {
                                                 this.anIntArrayArray822[i_53_][i_55_] = (bb.readUnsignedShort());
                                             }
                                         }

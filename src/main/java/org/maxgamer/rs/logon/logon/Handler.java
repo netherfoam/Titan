@@ -10,5 +10,5 @@ import org.maxgamer.rs.network.io.stream.RSInputBuffer;
  * @author netherfoam
  */
 public interface Handler {
-    public abstract void handle(RSInputBuffer in);
+    void handle(RSInputBuffer in);
 }

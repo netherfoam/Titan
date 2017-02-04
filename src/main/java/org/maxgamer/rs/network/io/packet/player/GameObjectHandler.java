@@ -103,7 +103,7 @@ public class GameObjectHandler implements PacketProcessor<Player> {
 
         Location l = new Location(p.getLocation().getMap(), x, y, p.getLocation().z);
         for (final GameObject g : l.getNearby(GameObject.class, 0)) {
-            if (g.getId() == id && g.isHidden() == false) {
+            if (g.getId() == id && !g.isHidden()) {
                 String s = g.getDefiniton().getOption(option); // Becomes zero-based
                 if (s == null) {
                     p.getCheats().log(10, "Player attempted to use a NULL option on a gameobject. Gameobject: " + g + ", option: " + option + "/5");
@@ -143,6 +143,5 @@ public class GameObjectHandler implements PacketProcessor<Player> {
         }
 
         p.getCheats().log(10, "Player attempted to use a NULL gameobject. ID: " + id + ", option: " + option + "/5");
-        return;
     }
 }

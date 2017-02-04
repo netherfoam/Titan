@@ -45,7 +45,7 @@ public class InputHandler implements PacketProcessor<Player> {
                     return;
                 }
                 // Client cannot input negative numbers
-                ((IntInputInterface) interf).onInput(in.readInt() & 0xFFFFFFFF);
+                ((IntInputInterface) interf).onInput(in.readInt());
 
                 // As a result of handling onInput() the interface may have been closed
                 if (interf.isOpen()) p.getWindow().close(interf);

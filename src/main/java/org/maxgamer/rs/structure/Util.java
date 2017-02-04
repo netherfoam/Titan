@@ -16,8 +16,8 @@ import java.util.regex.Pattern;
 public class Util {
     private static Pattern IP_PATTERN = Pattern.compile("^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." + "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." + "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." + "([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
 
-    private static HashSet<String> yes = new HashSet<String>();
-    private static HashSet<String> no = new HashSet<String>();
+    private static HashSet<String> yes = new HashSet<>();
+    private static HashSet<String> no = new HashSet<>();
 
     static {
         yes.add("yes");
@@ -84,7 +84,7 @@ public class Util {
 
         for (int i = 0; i < objects.length - 1; i++) {
             if (objects[i] instanceof Boolean) {
-                objects[i] = ((Boolean) objects[i]) == true ? 1 : 0;
+                objects[i] = ((Boolean) objects[i]) ? 1 : 0;
             }
             ps.print(String.valueOf(objects[i]) + ", ");
         }
@@ -201,8 +201,8 @@ public class Util {
 
     public static String toString(byte[] data) {
         StringBuilder sb = new StringBuilder();
-        sb.append("Len: " + data.length);
-        sb.append("[" + String.format("%X", data[0]));
+        sb.append("Len: ").append(data.length);
+        sb.append("[").append(String.format("%X", data[0]));
         for (int i = 1; i < data.length; i++) {
             sb.append(String.format(", %X", data[i]));
         }
@@ -227,45 +227,45 @@ public class Util {
             long years = time / 31449600;
             if (years > 100) return "Never";
 
-            sb.append(years + (years == 1 ? " year " : " years "));
+            sb.append(years).append(years == 1 ? " year " : " years ");
             time -= years * 31449600;
         }
         if (time / 2620800 > 0) {
             //Months
             long months = time / 2620800;
-            sb.append(months + (months == 1 ? " month " : " months "));
+            sb.append(months).append(months == 1 ? " month " : " months ");
             time -= months * 2620800;
         }
         if (time / 604800 > 0) {
             //Weeks
             long weeks = time / 604800;
-            sb.append(weeks + (weeks == 1 ? " week " : " weeks "));
+            sb.append(weeks).append(weeks == 1 ? " week " : " weeks ");
             time -= weeks * 604800;
         }
         if (time / 86400 > 0) {
             //Days
             long days = time / 86400;
-            sb.append(days + (days == 1 ? " day " : " days "));
+            sb.append(days).append(days == 1 ? " day " : " days ");
             time -= days * 86400;
         }
 
         if (time / 3600 > 0) {
             //Hours
             long hours = time / 3600;
-            sb.append(hours + (hours == 1 ? " hour " : " hours "));
+            sb.append(hours).append(hours == 1 ? " hour " : " hours ");
             time -= hours * 3600;
         }
 
         if (time / 60 > 0) {
             //Minutes
             long minutes = time / 60;
-            sb.append(minutes + (minutes == 1 ? " minute " : " minutes "));
+            sb.append(minutes).append(minutes == 1 ? " minute " : " minutes ");
             time -= minutes * 60;
         }
 
         if (time > 0) {
             //Seconds
-            sb.append(time + (time == 1 ? " second " : " seconds "));
+            sb.append(time).append(time == 1 ? " second " : " seconds ");
         }
 
         if (sb.length() > 1) {

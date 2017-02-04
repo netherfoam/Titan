@@ -75,17 +75,17 @@ public abstract class Attack {
             if (attacker.getEquipment().getWeapon() != this.weapon) {
                 // TODO: Possible issue with health's implementation here, as matches() is health sensitive
                 // So this may return a false positive
-                if (this.weapon == null || this.weapon.matches(attacker.getEquipment().getWeapon()) == false) {
+                if (this.weapon == null || !this.weapon.matches(attacker.getEquipment().getWeapon())) {
                     // We've changed weapons at some point
                     return false;
                 }
             }
 
-            if (this.prepare(target, damage) == false) {
+            if (!this.prepare(target, damage)) {
                 return false; //Can't prepare, no attack.
             }
 
-            if (this.takeConsumables() == false) {
+            if (!this.takeConsumables()) {
                 return false; //No consumables, no attack.
             }
         } catch (Exception e) {
@@ -95,7 +95,7 @@ public abstract class Attack {
         }
 
         //Throw mob attack event here
-        Iterator<Damage> adit = new LinkedList<Damage>(damage.getDamages()).iterator();
+        Iterator<Damage> adit = new LinkedList<>(damage.getDamages()).iterator();
         while (adit.hasNext()) {
             Damage d = adit.next();
             MobAttackEvent act = new MobAttackEvent(attacker, this, d, d.getTarget());
@@ -110,7 +110,7 @@ public abstract class Attack {
             }
         }
 
-        if (damage.getDamages().isEmpty() == false) {
+        if (!damage.getDamages().isEmpty()) {
             if (emote != null && emote.getId() >= 0) {
                 attacker.getUpdateMask().setAnimation(emote, 20);
             }

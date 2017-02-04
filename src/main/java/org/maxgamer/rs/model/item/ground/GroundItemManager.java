@@ -13,7 +13,7 @@ public class GroundItemManager extends Tickable {
      * The queue of items which are currently spawned. This queue is sorted based on which
      * item will change next.
      */
-    private ArrayList<GroundItemStack> items = new ArrayList<GroundItemStack>();
+    private ArrayList<GroundItemStack> items = new ArrayList<>();
 
     /**
      * Constructs a new, empty ground item manager
@@ -29,7 +29,7 @@ public class GroundItemManager extends Tickable {
      * @param item the item to add, not null
      */
     protected void add(GroundItemStack item) {
-        assert items.contains(item) == false : "Attempted to add a GroundItemStack that was already in the queue";
+        assert !items.contains(item) : "Attempted to add a GroundItemStack that was already in the queue";
         items.add(item);
 
         for (Viewport view : item.getLocation().getNearby(Viewport.class, 1, true)) {
@@ -66,8 +66,8 @@ public class GroundItemManager extends Tickable {
      */
     @Override
     public void tick() {
-        for (GroundItemStack g : new ArrayList<GroundItemStack>(this.items)) {
-            assert g.isDestroyed() == false : "GroundItemStack is destroyed but was listed in GroundItemManager.";
+        for (GroundItemStack g : new ArrayList<>(this.items)) {
+            assert !g.isDestroyed() : "GroundItemStack is destroyed but was listed in GroundItemManager.";
 
             if (g.hasExpired()) {
                 // This will also remove it from the queue.

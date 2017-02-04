@@ -23,7 +23,7 @@ public class GamePacketHandler extends RawHandler {
 
     @Override
     public void handle(RSByteBuffer b) {
-        while (b.isEmpty() == false) {
+        while (!b.isEmpty()) {
             //Throws IOException if only a partial packet
             //has been received. This means the buffer is
             //reset until more data is available.
@@ -38,10 +38,10 @@ public class GamePacketHandler extends RawHandler {
 
             if (p == null) {
                 StringBuilder sb = new StringBuilder();
-                sb.append("Unhandled opcode: " + in.getOpcode() + ", Size: " + in.available());
-                if (in.isEmpty() == false && in.available() <= 20) {
+                sb.append("Unhandled opcode: ").append(in.getOpcode()).append(", Size: ").append(in.available());
+                if (!in.isEmpty() && in.available() <= 20) {
                     sb.append(String.format(", Data: 0x%X", in.readByte()));
-                    while (in.isEmpty() == false) {
+                    while (!in.isEmpty()) {
                         sb.append(String.format(" %X", in.readByte()));
                     }
                 }

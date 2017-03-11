@@ -1,5 +1,7 @@
 package org.maxgamer.rs.logon.logon;
 
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.maxgamer.rs.logon.*;
 import org.maxgamer.rs.model.events.session.AuthRequestEvent;
 import org.maxgamer.rs.network.AuthResult;
@@ -35,6 +37,9 @@ public class GameDecoder extends OpcodeDecoder<LSIncomingPacket> implements Hand
         AuthResult result = AuthResult.SUCCESS;
         out.writeInt(sessionId);
 
+        Session session = LogonServer.getLogon().getDatabase().getSession();
+        Transaction transaction = session.beginTransaction();
+        
         Profile profile = null;
         byte[] payload = null;
         do {
@@ -46,8 +51,8 @@ public class GameDecoder extends OpcodeDecoder<LSIncomingPacket> implements Hand
 
             profile = LogonServer.getLogon().getDatabase().getRepository(ProfileRepository.class).find(name);
             if (profile == null) {
-                profile = new Profile(name, pass, System.currentTimeMillis(), ip);
-                LogonServer.getLogon().getDatabase().getSession().persist(profile);
+            	profile = new Profile(name, pass, System.currentTimeMillis(), ip);
+            	session.persist(profile);
             } else if (!profile.isPass(pass)) {
                 //Auth success
                 result = AuthResult.INVALID_PASSWORD;
@@ -98,7 +103,9 @@ public class GameDecoder extends OpcodeDecoder<LSIncomingPacket> implements Hand
         profile.setLastIP(ip);
         profile.setLastSeen(System.currentTimeMillis());
 
-        LogonServer.getLogon().getDatabase().getSession().flush();
+        transaction.commit();
+        LogonServer.getLogon().getDatabase().flush();
+        
         Log.debug("Connect " + profile.getName() + ": " + result);
         this.host.add(profile);
 

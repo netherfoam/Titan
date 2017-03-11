@@ -142,7 +142,6 @@ public class BankSideInterface extends SideInterface {
 
             inv.apply();
             bank.apply();
-            return;
         }
     }
 

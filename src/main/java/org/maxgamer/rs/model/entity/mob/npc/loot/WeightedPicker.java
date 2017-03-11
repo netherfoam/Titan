@@ -16,7 +16,7 @@ public class WeightedPicker<T extends Weighted> {
     /**
      * All the possible weighted objects which can be chosen
      */
-    private LinkedList<T> options = new LinkedList<T>();
+    private LinkedList<T> options = new LinkedList<>();
     /**
      * The combined weight of all options
      */
@@ -107,7 +107,7 @@ public class WeightedPicker<T extends Weighted> {
      * @return a <b>copy</b> of the collection holding the items.
      */
     public ArrayList<T> getOptions() {
-        return new ArrayList<T>(options);
+        return new ArrayList<>(options);
     }
 
     /**

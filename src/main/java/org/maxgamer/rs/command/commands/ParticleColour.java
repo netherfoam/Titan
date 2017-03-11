@@ -48,7 +48,6 @@ public class ParticleColour implements PlayerCommand {
         p.getModel().intensity = Integer.parseInt(args[2]);
         p.getModel().applyCustom = true;
         p.getModel().setChanged(true);
-        return;
     }
 
     @Override

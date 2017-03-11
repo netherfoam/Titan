@@ -22,11 +22,11 @@ public class JavaScriptAttack extends Attack {
     public boolean prepare(Mob target, AttackResult damage) {
         JavaScriptInvocation call = new JavaScriptInvocation(Core.getServer().getScriptEnvironment(), module, "prepare", attacker, target, damage);
         Object o = call.call();
-        if(o instanceof Boolean) {
+        if (o instanceof Boolean) {
             return (Boolean) o;
         }
 
-        if(o != null && o != Undefined.instance) {
+        if (o != null && o != Undefined.instance) {
             throw new IllegalStateException("Expected script to return boolean or void, got " + o);
         }
 
@@ -43,11 +43,11 @@ public class JavaScriptAttack extends Attack {
     public boolean takeConsumables() {
         JavaScriptInvocation call = new JavaScriptInvocation(Core.getServer().getScriptEnvironment(), module, "takeConsumables", attacker);
         Object o = call.call();
-        if(o instanceof Boolean) {
+        if (o instanceof Boolean) {
             return (Boolean) o;
         }
 
-        if(o != null) {
+        if (o != null) {
             throw new IllegalStateException("Expected script to return boolean or void, got " + o);
         }
 
@@ -57,7 +57,7 @@ public class JavaScriptAttack extends Attack {
     @Override
     public int getMaxDistance() {
         // We cache this value
-        if(maxDistance == -1) {
+        if (maxDistance == -1) {
             JavaScriptInvocation call = new JavaScriptInvocation(Core.getServer().getScriptEnvironment(), module, "getMaxDistance", attacker);
             Object o = call.call();
             if (o instanceof Number) {
@@ -72,7 +72,7 @@ public class JavaScriptAttack extends Attack {
 
     @Override
     public int getWarmupTicks() {
-        if(warmupTicks == -1) {
+        if (warmupTicks == -1) {
             JavaScriptInvocation call = new JavaScriptInvocation(Core.getServer().getScriptEnvironment(), module, "getWarmupTicks", attacker);
             Object o = call.call();
             if (o instanceof Number) {

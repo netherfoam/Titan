@@ -43,7 +43,7 @@ public class JavaScriptInteractHandler implements InteractionHandler {
         option = option.replaceAll(" ", "-");
         option = option.toLowerCase();
 
-        ArrayList<File> files = new ArrayList<File>();
+        ArrayList<File> files = new ArrayList<>();
 
         // We exhaust all superclass options as well as the base class
         while (clazz != Object.class) {
@@ -83,7 +83,6 @@ public class JavaScriptInteractHandler implements InteractionHandler {
                 if (option.length() <= i) break;
                 c = option.charAt(i);
                 sb.append(Character.toUpperCase(c));
-                continue;
             } else {
                 sb.append(c);
             }
@@ -116,13 +115,13 @@ public class JavaScriptInteractHandler implements InteractionHandler {
         option = Chat.toLowerCamelCase(option, ' ');
 
         for (File f : files) {
-            if(!f.exists()) continue;
+            if (!f.exists()) continue;
 
             String module = f.toURI().toString();
             module = module.substring(0, module.length() - 3); // Drop the '.js' extension
 
             JavaScriptCallFiber call = new JavaScriptCallFiber(Core.getServer().getScriptEnvironment(), module, option, source, target);
-            if(!call.hasFunction()) continue;
+            if (!call.hasFunction()) continue;
 
             if (target instanceof Entity) {
                 source.face((Entity) target);

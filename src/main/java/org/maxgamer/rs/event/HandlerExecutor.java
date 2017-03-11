@@ -76,7 +76,7 @@ public class HandlerExecutor {
         if (this == o) {
             return true;
         }
-        if (o instanceof HandlerExecutor == false) {
+        if (!(o instanceof HandlerExecutor)) {
             return false;
         }
         HandlerExecutor h = (HandlerExecutor) o;

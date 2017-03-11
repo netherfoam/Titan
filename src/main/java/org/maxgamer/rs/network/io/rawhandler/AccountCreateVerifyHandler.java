@@ -63,21 +63,21 @@ public class AccountCreateVerifyHandler extends RawHandler {
 
         Log.debug("Account verification for Email " + email);
 
-		/*
-		 * Return codes are: 2: Valid user, display green mark 7: Server is busy
-		 * 9: Account can't be created at this time 20: Username already taken
-		 * 22: Please supply a valid username
-		 */
+        /*
+         * Return codes are: 2: Valid user, display green mark 7: Server is busy
+         * 9: Account can't be created at this time 20: Username already taken
+         * 22: Please supply a valid username
+         */
 
         //TODO: Forward this request to LogonServer
-		/*
-		 * if(Profile.isValidUser(email) == false){ getSession().write((byte)
-		 * 22); return; }
-		 * 
-		 * try { //User can't be taken if(Profile.get(email) != null){
-		 * getSession().write((byte) 20); return; } } catch (SQLException e) {
-		 * e.printStackTrace(); getSession().write((byte) 9); return; }
-		 */
+        /*
+         * if(Profile.isValidUser(email) == false){ getSession().write((byte)
+         * 22); return; }
+         *
+         * try { //User can't be taken if(Profile.get(email) != null){
+         * getSession().write((byte) 20); return; } } catch (SQLException e) {
+         * e.printStackTrace(); getSession().write((byte) 9); return; }
+         */
 
         //Valid email
         getSession().write((byte) 2);

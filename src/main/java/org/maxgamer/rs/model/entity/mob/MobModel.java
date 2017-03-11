@@ -53,34 +53,34 @@ public abstract class MobModel implements YMLSerializable {
      */
     private int title = 0;
 
-	/*
-	 * Taken from
-	 * http://www.rune-server.org/runescape-development/rs-503-client-
-	 * server/configuration
-	 * /295398-all-508-graphics-interfaces-emotes-items-ids-more.html hair:
-	 * 1:white 2:grey 3:black 4:orange 5:blonde 6.light brown 7.brown 8.turqoise
-	 * 9.green 10.ORANGE 11.Purple 12.Black 13.grey 14.faded yellow, dark white
-	 * 15.peach 16.cyan 17.dark blue 18.faint purple 19.strawberry 20.red(dark)
-	 * 21.mint green 22.dark green 23.indigo 24.violet 25.dark brown
-	 * 
-	 * torso: 1:dark grey 2:Redish color 3:Blue 4:Tan 5:Whitish color 6.red
-	 * 7.dark blue 8.light green 9.yellow 10.purple 11.orange 12.pink 13.moss
-	 * green 14.turqoise 15.green 16.black 17.gray 18.papyrus 19.orange 20.cyan
-	 * 21.blue 22.peach 23.light red 24.burgundy 25.mint green 26.dark green
-	 * 27.purple 28.light purple 29.light brown
-	 * 
-	 * bottom: 0:green 1:khaki 2:dark grey 3:redish color (same as torso) 4:cool
-	 * blue 5:yellow 6.light grey 7.reddish 8.blue 9.green 10.yellow 11.indigo
-	 * 12.sepia 13.pink 14.moss green 15.turqoise 16.black 17.light grey
-	 * 18.papyrus 19.orange 20.cyan 21.blue 22.peach 23.light red 24.burgundy
-	 * 25.mint green 26.dark green 27.purple 28.light purple 29.light brown
-	 * 
-	 * 
-	 * boots: 1:kinda grenish 2:light brown/dark tan 3:black 4:brown
-	 * 5:grey/silver
-	 * 
-	 * skin color: gets darker the bigger the number
-	 */
+    /*
+     * Taken from
+     * http://www.rune-server.org/runescape-development/rs-503-client-
+     * server/configuration
+     * /295398-all-508-graphics-interfaces-emotes-items-ids-more.html hair:
+     * 1:white 2:grey 3:black 4:orange 5:blonde 6.light brown 7.brown 8.turqoise
+     * 9.green 10.ORANGE 11.Purple 12.Black 13.grey 14.faded yellow, dark white
+     * 15.peach 16.cyan 17.dark blue 18.faint purple 19.strawberry 20.red(dark)
+     * 21.mint green 22.dark green 23.indigo 24.violet 25.dark brown
+     *
+     * torso: 1:dark grey 2:Redish color 3:Blue 4:Tan 5:Whitish color 6.red
+     * 7.dark blue 8.light green 9.yellow 10.purple 11.orange 12.pink 13.moss
+     * green 14.turqoise 15.green 16.black 17.gray 18.papyrus 19.orange 20.cyan
+     * 21.blue 22.peach 23.light red 24.burgundy 25.mint green 26.dark green
+     * 27.purple 28.light purple 29.light brown
+     *
+     * bottom: 0:green 1:khaki 2:dark grey 3:redish color (same as torso) 4:cool
+     * blue 5:yellow 6.light grey 7.reddish 8.blue 9.green 10.yellow 11.indigo
+     * 12.sepia 13.pink 14.moss green 15.turqoise 16.black 17.light grey
+     * 18.papyrus 19.orange 20.cyan 21.blue 22.peach 23.light red 24.burgundy
+     * 25.mint green 26.dark green 27.purple 28.light purple 29.light brown
+     *
+     *
+     * boots: 1:kinda grenish 2:light brown/dark tan 3:black 4:brown
+     * 5:grey/silver
+     *
+     * skin color: gets darker the bigger the number
+     */
     private int renderAnimationId = 1426;
     /**
      * The colours for a player
@@ -105,7 +105,7 @@ public abstract class MobModel implements YMLSerializable {
      *              0-4
      * @return the maximum value (Eg, valid values are 0-maximum inclusive)
      */
-    public static final int getMaxColor(int index) {
+    public static int getMaxColor(int index) {
         switch (index) {
             case 0:
                 return 25;
@@ -354,7 +354,7 @@ public abstract class MobModel implements YMLSerializable {
      *                false otherwise
      */
     public void setChanged(boolean changed) {
-        if (changed && this.changed == false) {
+        if (changed && !this.changed) {
             // We are becoming changed, we weren't before.
             this.cache = null;
         }

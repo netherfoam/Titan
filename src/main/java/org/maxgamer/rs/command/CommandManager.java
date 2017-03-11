@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 public class CommandManager {
     public static final String COMMAND_PREFIX = "::";
 
-    private HashMap<String, Command> commands = new HashMap<String, Command>();
+    private HashMap<String, Command> commands = new HashMap<>();
     private TrieSet names = new TrieSet();
     private EventManager events;
 
@@ -133,7 +133,7 @@ public class CommandManager {
 
         Pattern pattern = Pattern.compile("(\"[^\"]*\")|\\S+", 0);
         Matcher m = pattern.matcher(arg);
-        LinkedList<String> args = new LinkedList<String>();
+        LinkedList<String> args = new LinkedList<>();
         while (m.find()) {
             String s = arg.substring(m.start(), m.end());
             args.add(s);
@@ -160,7 +160,7 @@ public class CommandManager {
         try {
             if (args.length == 0 || args[0].isEmpty()) {
                 sender.sendMessage("Commands Available: ");
-                List<String> cmds = new ArrayList<String>(commands.keySet());
+                List<String> cmds = new ArrayList<>(commands.keySet());
                 Collections.sort(cmds, String.CASE_INSENSITIVE_ORDER);
                 for (String cmd : cmds) {
                     Command c = getCommand(cmd);
@@ -201,9 +201,7 @@ public class CommandManager {
 
             String[] subArgs = new String[args.length - 1];
 
-            for (int i = 1; i < args.length; i++) {
-                subArgs[i - 1] = args[i];
-            }
+            System.arraycopy(args, 1, subArgs, 0, args.length - 1);
 
             if (events != null) {
                 CommandEvent e = new CommandEvent(sender, command, subArgs);
@@ -228,7 +226,6 @@ public class CommandManager {
                     pc.execute(p, subArgs);
                 } else {
                     sender.sendMessage("That command is a player-only command.");
-                    return;
                 }
             } else if (command instanceof GenericCommand) {
                 GenericCommand gc = (GenericCommand) command;

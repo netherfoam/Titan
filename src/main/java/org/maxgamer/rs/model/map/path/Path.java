@@ -108,7 +108,7 @@ public class Path implements Iterable<Direction> {
 
     public Path clone() {
         Path path = new Path();
-        path.directions = new ArrayList<Direction>(this.directions);
+        path.directions = new ArrayList<>(this.directions);
         path.fail = this.fail;
         return path;
     }

@@ -48,7 +48,7 @@ public class HarvestTool {
         if (p == null) throw new NullPointerException();
 
         if (item != null)
-            if (p.getInventory().contains(item) == false && p.getEquipment().contains(item) == false) return false;
+            if (!p.getInventory().contains(item) && !p.getEquipment().contains(item)) return false;
 
         if (skill != null)
             if (p.getSkills().getLevel(skill, true) < level) return false;

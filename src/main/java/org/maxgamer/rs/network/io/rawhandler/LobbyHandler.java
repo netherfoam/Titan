@@ -29,7 +29,7 @@ public class LobbyHandler extends RawHandler {
             throw new BufferUnderflowException();
         }
 
-        if (c.getProtocol().getPacketManager().handle(c, p) == false) {
+        if (!c.getProtocol().getPacketManager().handle(c, p)) {
             Log.debug("Unhandled lobby OPCode: " + p.getOpcode() + ": " + p.toString());
         }
     }

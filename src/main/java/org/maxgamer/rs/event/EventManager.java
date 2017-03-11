@@ -44,20 +44,20 @@ public class EventManager {
             return false; // Wrong number of args
         }
         Class<?> clazz = m.getParameterTypes()[0];
-        if (isSuperClass(clazz, Event.class) == false) {
+        if (!isSuperClass(clazz, Event.class)) {
             return false;
         }
-        if (m.isAnnotationPresent(EventHandler.class) == false) {
+        if (!m.isAnnotationPresent(EventHandler.class)) {
             return false; // There is no @ActionHandler annotation
         }
-        if (m.isAccessible() == false) {
+        if (!m.isAccessible()) {
             m.setAccessible(true);
         }
         return true;
     }
 
     public synchronized void reload() {
-        listeners = new HashMap<EventPriority, LinkedList<HandlerExecutor>>(EventPriority.values().length);
+        listeners = new HashMap<>(EventPriority.values().length);
     }
 
     /**
@@ -81,7 +81,7 @@ public class EventManager {
         for (HandlerExecutor h : handlers) {
             LinkedList<HandlerExecutor> list = listeners.get(h.getPriority());
             if (list == null) {
-                list = new LinkedList<HandlerExecutor>();
+                list = new LinkedList<>();
                 listeners.put(h.getPriority(), list);
             }
             list.add(h);
@@ -97,9 +97,9 @@ public class EventManager {
      * @return A linked list (Never null, possibly empty) of handlers.
      */
     private LinkedList<HandlerExecutor> getHandlers(EventListener listener) {
-        LinkedList<HandlerExecutor> actions = new LinkedList<HandlerExecutor>();
+        LinkedList<HandlerExecutor> actions = new LinkedList<>();
         for (Method m : listener.getClass().getMethods()) {
-            if (isHandler(m) == false) {
+            if (!isHandler(m)) {
                 continue;
             }
 
@@ -153,7 +153,7 @@ public class EventManager {
                     continue;
                 }
 
-                if (h.getMethod().getParameterTypes()[0].isInstance(event) == false) {
+                if (!h.getMethod().getParameterTypes()[0].isInstance(event)) {
                     continue;
                 }
 
@@ -181,13 +181,13 @@ public class EventManager {
         StringBuilder sb = new StringBuilder();
 
         for (EventPriority p : EventPriority.values()) {
-            sb.append("<=== " + p.toString() + " ===>\n");
+            sb.append("<=== ").append(p.toString()).append(" ===>\n");
             LinkedList<HandlerExecutor> list = listeners.get(p);
             if (list == null) {
                 continue;
             }
             for (HandlerExecutor h : list) {
-                sb.append("---> " + h.getMethod().toGenericString() + "\n");
+                sb.append("---> ").append(h.getMethod().toGenericString()).append("\n");
             }
         }
 

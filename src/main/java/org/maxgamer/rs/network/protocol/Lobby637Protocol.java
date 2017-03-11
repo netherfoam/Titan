@@ -21,12 +21,12 @@ public class Lobby637Protocol extends LobbyProtocol {
     public static final PacketManager<LobbyPlayer> PACKET_MANAGER;
 
     static {
-        PACKET_MANAGER = new PacketManager<LobbyPlayer>();
+        PACKET_MANAGER = new PacketManager<>();
         PACKET_MANAGER.setHandler(12, new PacketProcessor<LobbyPlayer>() {
             @Override
             public void process(LobbyPlayer c, RSIncomingPacket p) throws Exception {
                 //Heartbeat packet.
-                //TODO: We should probably send some kind of response.
+                c.write(new RSOutgoingPacket(99));
             }
         });
 

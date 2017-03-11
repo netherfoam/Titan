@@ -59,16 +59,13 @@ public abstract class Entity implements MBR, Locatable {
     }
 
     public final boolean isPrivate() {
-        if (viewers == null) {
-            return false;
-        }
+        return viewers != null;
 
-        return true;
     }
 
     public final void setPrivate(boolean isPrivate) {
         if (isPrivate) {
-            this.viewers = new ArrayList<WeakReference<Entity>>(0);
+            this.viewers = new ArrayList<>(0);
         } else {
             this.viewers = null;
         }
@@ -88,7 +85,7 @@ public abstract class Entity implements MBR, Locatable {
             return false;
         }
 
-        if (isPrivate() == false) {
+        if (!isPrivate()) {
             return true;
         }
 
@@ -112,7 +109,7 @@ public abstract class Entity implements MBR, Locatable {
      * @param viewer the viewer
      */
     public final void addViewer(Entity viewer) {
-        if (isPrivate() == false) {
+        if (!isPrivate()) {
             throw new IllegalStateException("Entity is public. Therefore it cannot be hidden!");
         }
 
@@ -136,7 +133,7 @@ public abstract class Entity implements MBR, Locatable {
      * @throws IllegalStateException if this entity is public
      */
     public final void removeViewer(Entity viewer) {
-        if (isPrivate() == false) {
+        if (!isPrivate()) {
             /* Entity is visible to everyone already */
             return;
         }
@@ -153,7 +150,7 @@ public abstract class Entity implements MBR, Locatable {
             }
         }
 
-        viewers.add(new WeakReference<Entity>(viewer));
+        viewers.add(new WeakReference<>(viewer));
     }
 
     /**
@@ -215,7 +212,7 @@ public abstract class Entity implements MBR, Locatable {
      * @param l the location to set.
      */
     protected void setLocation(Location l) {
-        if (Core.getServer().getThread().isServerThread() == false) {
+        if (!Core.getServer().getThread().isServerThread()) {
             throw new IllegalThreadException("Entity location should only be changed on server thread");
         }
 
@@ -293,7 +290,7 @@ public abstract class Entity implements MBR, Locatable {
      *                          server thread
      */
     public void destroy() {
-        if (Core.getServer().getThread().isServerThread() == false) {
+        if (!Core.getServer().getThread().isServerThread()) {
             throw new RuntimeException("Entities should only be destroyed on the Server thread.");
         }
         if (isDestroyed()) throw new RuntimeException("This entity has already been destroyed.");

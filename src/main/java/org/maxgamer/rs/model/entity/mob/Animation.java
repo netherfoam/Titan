@@ -12,7 +12,7 @@ import java.util.HashMap;
  * @author netherfoam
  */
 public class Animation {
-    private static HashMap<Integer, AnimationDefinition> definitions = new HashMap<Integer, AnimationDefinition>();
+    private static HashMap<Integer, AnimationDefinition> definitions = new HashMap<>();
 
     private AnimationDefinition def;
     private int id;

@@ -26,14 +26,14 @@ public class GroundItemOptionsHandler implements PacketProcessor<Player> {
     public static final int FIFTH_OPTION = 71;
     public static final int EXAMINE = 69; //EXAMINE
 
-	/*
-	 * Sample Data: Item 8334(Oak lectern) has option 0(Study) opcode 22, Size:
-	 * 7Data: 0x80 C 16 8E 20 15 C Item 0(Dwarf remains) has option 1(Pickup)
-	 * opcode 54, Size: 7Data: 0x96 C 0 0 C 15 0 Item 4653(Fire) has option
-	 * 2(Study) option 1, [null] opcode 54, Size: 7Data: 0x96 C 2D 12 C 15 0
-	 * Item 1511(Logs) has option 3(Light) option 3, [null] Item 3006(Firework)
-	 * has option 4(Light) opcode: 71, Size: 7Data: 0x16 C 3E B 15 C 0
-	 */
+    /*
+     * Sample Data: Item 8334(Oak lectern) has option 0(Study) opcode 22, Size:
+     * 7Data: 0x80 C 16 8E 20 15 C Item 0(Dwarf remains) has option 1(Pickup)
+     * opcode 54, Size: 7Data: 0x96 C 0 0 C 15 0 Item 4653(Fire) has option
+     * 2(Study) option 1, [null] opcode 54, Size: 7Data: 0x96 C 2D 12 C 15 0
+     * Item 1511(Logs) has option 3(Light) option 3, [null] Item 3006(Firework)
+     * has option 4(Light) opcode: 71, Size: 7Data: 0x16 C 3E B 15 C 0
+     */
 
     @Override
     public void process(final Player player, RSIncomingPacket packet) throws Exception {
@@ -61,7 +61,7 @@ public class GroundItemOptionsHandler implements PacketProcessor<Player> {
                 break;
             //Appears to be the same OPCode as option two, even in the client :(
             //case THIRD_OPTION:
-            //	break;
+            //    break;
             case FOURTH_OPTION:
                 y = packet.readLEShort();
                 itemId = packet.readLEShortA();

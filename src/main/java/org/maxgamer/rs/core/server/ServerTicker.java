@@ -37,7 +37,7 @@ public class ServerTicker implements Runnable {
      */
     public ServerTicker(Server server) {
         this.server = server;
-        this.tickables = new PriorityQueue<TickableWrapper>(256);
+        this.tickables = new PriorityQueue<>(256);
         this.ticks = 0;
     }
 
@@ -87,7 +87,7 @@ public class ServerTicker implements Runnable {
 
         TickableWrapper task;
         // Add all of the tickables to a list of ticks we will execute.
-        LinkedList<TickableWrapper> shortlist = new LinkedList<TickableWrapper>();
+        LinkedList<TickableWrapper> shortlist = new LinkedList<>();
 
         synchronized (this.tickables) {
             while ((task = this.tickables.peek()) != null && task.getPeriod() <= ticks) {
@@ -122,7 +122,7 @@ public class ServerTicker implements Runnable {
         transaction.commit();
 
         Collection<Session> sessions = server.getNetwork().getSessions();
-        sessions = new ArrayList<Session>(sessions);
+        sessions = new ArrayList<>(sessions);
         Iterator<Session> sit = sessions.iterator();
         while (sit.hasNext()) {
             Session s = sit.next();

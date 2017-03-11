@@ -21,7 +21,7 @@ public class Lobby {
      * Creates a new, empty lobby.
      */
     public Lobby() {
-        this.clients = new HashMap<String, LobbyPlayer>();
+        this.clients = new HashMap<>();
         this.names = new TrieSet();
     }
 

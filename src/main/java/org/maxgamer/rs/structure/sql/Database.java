@@ -16,10 +16,11 @@ import java.util.HashMap;
  */
 public class Database {
     private DatabaseCore core;
-    private HashMap<Class<? extends AbstractRepository>, AbstractRepository<?>> repositories = new HashMap<Class<? extends AbstractRepository>, AbstractRepository<?>>();
-    private ArrayList<Class<?>> managedEntities = new ArrayList<Class<?>>();
+    private HashMap<Class<? extends AbstractRepository>, AbstractRepository<?>> repositories = new HashMap<>();
+    private ArrayList<Class<?>> managedEntities = new ArrayList<>();
     private SessionFactory sessionFactory;
     private Session session;
+
     /**
      * Creates a new database and validates its connection.
      * <p>
@@ -102,7 +103,7 @@ public class Database {
      * @return The {@link EntityManager} for this Database
      */
     public synchronized Session getSession() {
-        if (this.session == null || this.session.isOpen() == false) {
+        if (this.session == null || !this.session.isOpen()) {
             this.session = this.getSessionFactory().openSession();
         }
 

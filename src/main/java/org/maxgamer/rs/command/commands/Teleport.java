@@ -25,7 +25,6 @@ public class Teleport implements PlayerCommand {
             p.sendMessage("Teleported to " + dest);
         } catch (NumberFormatException e) {
             p.sendMessage("Invalid number given for location, given " + e.getMessage());
-            return;
         }
     }
 

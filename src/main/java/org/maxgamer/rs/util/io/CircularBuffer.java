@@ -146,7 +146,7 @@ public class CircularBuffer implements ByteReader, ByteWriter {
     }
 
     public long readLong() {
-        return (((readInt() & 0xFFFFFFFF) << 32) | (readInt() & 0xFFFFFFFF));
+        return (((readInt()) << 0) | (readInt()));
     }
 
     public float readFloat() {

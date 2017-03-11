@@ -22,9 +22,9 @@ public final class FriendsList implements YMLSerializable {
      */
     protected final Client p;
     // HashMap of (Lowercase name) to (Proper case name) for friends.
-    private HashMap<String, String> friends = new HashMap<String, String>();
+    private HashMap<String, String> friends = new HashMap<>();
     // HashMap of (Lowercase name) to (Proper case name) for ignores.
-    private HashMap<String, String> ignores = new HashMap<String, String>();
+    private HashMap<String, String> ignores = new HashMap<>();
 
     /**
      * Constructs a new FriendList for the given player
@@ -51,7 +51,7 @@ public final class FriendsList implements YMLSerializable {
      * empty.
      */
     public ArrayList<String> getFriends() {
-        return new ArrayList<String>(this.friends.values());
+        return new ArrayList<>(this.friends.values());
     }
 
     /**
@@ -61,7 +61,7 @@ public final class FriendsList implements YMLSerializable {
      * empty.
      */
     public ArrayList<String> getIgnores() {
-        return new ArrayList<String>(this.ignores.values());
+        return new ArrayList<>(this.ignores.values());
     }
 
     /**
@@ -234,7 +234,7 @@ public final class FriendsList implements YMLSerializable {
         if (friends != null) {
             for (String s : friends.getKeys()) {
                 String name = friends.getString(s);
-                if (isFriend(name) == false) addFriend(name);
+                if (!isFriend(name)) addFriend(name);
             }
         }
 

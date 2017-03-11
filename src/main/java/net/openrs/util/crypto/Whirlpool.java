@@ -171,6 +171,7 @@ public class Whirlpool {
     protected long[] L = new long[8];
     protected long[] block = new long[8]; // mu(buffer)
     protected long[] state = new long[8]; // the cipher state
+
     public Whirlpool() {
     }
 
@@ -180,8 +181,7 @@ public class Whirlpool {
             source = data;
         } else {
             source = new byte[len];
-            for (int i = 0; i < len; i++)
-                source[i] = data[off + i];
+            System.arraycopy(data, off + 0, source, 0, len);
         }
         Whirlpool whirlpool = new Whirlpool();
         whirlpool.NESSIEinit();
@@ -228,9 +228,7 @@ public class Whirlpool {
                     L[i] ^= C[t][(int) (K[(i - t) & 7] >>> s) & 0xff];
                 }
             }
-            for (int i = 0; i < 8; i++) {
-                K[i] = L[i];
-            }
+            System.arraycopy(L, 0, K, 0, 8);
             K[0] ^= rc[r];
             /*
              * apply the r-th round transformation:
@@ -241,9 +239,7 @@ public class Whirlpool {
                     L[i] ^= C[t][(int) (state[(i - t) & 7] >>> s) & 0xff];
                 }
             }
-            for (int i = 0; i < 8; i++) {
-                state[i] = L[i];
-            }
+            System.arraycopy(L, 0, state, 0, 8);
         }
         /*
          * apply the Miyaguchi-Preneel compression function:

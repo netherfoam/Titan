@@ -37,8 +37,7 @@ public class LSIncomingPacket extends RSInputBuffer implements ByteReader {
         int opcode = b.readByte() & 0xFF;
         int length = b.readShort() & 0xFFFF;
 
-        LSIncomingPacket p = new LSIncomingPacket(opcode, b, length);
-        return p;
+        return new LSIncomingPacket(opcode, b, length);
     }
 
     public static LSIncomingPacket parse(RSInputStream in) throws IOException, BufferUnderflowException {
@@ -59,16 +58,14 @@ public class LSIncomingPacket extends RSInputBuffer implements ByteReader {
             bb.put((byte) v);
         }
         bb.flip();
-        LSIncomingPacket packet = new LSIncomingPacket(opcode, bb, length);
-        return packet;
+        return new LSIncomingPacket(opcode, bb, length);
     }
 
     public static LSIncomingPacket parse(CircularBuffer b) throws IOException {
         int opcode = b.readByte() & 0xFF;
         int length = b.readShort();
 
-        LSIncomingPacket p = new LSIncomingPacket(opcode, b, length);
-        return p;
+        return new LSIncomingPacket(opcode, b, length);
     }
 
     public int getOpcode() {

@@ -62,7 +62,7 @@ public class SpellOnMobHandler implements PacketProcessor<Player> {
             return;
         }
 
-        if (p.getProtocol().getViewport().overlaps(target.getLocation()) == false) {
+        if (!p.getProtocol().getViewport().overlaps(target.getLocation())) {
             p.getCheats().log(10, "Player attempted to interface-use on a target which is not inside their viewport");
             return;
         }

@@ -128,14 +128,14 @@ public class CS2 {
             cs2.instructions[i] = CS2Op.decode(bb);
         }
 
-		/*
-		 * //If we were successful, these should be equal. If our file is
-		 * corrupt, these will probably be different. if(bb.position() !=
-		 * bb.limit() - 2 - footerLength - 12){ throw new
-		 * IOException("Bad script, locations don't match up. Position(): " +
-		 * bb.position() + ", should be at " + (bb.limit() - 2 - footerLength -
-		 * 12) + ", description: " + cs2); }
-		 */
+        /*
+         * //If we were successful, these should be equal. If our file is
+         * corrupt, these will probably be different. if(bb.position() !=
+         * bb.limit() - 2 - footerLength - 12){ throw new
+         * IOException("Bad script, locations don't match up. Position(): " +
+         * bb.position() + ", should be at " + (bb.limit() - 2 - footerLength -
+         * 12) + ", description: " + cs2); }
+         */
 
         return cs2;
     }

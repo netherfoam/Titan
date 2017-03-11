@@ -121,9 +121,9 @@ public abstract class PickerDialogue<T> extends Dialogue {
         //the interface. I think an access mask changing the interface depth would fix it but I don't know
         //the interface offset and length (0 to n?) or the component id of the background
         /*
-		 * SettingsBuilder s = new SettingsBuilder(); s.setSecondaryOption(0,
-		 * true); setAccessMask(s.getValue(), 0, 20, 0);
-		 */
+         * SettingsBuilder s = new SettingsBuilder(); s.setSecondaryOption(0,
+         * true); setAccessMask(s.getValue(), 0, 20, 0);
+         */
     }
 
     @Override

@@ -34,12 +34,12 @@ public class SocialRelationsHandler implements PacketProcessor<Player> {
                     FriendsList f = getPlayer().getFriends();
                     switch (in.getOpcode()) {
                         case REMOVING_FRIEND:
-                            if (f.removeFriend(msg, false) == false) {
+                            if (!f.removeFriend(msg, false)) {
                                 getPlayer().getCheats().log(1, "Attempted to right click -> Delete friend which they didn't have");
                             }
                             break;
                         case REMOVING_IGNORE:
-                            if (f.removeIgnore(msg, false) == false) {
+                            if (!f.removeIgnore(msg, false)) {
                                 getPlayer().getCheats().log(1, "Attempted to right click -> Delete ignore which they didn't have");
                             }
                             break;

@@ -42,7 +42,6 @@ public abstract class GESearchInterface extends Interface {
     public void onClick(int option, int buttonId, int slotId, int itemId) {
         if (buttonId == 10 && option == 0) {
             getPlayer().getWindow().close(this);
-            return;
         }
     }
 

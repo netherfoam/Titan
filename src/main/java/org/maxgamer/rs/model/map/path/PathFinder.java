@@ -19,6 +19,6 @@ public interface PathFinder {
      * @param ySize The entity's size on the y axis
      * @return The path, potentially failed.
      */
-    public Path findPath(Location start, Position min, Position max, int xSize, int ySize);
+    Path findPath(Location start, Position min, Position max, int xSize, int ySize);
 
 }

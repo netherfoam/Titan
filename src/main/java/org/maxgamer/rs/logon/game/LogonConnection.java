@@ -70,7 +70,7 @@ public class LogonConnection {
                             //Success
                             worldId = in.read();
                             Log.info("LogonServer authenticated as World " + worldId);
-                            if (Core.getServer().getNetwork().isRunning() == false) {
+                            if (!Core.getServer().getNetwork().isRunning()) {
                                 Core.getServer().getNetwork().start();
                             }
 
@@ -108,7 +108,7 @@ public class LogonConnection {
 
                             try {
                                 LogonConnection.this.run(socket);
-                            } catch (IOException e) {
+                            } catch (IOException ignored) {
                             }
 
                             //TODO: This has no effect as we set firstAttempt = false below, but its a minor message and implied
@@ -149,7 +149,7 @@ public class LogonConnection {
 
                     try {
                         Thread.sleep(500);
-                    } catch (InterruptedException e) {
+                    } catch (InterruptedException ignored) {
                     }
                 }
             }

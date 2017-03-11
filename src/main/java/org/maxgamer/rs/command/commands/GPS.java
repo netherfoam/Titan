@@ -22,7 +22,7 @@ public class GPS implements PlayerCommand {
 
         StringBuilder sb = new StringBuilder();
         for (Area a : p.getMap().getAreas().getAreas(p.getLocation())) {
-            sb.append(a.getClass().getSimpleName() + " ");
+            sb.append(a.getClass().getSimpleName()).append(" ");
         }
         if (sb.length() <= 0) {
             sb.append("None");

@@ -22,7 +22,7 @@ final class GraphNode<T> {
      */
     public void addComingInNode(GraphNode<T> node) {
         if (comingInNodes == null)
-            comingInNodes = new ArrayList<GraphNode<T>>();
+            comingInNodes = new ArrayList<>();
         comingInNodes.add(node);
     }
 
@@ -33,7 +33,7 @@ final class GraphNode<T> {
      */
     public void addGoingOutNode(GraphNode<T> node) {
         if (goingOutNodes == null)
-            goingOutNodes = new ArrayList<GraphNode<T>>();
+            goingOutNodes = new ArrayList<>();
         goingOutNodes.add(node);
     }
 

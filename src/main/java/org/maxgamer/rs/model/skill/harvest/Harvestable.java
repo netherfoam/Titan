@@ -318,13 +318,13 @@ public class Harvestable {
                         return p.getSkills().getLevel(skill) >= t.getRequiredLevel();
                     }
                 });
-                WeightedPicker<HarvestReward> picker = new WeightedPicker<HarvestReward>(arr);
+                WeightedPicker<HarvestReward> picker = new WeightedPicker<>(arr);
                 ItemStack item = picker.next().getReward();
                 p.getInventory().add(item);
                 p.sendMessage("You get some " + item.getDefinition().getName().toLowerCase() + ".");
             } catch (ContainerException e) {
                 if (p instanceof Player) {
-                    ((Player) p).sendMessage("You need more space.");
+                    p.sendMessage("You need more space.");
                 }
                 return false;
             }

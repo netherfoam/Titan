@@ -9,6 +9,7 @@ import org.maxgamer.rs.model.item.inventory.ContainerState;
 import org.maxgamer.rs.model.skill.SkillType;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Represents some kind of spell that a player or mob may cast
@@ -43,36 +44,32 @@ public abstract class Spell {
             return false;
         }
 
-        ArrayList<ItemStack> runes = new ArrayList<ItemStack>(this.runes.length);
-        for (ItemStack rune : this.runes) {
-            runes.add(rune);
-        }
+        ArrayList<ItemStack> runes = new ArrayList<>(this.runes.length);
+        Collections.addAll(runes, this.runes);
 
         if (mob instanceof InventoryHolder) {
-            if (mob instanceof EquipmentHolder) {
-                Container equip = ((EquipmentHolder) mob).getEquipment();
+            Container equip = ((EquipmentHolder) mob).getEquipment();
 
-                ItemStack wep = equip.get(WieldType.WEAPON.getSlot());
-                if (wep != null) {
-                    String name = wep.getName().toLowerCase();
-                    if (name.contains("staff")) {
-                        ItemStack free = null;
-                        if (name.contains("air")) {
-                            free = Spellbook.AIR_RUNE;
-                        } else if (name.contains("water")) {
-                            free = Spellbook.WATER_RUNE;
-                        } else if (name.contains("earth")) {
-                            free = Spellbook.EARTH_RUNE;
-                        } else if (name.contains("fire")) {
-                            free = Spellbook.FIRE_RUNE;
-                        }
+            ItemStack wep = equip.get(WieldType.WEAPON.getSlot());
+            if (wep != null) {
+                String name = wep.getName().toLowerCase();
+                if (name.contains("staff")) {
+                    ItemStack free = null;
+                    if (name.contains("air")) {
+                        free = Spellbook.AIR_RUNE;
+                    } else if (name.contains("water")) {
+                        free = Spellbook.WATER_RUNE;
+                    } else if (name.contains("earth")) {
+                        free = Spellbook.EARTH_RUNE;
+                    } else if (name.contains("fire")) {
+                        free = Spellbook.FIRE_RUNE;
+                    }
 
-                        if (free != null) {
-                            for (int i = 0; i < runes.size(); i++) {
-                                if (runes.get(i).matches(free)) {
-                                    runes.remove(i);
-                                    i--;
-                                }
+                    if (free != null) {
+                        for (int i = 0; i < runes.size(); i++) {
+                            if (runes.get(i).matches(free)) {
+                                runes.remove(i);
+                                i--;
                             }
                         }
                     }
@@ -96,10 +93,8 @@ public abstract class Spell {
     }
 
     public boolean takeConsumables(Mob mob) {
-        ArrayList<ItemStack> runes = new ArrayList<ItemStack>(this.runes.length);
-        for (ItemStack rune : this.runes) {
-            runes.add(rune);
-        }
+        ArrayList<ItemStack> runes = new ArrayList<>(this.runes.length);
+        Collections.addAll(runes, this.runes);
 
         if (mob instanceof InventoryHolder) {
             if (mob instanceof EquipmentHolder) {

@@ -134,7 +134,7 @@ public class GameDecoder extends OpcodeDecoder<LSIncomingPacket> implements Hand
 
     @Opcode(opcode = 3)
     public void decodeSave(LSIncomingPacket in) {
-        while (in.isEmpty() == false) {
+        while (!in.isEmpty()) {
             String name = in.readPJStr1();
             byte[] data = new byte[in.readInt()];
             in.read(data);
@@ -167,7 +167,7 @@ public class GameDecoder extends OpcodeDecoder<LSIncomingPacket> implements Hand
 
     @Override
     public void handle(RSInputBuffer in) {
-        while (in.isEmpty() == false) {
+        while (!in.isEmpty()) {
             LSIncomingPacket packet = LSIncomingPacket.parse(in);
             this.decode(packet.getOpcode(), packet);
         }

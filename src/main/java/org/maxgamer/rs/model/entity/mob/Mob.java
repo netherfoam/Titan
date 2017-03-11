@@ -209,7 +209,7 @@ public abstract class Mob extends Entity implements EquipmentHolder, Interactabl
      * @thread main
      */
     public int root(int duration, int immunity, boolean force) {
-        if (Core.getServer().getThread().isServerThread() == false) {
+        if (!Core.getServer().getThread().isServerThread()) {
             throw new IllegalThreadException("Must be invoked in main thread");
         }
 
@@ -217,7 +217,7 @@ public abstract class Mob extends Entity implements EquipmentHolder, Interactabl
 
         int newUnrootTick = tick + duration;
 
-        if (force == false && rootImmunityTick > tick) {
+        if (!force && rootImmunityTick > tick) {
             // We are currently immune to rooting effects.
             return 0;
         }
@@ -237,27 +237,23 @@ public abstract class Mob extends Entity implements EquipmentHolder, Interactabl
 
     @Override
     protected void setLocation(Location loc) {
-        if (Core.getServer().getThread().isServerThread() == false) {
+        if (!Core.getServer().getThread().isServerThread()) {
             throw new IllegalThreadException("Must be invoked in main thread");
         }
 
         boolean mapLoaded;
-        if (loc != null) {
-            mapLoaded = (loc.getMap().getClip(loc.x, loc.y, loc.z) & ClipMasks.UNLOADED_TILE) == 0;
-        } else {
-            // Null location
-            mapLoaded = false;
-        }
+        mapLoaded = loc != null && (loc.getMap().getClip(loc.x, loc.y, loc.z) & ClipMasks.UNLOADED_TILE) == 0;
+// Null location
 
         super.setLocation(loc);
 
         // If the map is unloaded and we are loaded, we must unload
-        if (isLoaded() && mapLoaded == false) {
+        if (isLoaded() && !mapLoaded) {
             this.unload();
         }
 
         // If the map is loaded, and we are not, we must load
-        if (isLoaded() == false && mapLoaded) {
+        if (!isLoaded() && mapLoaded) {
             this.load();
         }
     }
@@ -285,7 +281,7 @@ public abstract class Mob extends Entity implements EquipmentHolder, Interactabl
      * @thread main
      */
     public final void load() {
-        if (Core.getServer().getThread().isServerThread() == false) {
+        if (!Core.getServer().getThread().isServerThread()) {
             throw new IllegalThreadException("Must be invoked in main thread");
         }
 
@@ -317,11 +313,11 @@ public abstract class Mob extends Entity implements EquipmentHolder, Interactabl
      * @thread main
      */
     public final void unload() {
-        if (Core.getServer().getThread().isServerThread() == false) {
+        if (!Core.getServer().getThread().isServerThread()) {
             throw new IllegalThreadException("Must be invoked in main thread");
         }
 
-        if (isLoaded == false) throw new IllegalStateException("Mob is already loaded!");
+        if (!isLoaded) throw new IllegalStateException("Mob is already loaded!");
         isLoaded = false;
 
         MobUnloadEvent ev = new MobUnloadEvent(this);
@@ -333,7 +329,6 @@ public abstract class Mob extends Entity implements EquipmentHolder, Interactabl
             isLoaded = true;
             Log.severe("Exception calling Mob.onUnload() for " + this);
             e.printStackTrace();
-            return;
         }
     }
 
@@ -427,7 +422,7 @@ public abstract class Mob extends Entity implements EquipmentHolder, Interactabl
      * @thread main
      */
     public WalkAction move(Position to, PathFinder finder) {
-        if (Core.getServer().getThread().isServerThread() == false) {
+        if (!Core.getServer().getThread().isServerThread()) {
             throw new IllegalThreadException("Must be invoked in main thread");
         }
 
@@ -502,7 +497,7 @@ public abstract class Mob extends Entity implements EquipmentHolder, Interactabl
      * Animates the mob with the given animation and priority. This is a
      * shorthand method for accessing the update mask. The default priority 5 is used.
      *
-     * @param anim     the animation
+     * @param anim the animation
      */
     public Mob animate(Animation anim) {
         return animate(anim, 5);
@@ -608,13 +603,13 @@ public abstract class Mob extends Entity implements EquipmentHolder, Interactabl
      * @thread main
      */
     public Mob setHealth(int hp) {
-        if (Core.getServer().getThread().isServerThread() == false) {
+        if (!Core.getServer().getThread().isServerThread()) {
             throw new IllegalThreadException("Must be invoked in main thread");
         }
 
         if (hp < 0) hp = 0;
 
-        if (this.isDead() == false && hp <= 0) {
+        if (!this.isDead() && hp <= 0) {
             if (this.getFacing() != null) {
                 this.setFacing(null);
             }
@@ -703,7 +698,7 @@ public abstract class Mob extends Entity implements EquipmentHolder, Interactabl
      * @thread main
      */
     public Mob restore() {
-        if (Core.getServer().getThread().isServerThread() == false) {
+        if (!Core.getServer().getThread().isServerThread()) {
             throw new IllegalThreadException("Must be invoked in main thread");
         }
         setHealth(getMaxHealth());
@@ -723,8 +718,7 @@ public abstract class Mob extends Entity implements EquipmentHolder, Interactabl
 
     @Override
     public boolean isVisible(Entity viewer) {
-        if (isHidden()) return false;
-        return super.isVisible(viewer);
+        return !isHidden() && super.isVisible(viewer);
     }
 
     /**
@@ -758,7 +752,7 @@ public abstract class Mob extends Entity implements EquipmentHolder, Interactabl
      * @thread main
      */
     public Mob respawn() {
-        if (Core.getServer().getThread().isServerThread() == false) {
+        if (!Core.getServer().getThread().isServerThread()) {
             throw new IllegalThreadException("Must be invoked in main thread");
         }
 
@@ -785,7 +779,7 @@ public abstract class Mob extends Entity implements EquipmentHolder, Interactabl
      */
     @Override
     public void destroy() {
-        if (Core.getServer().getThread().isServerThread() == false) {
+        if (!Core.getServer().getThread().isServerThread()) {
             throw new IllegalThreadException("Must be invoked in main thread");
         }
 
@@ -794,7 +788,7 @@ public abstract class Mob extends Entity implements EquipmentHolder, Interactabl
         }
         if (this.isLoaded()) this.unload();
         super.destroy();
-        if (isHidden() == false) hide();
+        if (!isHidden()) hide();
     }
 
     /**

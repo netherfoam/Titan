@@ -21,7 +21,7 @@ public interface Serializer {
      * @param field the field that is being serialized
      * @param o     the object which is having its field serialized
      */
-    public void serialize(Map<String, Object> map, Field field, Object o);
+    void serialize(Map<String, Object> map, Field field, Object o);
 
     /**
      * Deserializes this object from teh given result set and returns it. The simplest
@@ -33,5 +33,5 @@ public interface Serializer {
      * @return the object. The result should be castable to field.getType(). May be null for non-primitive values
      * @throws SQLException
      */
-    public Object deserialize(Field field, ResultSet rs) throws SQLException;
+    Object deserialize(Field field, ResultSet rs) throws SQLException;
 }

@@ -46,7 +46,7 @@ public class CombatFollow extends Follow {
             throw new RuntimeException("PrefDistance shouldn't be " + prefDistance);
         }
 
-        if (getOwner().getLocation().near(getTarget().getLocation(), prefDistance) == false) {
+        if (!getOwner().getLocation().near(getTarget().getLocation(), prefDistance)) {
             return false;
         }
 
@@ -55,15 +55,12 @@ public class CombatFollow extends Follow {
         PathFinder finder = new ProjectilePathFinder();
         Path path = finder.findPath(m.getLocation(), t.getLocation(), t.getLocation(), m.getSizeX(), m.getSizeY());
 
-        if (path.hasFailed()) {
-            return false;
-        }
-        return true;
+        return !path.hasFailed();
     }
 
     @Override
     public void onWait() {
-        if (getOwner().getActions().isQueued(this) && getOwner().getActions().before(this) instanceof AttackAction == false) {
+        if (getOwner().getActions().isQueued(this) && !(getOwner().getActions().before(this) instanceof AttackAction)) {
             //Our action can be cancelled during the waiting period due to getTarget()
             //which may invalidate our target at any point.
             AttackAction a = getAttack();

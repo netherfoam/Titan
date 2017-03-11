@@ -170,9 +170,7 @@ public abstract class MovementUpdate implements Mask {
      * @return true if it has changed, false if no update is necessary
      */
     public boolean hasChanged() {
-        if (this.directions != null) return true;
-        if (this.teleported) return true;
+        return this.directions != null || this.teleported;
 
-        return false;
     }
 }

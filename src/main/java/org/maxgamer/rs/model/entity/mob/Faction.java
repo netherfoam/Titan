@@ -7,7 +7,8 @@ import java.util.HashMap;
  */
 public class Faction {
     private String name;
-    private HashMap<Faction, FactionStatus> relations = new HashMap<Faction, FactionStatus>();
+    private HashMap<Faction, FactionStatus> relations = new HashMap<>();
+
     public Faction(String name) {
         if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("Invalid name given " + name);
@@ -54,7 +55,7 @@ public class Faction {
         setStatus(f, FactionStatus.NEUTRAL);
     }
 
-    private static enum FactionStatus {
-        NEUTRAL, ENEMY, ALLY;
+    private enum FactionStatus {
+        NEUTRAL, ENEMY, ALLY
     }
 }

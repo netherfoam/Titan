@@ -57,7 +57,7 @@ public class AuthHandler implements Handler {
 
                 //Notify the new server about all currently connected servers
                 for (WorldHost server : host.getServer().getSessions()) {
-                    if (server.isAuthenticated() == false) continue;
+                    if (!server.isAuthenticated()) continue;
 
                     out = new LSOutgoingPacket(2);
                     out.writeByte(1);
@@ -74,7 +74,7 @@ public class AuthHandler implements Handler {
 
                 //Notify the new server about all currently connected players
                 for (WorldHost host : this.host.getServer().getSessions()) {
-                    if (host.isAuthenticated() == false) continue;
+                    if (!host.isAuthenticated()) continue;
 
                     for (Profile profile : host.getOnline()) {
                         LSOutgoingPacket join = new LSOutgoingPacket(1);

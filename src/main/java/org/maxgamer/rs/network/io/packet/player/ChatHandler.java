@@ -48,7 +48,7 @@ public class ChatHandler implements PacketProcessor<Player> {
                 return;
             }
 
-            if (p.getConfig().getBoolean("clan.message", false) == true) {
+            if (p.getConfig().getBoolean("clan.message", false)) {
                 ClanMessageEvent e = new ClanMessageEvent(p, s, p.getRights());
                 e.call();
                 p.getConfig().set("clan.message", false);

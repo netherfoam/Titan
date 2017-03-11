@@ -58,7 +58,7 @@ public abstract class ServerSession {
     public ServerSession(SocketChannel channel, SelectionKey key) {
         this.channel = channel;
         this.key = key;
-        this.write = new LinkedList<ByteBuffer>();
+        this.write = new LinkedList<>();
 
         this.read = ByteBuffer.allocate(BUFFER_MIN_SIZE);
         this.read.limit(this.read.position()); //No data
@@ -90,18 +90,18 @@ public abstract class ServerSession {
      * given in the constructor.
      */
     public void close(boolean flush) {
-        if (this.closing || this.isConnected() == false) {
+        if (this.closing || !this.isConnected()) {
             return;
         }
 
         this.closing = true;
 
-        if (flush == false) {
+        if (!flush) {
             this.key.cancel();
 
             try {
                 this.channel.close();
-            } catch (IOException e) {
+            } catch (IOException ignored) {
             }
         }
     }
@@ -156,13 +156,12 @@ public abstract class ServerSession {
         synchronized (this) {
             if (this.key.isWritable()) {
                 try {
-                    while (this.write.isEmpty() == false) {
+                    while (!this.write.isEmpty()) {
                         ByteBuffer bb = this.write.getFirst();
                         up += this.channel.write(bb);
                         if (bb.remaining() == 0) {
                             //Whole buffer was written, attempt to write the next
                             this.write.removeFirst();
-                            continue;
                         } else {
                             //No bytes were written
                             break;
@@ -226,7 +225,7 @@ public abstract class ServerSession {
                             reads += size;
                             down += size;
 
-                            if (this.read.hasRemaining() == false) {
+                            if (!this.read.hasRemaining()) {
                                 //Our buffer has run out of space to write to! Thus we double
                                 //the size of the buffer.
                                 ByteBuffer r = ByteBuffer.allocate(this.read.capacity() * 2);
@@ -254,7 +253,7 @@ public abstract class ServerSession {
                         break;
                     }
                     //Repeat until we have space in our buffer (Ergo, no data left waiting)
-                } while (this.read.hasRemaining() == false);
+                } while (!this.read.hasRemaining());
 
                 //Prepare for reading again. This is basically flip()
                 this.read.limit(this.read.position());
@@ -281,9 +280,8 @@ public abstract class ServerSession {
 
             try {
                 this.channel.close();
-            } catch (IOException e) {
+            } catch (IOException ignored) {
             }
-            return;
         }
     }
 
@@ -293,7 +291,7 @@ public abstract class ServerSession {
      * @param bb the data to write
      */
     public void write(ByteBuffer bb) {
-        if (this.closing || this.isConnected() == false) {
+        if (this.closing || !this.isConnected()) {
             throw new IllegalStateException("Session is closed or closing. Cannot write to it.");
         }
 

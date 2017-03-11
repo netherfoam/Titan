@@ -77,7 +77,7 @@ public class RangeAttack extends Attack {
                 return false; //No weapon, can't range.
             }
 
-            if (wep.getDefinition().getAmmo().isEmpty() == false) {
+            if (!wep.getDefinition().getAmmo().isEmpty()) {
                 List<ItemAmmoType> types = wep.getDefinition().getAmmo();
 
                 for (ItemAmmoType type : types) {

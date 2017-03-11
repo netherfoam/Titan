@@ -39,7 +39,7 @@ public class FriendSideInterface extends SideInterface {
 
                     @Override
                     public void onInput(String friend) {
-                        if (getPlayer().getFriends().removeFriend(friend, false) == false) {
+                        if (!getPlayer().getFriends().removeFriend(friend, false)) {
                             getPlayer().sendMessage(friend + " is not your friend.");
                         }
                     }

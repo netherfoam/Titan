@@ -14,7 +14,7 @@ public abstract class Pane extends Window {
     /**
      * Key is interface ID
      */
-    private HashMap<Integer, Interface> interfaces = new HashMap<Integer, Interface>(16);
+    private HashMap<Integer, Interface> interfaces = new HashMap<>(16);
 
     /**
      * Represents an interface for a single player.
@@ -35,11 +35,11 @@ public abstract class Pane extends Window {
      * @return true if the child replaced a previously existing child
      */
     public void open(Interface iface) {
-        if (this.isOpen() == false) {
+        if (!this.isOpen()) {
             throw new IllegalStateException("The given pane is not visible.");
         }
 
-        if (iface.getParent().isOpen() == false) {
+        if (!iface.getParent().isOpen()) {
             throw new IllegalArgumentException("The parent to that interface is not open.");
         }
 
@@ -77,7 +77,7 @@ public abstract class Pane extends Window {
 
     public void close(Class<? extends Interface> type) {
         for (Interface i : getInterfaces()) {
-            if (i.isOpen() == false) continue;
+            if (!i.isOpen()) continue;
 
             if (type.isInstance(i)) {
                 // This may close multiple child interfaces
@@ -117,7 +117,7 @@ public abstract class Pane extends Window {
      * @return a copy of the currently open child interfaces
      */
     public Collection<Interface> getInterfaces() {
-        return new ArrayList<Interface>(interfaces.values());
+        return new ArrayList<>(interfaces.values());
     }
 
     /**
@@ -128,10 +128,7 @@ public abstract class Pane extends Window {
      */
     public boolean isOpen(Interface iface) {
         Integer key = Integer.valueOf(iface.getChildId());
-        if (interfaces.get(key) == iface) {
-            return true;
-        }
-        return false;
+        return interfaces.get(key) == iface;
     }
 
     /**

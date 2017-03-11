@@ -14,9 +14,9 @@ import java.util.Comparator;
 public class DespawnObject implements PlayerCommand {
     @Override
     public void execute(final Player player, String[] args) throws Exception {
-        final ArrayList<GameObject> objects = new ArrayList<GameObject>(50);
+        final ArrayList<GameObject> objects = new ArrayList<>(50);
         for (GameObject g : player.getLocation().getNearby(GameObject.class, 3)) {
-            if (g.isVisible(player) == false) continue;
+            if (!g.isVisible(player)) continue;
             objects.add(g);
         }
 

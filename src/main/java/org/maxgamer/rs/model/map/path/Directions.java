@@ -12,19 +12,19 @@ import java.util.Map.Entry;
 public class Directions {
     //Old, work mostly. But these do not check the blocked or wall flags.
     /*
-	 * public static final SimpleDirection NORTH = new SimpleDirection(0, 1,
-	 * 0x48240000); public static final SimpleDirection SOUTH = new
-	 * SimpleDirection(0, -1, 0x40a40000); public static final SimpleDirection
-	 * EAST = new SimpleDirection(1, 0, 0x60240000); public static final
-	 * SimpleDirection WEST = new SimpleDirection(-1, 0, 0x42240000); public
-	 * static final ComplexDirection NORTH_EAST = new ComplexDirection(NORTH,
-	 * EAST, 0x78240000); public static final ComplexDirection NORTH_WEST = new
-	 * ComplexDirection(NORTH, WEST, 0x4e240000); public static final
-	 * ComplexDirection SOUTH_EAST = new ComplexDirection(SOUTH, EAST,
-	 * 0x60e40000); //This mask was found in dementhium. public static final
-	 * ComplexDirection SOUTH_WEST = new ComplexDirection(SOUTH, WEST,
-	 * 0x43a40000);
-	 */
+     * public static final SimpleDirection NORTH = new SimpleDirection(0, 1,
+     * 0x48240000); public static final SimpleDirection SOUTH = new
+     * SimpleDirection(0, -1, 0x40a40000); public static final SimpleDirection
+     * EAST = new SimpleDirection(1, 0, 0x60240000); public static final
+     * SimpleDirection WEST = new SimpleDirection(-1, 0, 0x42240000); public
+     * static final ComplexDirection NORTH_EAST = new ComplexDirection(NORTH,
+     * EAST, 0x78240000); public static final ComplexDirection NORTH_WEST = new
+     * ComplexDirection(NORTH, WEST, 0x4e240000); public static final
+     * ComplexDirection SOUTH_EAST = new ComplexDirection(SOUTH, EAST,
+     * 0x60e40000); //This mask was found in dementhium. public static final
+     * ComplexDirection SOUTH_WEST = new ComplexDirection(SOUTH, WEST,
+     * 0x43a40000);
+     */
 
     public static final SimpleDirection NORTH = new SimpleDirection(0, 1, ClipMasks.BLOCKED_TILE | ClipMasks.OBJECT_BLOCK | ClipMasks.BLOCKED_SOUTH | ClipMasks.WALL_SOUTH, ClipMasks.BLOCKED_NORTH | ClipMasks.WALL_NORTH);
     public static final SimpleDirection SOUTH = new SimpleDirection(0, -1, ClipMasks.BLOCKED_TILE | ClipMasks.OBJECT_BLOCK | ClipMasks.BLOCKED_NORTH | ClipMasks.WALL_NORTH, ClipMasks.BLOCKED_SOUTH | ClipMasks.WALL_SOUTH);
@@ -42,7 +42,7 @@ public class Directions {
     public static final ComplexDirection[] COMPLEX = new ComplexDirection[]{NORTH_EAST, SOUTH_EAST, SOUTH_WEST, NORTH_WEST};
     public static final Direction[] ALL = new Direction[]{NORTH, NORTH_EAST, EAST, SOUTH_EAST, SOUTH, SOUTH_WEST, WEST, NORTH_WEST};
 
-    private static HashMap<String, Direction> names = new HashMap<String, Direction>();
+    private static HashMap<String, Direction> names = new HashMap<>();
 
     static {
         for (Field f : Directions.class.getFields()) {

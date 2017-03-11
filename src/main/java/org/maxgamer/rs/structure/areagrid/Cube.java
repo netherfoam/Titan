@@ -33,7 +33,7 @@ public class Cube implements MBR {
         StringBuilder sb = new StringBuilder("Cube:");
 
         for (int i = 0; i < this.getDimensions(); i++) {
-            sb.append(" (" + this.coords[i] + "-" + (this.coords[i] + this.dimensions[i]) + ")");
+            sb.append(" (").append(this.coords[i]).append("-").append(this.coords[i] + this.dimensions[i]).append(")");
         }
         return sb.toString();
     }

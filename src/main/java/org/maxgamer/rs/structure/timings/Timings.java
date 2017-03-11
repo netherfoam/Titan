@@ -15,7 +15,7 @@ import java.util.LinkedList;
  * @author netherfoam
  */
 public class Timings {
-    private HashMap<String, ThreadTiming> threads = new HashMap<String, ThreadTiming>();
+    private HashMap<String, ThreadTiming> threads = new HashMap<>();
 
     /**
      * Constructs a new Timings object
@@ -41,8 +41,7 @@ public class Timings {
      * @return the timer object
      */
     public StopWatch start(String alias) {
-        StopWatch t = new StopWatch(alias, this);
-        return t;
+        return new StopWatch(alias, this);
     }
 
     /**
@@ -82,7 +81,7 @@ public class Timings {
         StringBuilder sb = new StringBuilder();
 
         for (final ThreadTiming thread : threads.values()) {
-            LinkedList<String> keys = new LinkedList<String>(thread.data.keySet());
+            LinkedList<String> keys = new LinkedList<>(thread.data.keySet());
             Collections.sort(keys, new Comparator<String>() {
                 @Override
                 public int compare(String a, String b) {
@@ -90,9 +89,9 @@ public class Timings {
                 }
             });
 
-            sb.append("-- Thread: " + thread.name + " --\n");
+            sb.append("-- Thread: ").append(thread.name).append(" --\n");
             for (String k : keys) {
-                sb.append(k + ": " + String.format("%.3f", (thread.data.get(k) / 1000) / 1000.0) + "ms. (" + thread.calls.get(k) + " calls)\n"); //ms with 3 decimals
+                sb.append(k).append(": ").append(String.format("%.3f", (thread.data.get(k) / 1000) / 1000.0)).append("ms. (").append(thread.calls.get(k)).append(" calls)\n"); //ms with 3 decimals
             }
         }
         return sb.toString();
@@ -109,13 +108,13 @@ public class Timings {
          * Completed times are added here. This is a map of alias to the number
          * of nanoseconds (approximately) the task has used.
          */
-        private HashMap<String, Long> data = new HashMap<String, Long>();
+        private HashMap<String, Long> data = new HashMap<>();
 
         /**
          * The number of times a particular alias was timed. This is useful to
          * show that tasks which are executed frequently are not necessarily the
          * badly written ones.
          */
-        private HashMap<String, Long> calls = new HashMap<String, Long>();
+        private HashMap<String, Long> calls = new HashMap<>();
     }
 }

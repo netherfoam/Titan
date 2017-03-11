@@ -40,7 +40,7 @@ public class MagicAttack extends Attack {
 
     @Override
     public boolean prepare(Mob target, AttackResult damage) {
-        if (this.spell.hasRequirements(attacker) == false) {
+        if (!this.spell.hasRequirements(attacker)) {
             attacker.sendMessage("You don't have enough runes to cast that spell.");
             return false;
         }

@@ -27,9 +27,6 @@ public abstract class Spellbook {
             LAVA_RUNE = ItemStack.create(4699), //Lava rune
             ASTRAL_RUNE = ItemStack.create(9075); //Astral rune
 
-    public static final ModernBook MODERN = new ModernBook();
-    public static final AncientBook ANCIENT = new AncientBook();
-    public static final LunarBook LUNAR = new LunarBook();
     private int childId;
 
     protected Spellbook(int childId) {
@@ -41,8 +38,8 @@ public abstract class Spellbook {
      *
      * @return An array of all of the spellbooks available
      */
-    public static final Spellbook[] getBooks() {
-        return new Spellbook[]{MODERN, ANCIENT, LUNAR};
+    public static Spellbook[] getBooks() {
+        return new Spellbook[]{ModernBook.MODERN, AncientBook.ANCIENT, LunarBook.LUNAR};
     }
 
     /**

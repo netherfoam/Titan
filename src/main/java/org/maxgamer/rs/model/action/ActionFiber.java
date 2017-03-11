@@ -81,8 +81,8 @@ public class ActionFiber extends Fiber<Void> {
 
     @Override
     public void onParked() {
-        if (getOwner().getActions().isEmpty() == false) {
-            if (getOwner().getActions().isQueued() == false) {
+        if (!getOwner().getActions().isEmpty()) {
+            if (!getOwner().getActions().isQueued()) {
                 // We're part way through an Action, so we want to continue it when possible.
                 getOwner().getActions().queue(ServerTicker.getTickDuration());
             }

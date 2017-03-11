@@ -90,7 +90,7 @@ public class LogonDecoder extends OpcodeDecoder<LSIncomingPacket> {
                 AuthResult result = AuthResult.get(in.readByte() & 0xFF);
 
                 Session session = Core.getServer().getNetwork().getSessionByID(sessionId);
-                if (session == null || session.isConnected() == false) {
+                if (session == null || !session.isConnected()) {
                     return;
                 }
 

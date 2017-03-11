@@ -22,7 +22,7 @@ public class PickupItemAction extends Action {
 
     @Override
     public void run() {
-        if (item.isDestroyed() == false && item.getLocation().equals(getOwner().getLocation())) {
+        if (!item.isDestroyed() && item.getLocation().equals(getOwner().getLocation())) {
             item.destroy();
             try {
                 getOwner().getInventory().add(item.getItem());
@@ -35,7 +35,6 @@ public class PickupItemAction extends Action {
         //Else, we've failed to pick the item up since we're not
         //at that location. We still return true because we are
         //done though.
-        return;
     }
 
     @Override

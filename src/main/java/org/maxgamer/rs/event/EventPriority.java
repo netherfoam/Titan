@@ -33,5 +33,5 @@ public enum EventPriority {
      * YOU SHOULD NOT CANCEL THE EVENT HERE! This is designed for things such as
      * loggers, which need to know whether an action was successful or not.
      */
-    MONITOR;
+    MONITOR
 }

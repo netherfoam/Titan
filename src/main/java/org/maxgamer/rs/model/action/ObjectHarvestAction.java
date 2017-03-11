@@ -76,14 +76,14 @@ public class ObjectHarvestAction extends Action {
                     p.getInventory().add(reward);
                 } catch (ContainerException e) {
                     if (p instanceof Player) {
-                        ((Player) p).sendMessage("Not enough space!");
+                        p.sendMessage("Not enough space!");
                     }
                     return;
                 }
             }
 
             obj.setData(obj.getData() - 1);
-            if (obj.hasData() == false) {
+            if (!obj.hasData()) {
                 if (anim != null) {
                     getOwner().getUpdateMask().setAnimation(null, 3);
                 }
@@ -117,7 +117,6 @@ public class ObjectHarvestAction extends Action {
             //Generate our next delay
             curDelay = Erratic.nextInt(minDelay, maxDelay);
             wait(1);
-            continue;
         }
     }
 

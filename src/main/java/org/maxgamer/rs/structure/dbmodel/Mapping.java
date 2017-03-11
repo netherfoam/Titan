@@ -21,5 +21,5 @@ public @interface Mapping {
      *
      * @return the serializer class to use not null
      */
-    public Class<? extends Serializer> serializer() default PrimitiveSerializer.class;
+    Class<? extends Serializer> serializer() default PrimitiveSerializer.class;
 }

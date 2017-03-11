@@ -103,7 +103,7 @@ public abstract class WorldMap implements MBR {
         }
 
         StopWatch w = Core.getTimings().start("map-init");
-        entities = new AreaGrid<MBR>(width(), height(), 8);
+        entities = new AreaGrid<>(width(), height(), 8);
 
         //We only initialize the first layer to save memory.
         chunks = new Chunk[width() >> CHUNK_BITS][][];
@@ -131,7 +131,7 @@ public abstract class WorldMap implements MBR {
             if (this.chunks[cx - this.min_chunk.x][cy - this.min_chunk.y] == null) {
                 this.chunks[cx - this.min_chunk.x][cy - this.min_chunk.y] = new Chunk[4];
             }
-        } catch (IndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException ignored) {
         }
     }
 
@@ -143,14 +143,8 @@ public abstract class WorldMap implements MBR {
             return false;
         }
 
-        if (c == null) {
-            return false;
-        }
-        if (c.isLoaded() == false) {
-            return false;
-        }
+        return c != null && c.isLoaded();
 
-        return true;
     }
 
     public AreaManager getAreas() {
@@ -188,7 +182,7 @@ public abstract class WorldMap implements MBR {
                     check(i, j);
                     for (int z = 0; z < 4; z++) {
                         Chunk c = chunks[i - this.min_chunk.x][j - this.min_chunk.y][z];
-                        if (c == null || c.isLoaded() == false) {
+                        if (c == null || !c.isLoaded()) {
                             //Forces load
                             fetch(i, j, z);
                         }
@@ -213,7 +207,7 @@ public abstract class WorldMap implements MBR {
                 for (int z = 0; z < 4; z++) {
                     try {
                         Chunk c = chunks[x - this.min_chunk.x][y - this.min_chunk.y][z];
-                        if (c == null || c.isLoaded() == false) {
+                        if (c == null || !c.isLoaded()) {
                             //Forces load
                             fetch(x, y, z);
                         }
@@ -360,7 +354,7 @@ public abstract class WorldMap implements MBR {
         for (Mob mob : getEntities(new Cube(new int[]{chunkX * 8, chunkY * 8}, new int[]{CHUNK_SIZE, CHUNK_SIZE}), 2, Mob.class)) {
             if (c != null) {
                 //We are loading this chunk.
-                if (mob.isLoaded() == false) {
+                if (!mob.isLoaded()) {
                     mob.load();
                 }
             } else {
@@ -415,7 +409,7 @@ public abstract class WorldMap implements MBR {
             if (c == null) return; //No chunk there.
 
             c.removeClip(x % CHUNK_SIZE, y % CHUNK_SIZE, clip);
-        } catch (ArrayIndexOutOfBoundsException e) {
+        } catch (ArrayIndexOutOfBoundsException ignored) {
         }
     }
 
@@ -437,7 +431,7 @@ public abstract class WorldMap implements MBR {
             check(cx, cy);
 
             Chunk c = chunks[cx - this.min_chunk.x][cy - this.min_chunk.y][z];
-            if (c == null || c.isLoaded() == false) {
+            if (c == null || !c.isLoaded()) {
                 return -1;
             }
             return c.getClip(x & 7, y & 7); //Was changed from x % CHUNK_SIZE
@@ -456,7 +450,7 @@ public abstract class WorldMap implements MBR {
             check(cx, cy);
 
             Chunk c = chunks[cx - this.min_chunk.x][cy - this.min_chunk.y][z];
-            if (c == null || c.isLoaded() == false) {
+            if (c == null || !c.isLoaded()) {
                 return 0;
             }
             return c.getFlags(x & 7, y & 7);
@@ -490,7 +484,6 @@ public abstract class WorldMap implements MBR {
                 //TODO: This is bad, we should be using >= instead.
                 if (t.getMin(2) + t.getDimension(2) < proxy.getMin(2) || t.getMin(2) > proxy.getMin(2) + proxy.getDimension(2)) {
                     sit.remove();
-                    continue;
                 }
             }
         }

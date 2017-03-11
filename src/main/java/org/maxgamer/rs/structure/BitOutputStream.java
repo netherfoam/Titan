@@ -64,7 +64,6 @@ public class BitOutputStream extends OutputStream {
     /**
      * Flushes bits not yet written, must be called by client programs if
      * <code>close</code> isn't called.
-     *
      */
     @Override
     public void flush() {
@@ -89,7 +88,6 @@ public class BitOutputStream extends OutputStream {
      * releases system resources associated with file and flushes bits not yet
      * written. Either this function or flush must be called or not all bits
      * will be written
-     *
      */
     @Override
     public void close() {
@@ -105,7 +103,7 @@ public class BitOutputStream extends OutputStream {
      * write bits to file
      *
      * @param howManyBits is number of bits to write (1-32)
-     * @param value is source of bits, rightmost bits are written
+     * @param value       is source of bits, rightmost bits are written
      */
 
     public void write(int howManyBits, int value) {

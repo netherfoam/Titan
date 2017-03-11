@@ -107,26 +107,22 @@ public class CommentScanner {
      * Reads a raw line, excluding the \n character
      */
     private StringBuilder readRawLine() throws IndexOutOfBoundsException {
-        try {
-            StringBuilder sb = new StringBuilder();
-            char c;
-            while (true) {
-                c = buffer[index++];
+        StringBuilder sb = new StringBuilder();
+        char c;
+        while (true) {
+            c = buffer[index++];
 
-                if (c == '\n') {
-                    // Exclude newline
-                    return sb;
-                }
-
-                sb.append(c);
-
-                if (index >= buffer.length) {
-                    // Include last char
-                    return sb;
-                }
+            if (c == '\n') {
+                // Exclude newline
+                return sb;
             }
-        } catch (IndexOutOfBoundsException e) {
-            throw e;
+
+            sb.append(c);
+
+            if (index >= buffer.length) {
+                // Include last char
+                return sb;
+            }
         }
     }
 }

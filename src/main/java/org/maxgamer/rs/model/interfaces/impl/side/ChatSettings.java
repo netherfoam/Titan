@@ -24,7 +24,7 @@ public class ChatSettings extends SideInterface {
             getPlayer().getWindow().close(this);
             getPlayer().getWindow().open(new SettingsInterface(player));
         } else if (buttonId == 37) {//Split private chat
-            if (player.getConfig().getBoolean("privatechat.split", true) == true) {
+            if (player.getConfig().getBoolean("privatechat.split", true)) {
                 player.getConfig().set("privatechat.split", false);
                 player.getConfig().set("privatechat.colour", 1);
                 player.getProtocol().sendConfig(287, player.getConfig().getInt("privatechat.colour", 1));

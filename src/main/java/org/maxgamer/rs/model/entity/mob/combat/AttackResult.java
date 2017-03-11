@@ -16,7 +16,7 @@ public class AttackResult implements Iterable<Damage> {
     /**
      * The damages dealt by the attack
      */
-    private LinkedList<Damage> damages = new LinkedList<Damage>();
+    private LinkedList<Damage> damages = new LinkedList<>();
 
     /**
      * Adds the given damage to the list of damages to apply
@@ -45,7 +45,7 @@ public class AttackResult implements Iterable<Damage> {
      * @return all of the mobs that will be hit by this attack
      */
     public HashSet<Mob> getTargets() {
-        HashSet<Mob> targets = new HashSet<Mob>(damages.size());
+        HashSet<Mob> targets = new HashSet<>(damages.size());
         for (Damage d : damages) {
             targets.add(d.getTarget());
         }

@@ -29,7 +29,7 @@ public class Whisper implements GenericCommand {
         StringBuilder sb = new StringBuilder();
         sb.append(args[1]);
         for (int i = 2; i < args.length; i++) {
-            sb.append(" " + args[i]);
+            sb.append(" ").append(args[i]);
         }
         String s = sb.toString();
 

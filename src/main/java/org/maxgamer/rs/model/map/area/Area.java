@@ -75,10 +75,8 @@ public class Area implements MBR {
     public boolean contains(Position p) {
         if (p.x < min.x) return false;
         if (p.y < min.y) return false;
-        if (p.x > max.x) return false;
-        if (p.y > max.y) return false;
+        return p.x <= max.x && p.y <= max.y;
 
-        return true;
     }
 
     public WorldMap getMap() {

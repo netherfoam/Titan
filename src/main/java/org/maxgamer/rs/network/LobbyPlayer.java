@@ -161,14 +161,14 @@ public class LobbyPlayer implements Client {
         Core.getServer().getLobby().remove(this);
         if (s.isConnected()) s.close(true);
 
-		/*
-		 * RemoteClient remote =
-		 * Core.getServer().getLogon().getRemoteServer(Core
-		 * .getServer().getLogon().getWorldId()).get(this.getName()); if(remote
-		 * != null && remote.getSessionId() ==
-		 * this.getSession().getSessionId()){
-		 * Core.getServer().getLogon().leave(this); }
-		 */
+        /*
+         * RemoteClient remote =
+         * Core.getServer().getLogon().getRemoteServer(Core
+         * .getServer().getLogon().getWorldId()).get(this.getName()); if(remote
+         * != null && remote.getSessionId() ==
+         * this.getSession().getSessionId()){
+         * Core.getServer().getLogon().leave(this); }
+         */
 
         Core.getServer().getLogon().getAPI().leave(this);
     }

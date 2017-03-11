@@ -62,9 +62,7 @@ public class Profile implements Serializable {
      */
     public static boolean isValidUser(String user) {
         if (user.isEmpty()) return false;
-        if (user.matches("[^A-Za-z0-9_]")) return false;
-        if (user.length() > 20) return false; //Too long
-        return true;
+        return !user.matches("[^A-Za-z0-9_]") && user.length() <= 20;
     }
 
     /**
@@ -77,8 +75,7 @@ public class Profile implements Serializable {
      * @return true if the password is valid, false if it is not
      */
     public static boolean isValidPass(String pass) {
-        if (pass.isEmpty()) return false;
-        return true;
+        return !pass.isEmpty();
     }
 
     /**
@@ -115,7 +112,7 @@ public class Profile implements Serializable {
         if (raw == null) return false;
 
         try {
-            if (real.startsWith(PASS_HASH_PREFIX) == false) {
+            if (!real.startsWith(PASS_HASH_PREFIX)) {
                 //This password is not encrypted
                 real = PASS_HASH_PREFIX + PasswordHash.hash(real);
                 this.pass = real;

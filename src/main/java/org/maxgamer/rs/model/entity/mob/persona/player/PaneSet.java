@@ -21,7 +21,7 @@ public class PaneSet {
      * The currently open panes, where the last one in the list is the currently
      * active one. The rest are idle and inaccessible by ordinary clients.
      */
-    private ArrayList<Pane> panes = new ArrayList<Pane>(1);
+    private ArrayList<Pane> panes = new ArrayList<>(1);
 
     /**
      * Constructs a new PaneSet for the given player
@@ -54,7 +54,7 @@ public class PaneSet {
     public void add(Pane pane) {
         panes.add(pane); //This is our new Active pane
 
-        if (pane.isOpen() == false) {
+        if (!pane.isOpen()) {
             pane.onOpen();
         }
 

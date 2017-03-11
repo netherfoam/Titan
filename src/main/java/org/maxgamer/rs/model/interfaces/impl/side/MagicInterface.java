@@ -29,7 +29,7 @@ public class MagicInterface extends SideInterface {
     public void onClick(int option, int buttonId, int slotId, int itemId) {
         Spellbook book = getPlayer().getSpellbook();
 
-        if ((option == 5 && book == Spellbook.ANCIENT) || (option == 0 && book == Spellbook.MODERN)) { //Autocast swaps location depending on book
+        if ((option == 5 && book == AncientBook.ANCIENT) || (option == 0 && book == ModernBook.MODERN || book == LunarBook.LUNAR)) { //Autocast swaps location depending on book
             Spell s = book.getSpell(buttonId);
             if (s == null) {
                 getPlayer().getCheats().log(5, "Player attempted to cast a spell which is not listed in their spellbook");
@@ -53,7 +53,7 @@ public class MagicInterface extends SideInterface {
             }
 
             if (s instanceof TeleportSpell) {
-                final TeleportSpell t = (TeleportSpell) s;
+                TeleportSpell t = (TeleportSpell) s;
                 t.cast(getPlayer());
             }
         }
@@ -72,12 +72,6 @@ public class MagicInterface extends SideInterface {
             return;
         }
 
-        if (target.isAttackable(getPlayer()) == false) {
-            //This can legitimately occur when a player tries to cast a spell on an NPC
-            getPlayer().sendMessage("You can't attack that.");
-            return;
-        }
-
         Spellbook book = getPlayer().getSpellbook();
         Spell s = book.getSpell(buttonId);
 
@@ -86,12 +80,24 @@ public class MagicInterface extends SideInterface {
             return;
         }
 
-        if (s instanceof TargetSpell == false) {
+        if (!(s instanceof TargetSpell)) {
             getPlayer().getCheats().log(5, "Player attempted to cast a spell " + s + " on a target, but the spell is a " + s.getClass().getSimpleName() + " which does not implement TargetSpell");
             return;
         }
 
         TargetSpell t = (TargetSpell) s;
+
+        if (t.isHostile() && !target.isAttackable(getPlayer())) {
+            //This can legitimately occur when a player tries to cast a spell on an NPC
+            getPlayer().sendMessage("You can't attack that.");
+            return;
+        }
+
+        if(t.isFriendly() && target.isAttackable(getPlayer())) {
+            getPlayer().sendMessage("Your target is hostile");
+            return;
+        }
+
         this.nextAttack = new MagicAttack(getPlayer(), t);
         getPlayer().setTarget(target);
     }
@@ -119,7 +125,6 @@ public class MagicInterface extends SideInterface {
                 t.cast(getPlayer(), inv, toSlot);
             } else {
                 getPlayer().getCheats().log(5, "Player attempted to cast spell " + s + " on inventory slot, but that isn't an ItemSpell!");
-                return;
             }
         }
     }

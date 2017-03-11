@@ -18,13 +18,13 @@ public class AttackAction extends Action {
         if (this.target != null) {
             if (this.target.isDead()) {
                 this.target = null;
-            } else if (this.target.isAttackable(getOwner()) == false) {
+            } else if (!this.target.isAttackable(getOwner())) {
                 this.target = null;
-            } else if (this.target.isVisible(getOwner()) == false) {
+            } else if (!this.target.isVisible(getOwner())) {
                 this.target = null;
             } else if (this.target.getLocation().z != getOwner().getLocation().z) {
                 this.target = null;
-            } else if (this.target.getLocation().near(getOwner().getLocation(), 25) == false) {
+            } else if (!this.target.getLocation().near(getOwner().getLocation(), 25)) {
                 this.target = null;
             }
         }
@@ -38,14 +38,9 @@ public class AttackAction extends Action {
     private boolean inRange() throws SuspendExecution {
         int range = getAttack().getMaxDistance();
 
-        if (range == 1 || getTarget().getLocation().isDiagonal(getOwner().getLocation())) {
-            return true; //Allow diagonal combat
-        }
+        //Allow diagonal combat
+        return range == 1 || getTarget().getLocation().isDiagonal(getOwner().getLocation()) || getTarget().getLocation().near(getOwner().getLocation(), range);
 
-        if (getTarget().getLocation().near(getOwner().getLocation(), range) == false) {
-            return false; //Couldn't reach the target yet. Continue the CombatFollow.
-        }
-        return true;
     }
 
     @Override
@@ -53,7 +48,7 @@ public class AttackAction extends Action {
         long warmup = Core.getServer().getTicks() - getOwner().getDamage().getLastAttack();
 
         while (++warmup < getAttack().getWarmupTicks()) {
-            if (getOwner().getActions().after(this) instanceof CombatFollow == false) {
+            if (!(getOwner().getActions().after(this) instanceof CombatFollow)) {
                 getOwner().face(getTarget() == null ? null : getTarget().getLocation());
                 return;
             }
@@ -66,8 +61,8 @@ public class AttackAction extends Action {
             }
 
             //If we're still warming up, allow the mob to move closer if necessary
-            if (inRange() == false) {
-                if (getOwner().getActions().after(this) instanceof CombatFollow == false) {
+            if (!inRange()) {
+                if (!(getOwner().getActions().after(this) instanceof CombatFollow)) {
                     getOwner().face(getTarget() == null ? null : getTarget().getLocation());
                     return;
                 }
@@ -80,8 +75,8 @@ public class AttackAction extends Action {
         }
 
         //Now we have to wait until we're close enough!
-        while (getTarget() != null && inRange() == false) {
-            if (getOwner().getActions().after(this) instanceof CombatFollow == false) {
+        while (getTarget() != null && !inRange()) {
+            if (!(getOwner().getActions().after(this) instanceof CombatFollow)) {
                 getOwner().face(getTarget() == null ? null : getTarget().getLocation());
                 return;
             }

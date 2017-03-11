@@ -64,10 +64,10 @@ public class Erratic {
         //Thus we are using r.nextDouble() * maximum instead. This is original source code from
         //dementhium.
         /*
-		 * double mean = maximum * meanModifier; double deviation = mean * 1.79;
-		 * double value = 0; do { value = Math.floor(mean + r.nextGaussian() *
-		 * deviation); } while (value < 0 || value > maximum); return value;
-		 */
+         * double mean = maximum * meanModifier; double deviation = mean * 1.79;
+         * double value = 0; do { value = Math.floor(mean + r.nextGaussian() *
+         * deviation); } while (value < 0 || value > maximum); return value;
+         */
         //TODO: This algorithm needs to be... improved.
 
         int chance = r.nextInt(3);

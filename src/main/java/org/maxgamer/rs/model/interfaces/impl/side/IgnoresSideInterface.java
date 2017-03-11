@@ -31,9 +31,8 @@ public class IgnoresSideInterface extends SideInterface {
                             return;
                         }
 
-                        if (getPlayer().getFriends().addIgnore(ignore) == false) {
+                        if (!getPlayer().getFriends().addIgnore(ignore)) {
                             getPlayer().sendMessage("Ignore list is full!");
-                            return;
                         }
                     }
                 });
@@ -43,7 +42,7 @@ public class IgnoresSideInterface extends SideInterface {
 
                     @Override
                     public void onInput(String ignore) {
-                        if (getPlayer().getFriends().removeIgnore(ignore, false) == false) {
+                        if (!getPlayer().getFriends().removeIgnore(ignore, false)) {
                             getPlayer().sendMessage(ignore + " is not being ignored.");
                         }
                     }

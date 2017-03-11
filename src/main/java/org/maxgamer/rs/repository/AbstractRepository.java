@@ -109,7 +109,7 @@ public abstract class AbstractRepository<T> {
      * @return the name of the managed entity
      */
     protected String name() {
-        if (this.annotation.name().isEmpty() == false) {
+        if (!this.annotation.name().isEmpty()) {
             return this.annotation.name();
         }
         return this.type.getSimpleName();
@@ -121,7 +121,7 @@ public abstract class AbstractRepository<T> {
      * @return The physical table name of this entity
      */
     protected String tableName() {
-        if (this.table != null && this.table.name().isEmpty() == false) {
+        if (this.table != null && !this.table.name().isEmpty()) {
             return this.table.name();
         }
         return name();

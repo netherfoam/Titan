@@ -24,7 +24,7 @@ public class Announce implements GenericCommand {
         StringBuilder sb = new StringBuilder();
         sb.append(args[0]);
         for (int i = 1; i < args.length; i++) {
-            sb.append(" " + args[i]);
+            sb.append(" ").append(args[i]);
         }
 
         String s = sb.toString();

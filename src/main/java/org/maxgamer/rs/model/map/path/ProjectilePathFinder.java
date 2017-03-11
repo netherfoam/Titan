@@ -10,7 +10,7 @@ import org.maxgamer.rs.util.Calc;
 public class ProjectilePathFinder implements PathFinder {
     @Override
     public Path findPath(Location start, Position min, Position max, int xSize, int ySize) {
-        if (min.equals(max) == false) {
+        if (!min.equals(max)) {
             throw new IllegalArgumentException("Projectiles must go to one tile");
         }
         if (xSize != 1 || ySize != 1) {
@@ -76,7 +76,7 @@ public class ProjectilePathFinder implements PathFinder {
             while (ty != min.y) {
                 Location l = new Location(start.getMap(), (int) tx, ty, start.z);
                 for (Direction d : dirs) {
-                    if (d.canShoot(l) == false) {
+                    if (!d.canShoot(l)) {
                         path.setFailed(true);
                         return path;
                     }
@@ -95,7 +95,7 @@ public class ProjectilePathFinder implements PathFinder {
             while (tx != min.x) {
                 Location l = new Location(start.getMap(), tx, (int) ty, start.z);
                 for (Direction d : dirs) {
-                    if (d.canShoot(l) == false) {
+                    if (!d.canShoot(l)) {
                         path.setFailed(true);
                         return path;
                     }

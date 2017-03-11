@@ -112,13 +112,13 @@ public class Chat {
         }
 
         String[] pieces = text.split("\\n");
-        ArrayList<String> list = new ArrayList<String>(pieces.length * 2);
+        ArrayList<String> list = new ArrayList<>(pieces.length * 2);
 
         for (String s : pieces) {
             while (s.length() > lineWidth) {
                 int pos = lineWidth - 1;
 
-                while (isWhitespace(s.charAt(pos)) == false && pos > 0) {
+                while (!isWhitespace(s.charAt(pos)) && pos > 0) {
                     pos--;
                 }
 
@@ -157,10 +157,7 @@ public class Chat {
     }
 
     private static boolean isAlphaNumeric(char c) {
-        if (isAlpha(c) || isNumeric(c)) {
-            return true;
-        }
-        return false;
+        return isAlpha(c) || isNumeric(c);
     }
 
     private static boolean isWhitespace(char c) {
@@ -168,15 +165,12 @@ public class Chat {
             return true;
         if (c == '\t')
             return true;
-        if (c == '\n')
-            return true;
-        if (c == '\r')
-            return true;
-        return false;
+        return c == '\n' || c == '\r';
     }
 
     /**
      * Camel-cases the given string. Eg "The quick brown Fox" becomes "TheQuickBrownFox"
+     *
      * @param str the input string, space delimited
      * @return the output string
      */
@@ -190,7 +184,7 @@ public class Chat {
         StringBuilder sb = new StringBuilder(str.length());
 
         for (String word : str.split(String.valueOf(separator))) {
-            if(word.isEmpty()) continue;
+            if (word.isEmpty()) continue;
 
             sb.append(word.substring(0, 1).toUpperCase());
             sb.append(word.substring(1).toLowerCase());
@@ -202,6 +196,7 @@ public class Chat {
     /**
      * Camel-cases the given string. Eg "The quick brown Fox" becomes "theQuickBrownFox". This lowercases
      * the first character - differing from toUpperCamelCase.
+     *
      * @param str the string
      * @return the output string
      */
@@ -210,7 +205,7 @@ public class Chat {
     }
 
     public static String toLowerCamelCase(String str, char separator) {
-        if(str.isEmpty()) return "";
+        if (str.isEmpty()) return "";
 
         str = toUpperCamelCase(str, separator);
 

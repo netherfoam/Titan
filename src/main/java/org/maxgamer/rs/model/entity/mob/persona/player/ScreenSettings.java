@@ -42,8 +42,7 @@ public class ScreenSettings {
      * @return true if the user has their screen mode set to a fixed size
      */
     public boolean isFixedScreen() {
-        if (getDisplayMode() <= 1) return true;
-        return false;
+        return getDisplayMode() <= 1;
     }
 
     /**

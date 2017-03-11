@@ -54,7 +54,7 @@ public class Session extends ServerSession {
     /**
      * These are notified when the session is disconnected
      */
-    private LinkedList<Runnable> closeHandlers = new LinkedList<Runnable>();
+    private LinkedList<Runnable> closeHandlers = new LinkedList<>();
 
     /**
      * The client's current screen settings TODO: Move this to Client
@@ -112,8 +112,8 @@ public class Session extends ServerSession {
      * @param b the byte to set
      */
     /*
-	 * public void setEncryption(byte b){ this.encryption = b; }
-	 */
+     * public void setEncryption(byte b){ this.encryption = b; }
+     */
 
     /**
      * Gives the session a new raw data handler. The raw handler will be
@@ -158,9 +158,7 @@ public class Session extends ServerSession {
                 RSByteBuffer buffer = new RSByteBuffer(this.getInput());
                 try {
                     handler.handle(buffer);
-                } catch (IndexOutOfBoundsException e) {
-                    getInput().position(pos);
-                } catch (BufferUnderflowException e) {
+                } catch (IndexOutOfBoundsException | BufferUnderflowException e) {
                     getInput().position(pos);
                 } catch (Throwable t) {
                     t.printStackTrace();
@@ -197,8 +195,8 @@ public class Session extends ServerSession {
      * @return true if it was removed, false if it was never in the list.
      */
     public boolean removeCloseHandler(Runnable r) {
-        if (r == null) return false; //We don't have nulls in this.
-        return this.closeHandlers.remove(r);
+        //We don't have nulls in this.
+        return r != null && this.closeHandlers.remove(r);
     }
 
     /**
@@ -211,13 +209,13 @@ public class Session extends ServerSession {
         this.lastPing = System.currentTimeMillis();
 
         //TODO
-		/*
-		 * if(this.inBuffer.available() + (end - start) >
-		 * Core.getWorldConfig().getInt("network.session-overflow", 8192)){
-		 * Log.debug(this +
-		 * " is attempting to process too much data, closing session.");
-		 * this.close(); }
-		 */
+        /*
+         * if(this.inBuffer.available() + (end - start) >
+         * Core.getWorldConfig().getInt("network.session-overflow", 8192)){
+         * Log.debug(this +
+         * " is attempting to process too much data, closing session.");
+         * this.close(); }
+         */
 
         Core.submit(new Runnable() {
             @Override
@@ -284,7 +282,7 @@ public class Session extends ServerSession {
 
         server.onClose(this);
 
-        ArrayList<Runnable> closeHandlers = new ArrayList<Runnable>(this.closeHandlers);
+        ArrayList<Runnable> closeHandlers = new ArrayList<>(this.closeHandlers);
         this.closeHandlers.clear(); //Empties them, so that we can't end up in a close() cycle.
 
         for (Runnable r : closeHandlers) {
@@ -300,7 +298,7 @@ public class Session extends ServerSession {
         String addr = null;
         try {
             addr = getIP().getAddress().getHostAddress();
-        } catch (NullPointerException e) {
+        } catch (NullPointerException ignored) {
         }
         return "#" + this.sessionNumber + "@" + addr;
     }

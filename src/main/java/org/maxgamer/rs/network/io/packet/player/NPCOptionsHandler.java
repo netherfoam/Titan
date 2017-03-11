@@ -105,12 +105,12 @@ public class NPCOptionsHandler implements PacketProcessor<Player> {
             return;
         }
 
-        if (player.getProtocol().isVisible(target) == false) {
+        if (!player.getProtocol().isVisible(target)) {
             player.getCheats().log(30, "Player attempted to interact with an NPC that wasn't on screen. Target: " + target + ", given index: " + index + " + 1");
             return;
         }
 
-        if (s.equalsIgnoreCase("Attack") == false && player.getLocation().distanceSq(target.getLocation()) > 1) {
+        if (!s.equalsIgnoreCase("Attack") && player.getLocation().distanceSq(target.getLocation()) > 1) {
             AStar finder = new AStar(5);
             Path p = finder.findPath(player, target.getLocation(), 1);
             WalkAction walk = new WalkAction(player, p) {

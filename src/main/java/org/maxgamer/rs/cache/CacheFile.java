@@ -72,12 +72,13 @@ public class CacheFile {
         int startBlock = getTriByte(bb);
 
         /* Error checking */
-        if (size < 0 || size > 1000000) {
+        if (size < 0 || size > 20971520) {
+            // Largest known file in the cache is 16711680 bytes (15.9375MB) at IDX2, fileId=0
             throw new IOException("Bad size. Given " + size);
         }
 
         if (startBlock == 0) {
-            throw new FileNotFoundException();
+            throw new FileNotFoundException("no such file (" + idx + ", " + fileId + ")");
         } else if (startBlock < 0 || startBlock > data.size() / ReferenceTable.TOTAL_BLOCK_LEN) {
             throw new IOException("Bad block. Given " + startBlock + ", max " + (data.size() / ReferenceTable.TOTAL_BLOCK_LEN));
         }

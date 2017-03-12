@@ -9,24 +9,6 @@ import java.nio.channels.FileChannel;
 import java.util.HashMap;
 
 public class FileTable {
-    protected int size;
-    protected int idx;
-    protected FileChannel index;
-    protected FileChannel data;
-    protected HashMap<Integer, CacheFile> files;
-
-    public FileTable(int idx, int size) {
-        this();
-
-        this.idx = idx;
-        this.files = new HashMap<>(256);
-        this.size = size;
-    }
-
-    protected FileTable() {
-
-    }
-
     /**
      * Decodes the given file table.
      *
@@ -37,12 +19,28 @@ public class FileTable {
      * @throws IOException
      */
     public static FileTable decode(int idx, RandomAccessFile index, RandomAccessFile data) throws IOException {
-        FileTable ft = new FileTable(idx, (int) (index.length() / ReferenceTable.IDX_BLOCK_LEN));
+        return new FileTable(idx, (int) (index.length() / ReferenceTable.IDX_BLOCK_LEN), index.getChannel(), data.getChannel());
+    }
 
-        ft.index = index.getChannel();
-        ft.data = data.getChannel();
+    protected int size;
+    protected int idx;
+    protected FileChannel index;
+    protected FileChannel data;
 
-        return ft;
+    protected HashMap<Integer, CacheFile> files;
+
+    public FileTable(int idx, int size, FileChannel index, FileChannel data) {
+        this();
+
+        this.idx = idx;
+        this.files = new HashMap<>(size);
+        this.size = size;
+        this.index = index;
+        this.data = data;
+    }
+
+    protected FileTable() {
+
     }
 
     /*public void write(int fileId, CacheFile file) throws IOException{

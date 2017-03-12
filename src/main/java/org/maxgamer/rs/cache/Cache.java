@@ -22,50 +22,6 @@ public class Cache {
      * cache file request.
      */
     private static final byte PRIORITY_FLAG = (byte) 0x80;
-    /**
-     * The XTEA keys we use to decrypt the encrypted parts of this cache
-     */
-    private XTEAStore xteas;
-
-    /**
-     * The primary file we're reading data from
-     */
-    private RandomAccessFile data;
-    /**
-     * The index tables from the cache. Null if not found/valid. Does not
-     * include index 255
-     */
-    private RandomAccessFile[] indexes;
-
-    private FileTable metaFiles;
-    /**
-     * The filetables we're using to store our data. These cache read files.
-     */
-    private FileTable[] tables;
-
-    /**
-     * The filetables we're using to store our metadata. This includes size,
-     * children, location, etc. These are lightweight.
-     */
-    private ReferenceTable[] refs;
-
-    private ChecksumTable checksum;
-    private RandomAccessFile index;
-
-    /**
-     * A hashmap of (IDX << 24) | (FileID) to archive. This is a cache used by
-     * the getArchive() method.
-     */
-    private HashMap<Integer, Archive> archives = new HashMap<>();
-
-    private HashMap<Integer, ByteBuffer> raws = new HashMap<>();
-
-    /**
-     * Constructs a new cache
-     */
-    public Cache() {
-
-    }
 
     /**
      * Initializes a new cache. This removes any encrypted files from the cache which can't be read
@@ -74,8 +30,7 @@ public class Cache {
      */
     public static Cache init() throws IOException {
         Log.debug("Loading Cache...");
-        Cache cache = new Cache();
-        cache.load(new File("cache"));
+        Cache cache = new Cache(new File("cache"));
 
         //We store a file as data/cache.yml, this file contains information on files which we should
         //delete from our cache (Encrypted maps). This is done to avoid sending the player maps that
@@ -135,6 +90,7 @@ public class Cache {
         return cache;
     }
 
+
     /**
      * Hashes the given string for map entry lookups. Names are case
      * insensitive.
@@ -153,6 +109,63 @@ public class Cache {
     }
 
     /**
+     * The XTEA keys we use to decrypt the encrypted parts of this cache
+     */
+    private XTEAStore xteas;
+
+    /**
+     * The primary file we're reading data from
+     */
+    private RandomAccessFile data;
+    /**
+     * The index tables from the cache. Null if not found/valid. Does not
+     * include index 255
+     */
+    private RandomAccessFile[] indexes;
+
+    private FileTable metaFiles;
+    /**
+     * The filetables we're using to store our data. These cache read files.
+     */
+    private FileTable[] tables;
+
+    /**
+     * The filetables we're using to store our metadata. This includes size,
+     * children, location, etc. These are lightweight.
+     */
+    private ReferenceTable[] refs;
+
+    private ChecksumTable checksum;
+    private RandomAccessFile index;
+
+    /**
+     * A hashmap of (IDX << 24) | (FileID) to archive. This is a cache used by
+     * the getArchive() method.
+     */
+    private HashMap<Integer, Archive> archives = new HashMap<>();
+
+    private HashMap<Integer, ByteBuffer> raws = new HashMap<>();
+
+    /**
+     * Constructs a new cache
+     */
+    public Cache(File folder) throws IOException {
+        load(folder);
+    }
+
+    /**
+     * Lazy initialize and fetch the checksum table for this cache
+     * @return the checksum table
+     */
+    public ChecksumTable getChecksum() {
+        if(checksum == null) {
+            rebuildChecksum();
+        }
+
+        return this.checksum;
+    }
+
+    /**
      * Loads this cache from the given folder. Any previous data is thrown away.
      * A RandomAccessFile is created for all index files (main_file_cache.idx*)
      * except for file 255, and another is created for the main_file_cache.dat2.
@@ -162,7 +175,7 @@ public class Cache {
      * @param folder the folder to load from
      * @throws IOException if an IO error occurs
      */
-    public void load(File folder) throws IOException {
+    private void load(File folder) throws IOException {
         //Filetable 255's data stream
         index = new RandomAccessFile(new File(folder, "main_file_cache.idx255"), "r");
         //The main 100mb+ cache file with raw data
@@ -362,8 +375,6 @@ public class Cache {
      *
      * @param idx    the IDX value (0-37)
      * @param fileId the file id
-     * @param key    the XTEA key to use to decrypt the cache file (used in
-     *               Cache.getFile() call)
      * @return the archive
      * @throws IOException if the archive could not be retrieved. Not thrown if
      *                     the archive is already cached.
@@ -480,8 +491,6 @@ public class Cache {
      *
      * @param idx    the IDX value, 0-37
      * @param fileId the fileId to fetch
-     * @param key    the XTEA key to use to decrypt the file, null if it is not
-     *               encrypted
      * @return the cache file, not null.
      * @throws IOException           if an IO error occurs
      * @throws FileNotFoundException if the file was not found.

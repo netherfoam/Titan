@@ -12,8 +12,7 @@ public class Search {
     private static Cache cache;
 
     public static void main(String[] args) throws IOException {
-        cache = new Cache();
-        cache.load(new File("cache"));
+        cache = new Cache(new File("cache"));
         search("points", IDX.INTERFACE_SCRIPTS);
     }
 

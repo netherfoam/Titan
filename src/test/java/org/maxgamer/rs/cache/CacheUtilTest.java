@@ -4,7 +4,6 @@ import net.openrs.cache.ChecksumTable;
 import net.openrs.util.ByteBufferUtils;
 import org.junit.Assert;
 import org.junit.Test;
-import org.maxgamer.rs.cache.reference.ReferenceTable;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -24,8 +23,8 @@ public class CacheUtilTest extends CacheTest {
 
     @Test
     public void idx0SizeTest() throws IOException {
-        Assert.assertEquals(49, cache.getFileTable(2).size());
-        cache.getFileTable(2).get(0, null);
+        Assert.assertEquals(49, cache.getSize(2));
+        cache.getRaw(2, 0);
     }
 
     @Test
@@ -54,10 +53,8 @@ public class CacheUtilTest extends CacheTest {
                 continue;
             }
 
-            ReferenceTable referenceTable = cache.getReferenceTable(i);
-
             Assert.assertEquals("crc", ByteBufferUtils.getCrcChecksum(tableHeader), crc);
-            Assert.assertEquals("version", referenceTable.getVersion(), version);
+            Assert.assertEquals("version", cache.getVersion(i), version);
             Assert.assertArrayEquals("whirlpool", ByteBufferUtils.getWhirlpoolDigest(tableHeader), whirlpool);
         }
 

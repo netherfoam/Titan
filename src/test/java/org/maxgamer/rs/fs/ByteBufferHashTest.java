@@ -23,7 +23,7 @@ public class ByteBufferHashTest {
 
     @Test
     public void whirlpool() {
-        byte[] source = data(1024 * 10); // 10kb of data to hash
+        byte[] source = data(1024 * 10 + 82); // 10kb of data to hash
 
         byte[] buffered = AssetWriter.whirlpool(ByteBuffer.wrap(source));
         byte[] standard = Whirlpool.whirlpool(source, 0, source.length);
@@ -33,7 +33,7 @@ public class ByteBufferHashTest {
 
     @Test
     public void crc32() {
-        byte[] source = data(1024 * 10); // 10kb of data to hash
+        byte[] source = data(1024 * 10 + 82); // 10kb of data to hash
 
         CRC32 crc32 = new CRC32();
         crc32.update(source);

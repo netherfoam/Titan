@@ -62,7 +62,7 @@ public class AssetWriter {
             int length = Math.min(bb.remaining(), 1024);
             bb.get(source, 0, length);
 
-            crc.update(source);
+            crc.update(source, 0, length);
         }
 
         return (int) crc.getValue();

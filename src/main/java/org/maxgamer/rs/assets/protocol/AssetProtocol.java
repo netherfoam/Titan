@@ -128,4 +128,8 @@ public class AssetProtocol {
 
         return out;
     }
+
+    public ChecksumTable getChecksum() {
+        return checksum;
+    }
 }

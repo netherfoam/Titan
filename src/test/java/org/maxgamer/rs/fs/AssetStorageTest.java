@@ -1,5 +1,6 @@
 package org.maxgamer.rs.fs;
 
+import net.openrs.cache.ChecksumTable;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -7,8 +8,10 @@ import org.junit.Test;
 import org.maxgamer.rs.assets.codec.asset.Asset;
 import org.maxgamer.rs.assets.codec.asset.AssetReference;
 import org.maxgamer.rs.assets.AssetStorage;
+import org.maxgamer.rs.assets.codec.asset.AssetWriter;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Random;
@@ -41,8 +44,10 @@ public class AssetStorageTest {
 
     @After
     public void destroy() throws IOException {
-        folder.delete();
-        folder.deleteOnExit();
+        for(File f : folder.listFiles()) {
+            if(!f.delete()) f.deleteOnExit();
+        }
+        if(!folder.delete()) folder.deleteOnExit();
     }
 
     @Test
@@ -90,5 +95,74 @@ public class AssetStorageTest {
         read.get(result);
 
         Assert.assertArrayEquals(second, result);
+    }
+
+    @Test
+    public void testMultiCreateDelete() throws IOException {
+        AssetStorage storage = AssetStorage.create(folder);
+
+        AssetReference properties = AssetReference.create(0);
+        byte[] first = "Hello World".getBytes();
+        byte[] second = "Goodbye World".getBytes();
+
+        storage.writer(0)
+                .write(0, properties, Asset.wrap(first))
+                .commit();
+
+        storage.writer(0)
+                .write(1, properties, Asset.wrap(second))
+                .delete(0)
+                .commit();
+
+        try {
+            storage.read(0, 0);
+            Assert.fail("Expected NotFoundException");
+        } catch (FileNotFoundException expected) {
+            // Great!
+        }
+
+        ByteBuffer read = storage.read(0, 1).getPayload();
+        byte[] result = new byte[read.remaining()];
+        read.get(result);
+
+        Assert.assertArrayEquals(second, result);
+    }
+
+    @Test
+    public void testMultiCreateDeleteChecksum() throws IOException {
+        AssetStorage storage = AssetStorage.create(folder);
+
+        AssetReference properties = AssetReference.create(0);
+        byte[] first = "Hello World".getBytes();
+        byte[] second = "Goodbye World".getBytes();
+
+        storage.writer(0)
+                .write(0, properties, Asset.wrap(first))
+                .commit();
+
+        storage.writer(0)
+                .write(1, properties, Asset.wrap(second))
+                .delete(0)
+                .commit();
+
+        try {
+            storage.read(0, 0);
+            Assert.fail("Expected NotFoundException");
+        } catch (FileNotFoundException expected) {
+            // Great!
+        }
+
+        ByteBuffer read = storage.read(0, 1).getPayload();
+        byte[] result = new byte[read.remaining()];
+        read.get(result);
+
+        Assert.assertArrayEquals(second, result);
+
+        storage.getProtocol().rebuildChecksum();
+        ChecksumTable table = storage.getProtocol().getChecksum();
+        ChecksumTable.Entry entry = table.getEntry(0);
+
+        ByteBuffer encodedIndexTable = storage.getMasterTable().read(0);
+        Assert.assertEquals("expect correct crc32", entry.getCrc(), AssetWriter.crc32(encodedIndexTable));
     }
 }

@@ -11,26 +11,26 @@ import org.maxgamer.rs.assets.codec.asset.SubAssetReference;
 /**
  * @author netherfoam
  */
-public class AssetReferenceCodecTest {
-    private IndexTable assetPropertiesCodex;
+public class IndexTableTest {
+    private IndexTable indexTable;
 
     private IndexTable reencode(IndexTable table) {
-        return new IndexTable(assetPropertiesCodex.getIdx(), table.encode());
+        return new IndexTable(indexTable.getIdx(), table.encode());
     }
 
     @Before
     public void init() {
-        assetPropertiesCodex = new IndexTable(12, 1);
+        indexTable = new IndexTable(12, 1);
     }
 
     @After
     public void verify() {
         // Smoke test: this should work
-        IndexTable result = reencode(assetPropertiesCodex);
-        Assert.assertEquals("version", assetPropertiesCodex.getVersion(), result.getVersion());
-        Assert.assertEquals("flags", assetPropertiesCodex.getFlags(), result.getFlags());
-        Assert.assertEquals("format", assetPropertiesCodex.getFormat(), result.getFormat());
-        Assert.assertEquals("file count", assetPropertiesCodex.getReferences().size(), result.getReferences().size());
+        IndexTable result = reencode(indexTable);
+        Assert.assertEquals("version", indexTable.getVersion(), result.getVersion());
+        Assert.assertEquals("flags", indexTable.getFlags(), result.getFlags());
+        Assert.assertEquals("format", indexTable.getFormat(), result.getFormat());
+        Assert.assertEquals("file count", indexTable.getReferences().size(), result.getReferences().size());
     }
 
     @Test
@@ -41,9 +41,9 @@ public class AssetReferenceCodecTest {
     @Test
     public void singleReadWrite() {
         AssetReference reference = AssetReference.create(1);
-        assetPropertiesCodex.getReferences().put(0, reference);
+        indexTable.getReferences().put(0, reference);
 
-        IndexTable reloaded = reencode(assetPropertiesCodex);
+        IndexTable reloaded = reencode(indexTable);
 
         AssetReference fetched = reloaded.getReferences().get(0);
         Assert.assertNotNull("must fetch a reference", fetched);
@@ -55,10 +55,10 @@ public class AssetReferenceCodecTest {
     public void multiReadWrite() {
         AssetReference first = AssetReference.create(1);
         AssetReference second = AssetReference.create(1);
-        assetPropertiesCodex.getReferences().put(0, first);
-        assetPropertiesCodex.getReferences().put(1, second);
+        indexTable.getReferences().put(0, first);
+        indexTable.getReferences().put(1, second);
 
-        IndexTable reloaded = reencode(assetPropertiesCodex);
+        IndexTable reloaded = reencode(indexTable);
 
         assertEquals(first, reloaded.getReferences().get(0));
         assertEquals(second, reloaded.getReferences().get(1));
@@ -68,10 +68,10 @@ public class AssetReferenceCodecTest {
     public void singleOverwrite() {
         AssetReference initial = AssetReference.create(1);
         AssetReference replacement = AssetReference.create(2);
-        assetPropertiesCodex.getReferences().put(0, initial);
-        assetPropertiesCodex.getReferences().put(0, replacement);
+        indexTable.getReferences().put(0, initial);
+        indexTable.getReferences().put(0, replacement);
 
-        IndexTable reloaded = reencode(assetPropertiesCodex);
+        IndexTable reloaded = reencode(indexTable);
 
         assertEquals(replacement, reloaded.getReferences().get(0));
     }
@@ -81,9 +81,9 @@ public class AssetReferenceCodecTest {
         SubAssetReference child = new SubAssetReference(0, "(some_hash)".hashCode());
         AssetReference parent = AssetReference.create(1, child);
 
-        assetPropertiesCodex.getReferences().put(0, parent);
-        assetPropertiesCodex.setFlags(IndexTable.FLAG_IDENTIFIERS);
-        IndexTable reloaded = reencode(assetPropertiesCodex);
+        indexTable.getReferences().put(0, parent);
+        indexTable.setFlags(IndexTable.FLAG_IDENTIFIERS);
+        IndexTable reloaded = reencode(indexTable);
 
         assertEquals(parent, reloaded.getReferences().get(0));
         assertEquals(child, reloaded.getReferences().get(0).getChild(0));
@@ -95,9 +95,9 @@ public class AssetReferenceCodecTest {
         SubAssetReference second = new SubAssetReference(1, "(other_hash)".hashCode());
         AssetReference parent = AssetReference.create(1, first, second);
 
-        assetPropertiesCodex.getReferences().put(0, parent);
-        assetPropertiesCodex.setFlags(IndexTable.FLAG_IDENTIFIERS);
-        IndexTable reloaded = reencode(assetPropertiesCodex);
+        indexTable.getReferences().put(0, parent);
+        indexTable.setFlags(IndexTable.FLAG_IDENTIFIERS);
+        IndexTable reloaded = reencode(indexTable);
 
         assertEquals(parent, reloaded.getReferences().get(0));
         assertEquals(first, reloaded.getReferences().get(0).getChild(0));
@@ -108,10 +108,10 @@ public class AssetReferenceCodecTest {
     public void disperseReadWrite() {
         AssetReference first = AssetReference.create(1); //new AssetReference(0, 0, new byte[64], 1, 0);
         AssetReference second = AssetReference.create(1);
-        assetPropertiesCodex.getReferences().put(54, first);
-        assetPropertiesCodex.getReferences().put(980, second);
+        indexTable.getReferences().put(54, first);
+        indexTable.getReferences().put(980, second);
 
-        IndexTable reloaded = reencode(assetPropertiesCodex);
+        IndexTable reloaded = reencode(indexTable);
 
         assertEquals(first, reloaded.getReferences().get(54));
         assertEquals(second, reloaded.getReferences().get(980));
@@ -123,9 +123,9 @@ public class AssetReferenceCodecTest {
         SubAssetReference second = new SubAssetReference(813, "(other_hash)".hashCode());
         AssetReference parent = AssetReference.create(1, first, second);
 
-        assetPropertiesCodex.getReferences().put(0, parent);
-        assetPropertiesCodex.setFlags(IndexTable.FLAG_IDENTIFIERS);
-        IndexTable reloaded = reencode(assetPropertiesCodex);
+        indexTable.getReferences().put(0, parent);
+        indexTable.setFlags(IndexTable.FLAG_IDENTIFIERS);
+        IndexTable reloaded = reencode(indexTable);
 
         assertEquals(parent, reloaded.getReferences().get(0));
         assertEquals(first, reloaded.getReferences().get(0).getChild(0));

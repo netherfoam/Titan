@@ -2,7 +2,6 @@ package org.maxgamer.rs.util.io;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 
 public class ByteBufferInputStream extends InputStream {
@@ -14,11 +13,11 @@ public class ByteBufferInputStream extends InputStream {
 
     @Override
     public int read() throws IOException {
-        try {
-            return bb.get() & 0xFF;
-        } catch (BufferUnderflowException e) {
+        if(!bb.hasRemaining()) {
             return -1;
         }
+
+        return bb.get() & 0xFF;
     }
 
     @Override

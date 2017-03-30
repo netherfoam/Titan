@@ -87,6 +87,7 @@ public final class Asset extends Codec {
             // No data means nothing to decode, so we pick some sensible defaults
             compression = RSCompression.NONE;
             payload = null;
+            version = -1;
             return;
         }
 

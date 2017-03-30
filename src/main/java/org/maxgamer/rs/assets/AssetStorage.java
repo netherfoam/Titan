@@ -132,8 +132,11 @@ public class AssetStorage {
             tables[i] = new DataTable(i, index.getChannel(), dataFile.getChannel());
         }
 
-        xteas = new XTEAStore(new File(this.folder, "xteas.xstore2"));
-        xteas.load();
+        File xteaFile = new File(this.folder, "xteas.xstore2");
+        xteas = new XTEAStore(xteaFile);
+        if(xteaFile.exists()) {
+            xteas.load();
+        }
     }
 
     /**

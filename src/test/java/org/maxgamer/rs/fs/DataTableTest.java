@@ -1,11 +1,13 @@
 package org.maxgamer.rs.fs;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.maxgamer.rs.assets.DataTable;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
@@ -27,10 +29,19 @@ public class DataTableTest {
         index.createNewFile();
         data.createNewFile();
 
+        index.deleteOnExit();
+        data.deleteOnExit();
+
         RandomAccessFile rafIndex = new RandomAccessFile(index, "rw");
         RandomAccessFile rafData = new RandomAccessFile(data, "rw");
 
         dataTable = new DataTable(0, rafIndex.getChannel(), rafData.getChannel());
+    }
+
+    @After
+    public void cleanup() {
+        index.delete();
+        data.delete();
     }
 
     @Test
@@ -42,6 +53,46 @@ public class DataTableTest {
         ByteBuffer result = dataTable.read(0);
 
         Assert.assertArrayEquals(data, result.array());
+    }
+
+    @Test
+    public void writeDelete() throws IOException {
+        byte[] data = "Hello World".getBytes();
+        ByteBuffer contents = ByteBuffer.wrap(data);
+
+        dataTable.write(0, contents);
+        dataTable.erase(0);
+
+        try {
+            dataTable.read(0);
+            Assert.fail("Expect to raise FileNotFoundException after delete");
+        } catch (FileNotFoundException e) {
+            // Success! File should be missing
+        }
+    }
+
+    @Test
+    public void writeDeleteWrite() throws IOException {
+        byte[] data = "Hello World".getBytes();
+        ByteBuffer contents = ByteBuffer.wrap(data);
+
+        dataTable.write(0, contents.asReadOnlyBuffer());
+        dataTable.erase(0);
+        dataTable.write(1, contents.asReadOnlyBuffer());
+
+        Assert.assertArrayEquals(data, dataTable.read(1).array());
+    }
+
+    @Test
+    public void writeDeleteOverwrite() throws IOException {
+        byte[] data = "Hello World".getBytes();
+        ByteBuffer contents = ByteBuffer.wrap(data);
+
+        dataTable.write(0, contents.asReadOnlyBuffer());
+        dataTable.erase(0);
+        dataTable.write(0, contents.asReadOnlyBuffer());
+
+        Assert.assertArrayEquals(data, dataTable.read(0).array());
     }
 
     @Test

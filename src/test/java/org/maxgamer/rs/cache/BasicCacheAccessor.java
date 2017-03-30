@@ -1,7 +1,6 @@
 package org.maxgamer.rs.cache;
 
 import net.openrs.cache.ChecksumTable;
-import org.maxgamer.rs.cache.reference.ReferenceTable;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -37,12 +36,12 @@ public class BasicCacheAccessor implements CacheAccessor {
     }
 
     @Override
-    public FileTable getFileTable(int idx) {
-        return cache.getFileTable(idx);
+    public int getSize(int idx) throws IOException {
+        return cache.getFileTable(idx).size();
     }
 
     @Override
-    public ReferenceTable getReferenceTable(int idx) {
-        return cache.getReferenceTable(idx);
+    public int getVersion(int idx) throws IOException {
+        return cache.getReferenceTable(idx).getVersion();
     }
 }

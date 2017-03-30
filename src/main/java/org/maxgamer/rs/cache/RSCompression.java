@@ -10,7 +10,7 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 /**
- * TODO: There are a few optimisations that could be done here, to speed up this class.
+ * Compression methods used by asset storage when assets are raw / written on disk
  */
 public enum RSCompression {
     /**

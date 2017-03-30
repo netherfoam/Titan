@@ -82,7 +82,6 @@ public final class Asset extends Codec {
 
     @Override
     public void decode(ByteBuffer encoded) throws IOException {
-        // TODO: This can be done far more effectively without duplicating buffers
         if(encoded.remaining() <= 0) {
             // No data means nothing to decode, so we pick some sensible defaults
             compression = RSCompression.NONE;

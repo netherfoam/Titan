@@ -48,7 +48,7 @@ public enum RSCompression {
             ByteBuffer copy = ByteBuffer.allocate(bb.remaining());
             int pos = bb.position();
             copy.put(bb);
-            bb.position(pos); //Do not modify original buffer
+            bb.position(pos);
             copy.flip();
 
             if (key != null) {
@@ -68,12 +68,17 @@ public enum RSCompression {
     BZIP(1) {
         @Override
         public ByteBuffer decode(ByteBuffer bb, XTEAKey key) throws IOException {
-            ByteBuffer copy = ByteBuffer.allocate(bb.remaining());
-            copy.put(bb); //Do modify payload.
-            copy.flip();
+            ByteBuffer copy;
 
             if (key != null) {
+                // If we're decoding a file, we need a mutable buffer.
+                copy = ByteBuffer.allocate(bb.remaining());
+                copy.put(bb.asReadOnlyBuffer());
+                copy.flip();
                 key.decipher(copy, copy.position(), copy.limit());
+            } else {
+                // We're not decoding a file, we don't need a mutable buffer. This is faster than copying
+                copy = bb.asReadOnlyBuffer();
             }
 
             int decompressedLength = copy.getInt();
@@ -154,12 +159,17 @@ public enum RSCompression {
     GZIP(2) {
         @Override
         public ByteBuffer decode(ByteBuffer bb, XTEAKey key) throws IOException {
-            ByteBuffer copy = ByteBuffer.allocate(bb.remaining());
-            copy.put(bb); //Do modify payload.
-            copy.flip();
+            ByteBuffer copy;
 
             if (key != null) {
+                // If we're decoding a file, we need a mutable buffer.
+                copy = ByteBuffer.allocate(bb.remaining());
+                copy.put(bb);
+                copy.flip();
                 key.decipher(copy, copy.position(), copy.limit());
+            } else {
+                // We're not decoding a file, we don't need a mutable buffer. This is faster than copying
+                copy = bb.asReadOnlyBuffer();
             }
 
             int decompressedLength = copy.getInt();
@@ -275,7 +285,7 @@ public enum RSCompression {
     }
 
     /**
-     * Decodes the given ByteBuffer. The buffer is modified after this call.
+     * Decodes the given ByteBuffer. The buffer is not modified after this call.
      *
      * @param bb  the bytebuffer, this will be modified.
      * @param key the XTEA key to use to decrypt, or null if none
@@ -285,7 +295,7 @@ public enum RSCompression {
     public abstract ByteBuffer decode(ByteBuffer bb, XTEAKey key) throws IOException;
 
     /**
-     * Encoes the given ByteBuffer. The buffer is NOT modified after this call.
+     * Encodes the given ByteBuffer. The buffer is not modified after this call.
      *
      * @param bb  the bytebuffer to encode
      * @param key the XTEA key to use to encrypt, or null if none

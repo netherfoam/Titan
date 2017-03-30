@@ -302,13 +302,9 @@ public final class IndexTable extends Codec {
 
         for (Map.Entry<Integer, AssetReference> entry : references.entrySet()) {
             accumulator = 0;
-
-            // TODO: This doesn't quite seem right
             AssetReference asset = entry.getValue();
 
-            //for (Map.Entry<Integer, SubAssetProperties> subEntry : asset.getChildren()) {
             for(int i = 0; i < asset.getChildCount(); i++) {
-                // maybe asset.id instead of 'i'?
                 int delta = i - accumulator;
                 accumulator = i;
 

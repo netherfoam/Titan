@@ -100,17 +100,14 @@ public class MultiAsset extends Codec {
         // Simplicity sake, let chunks = 1
         int length = NUMBER_OF_CHUNKS;
         length += NUMBER_OF_CHUNKS * entries.size() * 4;
-        //TODO: We should be iterating over entries instead of incrementing an index counter
 
         // Deltas are simplified because chunks is simplified to 1
-        //for(int id = 0; id < entries.size(); id++) {
         for(ByteBuffer bb : entries.values()) {
             length += bb.remaining();
         }
 
         ByteBuffer out = ByteBuffer.allocate(length);
 
-        //for(int id = 0; id < entries.size(); id++) {
         for(int id : entries.keySet()) {
             out.put(get(id));
         }

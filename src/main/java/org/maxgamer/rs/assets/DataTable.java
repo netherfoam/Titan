@@ -66,10 +66,11 @@ public class DataTable {
             writeTriByte(chunk, (int) nextBlock);
             chunk.put(indexId);
 
-            // TODO: Could be done faster
-            while (contents.remaining() > 0 && chunk.remaining() > 0) {
-                chunk.put(contents.get());
-            }
+            // We write as much of the contents to the chunk buffer as possible
+            int limit = contents.limit();
+            contents.limit(Math.min(limit, contents.position() + chunk.remaining()));
+            chunk.put(contents);
+            contents.limit(limit);
 
             chunk.flip();
             data.write(chunk, currentBlock * TOTAL_BLOCK_LEN);
@@ -108,9 +109,15 @@ public class DataTable {
             nextBlock = readTriByte(chunk);
             Assert.equal(indexId, chunk.get());
 
-            while(chunk.remaining() > 0 && contents.remaining() > 0) {
-                contents.put(chunk.get());
+            // We read as much of the chunk as we can, until the buffer is full. Once the buffer
+            // is full, the rest of the chunk is garbage (and there should be no more chunks)
+            int limit = chunk.limit();
+            if(chunk.remaining() > contents.remaining()) {
+                chunk.limit(chunk.position() + contents.remaining());
             }
+
+            contents.put(chunk);
+            chunk.limit(limit);
 
             chunk.flip();
             chunkNumber++;

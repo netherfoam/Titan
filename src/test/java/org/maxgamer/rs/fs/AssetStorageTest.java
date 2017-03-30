@@ -165,4 +165,26 @@ public class AssetStorageTest {
         ByteBuffer encodedIndexTable = storage.getMasterTable().read(0);
         Assert.assertEquals("expect correct crc32", entry.getCrc(), AssetWriter.crc32(encodedIndexTable));
     }
+
+    @Test
+    public void testIndexFilesHaveNoVersion() throws IOException {
+        Asset asset = Asset.wrap("Hello World".getBytes());
+        asset.setVersion(501);
+
+        AssetReference ref = AssetReference.create(501);
+
+        AssetStorage storage = AssetStorage.create(folder);
+        storage.writer(0)
+                .write(0, ref, asset)
+                .commit();
+
+        // Files written to disk should keep their version
+        Asset result = storage.read(0, 0);
+        Assert.assertEquals("expect asset to keep version", asset.getVersion(), result.getVersion());
+        Assert.assertEquals("expect reference to keep version", ref.getVersion(), storage.properties(0, 0).getVersion());
+
+        // But if we read back the master file, there should be no version attached to it.
+        Asset indexFile = new Asset(null, storage.getMasterTable().read(0));
+        Assert.assertEquals(-1, indexFile.getVersion());
+    }
 }

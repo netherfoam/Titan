@@ -43,4 +43,17 @@ public class ByteBufferHashTest {
 
         Assert.assertEquals("expect exact same hash from different crc32 usages", standard, buffered);
     }
+
+    @Test
+    public void emptyCrc32() {
+        byte[] source = new byte[0]; // Empty amount of data to hash
+
+        CRC32 crc32 = new CRC32();
+        crc32.update(source);
+
+        int buffered = AssetWriter.crc32(ByteBuffer.wrap(source));
+        int standard = (int) crc32.getValue();
+
+        Assert.assertEquals("expect exact same hash from different crc32 usages", standard, buffered);
+    }
 }

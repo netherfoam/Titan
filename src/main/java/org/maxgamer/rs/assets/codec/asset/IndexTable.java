@@ -334,6 +334,6 @@ public final class IndexTable extends Codec {
     }
 
     public Asset toAsset() throws IOException {
-        return Asset.create(null, compression, version, this.encode());
+        return Asset.create(null, compression, -1, this.encode());
     }
 }

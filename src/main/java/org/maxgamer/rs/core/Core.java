@@ -1,6 +1,7 @@
 package org.maxgamer.rs.core;
 
 import org.maxgamer.rs.assets.AssetStorage;
+import org.maxgamer.rs.assets.AssetWeeder;
 import org.maxgamer.rs.command.ConsoleSender;
 import org.maxgamer.rs.core.server.Server;
 import org.maxgamer.rs.structure.timings.NullTimings;
@@ -88,9 +89,9 @@ public class Core {
         cache = new AssetStorage(new File("cache"));
 
         // Delete any broken map files
-        //AssetWeeder.weed(cache);
+        AssetWeeder.weed(cache);
 
-        server = new Server(); //Binds port port
+        server = new Server(); // Binds port port
 
         if (getServer().getConfig().getBoolean("timings")) {
             timings = new Timings();

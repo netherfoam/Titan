@@ -9,6 +9,9 @@ import java.nio.ByteBuffer;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+/**
+ * TODO: There are a few optimisations that could be done here, to speed up this class.
+ */
 public enum RSCompression {
     /**
      * There is no compression used. The return result of these is a read-only
@@ -16,10 +19,15 @@ public enum RSCompression {
      */
     NONE(0) {
         @Override
-
         public ByteBuffer decode(ByteBuffer bb, XTEAKey key) {
+            if(key == null && bb.isReadOnly()) {
+                // No need to duplicate the buffer here
+                return bb.asReadOnlyBuffer();
+            }
+
+            // We don't want to modify the buffer itself
             ByteBuffer copy = ByteBuffer.allocate(bb.remaining());
-            copy.put(bb); //Do modify payload.
+            copy.put(bb);
             copy.flip();
 
             if (key != null) {
@@ -31,6 +39,11 @@ public enum RSCompression {
 
         @Override
         public ByteBuffer encode(ByteBuffer bb, XTEAKey key) throws IOException {
+            if(key == null && bb.isReadOnly()) {
+                // No need to duplicate the buffer here
+                return bb.asReadOnlyBuffer();
+            }
+
             /* Create a deep copy so we don't modify the arguments */
             ByteBuffer copy = ByteBuffer.allocate(bb.remaining());
             int pos = bb.position();
@@ -102,7 +115,9 @@ public enum RSCompression {
         public ByteBuffer encode(ByteBuffer bb, XTEAKey key) throws IOException {
             InputStream is = new ByteBufferInputStream(bb.asReadOnlyBuffer());
             try {
-                ByteArrayOutputStream bout = new ByteArrayOutputStream();
+                // Appears that BZIP has about a 20.2% compression ratio, so we start with an allocated amount for 25% compression
+                // GZIP stats: https://catchchallenger.first-world.info/wiki/Quick_Benchmark:_Gzip_vs_Bzip2_vs_LZMA_vs_XZ_vs_LZ4_vs_LZO
+                ByteArrayOutputStream bout = new ByteArrayOutputStream(bb.remaining() / 4);
                 OutputStream os = new CBZip2OutputStream(bout, 1);
                 try {
                     byte[] buf = new byte[4096];
@@ -182,7 +197,9 @@ public enum RSCompression {
             /* Create the streams */
             InputStream is = new ByteBufferInputStream(bb.asReadOnlyBuffer());
             try {
-                ByteArrayOutputStream bout = new ByteArrayOutputStream(); //OPTIMIZE: Could parse an estimate for the stream size
+                // Appears that GZIP has about a 27% compression ratio, so we start with an allocated amount for 33% compression
+                // GZIP stats: https://catchchallenger.first-world.info/wiki/Quick_Benchmark:_Gzip_vs_Bzip2_vs_LZMA_vs_XZ_vs_LZ4_vs_LZO
+                ByteArrayOutputStream bout = new ByteArrayOutputStream(bb.remaining() / 3);
                 OutputStream os = new GZIPOutputStream(bout);
                 try {
                     /* copy data between the streams */

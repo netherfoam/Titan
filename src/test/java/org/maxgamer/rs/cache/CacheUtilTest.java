@@ -23,6 +23,12 @@ public class CacheUtilTest extends CacheTest {
     }
 
     @Test
+    public void idx0SizeTest() throws IOException {
+        Assert.assertEquals(49, cache.getFileTable(2).size());
+        cache.getFileTable(2).get(0, null);
+    }
+
+    @Test
     public void testChecksumStructure() throws IOException {
         ChecksumTable check = cache.getChecksum();
 

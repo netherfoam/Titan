@@ -1,11 +1,7 @@
 package org.maxgamer.rs.cache.format;
 
-import org.maxgamer.rs.cache.Archive;
 import org.maxgamer.rs.cache.IDX;
 import org.maxgamer.rs.cache.RSInputStream;
-import org.maxgamer.rs.cache.reference.ChildReference;
-import org.maxgamer.rs.cache.reference.Reference;
-import org.maxgamer.rs.cache.reference.ReferenceTable;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.util.io.ByteBufferInputStream;
 
@@ -31,11 +27,12 @@ public final class ClientScriptSettings {
             return script;
         ByteBuffer data = null;
         try {
-            ReferenceTable table = Core.getCache().getReferenceTable(IDX.CLIENTSCRIPT_SETTINGS);
+            /*ReferenceTable table = Core.getCache().getReferenceTable(IDX.CLIENTSCRIPT_SETTINGS);
             Reference ref = table.getReference(scriptId >>> 8);
             Archive archive = Core.getCache().getArchive(IDX.CLIENTSCRIPT_SETTINGS, ref.getId());
             ChildReference child = ref.getChild(scriptId & 0xff);
-            data = archive.get(child.getId());
+            data = archive.get(child.getId());*/
+            data = Core.getCache().archive(IDX.CLIENTSCRIPT_SETTINGS, scriptId >> 8).get(scriptId & 0xFF);
 
             script = new ClientScriptSettings();
             if (data != null) {

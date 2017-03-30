@@ -1,5 +1,7 @@
 package org.maxgamer.rs.cache;
 
+import org.maxgamer.rs.assets.AssetStorage;
+import org.maxgamer.rs.assets.codec.asset.Asset;
 import org.maxgamer.rs.core.Core;
 
 import java.io.FileNotFoundException;
@@ -35,7 +37,7 @@ public class MapCache {
      * @return the bytestream for objects, unencrypted, or null
      * @throws IOException
      */
-    public static ByteBuffer getObjects(Cache cache, int zoneX, int zoneY) throws IOException {
+    public static ByteBuffer getObjects(AssetStorage cache, int zoneX, int zoneY) throws IOException {
         //An example of this is performed over at
         //http://www.rune-server.org/runescape-development/rs-503-client-server/help/450588-openrs-map-decrypting.html
         String key = "l" + zoneX + "_" + zoneY;
@@ -50,11 +52,11 @@ public class MapCache {
         }
 
         //We haven't got a previously decrypted map data.
-        int fileId = cache.getFileId(IDX.LANDSCAPES, key);
-        CacheFile c = cache.getFile(IDX.LANDSCAPES, fileId);
+        Asset a = cache.read(IDX.LANDSCAPES, key);
 
-        bb = c.getData();
-        objects.put(key, new SoftReference<ByteBuffer>(bb));
+        bb = a.getPayload();
+        objects.put(key, new SoftReference<>(bb));
+
         return bb.asReadOnlyBuffer(); //This is necessary, as we're storing the above bb in the objects map
     }
 
@@ -70,10 +72,9 @@ public class MapCache {
      */
     public static ByteBuffer getMap(int zoneX, int zoneY) throws IOException {
         try {
-            int fileId = Core.getCache().getFileId(IDX.LANDSCAPES, "m" + zoneX + "_" + zoneY);
-            CacheFile f = Core.getCache().getFile(IDX.LANDSCAPES, fileId);
+            Asset a = Core.getCache().read(IDX.LANDSCAPES, "m" + zoneX + "_" + zoneY);
 
-            return f.getData();
+            return a.getPayload();
         } catch (FileNotFoundException e) {
             //We return null on file not found.
             return null;

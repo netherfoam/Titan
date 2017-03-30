@@ -1,6 +1,6 @@
 package org.maxgamer.rs.model.map.object;
 
-import org.maxgamer.rs.cache.Archive;
+import org.maxgamer.rs.assets.MultiAsset;
 import org.maxgamer.rs.cache.IDX;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.core.tick.Tickable;
@@ -77,7 +77,7 @@ public abstract class GameObject extends Entity implements Interactable {
             //The gameobject has not been loaded before.
             try {
                 //Each Archive from the IDX file has up to 256 subfiles
-                Archive a = Core.getCache().getArchive(IDX.OBJECTS, id >>> 8);
+                MultiAsset a = Core.getCache().archive(IDX.OBJECTS, id >>> 8);
                 ByteBuffer src = a.get(id & 0xFF);
                 GameObjectProto def = GameObjectProto.decode(id, src);
                 if (src.remaining() > 0) {

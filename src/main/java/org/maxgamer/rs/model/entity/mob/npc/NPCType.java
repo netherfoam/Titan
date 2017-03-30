@@ -1,6 +1,6 @@
 package org.maxgamer.rs.model.entity.mob.npc;
 
-import org.maxgamer.rs.cache.Archive;
+import org.maxgamer.rs.assets.MultiAsset;
 import org.maxgamer.rs.cache.IDX;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.util.BufferUtils;
@@ -141,7 +141,7 @@ public class NPCType {
     @PostLoad
     public void cache() throws IOException {
         //We don't have a previous version. We shall now load it and cache it.
-        Archive a = Core.getCache().getArchive(IDX.NPCS, id >> 7);
+        MultiAsset a = Core.getCache().archive(IDX.NPCS, id >> 7);
         ByteBuffer bb = a.get(id & 0x7F); //Last 7 bits are our ID within the archive
         this.decode(bb);
     }

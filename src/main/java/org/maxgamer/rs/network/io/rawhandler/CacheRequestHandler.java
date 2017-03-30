@@ -70,7 +70,7 @@ public class CacheRequestHandler extends RawHandler {
                             }
                             try {
                                 //Log.debug("Sending file " + idx + ", " + file + ", op " + opcode);
-                                ByteBuffer response = Core.getCache().createResponse(idx, file, opcode);
+                                ByteBuffer response = Core.getCache().getProtocol().response(idx, file, opcode);
                                 //ByteBuffer response = Core.getCache().getUpdateServer().update(idx, file, opcode);
                                 getSession().write(response);
                             } catch (FileNotCachedException e) {

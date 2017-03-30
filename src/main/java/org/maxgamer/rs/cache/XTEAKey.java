@@ -44,7 +44,6 @@ public class XTEAKey {
      * Deciphers the specified {@link ByteBuffer} with the given key.
      *
      * @param buffer The buffer.
-     * @param keys   The key.
      * @throws IllegalArgumentException if the key is not exactly 4 elements
      *                                  long.
      */
@@ -70,7 +69,6 @@ public class XTEAKey {
      * Enciphers the specified {@link ByteBuffer} with the given key.
      *
      * @param buffer The buffer.
-     * @param keys   The key.
      * @throws IllegalArgumentException if the key is not exactly 4 elements
      *                                  long.
      */

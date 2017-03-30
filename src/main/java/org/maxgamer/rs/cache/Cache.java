@@ -58,14 +58,14 @@ public class Cache {
                     } catch (FileNotFoundException e) {
                         continue;
                     }
-                    try {
+                    /*try {
                         MapCache.getObjects(cache, x, y);
                     } catch (IOException e) {
                         //File is broken or encrypted and we don't have the key.
                         r.remove(ref.getId());
                         //Blacklist the file
                         cacheCfg.set("encryptedMaps." + ref.getId(), ref.getId());
-                    }
+                    }*/
                 }
             }
             // Update config & save

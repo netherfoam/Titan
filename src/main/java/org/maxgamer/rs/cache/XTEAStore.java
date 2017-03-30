@@ -15,23 +15,6 @@ import java.util.Scanner;
  * @author netherfoam
  */
 public class XTEAStore {
-    /**
-     * The size of an XTEA int[] array. This may not vary.
-     */
-    public static final int XTEA_KEY_LENGTH = 4;
-    /**
-     * The file this was loaded from
-     */
-    private File file;
-    /**
-     * A hashmap of (IDX << 24) | (fileId) to XTEA Key for that file
-     */
-    private HashMap<Integer, XTEAKey> keys = new HashMap<>(1024);
-
-    public XTEAStore(File file) {
-        this.file = file;
-    }
-
     public static void loadFormatUnpacked(Cache c, File folder, XTEAStore convert) throws IOException {
         for (File f : folder.listFiles()) {
             if (!f.getName().endsWith(".txt")) continue; //Only pack .txt files
@@ -77,6 +60,25 @@ public class XTEAStore {
         in.close();
     }
 
+    /**
+     * The size of an XTEA int[] array. This may not vary.
+     */
+    public static final int XTEA_KEY_LENGTH = 4;
+
+    /**
+     * The file this was loaded from
+     */
+    private File file;
+
+    /**
+     * A hashmap of (IDX << 24) | (fileId) to XTEA Key for that file
+     */
+    private HashMap<Integer, XTEAKey> keys = new HashMap<>(1024);
+
+    public XTEAStore(File file) {
+        this.file = file;
+    }
+
     public File getFile() {
         return file;
     }
@@ -104,7 +106,7 @@ public class XTEAStore {
      * @throws FileNotFoundException if the file could not be found
      */
     private void load(File f) throws IOException {
-        //Throws FileNotFound
+        // Throws FileNotFound
         InputStreamWrapper in = new InputStreamWrapper(new FileInputStream(f));
 
         while (in.available() > 0) {
@@ -180,7 +182,7 @@ public class XTEAStore {
      * Fetches the xtea value for the given hash value
      *
      * @param idx  the type
-     * @param hash the hash of the name
+     * @param fileId the file number
      * @return the key.
      */
     public XTEAKey getKey(int idx, int fileId) {
@@ -191,7 +193,7 @@ public class XTEAStore {
      * Sets the key for the given idx and container to the given value.
      *
      * @param idx       the idx for the section
-     * @param container the container id in the idx section
+     * @param fileId    the file id
      * @param key       the keys to set, possibly null
      * @throws IllegalArgumentException if the keys length is not 4
      */

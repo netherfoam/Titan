@@ -1,6 +1,6 @@
 package org.maxgamer.rs.network.io.rawhandler;
 
-import org.maxgamer.rs.cache.XTEAKey;
+import org.maxgamer.rs.assets.codec.asset.XTEAKey;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.model.entity.mob.persona.player.ScreenSettings;
 import org.maxgamer.rs.network.AuthResult;

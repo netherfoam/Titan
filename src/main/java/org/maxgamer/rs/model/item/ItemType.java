@@ -1,7 +1,7 @@
 package org.maxgamer.rs.model.item;
 
-import org.maxgamer.rs.cache.Archive;
-import org.maxgamer.rs.cache.IDX;
+import org.maxgamer.rs.assets.MultiAsset;
+import org.maxgamer.rs.assets.IDX;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.model.entity.mob.Bonuses;
 import org.maxgamer.rs.model.entity.mob.combat.AttackStyle;
@@ -126,7 +126,7 @@ public class ItemType {
 
     @PostLoad
     public void cache() throws IOException {
-        Archive a = Core.getCache().getArchive(IDX.ITEMS, id >> 8);
+        MultiAsset a = Core.getCache().archive(IDX.ITEMS, id >> 8);
         ByteBuffer bb = a.get(id & 0xFF);
         if (bb == null) {
             throw new FileNotFoundException("ItemID " + id + " not available in cache.");

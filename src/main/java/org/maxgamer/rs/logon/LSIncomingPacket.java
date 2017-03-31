@@ -1,6 +1,6 @@
 package org.maxgamer.rs.logon;
 
-import org.maxgamer.rs.cache.RSInputStream;
+import org.maxgamer.rs.assets.protocol.RSInputStream;
 import org.maxgamer.rs.network.io.stream.RSInputBuffer;
 import org.maxgamer.rs.util.io.ByteReader;
 import org.maxgamer.rs.util.io.CircularBuffer;

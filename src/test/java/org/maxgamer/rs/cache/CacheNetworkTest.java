@@ -2,6 +2,7 @@ package org.maxgamer.rs.cache;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.maxgamer.rs.assets.codec.RSCompression;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -107,11 +108,16 @@ public class CacheNetworkTest extends CacheTest {
 
     public void testAllFilesInTable(int idx) throws IOException {
         // Here, we read all of the files from the given  file table
-        FileTable table = cache.getFileTable(idx);
+        int size;
+        try {
+            size = cache.getSize(idx);
+        } catch (FileNotFoundException e) {
+            return;
+        }
 
-        if(table == null) return;
+        if (size <= 0) return;
 
-        for(int fileId = 0; fileId < table.size(); fileId++) {
+        for (int fileId = 0; fileId < size; fileId++) {
             ByteBuffer response = null;
             try {
                 response = cache.createResponse(idx, fileId, 1);

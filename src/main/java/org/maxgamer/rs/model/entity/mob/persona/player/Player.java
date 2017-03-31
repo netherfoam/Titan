@@ -1,7 +1,7 @@
 package org.maxgamer.rs.model.entity.mob.persona.player;
 
-import org.maxgamer.rs.cache.IDX;
-import org.maxgamer.rs.cache.format.RSFont;
+import org.maxgamer.rs.assets.IDX;
+import org.maxgamer.rs.assets.protocol.format.RSFont;
 import org.maxgamer.rs.command.CommandSender;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.core.server.WorldFullException;
@@ -50,7 +50,7 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 
     static {
         try {
-            CLIENT_FONT = new RSFont(Core.getCache().getFile(IDX.FONTS, 495).getData());
+            CLIENT_FONT = new RSFont(Core.getCache().read(IDX.FONTS, 495).getPayload());
         } catch (IOException e) {
             throw new ExceptionInInitializerError(e);
         }
@@ -140,7 +140,7 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
      * send any data to the session until the start() method is invoked on the
      * player.
      *
-     * @param profile the profile to use for this player
+     * @param name the name to use for this player
      * @param session the session controlling the player.
      * @throws WorldFullException
      * @throws NullPointerException if the given profile is null

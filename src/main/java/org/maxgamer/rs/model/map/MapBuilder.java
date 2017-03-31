@@ -1,6 +1,6 @@
 package org.maxgamer.rs.model.map;
 
-import org.maxgamer.rs.cache.EncryptedException;
+import org.maxgamer.rs.assets.codec.asset.EncryptedException;
 
 import java.util.HashMap;
 

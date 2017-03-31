@@ -1,6 +1,8 @@
 package org.maxgamer.rs.cache;
 
 import org.junit.BeforeClass;
+import org.maxgamer.rs.assets.AssetStorage;
+import org.maxgamer.rs.assets.AssetWeeder;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,6 +18,9 @@ public abstract class CacheTest {
 
     @BeforeClass
     public static void init() throws IOException {
-        cache = new BasicCacheAccessor(new Cache(new File("cache")));
+        //cache = new BasicCacheAccessor(new Cache(new File("cache")));
+        AssetStorage storage = new AssetStorage(new File("cache"));
+        AssetWeeder.weed(storage);
+        cache = new AssetStorageAccessor(storage);
     }
 }

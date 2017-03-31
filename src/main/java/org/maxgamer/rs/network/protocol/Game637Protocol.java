@@ -1,8 +1,8 @@
 package org.maxgamer.rs.network.protocol;
 
-import org.maxgamer.rs.cache.IDX;
-import org.maxgamer.rs.cache.XTEAKey;
-import org.maxgamer.rs.cache.format.CS2;
+import org.maxgamer.rs.assets.IDX;
+import org.maxgamer.rs.assets.codec.asset.XTEAKey;
+import org.maxgamer.rs.assets.protocol.format.CS2;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.model.entity.mob.*;
 import org.maxgamer.rs.model.entity.mob.combat.Damage;
@@ -248,7 +248,7 @@ public class Game637Protocol extends GameProtocol {
         CS2 cs2 = scripts.get(script);
         if (cs2 == null) {
             try {
-                cs2 = CS2.decode(script, Core.getCache().getFile(IDX.INTERFACE_SCRIPTS, script).getData());
+                cs2 = CS2.decode(script, Core.getCache().read(IDX.INTERFACE_SCRIPTS, script).getPayload());
             } catch (IOException e) {
                 // There's no elegant way of handling this. We really shouldn't
                 // have to catch an IOException
@@ -1432,7 +1432,7 @@ public class Game637Protocol extends GameProtocol {
                 for (int regionY = (chunkY - mapHash) >> 3; regionY <= (chunkY + mapHash) >> 3; regionY++) {
                     int fileId;
                     try {
-                        fileId = Core.getCache().getFileId(IDX.LANDSCAPES, "l" + regionX + "_" + regionY);
+                        fileId = Core.getCache().getIndex(IDX.LANDSCAPES).getFile("l" + regionX + "_" + regionY);
                     } catch (FileNotFoundException e1) {
                         // Instead of raising an exception, the client loads the
                         // region anyway. However,
@@ -1442,7 +1442,7 @@ public class Game637Protocol extends GameProtocol {
                         }
                         continue; // We've written our dummy keys.
                     }
-                    XTEAKey xtea = Core.getCache().getXTEA().getKey(IDX.LANDSCAPES, fileId);
+                    XTEAKey xtea = Core.getCache().getXTEAs().getKey(IDX.LANDSCAPES, fileId);
                     int[] keys;
                     if (xtea == null) {
                         keys = new int[]{0, 0, 0, 0};
@@ -1509,8 +1509,8 @@ public class Game637Protocol extends GameProtocol {
                 if (regionId != 0) {
                     int fileId;
                     try {
-                        fileId = Core.getCache().getFileId(IDX.LANDSCAPES, "l" + (regionId >> 8) + "_" + (regionId & 0xFF));
-                        XTEAKey xtea = Core.getCache().getXTEA().getKey(IDX.LANDSCAPES, fileId);
+                        fileId = Core.getCache().getIndex(IDX.LANDSCAPES).getFile("l" + (regionId >> 8) + "_" + (regionId & 0xFF));
+                        XTEAKey xtea = Core.getCache().getXTEAs().getKey(IDX.LANDSCAPES, fileId);
                         if (xtea != null) {
                             keys = xtea.getKeys();
                         }

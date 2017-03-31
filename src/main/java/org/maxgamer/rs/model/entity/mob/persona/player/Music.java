@@ -1,6 +1,6 @@
 package org.maxgamer.rs.model.entity.mob.persona.player;
 
-import org.maxgamer.rs.cache.format.ClientScriptSettings;
+import org.maxgamer.rs.assets.protocol.format.ClientScriptSettings;
 import org.maxgamer.rs.structure.YMLSerializable;
 import org.maxgamer.rs.structure.configs.ConfigSection;
 

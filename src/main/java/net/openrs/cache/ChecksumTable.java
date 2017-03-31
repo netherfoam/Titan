@@ -2,7 +2,7 @@ package net.openrs.cache;
 
 import net.openrs.util.crypto.Rsa;
 import net.openrs.util.crypto.Whirlpool;
-import org.maxgamer.rs.cache.reference.ReferenceTable;
+import org.maxgamer.rs.assets.codec.asset.Asset;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -12,7 +12,7 @@ import java.nio.ByteBuffer;
 
 /**
  * A {@link ChecksumTable} stores checksums and versions of
- * {@link ReferenceTable}s. When encoded in a {@link Container} and prepended
+ * {@link org.maxgamer.rs.assets.codec.asset.IndexTable}s. When encoded in an {@link Asset} and prepended
  * with the file type and id it is more commonly known as the client's
  * "update keys".
  *
@@ -20,21 +20,6 @@ import java.nio.ByteBuffer;
  * @author `Discardedx2
  */
 public class ChecksumTable {
-
-    /**
-     * The entries in this table.
-     */
-    private Entry[] entries;
-
-    /**
-     * Creates a new {@link ChecksumTable} with the specified size.
-     *
-     * @param size The number of entries in this table.
-     */
-    public ChecksumTable(int size) {
-        entries = new Entry[size];
-    }
-
     /**
      * Decodes the {@link ChecksumTable} in the specified {@link ByteBuffer}.
      * Whirlpool digests are not read.
@@ -115,6 +100,20 @@ public class ChecksumTable {
 
         /* if it looks good return the table */
         return table;
+    }
+
+    /**
+     * The entries in this table.
+     */
+    private Entry[] entries;
+
+    /**
+     * Creates a new {@link ChecksumTable} with the specified size.
+     *
+     * @param size The number of entries in this table.
+     */
+    public ChecksumTable(int size) {
+        entries = new Entry[size];
     }
 
     /**

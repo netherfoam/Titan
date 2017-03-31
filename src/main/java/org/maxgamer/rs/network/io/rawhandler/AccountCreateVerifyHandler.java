@@ -1,6 +1,6 @@
 package org.maxgamer.rs.network.io.rawhandler;
 
-import org.maxgamer.rs.cache.XTEAKey;
+import org.maxgamer.rs.assets.codec.asset.XTEAKey;
 import org.maxgamer.rs.network.Session;
 import org.maxgamer.rs.network.io.stream.RSByteBuffer;
 import org.maxgamer.rs.util.BufferUtils;

@@ -1,6 +1,6 @@
 package org.maxgamer.rs.logon.game;
 
-import org.maxgamer.rs.cache.RSInputStream;
+import org.maxgamer.rs.assets.protocol.RSInputStream;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.logon.LSIncomingPacket;
 import org.maxgamer.rs.logon.LSOutgoingPacket;

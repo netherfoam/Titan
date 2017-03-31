@@ -1,12 +1,14 @@
 package org.maxgamer.rs.core;
 
-import org.maxgamer.rs.cache.Cache;
+import org.maxgamer.rs.assets.AssetStorage;
+import org.maxgamer.rs.assets.AssetWeeder;
 import org.maxgamer.rs.command.ConsoleSender;
 import org.maxgamer.rs.core.server.Server;
 import org.maxgamer.rs.structure.timings.NullTimings;
 import org.maxgamer.rs.structure.timings.Timings;
 import org.maxgamer.rs.util.Log;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.concurrent.ExecutorService;
@@ -58,7 +60,7 @@ public class Core {
     /**
      * The RS cache that is to be loaded and used.
      */
-    private static Cache cache;
+    private static AssetStorage cache;
 
     static {
         AUTHOR = Core.class.getPackage().getImplementationVendor();
@@ -84,8 +86,12 @@ public class Core {
         threadPool = Executors.newFixedThreadPool(threads, new CoreThreadFactory());
 
         console = new ConsoleSender();
-        cache = Cache.init();
-        server = new Server(); //Binds port port
+        cache = new AssetStorage(new File("cache"));
+
+        // Delete any broken map files
+        AssetWeeder.weed(cache);
+
+        server = new Server(); // Binds port port
 
         if (getServer().getConfig().getBoolean("timings")) {
             timings = new Timings();
@@ -110,7 +116,7 @@ public class Core {
      *
      * @return the cache interface
      */
-    public static Cache getCache() {
+    public static AssetStorage getCache() {
         return cache;
     }
 

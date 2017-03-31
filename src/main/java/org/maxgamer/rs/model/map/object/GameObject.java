@@ -1,7 +1,7 @@
 package org.maxgamer.rs.model.map.object;
 
-import org.maxgamer.rs.cache.Archive;
-import org.maxgamer.rs.cache.IDX;
+import org.maxgamer.rs.assets.MultiAsset;
+import org.maxgamer.rs.assets.IDX;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.core.tick.Tickable;
 import org.maxgamer.rs.model.entity.Entity;
@@ -77,7 +77,7 @@ public abstract class GameObject extends Entity implements Interactable {
             //The gameobject has not been loaded before.
             try {
                 //Each Archive from the IDX file has up to 256 subfiles
-                Archive a = Core.getCache().getArchive(IDX.OBJECTS, id >>> 8);
+                MultiAsset a = Core.getCache().archive(IDX.OBJECTS, id >> 8);
                 ByteBuffer src = a.get(id & 0xFF);
                 GameObjectProto def = GameObjectProto.decode(id, src);
                 if (src.remaining() > 0) {
@@ -115,17 +115,9 @@ public abstract class GameObject extends Entity implements Interactable {
         // accept the attempt to "Open" the opened trapdoor (Which ordinarily could not be done).
 
         for (int alias : proto.getAliases()) {
-            GameObjectProto a;
-            try {
-                a = getDefinition(alias);
-            } catch (RuntimeException e) {
-                // We couldn't load that definition, skip it quietly.
-                if (e.getCause() instanceof IOException) {
-                    continue;
-                } else {
-                    throw e;
-                }
-            }
+            if(alias == -1) continue;
+
+            GameObjectProto a = getDefinition(alias);
             String[] alias_options = a.getOptions();
 
             for (int i = 0; i < alias_options.length; i++) {

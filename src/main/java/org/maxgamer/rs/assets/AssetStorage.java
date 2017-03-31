@@ -1,6 +1,6 @@
 package org.maxgamer.rs.assets;
 
-import org.maxgamer.rs.Assert;
+import org.maxgamer.rs.util.Assert;
 import org.maxgamer.rs.assets.codec.asset.Asset;
 import org.maxgamer.rs.assets.codec.asset.AssetReference;
 import org.maxgamer.rs.assets.codec.asset.AssetWriter;
@@ -40,7 +40,7 @@ public class AssetStorage {
      * @param file the file to create
      * @throws IOException if the file can't be created (eg, already exists, or no permission)
      */
-    private static void forceCreate(File file) throws IOException {
+    protected static void forceCreate(File file) throws IOException {
         if(!file.createNewFile()) throw new IllegalStateException("File " + file.getAbsolutePath() + " already exists!");
     }
 

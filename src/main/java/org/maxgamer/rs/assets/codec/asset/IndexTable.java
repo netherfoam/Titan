@@ -1,6 +1,6 @@
 package org.maxgamer.rs.assets.codec.asset;
 
-import org.maxgamer.rs.Assert;
+import org.maxgamer.rs.util.Assert;
 import org.maxgamer.rs.assets.codec.Codec;
 import org.maxgamer.rs.cache.RSCompression;
 import org.maxgamer.rs.cache.reference.ReferenceTable;
@@ -49,6 +49,10 @@ public final class IndexTable extends Codec {
 
     public IndexTable(int idx, int version) {
         super();
+
+        Assert.isPositive(idx, "Index must be positive");
+        Assert.isPositive(version, "Version must be positive");
+        Assert.isTrue(idx < 255, "Idx must be 0-254");
 
         this.idx = idx;
         this.references = new TreeMap<>();

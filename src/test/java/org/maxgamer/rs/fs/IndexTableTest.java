@@ -132,6 +132,11 @@ public class IndexTableTest {
         assertEquals(second, reloaded.getReferences().get(0).getChild(1));
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void exceedIndexLimit() {
+        new IndexTable(255, 1);
+    }
+
     private void assertEquals(AssetReference expected, AssetReference result) {
         if(expected == result) return;
         Assert.assertNotNull("expected is null", expected);

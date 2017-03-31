@@ -5,10 +5,14 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.maxgamer.rs.assets.CachedAssetStorage;
+import org.maxgamer.rs.assets.MultiAsset;
 import org.maxgamer.rs.assets.codec.asset.Asset;
 import org.maxgamer.rs.assets.codec.asset.AssetReference;
 import org.maxgamer.rs.assets.AssetStorage;
 import org.maxgamer.rs.assets.codec.asset.AssetWriter;
+import org.maxgamer.rs.assets.codec.asset.SubAssetReference;
+import org.maxgamer.rs.cache.RSCompression;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -30,6 +34,12 @@ public class AssetStorageTest {
         return data;
     }
 
+    private byte[] unbuffer(ByteBuffer buffer) {
+        byte[] data = new byte[buffer.remaining()];
+        buffer.get(data);
+
+        return data;
+    }
 
     @Before
     public void init() throws IOException {
@@ -186,5 +196,44 @@ public class AssetStorageTest {
         // But if we read back the master file, there should be no version attached to it.
         Asset indexFile = new Asset(null, storage.getMasterTable().read(0));
         Assert.assertEquals(-1, indexFile.getVersion());
+    }
+
+    @Test
+    public void testCachedAssetStorage() throws IOException {
+        SubAssetReference child = new SubAssetReference(0, 0);
+        AssetReference properties = AssetReference.create(1, child);
+        MultiAsset multi = new MultiAsset(properties);
+
+        byte[] data = "Hello World".getBytes();
+        multi.put(0, ByteBuffer.wrap(data));
+
+        AssetReference ref = AssetReference.create(1, child);
+        AssetStorage storage = CachedAssetStorage.create(folder);
+
+        try {
+            storage.archive(0, 0);
+            Assert.fail("Expected file not found");
+        } catch (FileNotFoundException e) {
+            // Great! File is missing
+        }
+
+        storage.writer(0)
+                .write(0, ref, Asset.create(null, RSCompression.NONE, -1, multi.encode()))
+                .commit();
+
+        MultiAsset result = storage.archive(0, 0);
+        Assert.assertNotNull("Result may not be null", result);
+        if(result == multi) Assert.fail("Expected a different object reference");
+
+        Assert.assertArrayEquals("ByteBuffer must be the same", unbuffer(multi.get(0)), unbuffer(result.get(0)));
+
+        multi.put(0, ByteBuffer.wrap("Goodbye World".getBytes()));
+        storage.writer(0)
+                .write(0, ref, Asset.create(null, RSCompression.NONE, -1, multi.encode()))
+                .commit();
+
+        result = storage.archive(0, 0);
+        Assert.assertNotNull("Result may not be null", result);
+        Assert.assertArrayEquals("Goodbye World".getBytes(), unbuffer(result.get(0)));
     }
 }

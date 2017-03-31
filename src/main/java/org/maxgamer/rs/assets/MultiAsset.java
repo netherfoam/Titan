@@ -1,32 +1,55 @@
 package org.maxgamer.rs.assets;
 
-import org.maxgamer.rs.Assert;
 import org.maxgamer.rs.assets.codec.Codec;
 import org.maxgamer.rs.assets.codec.asset.AssetReference;
+import org.maxgamer.rs.assets.codec.asset.SubAssetReference;
+import org.maxgamer.rs.util.Assert;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.TreeMap;
 
 /**
+ * MultiAsset is a codec that decodes a single Asset, which has one or more children inside it.
+ *
  * @author netherfoam
  */
 public class MultiAsset extends Codec {
-    private AssetReference properties;
+    /**
+     * The properties of the parent asset
+     */
+    private AssetReference reference;
+
+    /**
+     * Map of entry id to payload. Id's are not sequential here, but order is maintained.
+     */
     private TreeMap<Integer, ByteBuffer> entries = new TreeMap<>();
 
-    public MultiAsset(AssetReference properties) {
-        this.properties = properties;
+    /**
+     * Constructs a new {@link MultiAsset}, with no children. This is used when creating a
+     * new MultiAsset, to be written to disk
+     * @param reference the meta information for the asset
+     */
+    public MultiAsset(AssetReference reference) {
+        this.reference = reference;
     }
 
-    public MultiAsset(AssetReference properties, ByteBuffer bb) throws IOException {
-        this.properties = properties;
+    /**
+     * Constructs a new {@link MultiAsset} and then decodes the given buffer as the contents
+     * @param reference the meta information for the asset
+     * @param bb the buffer to decode
+     * @throws IOException if the buffer can't be decoded
+     */
+    public MultiAsset(AssetReference reference, ByteBuffer bb) throws IOException {
+        this.reference = reference;
         this.decode(bb);
     }
 
     @Override
     public void decode(ByteBuffer bb) throws IOException {
-        int size = properties.getChildCount();
+        int size = reference.getChildCount();
 
         bb.position(bb.limit() - 1);
         int chunks = bb.get() & 0xFF;
@@ -83,15 +106,19 @@ public class MultiAsset extends Codec {
         // correctly disperse the ids
         for (int i = 0; i < size; i++) {
             int index = i;
-            if (properties.getChild(i) != null) {
-                index = properties.getChild(i).getId();
+            if (reference.getChild(i) != null) {
+                index = reference.getChild(i).getId();
             }
             this.entries.put(index, entries[i]);
         }
+
+        Assert.isTrue(isComplete(), "Decoded assets should be complete");
     }
 
     @Override
     public ByteBuffer encode() throws IOException {
+        Assert.isTrue(isComplete(), "Asset must be complete to save");
+
         final int NUMBER_OF_CHUNKS = 1;
         // Number of chunks: 1
         // Chunk sizes: chunks * entries.size() * 4
@@ -138,10 +165,19 @@ public class MultiAsset extends Codec {
         return out;
     }
 
+    /**
+     * The number of files inside this asset
+     * @return The number of files inside this asset
+     */
     public int size() {
         return entries.size();
     }
 
+    /**
+     * Fetch the given asset by id. Id's are not guaranteed to be sequential
+     * @param j the id
+     * @return the buffer or null
+     */
     public ByteBuffer get(int j) {
         ByteBuffer bb = entries.get(j);
         if(bb == null) return null;
@@ -149,6 +185,37 @@ public class MultiAsset extends Codec {
         return bb.asReadOnlyBuffer();
     }
 
+    /**
+     * Fetch an iterator for iterating over the files inside this asset
+     * @return the iterator
+     */
+    public Iterator<Map.Entry<Integer, ByteBuffer>> iterator() {
+        // Instead of just returning the entries.entrySet().iterator(), we make sure that we only
+        // ever expose byte buffers that are shallow copies of the stored ones.
+        final Iterator<Map.Entry<Integer, ByteBuffer>> inner = entries.entrySet().iterator();
+        return new Iterator<Map.Entry<Integer, ByteBuffer>>(){
+            @Override
+            public boolean hasNext() {
+                return inner.hasNext();
+            }
+
+            @Override
+            public Map.Entry<Integer, ByteBuffer> next() {
+                return new ReadOnlyEntry(inner.next());
+            }
+
+            @Override
+            public void remove() {
+                inner.remove();
+            }
+        };
+    }
+
+    /**
+     * Appends the given asset by id. Id's are not guaranteed to be sequential
+     * @param id the id
+     * @param contents the contents to add to the asset
+     */
     public void put(int id, ByteBuffer contents) {
         if(contents == null) {
             entries.remove(id);
@@ -156,5 +223,52 @@ public class MultiAsset extends Codec {
         }
 
         entries.put(id, contents.asReadOnlyBuffer());
+    }
+
+    /**
+     * Returns true if this archive has no missing / stowaway children. A MultiAsset must be
+     * "complete" before it is able to be encoded.
+     * @return true if sane, false if insane
+     */
+    public boolean isComplete() {
+        // If the size mismatches, then we're definitely not ready to write!
+        if(reference.getChildCount() != entries.size()) return false;
+
+        // Iterate over the referenced children, check that none are missing
+        for(SubAssetReference subRef : reference.getChildren()) {
+            if(entries.get(subRef.getId()) == null) return false;
+        }
+
+        // By virtue, the size matches and all of the children were found. Therefore,
+        // we don't have any extra stowaways
+
+        return true;
+    }
+
+    /**
+     * Map entry subclass that handles byte buffers, such that any copies added/fetched are read only
+     */
+    public static class ReadOnlyEntry implements Map.Entry<Integer, ByteBuffer> {
+        private Map.Entry<Integer, ByteBuffer> entry;
+
+        public ReadOnlyEntry(Map.Entry<Integer, ByteBuffer> entry) {
+            this.entry = entry;
+        }
+
+
+        @Override
+        public Integer getKey() {
+            return entry.getKey();
+        }
+
+        @Override
+        public ByteBuffer getValue() {
+            return entry.getValue().asReadOnlyBuffer();
+        }
+
+        @Override
+        public ByteBuffer setValue(ByteBuffer byteBuffer) {
+            return entry.setValue(byteBuffer.asReadOnlyBuffer());
+        }
     }
 }

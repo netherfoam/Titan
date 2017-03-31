@@ -1,7 +1,7 @@
 package org.maxgamer.rs.assets.codec.asset;
 
 import net.openrs.util.crypto.Whirlpool;
-import org.maxgamer.rs.Assert;
+import org.maxgamer.rs.util.Assert;
 import org.maxgamer.rs.assets.DataTable;
 import org.maxgamer.rs.cache.XTEAKey;
 import org.maxgamer.rs.cache.XTEAStore;
@@ -96,10 +96,10 @@ public class AssetWriter {
      * @param dataTable the data table to write changes to file contents into
      */
     public AssetWriter(IndexTable indexTable, DataTable masterTable, DataTable dataTable, XTEAStore xteas) {
-        Assert.notNull(indexTable);
-        Assert.notNull(masterTable);
-        Assert.notNull(dataTable);
-        Assert.notNull(xteas);
+        Assert.notNull(indexTable, "IndexTable may not be null");
+        Assert.notNull(masterTable, "MasterTable may not be null");
+        Assert.notNull(dataTable, "DataTable may not be null");
+        Assert.notNull(xteas, "XTEAStore may not be null");
 
         this.indexTable = indexTable;
         this.masterTable = masterTable;

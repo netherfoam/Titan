@@ -1,6 +1,6 @@
 package org.maxgamer.rs.assets.codec.asset;
 
-import org.maxgamer.rs.Assert;
+import org.maxgamer.rs.util.Assert;
 import org.maxgamer.rs.assets.codec.Codec;
 import org.maxgamer.rs.cache.RSCompression;
 import org.maxgamer.rs.cache.XTEAKey;
@@ -9,9 +9,16 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 /**
+ * Asset class represents a single file in the cache
+ *
  * @author netherfoam
  */
 public final class Asset extends Codec {
+    /**
+     * Wrap the given (decoded) payload in a new asset, with no XTEA encryption.
+     * @param content the content to set
+     * @return the asset
+     */
     public static Asset wrap(byte[] content) {
         Asset asset = new Asset(null);
         asset.setPayload(ByteBuffer.wrap(content));
@@ -19,7 +26,20 @@ public final class Asset extends Codec {
         return asset;
     }
 
+    /**
+     * Creates a new asset with the given XTEA encryption key, compression, version and payload.
+     *
+     * @param key the XTEA key
+     * @param compression the compression
+     * @param version the version of the file
+     * @param payload the data contained by the file (decoded and decompressed)
+     * @return the asset
+     */
     public static Asset create(XTEAKey key, RSCompression compression, int version, ByteBuffer payload) {
+        Assert.notNull(compression, "Compression may not be null");
+        Assert.isPositive(version + 1, "Version must be positive or -1");
+        Assert.notNull(payload, "Payload may not be null");
+
         Asset asset = new Asset(key);
 
         asset.compression = compression;
@@ -29,22 +49,56 @@ public final class Asset extends Codec {
         return asset;
     }
 
+    /**
+     * The compression to use for this asset
+     */
     private RSCompression compression = RSCompression.NONE;
+
+    /**
+     * The decoded contents of this asset
+     */
     private ByteBuffer payload;
+
+    /**
+     * The XTEA encryption key for this asset. Probably null.
+     */
     private XTEAKey key;
+
+    /**
+     * The version of this asset
+     */
     private int version;
 
+    /**
+     * Constructs a new Asset with no content, compression or version
+     * @param key the encryption key, may be null
+     */
     public Asset(XTEAKey key) {
         this.key = key;
     }
 
+    /**
+     * Constructs an existing asset with the given encoded content. This sets the compression, version and
+     * payload to those stored in the content.
+     *
+     * @param key the encryption key for the content, may be null
+     * @param content the content
+     * @throws IOException if the content can't be decoded properly (usually from an incorrect key)
+     */
     public Asset(XTEAKey key, ByteBuffer content) throws IOException {
         this(key);
+        Assert.notNull(content, "Content may not be null");
 
         decode(content);
     }
 
+    /**
+     * Changes the compression for this file
+     * @param compression the compression
+     */
     public void setCompression(RSCompression compression) {
+        Assert.notNull(compression, "Compression may not be null");
+
         this.compression = compression;
     }
 
@@ -53,6 +107,7 @@ public final class Asset extends Codec {
     }
 
     public void setVersion(int version) {
+        Assert.isPositive(version, "Version must be positive");
         this.version = version;
     }
 
@@ -65,7 +120,7 @@ public final class Asset extends Codec {
     }
 
     public void setPayload(ByteBuffer decoded) {
-        Assert.notNull(decoded);
+        Assert.notNull(decoded, "Buffer may not be null");
 
         this.payload = decoded.asReadOnlyBuffer();
     }

@@ -130,6 +130,44 @@ public class DataTableTest {
         Assert.assertArrayEquals(second, dataTable.read(1).array());
     }
 
+    @Test
+    public void maxFileSize() throws IOException {
+        byte[] data = data(0xFFFFFF);
+
+        dataTable.write(0, ByteBuffer.wrap(data));
+        ByteBuffer result = dataTable.read(0);
+
+        Assert.assertArrayEquals(data, unbuffer(result));
+
+        data = data(0xFFFFFF + 1);
+
+        try {
+            dataTable.write(0, ByteBuffer.wrap(data));
+
+            Assert.fail("Shouldn't be able to write >= 16MB to an index, it's not possible");
+        } catch (IllegalArgumentException e) {
+            // Success
+        }
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void negativeIndexCount() throws IOException {
+        // Should fail
+        dataTable.write(-1, ByteBuffer.wrap("Hello World".getBytes()));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void tooHighFileId() throws IOException {
+        dataTable.write(0xFFFF + 1, ByteBuffer.wrap("Hello World".getBytes()));
+    }
+
+    private byte[] unbuffer(ByteBuffer buffer) {
+        byte[] data = new byte[buffer.remaining()];
+        buffer.get(data);
+
+        return data;
+    }
+
     private byte[] data(int size) {
         Random r = new Random(0);
         byte[] data = new byte[size];

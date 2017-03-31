@@ -54,4 +54,52 @@ public class MultiAssetTest {
 
         Assert.assertArrayEquals("mismatch data", data, result);
     }
+
+    @Test
+    public void incompleteAsset() throws IOException {
+        // Create a reference to SubAsset 5
+        SubAssetReference child = new SubAssetReference(5, 0);
+        AssetReference properties = AssetReference.create(1, child);
+        MultiAsset multi = new MultiAsset(properties);
+
+        // Store SubAsset 4
+        byte[] data = "Hello World".getBytes();
+        multi.put(4, ByteBuffer.wrap(data));
+
+        // SubAsset 5 has no data, SubAsset 4 is a stowaway
+        Assert.assertFalse("Asset must be incomplete, it's got stowaways and missing children", multi.isComplete());
+
+        try {
+            multi.encode();
+
+            Assert.fail("Shouldn't be able to encode an asset which is incomplete");
+        } catch (IllegalArgumentException e) {
+            // Great! We prevented an incomplete asset saving
+        }
+    }
+
+    @Test
+    public void missingChildren() throws IOException {
+        // Create a reference to SubAsset 5
+        SubAssetReference child = new SubAssetReference(5, 0);
+        AssetReference properties = AssetReference.create(1, child);
+        MultiAsset multi = new MultiAsset(properties);
+
+        // SubAsset 5 has no data, SubAsset 4 is a stowaway
+        Assert.assertFalse("Asset must be incomplete, it's missing data for child#5", multi.isComplete());
+    }
+
+    @Test
+    public void stowawayChildren() throws IOException {
+        // Create a reference to SubAsset 5
+        AssetReference properties = AssetReference.create(1);
+        MultiAsset multi = new MultiAsset(properties);
+
+        // Store SubAsset 4
+        byte[] data = "Hello World".getBytes();
+        multi.put(4, ByteBuffer.wrap(data));
+
+        // SubAsset 5 has no data, SubAsset 4 is a stowaway
+        Assert.assertFalse("Asset must be incomplete, it's missing data for child#5", multi.isComplete());
+    }
 }

@@ -24,7 +24,7 @@ public class AssetProtocol {
      * A flag which indicates this is a priority response to a client's priority
      * cache file request.
      */
-    private static final byte PRIORITY_FLAG = (byte) 0x80;
+    public static final byte PRIORITY_FLAG = (byte) 0x80;
 
     /**
      * A cache of the index buffers, since we need to re-encode them on the fly. So we avoid doing it

@@ -105,7 +105,7 @@ public class AssetStorage {
         dataFile = new RandomAccessFile(new File(folder, "main_file_cache.dat2"), "rw");
 
         int size = (int) (masterIndexFile.length() / DataTable.INDEX_BLOCK_LEN);
-        masterTable = new DataTable(255, masterIndexFile.getChannel(), dataFile.getChannel());
+        masterTable = new PatchableDataTable(255, masterIndexFile.getChannel(), dataFile.getChannel());
 
         // Each file in the master index should correspond to a physical .idx file
         for(int i = 0; i < size; i++) {
@@ -124,7 +124,7 @@ public class AssetStorage {
 
             // Store the properties for this index
             indices[i] = new IndexTable(i, asset.getCompression(), asset.getPayload());
-            tables[i] = new DataTable(i, index.getChannel(), dataFile.getChannel());
+            tables[i] = new PatchableDataTable(i, index.getChannel(), dataFile.getChannel());
         }
 
         File xteaFile = new File(this.folder, "xteas.xstore2");
@@ -257,7 +257,7 @@ public class AssetStorage {
             if(!indexFile.createNewFile() && !indexFile.exists()) throw new IOException("Can't create " + indexFile.getName());
 
             RandomAccessFile rafIndex = new RandomAccessFile(indexFile, "rw");
-            data = new DataTable(idx, rafIndex.getChannel(), dataFile.getChannel());
+            data = new PatchableDataTable(idx, rafIndex.getChannel(), dataFile.getChannel());
             tables[idx] = data;
         }
 

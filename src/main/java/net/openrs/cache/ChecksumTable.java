@@ -57,20 +57,11 @@ public class ChecksumTable {
      */
     public static ChecksumTable decode(ByteBuffer buffer, boolean whirlpool, BigInteger modulus, BigInteger publicKey) throws IOException {
         /* find out how many entries there are and allocate a new table */
-        int size = whirlpool ? (buffer.limit() / 8) : (buffer.get() & 0xFF);
+        //int size = whirlpool ? (buffer.limit() / 8) : (buffer.get() & 0xFF);
+        int size = buffer.get() & 0xFF;
         ChecksumTable table = new ChecksumTable(size);
 
-        /* calculate the whirlpool digest we expect to have at the end */
-        byte[] masterDigest = null;
-        if (whirlpool) {
-            byte[] temp = new byte[size * 72 + 1];
-            buffer.position(0);
-            buffer.get(temp);
-            masterDigest = Whirlpool.whirlpool(temp, 0, temp.length);
-        }
-
         /* read the entries */
-        buffer.position(1);
         for (int i = 0; i < size; i++) {
             int crc = buffer.getInt();
             int version = buffer.getInt();
@@ -79,6 +70,15 @@ public class ChecksumTable {
                 buffer.get(digest);
             }
             table.entries[i] = new Entry(crc, version, digest);
+        }
+
+        /* calculate the whirlpool digest we expect to have at the end */
+        byte[] masterDigest = null;
+        if (whirlpool) {
+            byte[] temp = new byte[buffer.position()];
+            buffer.position(0);
+            buffer.get(temp);
+            masterDigest = Whirlpool.whirlpool(temp, 5, temp.length - 5);
         }
 
         /* read the trailing digest and check if it matches up */
@@ -91,10 +91,14 @@ public class ChecksumTable {
                 temp = Rsa.crypt(buffer, modulus, publicKey);
             }
 
-            if (temp.limit() != 66) throw new IOException("Decrypted data is not 66 bytes long");
+            if (temp.limit() != 65) {
+                throw new IOException("Decrypted data is not 65 bytes long");
+            }
 
             for (int i = 0; i < 64; i++) {
-                if (temp.get(i + 1) != masterDigest[i]) throw new IOException("Whirlpool digest mismatch");
+                if (temp.get(i + 1) != masterDigest[i]) {
+                    throw new IOException("Whirlpool digest mismatch");
+                }
             }
         }
 
@@ -167,10 +171,10 @@ public class ChecksumTable {
             /* compute (and encrypt) the digest of the whole table */
             if (whirlpool) {
                 byte[] bytes = bout.toByteArray();
-                ByteBuffer temp = ByteBuffer.allocate(66);
+                ByteBuffer temp = ByteBuffer.allocate(65);
                 temp.put((byte) 0);
-                temp.put(Whirlpool.whirlpool(bytes, 5, bytes.length - 5));
-                //temp.put((byte) 0);
+                byte[] hash = Whirlpool.whirlpool(bytes, 5, bytes.length - 5);
+                temp.put(hash);
                 temp.flip();
 
                 if (modulus != null && privateKey != null) {
@@ -226,7 +230,7 @@ public class ChecksumTable {
 
     /**
      * Represents a single entry in a {@link ChecksumTable}. Each entry contains
-     * a CRC32 checksum and version of the corresponding {@link ReferenceTable}.
+     * a CRC32 checksum and version of the corresponding {@link org.maxgamer.rs.assets.codec.asset.IndexTable}.
      *
      * @author Graham Edgecombe
      */

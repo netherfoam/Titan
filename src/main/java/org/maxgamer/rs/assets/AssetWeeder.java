@@ -22,8 +22,6 @@ public class AssetWeeder {
      * @throws IOException if there was an error writing the changes to disk
      */
     public static void weed(AssetStorage storage) throws IOException {
-        Log.debug("Cache change detected. Recalculating!");
-
         // We scan through all of the map files, attempt to parse them, and blacklist broken ones
         AssetWriter writer = storage.writer(IDX.LANDSCAPES);
         IndexTable index = storage.getIndex(IDX.LANDSCAPES);
@@ -36,6 +34,7 @@ public class AssetWeeder {
             assetsByIdentifier.put(entry.getValue().getIdentifier(), entry.getKey());
         }
 
+        int removals = 0;
         for (int x = 0; x < 256; x++) {
             for (int y = 0; y < 256; y++) {
                 int hash = IndexTable.djb2("l" + x + "_" + y);
@@ -50,10 +49,15 @@ public class AssetWeeder {
                 } catch (IOException e) {
                     // File is broken or encrypted and we don't have the key.
                     writer.delete(fileId);
+                    removals++;
                 }
             }
         }
 
-        writer.commit();
+        if(removals > 0) {
+            Log.info("Discovered " + removals + " landscape files with missing / invalid encryption keys. " +
+                    "They're being patched out of the cache now.");
+            writer.commit();
+        }
     }
 }

@@ -106,6 +106,7 @@ public class AssetProtocolTest {
         storage.getProtocol().rebuildChecksum();
         // Read our checksum file and assert that it agrees with everything we'd hope
         ByteBuffer data = retrieveAndValidate(255, 255, 0);
+        Assert.assertEquals("compression byte", 0, data.get());
 
         byte[] expect = unbuffer(storage.getProtocol().getChecksum().encode(true));
         byte[] result = unbuffer(data);
@@ -133,7 +134,17 @@ public class AssetProtocolTest {
         Assert.assertNotNull("compression", compression);
         int length = response.getInt();
 
-        ByteBuffer data = ByteBuffer.allocate(length);
+        ByteBuffer data;
+
+        if(compression != RSCompression.NONE) {
+            data = ByteBuffer.allocate(length + 5 + 4); // why +4?
+            data.put(compression.getId());
+            data.putInt(length);
+        } else {
+            data = ByteBuffer.allocate(length + 1); // maybe +4?
+            data.put(compression.getId());
+        }
+
         while(response.hasRemaining()) {
             if(response.position() % 512 == 0) {
                 Assert.assertEquals("magic 0xFF marker", 0xFF, response.get() & 0xFF);
@@ -156,16 +167,16 @@ public class AssetProtocolTest {
 
     @Test
     public void testIndexResponse() throws IOException {
-        // TODO read each index file, assert that the checksum matches the read file
-        // Read our checksum file and assert that it agrees with everything we'd hope
+        // read each index file, assert that the checksum matches the read file
         storage.getProtocol().rebuildChecksum();
         ChecksumTable checksum = storage.getProtocol().getChecksum();
         for(int i = 0; i < checksum.getSize(); i++) {
             ChecksumTable.Entry entry = checksum.getEntry(i);
-            ByteBuffer response = retrieveAndValidate(255, i, 0);
+            if(entry.getCrc() == 0) continue;
 
-            Assert.assertEquals(entry.getCrc(), AssetWriter.crc32(response));
-            Assert.assertArrayEquals(entry.getWhirlpool(), AssetWriter.whirlpool(response));
+            ByteBuffer response = retrieveAndValidate(255, i, 0);
+            Assert.assertEquals("crc", entry.getCrc(), AssetWriter.crc32(response));
+            Assert.assertArrayEquals("whirlpool", entry.getWhirlpool(), AssetWriter.whirlpool(response));
         }
     }
 

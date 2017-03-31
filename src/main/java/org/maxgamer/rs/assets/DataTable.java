@@ -93,7 +93,7 @@ public class DataTable {
 
         // Store in the index where the file starts, and how big it is
         long currentBlock = (data.size() + TOTAL_BLOCK_LEN - 1) / TOTAL_BLOCK_LEN;
-        Assert.isTrue(currentBlock + (contents.remaining() * TOTAL_BLOCK_LEN) < 0xFFFFFF, "Cache size would reach 16 million blocks (8.125gb)");
+        Assert.isTrue(currentBlock + (contents.remaining() + TOTAL_BLOCK_LEN - 1) / TOTAL_BLOCK_LEN < 0xFFFFFF, "Cache size would reach 16 million blocks (8.125gb)");
 
         ByteBuffer entry = ByteBuffer.allocate(INDEX_BLOCK_LEN);
         writeTriByte(entry, contents.remaining());

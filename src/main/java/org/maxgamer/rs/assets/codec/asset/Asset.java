@@ -159,6 +159,7 @@ public final class Asset extends Codec {
         payload = compression.decode(encoded, key);
 
         /* Restore previous limit */
+        encoded.position(encoded.limit());
         encoded.limit(limit);
 
         /* The version is the last two bytes */
@@ -168,7 +169,7 @@ public final class Asset extends Codec {
             version = -1; /* No version attached */
         }
 
-        Assert.isTrue(!encoded.hasRemaining(), "No data should be remaining in buffer");
+        Assert.isTrue(!encoded.hasRemaining(), "No data should be remaining in buffer. Remaining: " + encoded.remaining() + " bytes");
     }
 
     @Override

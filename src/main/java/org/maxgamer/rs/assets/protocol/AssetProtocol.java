@@ -4,11 +4,17 @@ import net.openrs.cache.ChecksumTable;
 import net.openrs.util.ByteBufferUtils;
 import net.openrs.util.crypto.Whirlpool;
 import org.maxgamer.rs.assets.AssetStorage;
+import org.maxgamer.rs.assets.codec.asset.Asset;
+import org.maxgamer.rs.assets.codec.asset.AssetWriter;
 import org.maxgamer.rs.assets.codec.asset.IndexTable;
+import org.maxgamer.rs.util.Assert;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.ref.SoftReference;
 import java.nio.ByteBuffer;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author netherfoam
@@ -20,6 +26,12 @@ public class AssetProtocol {
      */
     private static final byte PRIORITY_FLAG = (byte) 0x80;
 
+    /**
+     * A cache of the index buffers, since we need to re-encode them on the fly. So we avoid doing it
+     * more often than necessary
+     */
+    private Map<Integer, SoftReference<ByteBuffer>> cache = new HashMap<>(37);
+
     private AssetStorage storage;
 
     private ChecksumTable checksum;
@@ -29,6 +41,7 @@ public class AssetProtocol {
     }
 
     public void rebuildChecksum() throws IOException {
+        this.cache.clear();
         this.checksum = new ChecksumTable(storage.size());
         /* Generate reference tables and build checksum */
         for (int i = 0; i < checksum.getSize(); i++) {
@@ -38,11 +51,12 @@ public class AssetProtocol {
             byte[] whirlpool = new byte[64];
 
             try {
-                // Read the raw uncompressed data
-                ByteBuffer raw = storage.getMasterTable().read(i);
-                if (raw.limit() <= 0) throw new FileNotFoundException();
-
                 IndexTable index = storage.getIndex(i);
+                ByteBuffer payload = index.encode();
+                Asset asset = Asset.create(null, index.getCompression(), -1, payload);
+                ByteBuffer raw = asset.encode();
+
+                cache.put(i, new SoftReference<>(raw.asReadOnlyBuffer()));
 
                 // Build checksum values
                 crc = ByteBufferUtils.getCrcChecksum(raw);
@@ -62,13 +76,15 @@ public class AssetProtocol {
                 checksum.setEntry(i, new ChecksumTable.Entry(crc, version, whirlpool));
             }
         }
+
+        cache.put(255, new SoftReference<>(checksum.encode(true)));
     }
 
     public ByteBuffer response(int idx, int fileId, int opcode) throws IOException {
         //Our return value, we write data to this
         ByteBuffer out;
         //The raw file's data. This is not decompressed/decrypted.
-        ByteBuffer raw;
+        ByteBuffer raw = null;
 
         //Length of data, excludes any version, length or compression bytes
         int length;
@@ -76,18 +92,53 @@ public class AssetProtocol {
         int compression;
 
         if (idx == 255 && fileId == 255) {
-            //Client is requesting main checksum. Client uses this to discover
-            //which files to request from the server.
-            if (checksum == null) {
-                //If our checksum was destroyed, rebuild it.
-                rebuildChecksum();
+            // Client is requesting main checksum. Client uses this to discover
+            // which files to request from the server.
+            SoftReference<ByteBuffer> ref = cache.get(255);
+
+            if(ref != null) {
+                raw = ref.get();
             }
-            raw = checksum.encode(true);
+
+            if(raw == null) {
+                if (checksum == null) {
+                    //If our checksum was destroyed, rebuild it.
+                    rebuildChecksum();
+                }
+                raw = checksum.encode(true);
+                ref = new SoftReference<>(raw.asReadOnlyBuffer());
+                cache.put(255, ref);
+            } else {
+                // We don't want to modify the buffer in the cache
+                raw = raw.asReadOnlyBuffer();
+            }
 
             compression = 0;
             length = raw.remaining();
         } else if(idx == 255) {
-            raw = storage.getMasterTable().read(fileId);
+            SoftReference<ByteBuffer> ref = cache.get(fileId);
+
+            if(ref != null) {
+                raw = ref.get();
+            }
+
+            if(raw == null) {
+                IndexTable index = storage.getIndex(fileId);
+                if(index == null) throw new FileNotFoundException("No such index: " + fileId);
+
+                ByteBuffer payload = index.encode();
+                Asset asset = Asset.create(null, index.getCompression(), -1, payload);
+                raw = asset.encode();
+
+                Assert.equal(AssetWriter.crc32(raw), checksum.getEntry(fileId).getCrc());
+                ref = new SoftReference<>(raw.asReadOnlyBuffer());
+                cache.put(fileId, ref);
+            } else {
+                // We don't want to modify the buffer in the cache
+                raw = raw.asReadOnlyBuffer();
+            }
+
+            //raw = storage.getMasterTable().read(fileId);
             compression = raw.get() & 0xFF;
             length = raw.getInt();
         } else {

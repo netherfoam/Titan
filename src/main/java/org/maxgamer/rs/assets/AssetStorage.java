@@ -1,5 +1,6 @@
 package org.maxgamer.rs.assets;
 
+import org.maxgamer.rs.assets.codec.RSCompression;
 import org.maxgamer.rs.assets.codec.asset.*;
 import org.maxgamer.rs.assets.protocol.AssetProtocol;
 import org.maxgamer.rs.util.Assert;
@@ -122,7 +123,7 @@ public class AssetStorage {
             RandomAccessFile index = new RandomAccessFile(new File(folder, "main_file_cache.idx" + i), "rw");
 
             // Store the properties for this index
-            indices[i] = new IndexTable(i, asset.getPayload());
+            indices[i] = new IndexTable(i, asset.getCompression(), asset.getPayload());
             tables[i] = new DataTable(i, index.getChannel(), dataFile.getChannel());
         }
 
@@ -263,7 +264,7 @@ public class AssetStorage {
         if(index == null) {
             // We have no index information (usually will be true, if data is also missing). So we create a new,
             // empty, index table, and add it.
-            index = new IndexTable(idx, 1);
+            index = new IndexTable(idx, RSCompression.GZIP, 1);
             indices[idx] = index;
         }
 

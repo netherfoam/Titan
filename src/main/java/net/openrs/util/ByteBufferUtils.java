@@ -12,6 +12,8 @@ import java.util.zip.Checksum;
 /**
  * Contains {@link ByteBuffer}-related utility methods.
  *
+ * TODO: This is a shitty class and it should feel shit
+ *
  * @author Graham
  * @author `Discardedx2
  */

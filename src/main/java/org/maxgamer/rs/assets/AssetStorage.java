@@ -1,6 +1,5 @@
 package org.maxgamer.rs.assets;
 
-import org.maxgamer.rs.util.Assert;
 import org.maxgamer.rs.assets.codec.asset.Asset;
 import org.maxgamer.rs.assets.codec.asset.AssetReference;
 import org.maxgamer.rs.assets.codec.asset.AssetWriter;
@@ -8,7 +7,7 @@ import org.maxgamer.rs.assets.codec.asset.IndexTable;
 import org.maxgamer.rs.assets.protocol.AssetProtocol;
 import org.maxgamer.rs.cache.XTEAKey;
 import org.maxgamer.rs.cache.XTEAStore;
-import org.maxgamer.rs.cache.reference.ReferenceTable;
+import org.maxgamer.rs.util.Assert;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -109,7 +108,7 @@ public class AssetStorage {
         // The main 100mb+ cache file with raw data
         dataFile = new RandomAccessFile(new File(folder, "main_file_cache.dat2"), "rw");
 
-        int size = (int) (masterIndexFile.length() / ReferenceTable.IDX_BLOCK_LEN);
+        int size = (int) (masterIndexFile.length() / DataTable.INDEX_BLOCK_LEN);
         masterTable = new DataTable(255, masterIndexFile.getChannel(), dataFile.getChannel());
 
         // Each file in the master index should correspond to a physical .idx file

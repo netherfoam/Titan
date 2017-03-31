@@ -4,6 +4,7 @@ import net.openrs.cache.ChecksumTable;
 import net.openrs.util.ByteBufferUtils;
 import org.junit.Assert;
 import org.junit.Test;
+import org.maxgamer.rs.assets.codec.asset.IndexTable;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -16,15 +17,9 @@ public class CacheUtilTest extends CacheTest {
     @Test
     public void testHash() {
         String s = "l5_4";
-        int hash = Cache.getNameHash(s);
+        int hash = IndexTable.djb2(s);
 
         Assert.assertEquals("hash must be as expected", 3271358, hash);
-    }
-
-    @Test
-    public void idx0SizeTest() throws IOException {
-        Assert.assertEquals(49, cache.getSize(2));
-        cache.getRaw(2, 0);
     }
 
     @Test

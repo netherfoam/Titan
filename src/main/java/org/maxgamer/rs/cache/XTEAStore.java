@@ -1,5 +1,6 @@
 package org.maxgamer.rs.cache;
 
+import org.maxgamer.rs.assets.AssetStorage;
 import org.maxgamer.rs.util.io.InputStreamWrapper;
 import org.maxgamer.rs.util.io.OutputStreamWrapper;
 
@@ -15,7 +16,7 @@ import java.util.Scanner;
  * @author netherfoam
  */
 public class XTEAStore {
-    public static void loadFormatUnpacked(Cache c, File folder, XTEAStore convert) throws IOException {
+    public static void loadFormatUnpacked(AssetStorage storage, File folder, XTEAStore convert) throws IOException {
         for (File f : folder.listFiles()) {
             if (!f.getName().endsWith(".txt")) continue; //Only pack .txt files
 
@@ -26,7 +27,7 @@ public class XTEAStore {
             int ry = regionId & 0xFF;
             int fileId;
             try {
-                fileId = c.getFileId(5, "l" + rx + "_" + ry);
+                fileId = storage.getIndex(IDX.LANDSCAPES).getFile("l" + rx + "_" + ry);
             } catch (FileNotFoundException e) {
                 System.out.println("No file found for l" + rx + "_" + ry);
                 continue;
@@ -43,7 +44,7 @@ public class XTEAStore {
         }
     }
 
-    public static void loadFormat0(Cache c, File f, XTEAStore convert) throws IOException {
+    public static void loadFormat0(AssetStorage storage, File f, XTEAStore convert) throws IOException {
         InputStreamWrapper in = new InputStreamWrapper(new FileInputStream(f));
 
         while (in.available() > 0) {
@@ -53,7 +54,7 @@ public class XTEAStore {
             for (int i = 0; i < values.length; i++) {
                 values[i] = in.readInt();
             }
-            int fileId = c.getFileId(idx, name);
+            int fileId = storage.getIndex(idx).getFile(name);
             convert.setKey(idx, fileId, new XTEAKey(values));
         }
 

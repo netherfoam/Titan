@@ -17,23 +17,23 @@ public class DataTable {
     /**
      * The length of an index block. These are two tri-byte integers - the file size and the starting block number
      */
-    private static final int INDEX_BLOCK_LEN = 6;
+    public static final int INDEX_BLOCK_LEN = 6;
 
     /**
      * The header for each block. Blocks are prefixed with 8 bytes: fileId (short), chunk number (short, consecutive),
      * next block number (tri-byte) and index id (byte).
      */
-    private static final int BLOCK_HEADER_LEN = 8;
+    public static final int BLOCK_HEADER_LEN = 8;
 
     /**
      * The length of each block in the cache, excluding the header
      */
-    private static final int BLOCK_LEN = 512;
+    public static final int BLOCK_LEN = 512;
 
     /**
      * The total length of each block in the cache, including the header
      */
-    private static final int TOTAL_BLOCK_LEN = BLOCK_HEADER_LEN + BLOCK_LEN;
+    public static final int TOTAL_BLOCK_LEN = BLOCK_HEADER_LEN + BLOCK_LEN;
 
     private static int readTriByte(ByteBuffer buffer) {
         return ((buffer.get() & 0xff) << 16) | ((buffer.get() & 0xff) << 8) | (buffer.get() & 0xff);

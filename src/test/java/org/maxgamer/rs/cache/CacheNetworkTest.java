@@ -107,11 +107,16 @@ public class CacheNetworkTest extends CacheTest {
 
     public void testAllFilesInTable(int idx) throws IOException {
         // Here, we read all of the files from the given  file table
-        int size = cache.getSize(idx);
+        int size;
+        try {
+            size = cache.getSize(idx);
+        } catch (FileNotFoundException e) {
+            return;
+        }
 
-        if(size <= 0) return;
+        if (size <= 0) return;
 
-        for(int fileId = 0; fileId < size; fileId++) {
+        for (int fileId = 0; fileId < size; fileId++) {
             ByteBuffer response = null;
             try {
                 response = cache.createResponse(idx, fileId, 1);

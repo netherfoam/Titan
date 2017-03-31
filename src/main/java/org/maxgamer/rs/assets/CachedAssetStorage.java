@@ -45,11 +45,11 @@ public class CachedAssetStorage extends AssetStorage {
             reset();
         }
 
-        Map<Integer, WeakReference<MultiAsset>> index = cache.get(idx);
+        Map<Integer, WeakReference<MultiAsset>> index = cache.get(file);
 
         if(index == null) {
             index = new HashMap<>();
-            cache.put(idx, index);
+            cache.put(file, index);
         }
 
         WeakReference<MultiAsset> reference = index.get(file);

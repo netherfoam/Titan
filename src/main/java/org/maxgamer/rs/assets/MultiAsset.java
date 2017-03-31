@@ -50,7 +50,7 @@ public class MultiAsset extends Codec {
     @Override
     public void decode(ByteBuffer bb) throws IOException {
         int size = reference.getChildCount();
-
+        int start = bb.position();
         bb.position(bb.limit() - 1);
         int chunks = bb.get() & 0xFF;
 
@@ -82,7 +82,7 @@ public class MultiAsset extends Codec {
         }
 
         // read the data into the buffers
-        bb.position(0);
+        bb.position(start);
         for (int chunk = 0; chunk < chunks; chunk++) {
             for (int id = 0; id < size; id++) {
                 // get the length of this chunk
@@ -155,9 +155,7 @@ public class MultiAsset extends Codec {
         // Number of chunks
         out.put((byte) NUMBER_OF_CHUNKS);
 
-        if(out.hasRemaining()) {
-            throw new IllegalStateException();
-        }
+        Assert.isFalse(out.hasRemaining(), "Expect buffer to be exact size");
 
         // That appears to be it
         out.flip();

@@ -137,11 +137,11 @@ public class AssetProtocolTest {
         ByteBuffer data;
 
         if(compression != RSCompression.NONE) {
-            data = ByteBuffer.allocate(length + 5 + 4); // why +4?
+            data = ByteBuffer.allocate(length + 5 + 4); // +4 is the length (int) of the decompressed data
             data.put(compression.getId());
             data.putInt(length);
         } else {
-            data = ByteBuffer.allocate(length + 1); // maybe +4?
+            data = ByteBuffer.allocate(length + 1);
             data.put(compression.getId());
         }
 

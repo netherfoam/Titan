@@ -1,7 +1,7 @@
 package org.maxgamer.rs.assets.codec.asset;
 
 import org.maxgamer.rs.assets.codec.Codec;
-import org.maxgamer.rs.cache.RSCompression;
+import org.maxgamer.rs.assets.codec.RSCompression;
 import org.maxgamer.rs.util.Assert;
 
 import java.io.FileNotFoundException;

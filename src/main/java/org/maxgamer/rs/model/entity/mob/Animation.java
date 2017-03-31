@@ -1,8 +1,8 @@
 package org.maxgamer.rs.model.entity.mob;
 
 import org.maxgamer.rs.assets.MultiAsset;
-import org.maxgamer.rs.cache.IDX;
-import org.maxgamer.rs.cache.format.AnimationDefinition;
+import org.maxgamer.rs.assets.IDX;
+import org.maxgamer.rs.assets.protocol.format.AnimationDefinition;
 import org.maxgamer.rs.core.Core;
 
 import java.io.IOException;

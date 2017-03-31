@@ -1,6 +1,7 @@
-package org.maxgamer.rs.cache;
+package org.maxgamer.rs.assets.codec.asset;
 
 import org.maxgamer.rs.assets.AssetStorage;
+import org.maxgamer.rs.assets.IDX;
 import org.maxgamer.rs.util.io.InputStreamWrapper;
 import org.maxgamer.rs.util.io.OutputStreamWrapper;
 

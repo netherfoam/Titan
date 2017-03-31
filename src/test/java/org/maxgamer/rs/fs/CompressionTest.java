@@ -2,8 +2,8 @@ package org.maxgamer.rs.fs;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.maxgamer.rs.cache.RSCompression;
-import org.maxgamer.rs.cache.XTEAKey;
+import org.maxgamer.rs.assets.codec.RSCompression;
+import org.maxgamer.rs.assets.codec.asset.XTEAKey;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;

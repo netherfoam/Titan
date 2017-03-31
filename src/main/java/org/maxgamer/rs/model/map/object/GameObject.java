@@ -1,7 +1,7 @@
 package org.maxgamer.rs.model.map.object;
 
 import org.maxgamer.rs.assets.MultiAsset;
-import org.maxgamer.rs.cache.IDX;
+import org.maxgamer.rs.assets.IDX;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.core.tick.Tickable;
 import org.maxgamer.rs.model.entity.Entity;

@@ -1,4 +1,4 @@
-package org.maxgamer.rs.cache;
+package org.maxgamer.rs.assets;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;

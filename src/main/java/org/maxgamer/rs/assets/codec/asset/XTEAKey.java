@@ -1,4 +1,4 @@
-package org.maxgamer.rs.cache;
+package org.maxgamer.rs.assets.codec.asset;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;

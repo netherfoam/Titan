@@ -12,7 +12,7 @@ import org.maxgamer.rs.assets.codec.asset.AssetReference;
 import org.maxgamer.rs.assets.AssetStorage;
 import org.maxgamer.rs.assets.codec.asset.AssetWriter;
 import org.maxgamer.rs.assets.codec.asset.SubAssetReference;
-import org.maxgamer.rs.cache.RSCompression;
+import org.maxgamer.rs.assets.codec.RSCompression;
 
 import java.io.File;
 import java.io.FileNotFoundException;

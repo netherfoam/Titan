@@ -1,6 +1,6 @@
-package org.maxgamer.rs.cache.format;
+package org.maxgamer.rs.assets.protocol.format;
 
-import org.maxgamer.rs.cache.RSInputStream;
+import org.maxgamer.rs.assets.protocol.RSInputStream;
 import org.maxgamer.rs.core.server.ServerTicker;
 import org.maxgamer.rs.util.io.ByteBufferInputStream;
 

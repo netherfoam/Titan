@@ -1,7 +1,7 @@
 package org.maxgamer.rs.command.commands.debug;
 
-import org.maxgamer.rs.cache.MapCache;
-import org.maxgamer.rs.cache.format.Landscape;
+import org.maxgamer.rs.assets.protocol.MapCache;
+import org.maxgamer.rs.assets.protocol.format.Landscape;
 import org.maxgamer.rs.command.PlayerCommand;
 import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.map.ClipMasks;

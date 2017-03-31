@@ -3,8 +3,6 @@ package org.maxgamer.rs.assets.codec.asset;
 import net.openrs.util.crypto.Whirlpool;
 import org.maxgamer.rs.util.Assert;
 import org.maxgamer.rs.assets.DataTable;
-import org.maxgamer.rs.cache.XTEAKey;
-import org.maxgamer.rs.cache.XTEAStore;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;

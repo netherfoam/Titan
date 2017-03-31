@@ -1,6 +1,6 @@
 package org.maxgamer.rs.model.map.object;
 
-import org.maxgamer.rs.cache.RSInputStream;
+import org.maxgamer.rs.assets.protocol.RSInputStream;
 import org.maxgamer.rs.structure.ReflectUtil;
 import org.maxgamer.rs.util.io.ByteBufferInputStream;
 

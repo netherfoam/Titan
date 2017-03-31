@@ -1,4 +1,4 @@
-package org.maxgamer.rs.cache;
+package org.maxgamer.rs.assets.protocol;
 
 import java.io.DataInputStream;
 import java.io.IOException;

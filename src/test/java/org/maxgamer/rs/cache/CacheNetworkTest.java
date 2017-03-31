@@ -2,6 +2,7 @@ package org.maxgamer.rs.cache;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.maxgamer.rs.assets.codec.RSCompression;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

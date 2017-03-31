@@ -1,6 +1,6 @@
 package org.maxgamer.rs.model.entity.mob.persona;
 
-import org.maxgamer.rs.cache.EncryptedException;
+import org.maxgamer.rs.assets.codec.asset.EncryptedException;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.core.server.WorldFullException;
 import org.maxgamer.rs.core.tick.Tickable;

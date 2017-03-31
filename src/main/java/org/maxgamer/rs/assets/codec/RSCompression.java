@@ -1,7 +1,8 @@
-package org.maxgamer.rs.cache;
+package org.maxgamer.rs.assets.codec;
 
 import org.apache.tools.bzip2.CBZip2InputStream;
 import org.apache.tools.bzip2.CBZip2OutputStream;
+import org.maxgamer.rs.assets.codec.asset.XTEAKey;
 import org.maxgamer.rs.util.io.ByteBufferInputStream;
 
 import java.io.*;

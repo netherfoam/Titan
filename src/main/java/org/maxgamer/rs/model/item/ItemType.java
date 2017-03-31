@@ -1,7 +1,7 @@
 package org.maxgamer.rs.model.item;
 
 import org.maxgamer.rs.assets.MultiAsset;
-import org.maxgamer.rs.cache.IDX;
+import org.maxgamer.rs.assets.IDX;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.model.entity.mob.Bonuses;
 import org.maxgamer.rs.model.entity.mob.combat.AttackStyle;

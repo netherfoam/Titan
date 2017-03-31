@@ -1,7 +1,7 @@
-package org.maxgamer.rs.cache.format;
+package org.maxgamer.rs.assets.protocol.format;
 
-import org.maxgamer.rs.cache.IDX;
-import org.maxgamer.rs.cache.RSInputStream;
+import org.maxgamer.rs.assets.IDX;
+import org.maxgamer.rs.assets.protocol.RSInputStream;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.util.io.ByteBufferInputStream;
 

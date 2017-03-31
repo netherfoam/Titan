@@ -1,7 +1,7 @@
 package org.maxgamer.rs.model.map;
 
-import org.maxgamer.rs.cache.MapCache;
-import org.maxgamer.rs.cache.format.Landscape;
+import org.maxgamer.rs.assets.protocol.MapCache;
+import org.maxgamer.rs.assets.protocol.format.Landscape;
 import org.maxgamer.rs.model.events.world.ChunkLoadEvent;
 
 import java.io.FileNotFoundException;

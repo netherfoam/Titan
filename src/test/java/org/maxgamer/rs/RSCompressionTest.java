@@ -1,7 +1,7 @@
 package org.maxgamer.rs;
 
 import org.junit.Test;
-import org.maxgamer.rs.cache.RSCompression;
+import org.maxgamer.rs.assets.codec.RSCompression;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;

@@ -3,8 +3,7 @@ package org.maxgamer.rs.assets;
 import org.maxgamer.rs.assets.codec.asset.AssetReference;
 import org.maxgamer.rs.assets.codec.asset.AssetWriter;
 import org.maxgamer.rs.assets.codec.asset.IndexTable;
-import org.maxgamer.rs.cache.IDX;
-import org.maxgamer.rs.cache.MapCache;
+import org.maxgamer.rs.assets.protocol.MapCache;
 import org.maxgamer.rs.util.Log;
 
 import java.io.IOException;

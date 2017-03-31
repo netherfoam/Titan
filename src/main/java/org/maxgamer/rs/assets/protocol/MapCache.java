@@ -1,6 +1,7 @@
-package org.maxgamer.rs.cache;
+package org.maxgamer.rs.assets.protocol;
 
 import org.maxgamer.rs.assets.AssetStorage;
+import org.maxgamer.rs.assets.IDX;
 import org.maxgamer.rs.assets.codec.asset.Asset;
 import org.maxgamer.rs.core.Core;
 

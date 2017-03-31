@@ -1,7 +1,7 @@
 package org.maxgamer.rs.model.entity.mob.persona.player;
 
-import org.maxgamer.rs.cache.IDX;
-import org.maxgamer.rs.cache.format.RSFont;
+import org.maxgamer.rs.assets.IDX;
+import org.maxgamer.rs.assets.protocol.format.RSFont;
 import org.maxgamer.rs.command.CommandSender;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.core.server.WorldFullException;

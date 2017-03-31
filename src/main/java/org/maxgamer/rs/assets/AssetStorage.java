@@ -1,12 +1,7 @@
 package org.maxgamer.rs.assets;
 
-import org.maxgamer.rs.assets.codec.asset.Asset;
-import org.maxgamer.rs.assets.codec.asset.AssetReference;
-import org.maxgamer.rs.assets.codec.asset.AssetWriter;
-import org.maxgamer.rs.assets.codec.asset.IndexTable;
+import org.maxgamer.rs.assets.codec.asset.*;
 import org.maxgamer.rs.assets.protocol.AssetProtocol;
-import org.maxgamer.rs.cache.XTEAKey;
-import org.maxgamer.rs.cache.XTEAStore;
 import org.maxgamer.rs.util.Assert;
 
 import java.io.File;

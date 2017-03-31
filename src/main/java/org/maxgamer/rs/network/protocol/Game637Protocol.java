@@ -1,8 +1,8 @@
 package org.maxgamer.rs.network.protocol;
 
-import org.maxgamer.rs.cache.IDX;
-import org.maxgamer.rs.cache.XTEAKey;
-import org.maxgamer.rs.cache.format.CS2;
+import org.maxgamer.rs.assets.IDX;
+import org.maxgamer.rs.assets.codec.asset.XTEAKey;
+import org.maxgamer.rs.assets.protocol.format.CS2;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.model.entity.mob.*;
 import org.maxgamer.rs.model.entity.mob.combat.Damage;

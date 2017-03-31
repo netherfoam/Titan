@@ -1,4 +1,4 @@
-package org.maxgamer.rs.cache;
+package org.maxgamer.rs.assets.codec.asset;
 
 import java.io.IOException;
 

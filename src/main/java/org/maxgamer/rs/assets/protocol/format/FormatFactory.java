@@ -1,4 +1,4 @@
-package org.maxgamer.rs.cache.format;
+package org.maxgamer.rs.assets.protocol.format;
 
 import java.nio.ByteBuffer;
 

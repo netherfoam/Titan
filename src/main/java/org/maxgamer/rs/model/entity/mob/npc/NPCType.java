@@ -1,7 +1,7 @@
 package org.maxgamer.rs.model.entity.mob.npc;
 
 import org.maxgamer.rs.assets.MultiAsset;
-import org.maxgamer.rs.cache.IDX;
+import org.maxgamer.rs.assets.IDX;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.util.BufferUtils;
 

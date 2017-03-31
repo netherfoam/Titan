@@ -2,8 +2,7 @@ package org.maxgamer.rs.assets.codec.asset;
 
 import org.maxgamer.rs.util.Assert;
 import org.maxgamer.rs.assets.codec.Codec;
-import org.maxgamer.rs.cache.RSCompression;
-import org.maxgamer.rs.cache.XTEAKey;
+import org.maxgamer.rs.assets.codec.RSCompression;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;

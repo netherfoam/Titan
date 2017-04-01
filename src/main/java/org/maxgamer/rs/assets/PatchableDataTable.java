@@ -90,6 +90,8 @@ public class PatchableDataTable extends DataTable {
     public void erase(int fileId) throws IOException {
         // A key with a null value indicates a deleted value
         patches.put(fileId, null);
+
+        reset();
     }
 
     @Override

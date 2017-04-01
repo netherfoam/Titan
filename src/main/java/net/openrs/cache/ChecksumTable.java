@@ -57,7 +57,6 @@ public class ChecksumTable {
      */
     public static ChecksumTable decode(ByteBuffer buffer, boolean whirlpool, BigInteger modulus, BigInteger publicKey) throws IOException {
         /* find out how many entries there are and allocate a new table */
-        //int size = whirlpool ? (buffer.limit() / 8) : (buffer.get() & 0xFF);
         int size = buffer.get() & 0xFF;
         ChecksumTable table = new ChecksumTable(size);
 
@@ -173,8 +172,7 @@ public class ChecksumTable {
                 byte[] bytes = bout.toByteArray();
                 ByteBuffer temp = ByteBuffer.allocate(65);
                 temp.put((byte) 0);
-                byte[] hash = Whirlpool.whirlpool(bytes, 5, bytes.length - 5);
-                temp.put(hash);
+                temp.put(Whirlpool.whirlpool(bytes, 5, bytes.length - 5));
                 temp.flip();
 
                 if (modulus != null && privateKey != null) {

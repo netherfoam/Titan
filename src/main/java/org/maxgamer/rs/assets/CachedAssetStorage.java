@@ -41,7 +41,7 @@ public class CachedAssetStorage extends AssetStorage {
         // If the physical files were modified, we need to clear our cache because our assets might've changed
         long modified = Math.max(getMasterTable().modified(), getTable(idx).modified());
 
-        if(modified > cacheLastCleared) {
+        if(modified >= cacheLastCleared) {
             reset();
         }
 

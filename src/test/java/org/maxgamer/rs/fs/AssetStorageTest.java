@@ -168,7 +168,6 @@ public class AssetStorageTest {
 
         Assert.assertArrayEquals(second, result);
 
-        storage.getProtocol().rebuildChecksum();
         ChecksumTable table = storage.getProtocol().getChecksum();
         ChecksumTable.Entry entry = table.getEntry(0);
 
@@ -208,7 +207,7 @@ public class AssetStorageTest {
         multi.put(0, ByteBuffer.wrap(data));
 
         AssetReference ref = AssetReference.create(1, child);
-        AssetStorage storage = CachedAssetStorage.create(folder);
+        CachedAssetStorage storage = (CachedAssetStorage) CachedAssetStorage.create(folder);
 
         try {
             storage.archive(0, 0);

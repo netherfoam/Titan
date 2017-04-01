@@ -15,11 +15,10 @@ public class AssetStorageAccessor implements CacheAccessor {
 
     public AssetStorageAccessor(AssetStorage storage) throws IOException {
         this.storage = storage;
-        storage.getProtocol().rebuildChecksum();
     }
 
     @Override
-    public ChecksumTable getChecksum() {
+    public ChecksumTable getChecksum() throws IOException {
         return storage.getProtocol().getChecksum();
     }
 

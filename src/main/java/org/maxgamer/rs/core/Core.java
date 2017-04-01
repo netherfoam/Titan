@@ -91,6 +91,7 @@ public class Core {
         // Delete any broken map files
         AssetWeeder.weed(cache);
 
+        cache.getProtocol().initialize(getThreadPool());
         server = new Server(); // Binds port port
 
         if (getServer().getConfig().getBoolean("timings")) {

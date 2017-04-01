@@ -66,7 +66,6 @@ public class AssetProtocolTest {
 
     @Test
     public void testChecksumParity() throws IOException {
-        storage.getProtocol().rebuildChecksum();
         ChecksumTable expect = storage.getProtocol().getChecksum();
         ChecksumTable result = ChecksumTable.decode(expect.encode(true), true);
 
@@ -103,7 +102,6 @@ public class AssetProtocolTest {
 
     @Test
     public void testMasterResponse() throws IOException {
-        storage.getProtocol().rebuildChecksum();
         // Read our checksum file and assert that it agrees with everything we'd hope
         ByteBuffer data = retrieveAndValidate(255, 255, 0);
         Assert.assertEquals("compression byte", 0, data.get());
@@ -137,12 +135,21 @@ public class AssetProtocolTest {
         ByteBuffer data;
 
         if(compression != RSCompression.NONE) {
-            data = ByteBuffer.allocate(length + 5 + 4); // +4 is the length (int) of the decompressed data
+            // Plus 9 because we need to length twice:
+            // one byte for the opcode
+            // one byte for the  length of the content
+            // one byte for the length of the decompressed size
+
+            data = ByteBuffer.allocate(length + 9); // +4 is the length (int) of the decompressed data
             data.put(compression.getId());
             data.putInt(length);
         } else {
-            data = ByteBuffer.allocate(length + 1);
+            data = ByteBuffer.allocate(length + 5);
             data.put(compression.getId());
+            if(opcode == 1) {
+                // TODO: Shouldn't this relate to Attributes? Potential bug that the client discards
+                data.putInt(length);
+            }
         }
 
         while(response.hasRemaining()) {
@@ -168,13 +175,12 @@ public class AssetProtocolTest {
     @Test
     public void testIndexResponse() throws IOException {
         // read each index file, assert that the checksum matches the read file
-        storage.getProtocol().rebuildChecksum();
         ChecksumTable checksum = storage.getProtocol().getChecksum();
-        for(int i = 0; i < checksum.getSize(); i++) {
-            ChecksumTable.Entry entry = checksum.getEntry(i);
+        for(int idx = 0; idx < checksum.getSize(); idx++) {
+            ChecksumTable.Entry entry = checksum.getEntry(idx);
             if(entry.getCrc() == 0) continue;
 
-            ByteBuffer response = retrieveAndValidate(255, i, 0);
+            ByteBuffer response = retrieveAndValidate(255, idx, 0);
             Assert.assertEquals("crc", entry.getCrc(), AssetWriter.crc32(response));
             Assert.assertArrayEquals("whirlpool", entry.getWhirlpool(), AssetWriter.whirlpool(response));
         }
@@ -182,7 +188,24 @@ public class AssetProtocolTest {
 
     @Test
     public void testDataResponse() throws IOException {
-        // TODO read each data file, assert that every file referenced by index tables can be fetched?
+        // Read each data file, assert that every file referenced by index tables can be fetched
+        for(int idx = 0; idx < storage.size(); idx++) {
+            IndexTable table;
+            try {
+                table = storage.getIndex(idx);
+            } catch (FileNotFoundException e) {
+                continue;
+            }
+
+            for(int file : table.getReferences().keySet()) {
+                ByteBuffer response = retrieveAndValidate(idx, file, 1);
+                AssetReference reference = table.getReferences().get(file);
+                Assert.assertNotNull(reference);
+
+                Asset asset = new Asset(null, response);
+                Assert.assertArrayEquals(unbuffer(storage.read(idx, file).getPayload()), unbuffer(asset.getPayload()));
+            }
+        }
     }
 
     private byte[] data(int size) {

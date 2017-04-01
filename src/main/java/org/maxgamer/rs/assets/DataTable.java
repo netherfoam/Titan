@@ -150,7 +150,6 @@ public class DataTable {
             throw new FileNotFoundException("no such file (" + fileId + ")");
         }
 
-
         ByteBuffer entry = ByteBuffer.allocate(INDEX_BLOCK_LEN);
         index.read(entry, fileId * INDEX_BLOCK_LEN);
         entry.flip();

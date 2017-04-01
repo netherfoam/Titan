@@ -12,7 +12,7 @@ import java.nio.ByteBuffer;
  */
 public interface CacheAccessor {
     ByteBuffer createResponse(int idx, int fileId, int opcode) throws IOException;
-    ChecksumTable getChecksum();
+    ChecksumTable getChecksum() throws IOException;
     int getIDXCount() throws IOException;
     ByteBuffer getRaw(int idx, int fileId) throws IOException;
     int getSize(int idx) throws IOException;

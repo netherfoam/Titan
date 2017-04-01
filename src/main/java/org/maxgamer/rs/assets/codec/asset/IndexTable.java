@@ -46,20 +46,26 @@ public final class IndexTable extends Codec {
 
     private RSCompression compression = RSCompression.NONE;
 
-    public IndexTable(int idx, int version) {
+    public IndexTable(int idx, RSCompression compression, int version) {
         super();
 
         Assert.isPositive(idx, "Index must be positive");
         Assert.isPositive(version, "Version must be positive");
         Assert.isTrue(idx < 255, "Idx must be 0-254");
+        Assert.notNull(compression, "Compression may not be null");
 
         this.idx = idx;
+        this.compression = compression;
         this.references = new TreeMap<>();
         this.version = version;
     }
 
-    public IndexTable(int idx, ByteBuffer content) {
+    public IndexTable(int idx, RSCompression compression, ByteBuffer content) {
+        Assert.isPositive(idx, "Index must be positive");
+        Assert.notNull(compression, "Compression may not be null");
+
         this.idx = idx;
+        this.compression = compression;
 
         decode(content);
     }
@@ -308,8 +314,9 @@ public final class IndexTable extends Codec {
             AssetReference asset = entry.getValue();
 
             for(int i = 0; i < asset.getChildCount(); i++) {
-                int delta = i - accumulator;
-                accumulator = i;
+                int id = asset.getChild(i).getId();
+                int delta = id - accumulator;
+                accumulator = id;
 
                 bb.putShort((short) delta);
             }
@@ -334,5 +341,9 @@ public final class IndexTable extends Codec {
 
     public Asset toAsset() throws IOException {
         return Asset.create(null, compression, -1, this.encode());
+    }
+
+    public RSCompression getCompression() {
+        return compression;
     }
 }

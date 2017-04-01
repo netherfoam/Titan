@@ -18,7 +18,7 @@ public class CachedAssetStorage extends AssetStorage {
         forceCreate(new File(folder, "main_file_cache.idx255"));
         forceCreate(new File(folder, "main_file_cache.dat2"));
 
-        return new AssetStorage(folder);
+        return new CachedAssetStorage(folder);
     }
 
     private long cacheLastCleared;
@@ -39,17 +39,17 @@ public class CachedAssetStorage extends AssetStorage {
     @Override
     public MultiAsset archive(int idx, int file) throws IOException {
         // If the physical files were modified, we need to clear our cache because our assets might've changed
-        long modified = Math.min(getMasterTable().modified(), getTable(idx).modified());
+        long modified = Math.max(getMasterTable().modified(), getTable(idx).modified());
 
-        if(modified > cacheLastCleared) {
+        if(modified >= cacheLastCleared) {
             reset();
         }
 
-        Map<Integer, WeakReference<MultiAsset>> index = cache.get(idx);
+        Map<Integer, WeakReference<MultiAsset>> index = cache.get(file);
 
         if(index == null) {
             index = new HashMap<>();
-            cache.put(idx, index);
+            cache.put(file, index);
         }
 
         WeakReference<MultiAsset> reference = index.get(file);

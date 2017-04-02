@@ -1,6 +1,5 @@
 package org.maxgamer.rs.assets;
 
-import org.maxgamer.rs.assets.codec.asset.Asset;
 import org.maxgamer.rs.assets.codec.asset.AssetReference;
 import org.maxgamer.rs.assets.codec.asset.AssetWriter;
 import org.maxgamer.rs.assets.codec.asset.IndexTable;
@@ -79,17 +78,8 @@ public class AssetWeeder {
 
         format.setInventoryOption(3, "Lick");
 
-        ByteBuffer encoded = format.encode();
-        AssetReference reference = storage.properties(IDX.ITEMS, id >> 8);
-        AssetReference newRef = new AssetReference(reference.getIdentifier(), reference.getCRC(), reference.getWhirlpool(), reference.getVersion() + 1, reference.getChildren());
-        Asset asset = storage.read(IDX.ITEMS, id >> 8);
-        a.put(id & 0xFF, encoded);
-
-        asset.setPayload(a.encode());
-        asset.setVersion(newRef.getVersion());
-
         storage.writer(IDX.ITEMS)
-                .write(id >> 8, newRef, asset)
+                .write(id >> 8, id & 0xFF, format.encode())
                 .commit();
     }
 }

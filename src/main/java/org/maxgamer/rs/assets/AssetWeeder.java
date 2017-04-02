@@ -3,12 +3,10 @@ package org.maxgamer.rs.assets;
 import org.maxgamer.rs.assets.codec.asset.AssetReference;
 import org.maxgamer.rs.assets.codec.asset.AssetWriter;
 import org.maxgamer.rs.assets.codec.asset.IndexTable;
-import org.maxgamer.rs.assets.formats.ItemFormat;
 import org.maxgamer.rs.assets.protocol.MapCache;
 import org.maxgamer.rs.util.Log;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,7 +18,6 @@ import java.util.Map;
 public class AssetWeeder {
     public static void weed(AssetStorage storage) throws IOException {
         evictMaps(storage);
-        addLickToCoins(storage);
     }
 
     /**
@@ -66,20 +63,5 @@ public class AssetWeeder {
                     "They're being patched out of the cache now.");
             writer.commit();
         }
-    }
-
-    public static void addLickToCoins(AssetStorage storage) throws IOException {
-        final int id = 995; // Coins
-        MultiAsset a = storage.archive(IDX.ITEMS, id >> 8);
-        ByteBuffer bb = a.get(id & 0xFF);
-
-        ItemFormat format = new ItemFormat();
-        format.decode(bb.asReadOnlyBuffer());
-
-        format.setInventoryOption(3, "Lick");
-
-        storage.writer(IDX.ITEMS)
-                .write(id >> 8, id & 0xFF, format.encode())
-                .commit();
     }
 }

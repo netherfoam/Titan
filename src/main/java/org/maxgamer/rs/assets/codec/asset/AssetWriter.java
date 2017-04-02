@@ -122,10 +122,20 @@ public class AssetWriter {
         // Take a read only copy for writing later
         ByteBuffer content = asset.encode();
 
+        if(asset.getVersion() != -1) {
+            // We don't checksum or hash the version
+            content.limit(content.limit() - 2);
+        }
+
         // We don't want to modify the original, in case it was pulled from the cache (until we commit)
         reference = reference.copy();
         reference.whirlpool = whirlpool(content);
         reference.crc = crc32(content);
+
+        if(asset.getVersion() != -1) {
+            // Reset limit
+            content.limit(content.limit() + 2);
+        }
 
         // We assert that asset.getVersion() == reference.getVersion()
         Assert.isTrue(asset.getVersion() == -1 || reference.getVersion() == asset.getVersion(), "Asset version must equal reference version, if set");

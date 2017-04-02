@@ -1,12 +1,15 @@
 package org.maxgamer.rs.assets;
 
+import org.maxgamer.rs.assets.codec.asset.Asset;
 import org.maxgamer.rs.assets.codec.asset.AssetReference;
 import org.maxgamer.rs.assets.codec.asset.AssetWriter;
 import org.maxgamer.rs.assets.codec.asset.IndexTable;
+import org.maxgamer.rs.assets.formats.ItemFormat;
 import org.maxgamer.rs.assets.protocol.MapCache;
 import org.maxgamer.rs.util.Log;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,12 +19,17 @@ import java.util.Map;
  * @author netherfoam
  */
 public class AssetWeeder {
+    public static void weed(AssetStorage storage) throws IOException {
+        evictMaps(storage);
+        addLickToCoins(storage);
+    }
+
     /**
      * Removes map files which are unreadable, given the available XTEA keys
      * @param storage the cache
      * @throws IOException if there was an error writing the changes to disk
      */
-    public static void weed(AssetStorage storage) throws IOException {
+    public static void evictMaps(AssetStorage storage) throws IOException {
         // We scan through all of the map files, attempt to parse them, and blacklist broken ones
         AssetWriter writer = storage.writer(IDX.LANDSCAPES);
         IndexTable index = storage.getIndex(IDX.LANDSCAPES);
@@ -59,5 +67,29 @@ public class AssetWeeder {
                     "They're being patched out of the cache now.");
             writer.commit();
         }
+    }
+
+    public static void addLickToCoins(AssetStorage storage) throws IOException {
+        final int id = 995; // Coins
+        MultiAsset a = storage.archive(IDX.ITEMS, id >> 8);
+        ByteBuffer bb = a.get(id & 0xFF);
+
+        ItemFormat format = new ItemFormat();
+        format.decode(bb.asReadOnlyBuffer());
+
+        format.setInventoryOption(3, "Lick");
+
+        ByteBuffer encoded = format.encode();
+        AssetReference reference = storage.properties(IDX.ITEMS, id >> 8);
+        AssetReference newRef = new AssetReference(reference.getIdentifier(), reference.getCRC(), reference.getWhirlpool(), reference.getVersion() + 1, reference.getChildren());
+        Asset asset = storage.read(IDX.ITEMS, id >> 8);
+        a.put(id & 0xFF, encoded);
+
+        asset.setPayload(a.encode());
+        asset.setVersion(newRef.getVersion());
+
+        storage.writer(IDX.ITEMS)
+                .write(id >> 8, newRef, asset)
+                .commit();
     }
 }

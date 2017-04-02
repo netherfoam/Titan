@@ -54,6 +54,8 @@ public class CachedAssetStorage extends AssetStorage {
 
         WeakReference<MultiAsset> reference = index.get(file);
         if(reference != null) {
+            // TODO: Modifying this outside of this code is possible, and doing so will alter
+            // TODO: what appears to be written to disk, before committing it!
             MultiAsset asset = reference.get();
 
             if(asset != null) return asset;

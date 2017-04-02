@@ -24,6 +24,7 @@ public class AssetStorageRealityTest {
         storage = new AssetStorage(new File("cache")) {
             @Override
             public AssetWriter writer(int idx) throws IOException {
+                // We don't want to accidentally modify the real cache when performing these tests
                 throw new IllegalStateException("Can't touch this");
             }
         };
@@ -87,5 +88,4 @@ public class AssetStorageRealityTest {
             }
         }
     }
-
 }

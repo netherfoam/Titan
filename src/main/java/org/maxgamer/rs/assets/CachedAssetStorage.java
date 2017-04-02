@@ -77,5 +77,4 @@ public class CachedAssetStorage extends AssetStorage {
         cache = new HashMap<>();
         cacheLastCleared = System.currentTimeMillis();
     }
-
 }

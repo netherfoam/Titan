@@ -1,89 +1,36 @@
 package org.maxgamer.rs.assets.formats;
 
-import org.maxgamer.rs.model.item.AmmoType;
-import org.maxgamer.rs.model.item.ItemAmmoType;
 import org.maxgamer.rs.model.item.condition.ItemMetadataSet;
-import org.maxgamer.rs.model.item.weapon.EquipmentType;
 import org.maxgamer.rs.util.BufferUtils;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * @author netherfoam
  */
 public class ItemFormat extends Format {
-    @Id
-    protected int id;
-    @Column
-    protected String name;
-    /* Cache Values */
     protected transient int interfaceModelId;
-    // The IDs of the models to paint on characters (Eg on the real character,
-    // not an interface)
+
+    // The IDs of the models to paint on characters (Eg on the real character, not an interface)
     protected transient int maleWornModelId1 = -1;
     protected transient int maleWornModelId2 = -1;
     protected transient int femaleWornModelId1 = -1;
     protected transient int femaleWornModelId2 = -1;
-    @Column
-    private String examine;
-    @Column
-    private boolean tradeable;
-    @Column
-    private boolean droppable;
-    @Column
-    private long maxStack;
-    @Column
-    private int value;
-    @Column
-    private int lowAlchemy;
-    @Column
-    private int highAlchemy;
-    @Column
-    private double weight;
-    @OneToOne(mappedBy = "item")
-    private EquipmentType weapon;
-    @OneToMany(mappedBy = "weapon")
-    private List<ItemAmmoType> ammo = new LinkedList<>();
-    @OneToOne(mappedBy = "item")
-    private AmmoType projectile;
-    /*
-     * private int modelZoom; private int modelRotation1; private int
-     * modelRotation2;
-     */
+    protected String name;
+
     private transient int modelOffset1;
     private transient int modelOffset2;
-    /* private int stackable; */
-    /* private int value; */
     private transient boolean membersOnly;
     private transient String[] groundOptions = new String[]{null, "Take", null, null, null};
     private transient String[] inventoryOptions = new String[]{null, null, null, null, "Drop"};
     private transient boolean unnoted;
-
-    /*
-     * private int[] originalModelColors; private int[] modifiedModelColors;
-     * private int[] textureColour1; private int[] textureColour2; private
-     * byte[] unknownArray1; private int[] unknownArray2;
-     */
-    /*
-     * private int colourEquip1; private int colourEquip2; private int certId;
-     * private int certTemplateId;
-     */
     private transient int[] stackIds;
     private transient int[] stackAmounts;
     private transient int teamId;
     private transient HashMap<Integer, Object> clientScriptData;
-    /*
-     * private int lendId; private int lendTemplateId;
-     */
     private transient ItemMetadataSet flags;
 
     private static void discard(ByteBuffer bb, int op, int bytes) {

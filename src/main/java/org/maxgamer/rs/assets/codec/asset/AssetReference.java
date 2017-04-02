@@ -69,6 +69,15 @@ public class AssetReference {
         return children.clone();
     }
 
+    public int indexOf(int id) {
+        for(int i = 0; i < children.length; i++) {
+            SubAssetReference child = children[i];
+            if(child.getId() == id) return i;
+        }
+
+        return -1;
+    }
+
     /**
      * The number of children this file has. If this file has no children,
      * then this value is 1 (Eg, it's just the one file).

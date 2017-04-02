@@ -7,6 +7,17 @@ import org.maxgamer.rs.structure.configs.ConfigSection;
  * @author netherfoam
  */
 public class BankContainer extends Container {
+    /**
+     * TODO: Duplication bug. Conditions:
+     * * Noting = true
+     * slot[length-3] = coins (200)
+     * slot[length-2] = coins (200)
+     * slot[length-1] = hatchet (80)
+     *
+     * 1. Withdraw all on coins
+     * 2. Deposit all coins (hatchet will duplicate stacks)
+     * 3. Rinse and repeat for infinite items
+     */
     public static final int SIZE = 516;
     public static final int TABS = 11;
 

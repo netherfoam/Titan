@@ -93,6 +93,7 @@ public class NPC extends Mob implements Interactable {
         this.model = new NPCModel(this.definition);
         this.mask = new NPCUpdateMask(this, new NPCMovementUpdate());
         this.skills = new SkillSet(this);
+        this.spawn = l;
 
         NPCType d = getDefinition();
         this.skills.setLevel(SkillType.ATTACK, d.getAttackLevel());

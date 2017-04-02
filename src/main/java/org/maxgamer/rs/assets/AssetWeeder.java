@@ -16,12 +16,16 @@ import java.util.Map;
  * @author netherfoam
  */
 public class AssetWeeder {
+    public static void weed(AssetStorage storage) throws IOException {
+        evictMaps(storage);
+    }
+
     /**
      * Removes map files which are unreadable, given the available XTEA keys
      * @param storage the cache
      * @throws IOException if there was an error writing the changes to disk
      */
-    public static void weed(AssetStorage storage) throws IOException {
+    public static void evictMaps(AssetStorage storage) throws IOException {
         // We scan through all of the map files, attempt to parse them, and blacklist broken ones
         AssetWriter writer = storage.writer(IDX.LANDSCAPES);
         IndexTable index = storage.getIndex(IDX.LANDSCAPES);

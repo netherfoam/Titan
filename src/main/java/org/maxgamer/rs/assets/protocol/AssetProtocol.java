@@ -107,7 +107,12 @@ public class AssetProtocol {
             @Override
             public void run() {
                 try {
+                    // This takes a few seconds, so it's run asynchronously at startup. Any clients which
+                    // are already running shouldn't have to wait for this.
+                    long start = System.nanoTime();
                     getChecksum();
+                    long end = System.nanoTime();
+                    Log.info("Initialized AssetProtocol in " + ((end - start) / 1000000.0D) + "ms.");
                 } catch (IOException e) {
                     Log.warning("Couldn't pre-initialize asset storage protocol. This could be a sign of a " +
                                 "corrupt cache. Clients will likely not be able to stream the cache.");
@@ -122,9 +127,15 @@ public class AssetProtocol {
      * @throws IOException if the table can't be generated
      */
     public ChecksumTable getChecksum() throws IOException {
-        if(checksum == null) {
-            rebuildChecksum();
-            initializedAt = System.currentTimeMillis();
+        try {
+            checksumLock.lock();
+
+            if (checksum == null) {
+                rebuildChecksum();
+                initializedAt = System.currentTimeMillis();
+            }
+        } finally {
+            checksumLock.unlock();
         }
 
         return checksum;
@@ -137,50 +148,44 @@ public class AssetProtocol {
     private void rebuildChecksum() throws IOException {
         // NB that there are still issues if the checksum table changes after a client
         // has downloaded the cache.
-        checksumLock.lock();
+        this.cache.clear();
+        ChecksumTable checksum = new ChecksumTable(storage.size());
+        /* Generate reference tables and build checksum */
+        for (int i = 0; i < checksum.getSize(); i++) {
+            //Checksum info
+            int crc = 0;
+            int version = 0;
+            byte[] whirlpool = new byte[64];
 
-        try {
-            this.cache.clear();
-            ChecksumTable checksum = new ChecksumTable(storage.size());
-            /* Generate reference tables and build checksum */
-            for (int i = 0; i < checksum.getSize(); i++) {
-                //Checksum info
-                int crc = 0;
-                int version = 0;
-                byte[] whirlpool = new byte[64];
+            try {
+                IndexTable index = storage.getIndex(i);
+                ByteBuffer payload = index.encode();
+                Asset asset = Asset.create(null, index.getCompression(), -1, payload);
+                ByteBuffer raw = asset.encode();
 
-                try {
-                    IndexTable index = storage.getIndex(i);
-                    ByteBuffer payload = index.encode();
-                    Asset asset = Asset.create(null, index.getCompression(), -1, payload);
-                    ByteBuffer raw = asset.encode();
+                set(i, raw);
 
-                    set(i, raw);
-
-                    // Build checksum values
-                    crc = ByteBufferUtils.getCrcChecksum(raw);
-                    version = index.getVersion();
-                    raw.position(0);
-                    whirlpool = ByteBufferUtils.getWhirlpoolDigest(raw);
-                } catch (FileNotFoundException e) {
-                    // Occurs for a few IDX values which are missing from the cache
-                    whirlpool = Whirlpool.whirlpool(new byte[0], 0, 0);
-                } catch (Exception e) {
-                    // Failed outright. Corrupt cache or bad parsing.
-                    e.printStackTrace();
-                    System.out.println("Error parsing IDX " + i + " index.");
-                    whirlpool = Whirlpool.whirlpool(new byte[0], 0, 0);
-                } finally {
-                    // Append found values to checksum table.
-                    checksum.setEntry(i, new ChecksumTable.Entry(crc, version, whirlpool));
-                }
+                // Build checksum values
+                crc = ByteBufferUtils.getCrcChecksum(raw);
+                version = index.getVersion();
+                raw.position(0);
+                whirlpool = ByteBufferUtils.getWhirlpoolDigest(raw);
+            } catch (FileNotFoundException e) {
+                // Occurs for a few IDX values which are missing from the cache
+                whirlpool = Whirlpool.whirlpool(new byte[0], 0, 0);
+            } catch (Exception e) {
+                // Failed outright. Corrupt cache or bad parsing.
+                e.printStackTrace();
+                System.out.println("Error parsing IDX " + i + " index.");
+                whirlpool = Whirlpool.whirlpool(new byte[0], 0, 0);
+            } finally {
+                // Append found values to checksum table.
+                checksum.setEntry(i, new ChecksumTable.Entry(crc, version, whirlpool));
             }
-
-            this.checksum = checksum;
-            cache.put(255, new SoftReference<>(checksum.encode(true)));
-        } finally {
-            checksumLock.unlock();
         }
+
+        this.checksum = checksum;
+        cache.put(255, new SoftReference<>(checksum.encode(true)));
     }
 
     /**

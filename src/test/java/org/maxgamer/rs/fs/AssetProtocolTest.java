@@ -202,8 +202,23 @@ public class AssetProtocolTest {
                 AssetReference reference = table.getReferences().get(file);
                 Assert.assertNotNull(reference);
 
-                Asset asset = new Asset(null, response);
+                Asset asset = new Asset(null, response.asReadOnlyBuffer());
                 Assert.assertArrayEquals(unbuffer(storage.read(idx, file).getPayload()), unbuffer(asset.getPayload()));
+
+                // Now we assert that our checksums and whirlpools of the raw encoded content match what is expected.
+                int limit = response.limit();
+                if(asset.getVersion() != -1) {
+                    // We trim off the version, that's not part of the checksum
+                    response.limit(response.limit() - 2);
+                }
+
+                Assert.assertEquals("crc32", reference.getCRC(), AssetWriter.crc32(response));
+                Assert.assertArrayEquals("whirlpool", reference.getWhirlpool(), AssetWriter.whirlpool(response));
+
+                if(asset.getVersion() != -1) {
+                    // Restore the limit
+                    response.position(limit);
+                }
             }
         }
     }

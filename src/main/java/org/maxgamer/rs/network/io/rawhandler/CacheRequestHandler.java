@@ -113,7 +113,10 @@ public class CacheRequestHandler extends RawHandler {
                 case 3: //the client is logged out
                     break;
 
-                case 4: //A new encryption byte is being used
+                case 4:
+                    // A new encryption byte is being used.
+                    // Oddly, this seems to be only sent when the client has an error in the cache.
+
                     Log.info("Connection encryption byte set");
                     /* byte encryptionByte = *///in.readByte();
                     //The other 2 bytes are padding

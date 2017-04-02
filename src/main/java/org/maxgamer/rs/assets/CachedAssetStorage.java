@@ -54,18 +54,20 @@ public class CachedAssetStorage extends AssetStorage {
 
         WeakReference<MultiAsset> reference = index.get(file);
         if(reference != null) {
-            // TODO: Modifying this outside of this code is possible, and doing so will alter
-            // TODO: what appears to be written to disk, before committing it!
             MultiAsset asset = reference.get();
 
-            if(asset != null) return asset;
+            // We don't return the asset, we return a copy of it. Such that, if one copy
+            // is modified, and a second copy is retrieved, the second copy will not show
+            // the first copy's changes, unless the first copy was written to disk!
+            if(asset != null) return asset.copy();
         }
 
         // We've got no cached version, so fetch it and cache it
         MultiAsset asset = super.archive(idx, file);
         index.put(file, new WeakReference<>(asset));
 
-        return asset;
+        // We return a copy so that nobody can modify our internal version
+        return asset.copy();
     }
 
     /**

@@ -184,6 +184,17 @@ public class MultiAsset extends Codec {
     }
 
     /**
+     * Create a copy of this MultiAsset. The copy can be modified without modifying this asset.
+     * @return the copy
+     */
+    public MultiAsset copy() {
+        MultiAsset that = new MultiAsset(reference);
+        that.entries = new TreeMap<>(this.entries);
+
+        return that;
+    }
+
+    /**
      * Fetch an iterator for iterating over the files inside this asset
      * @return the iterator
      */

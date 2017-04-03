@@ -2,6 +2,7 @@ package org.maxgamer.rs.model.map.object;
 
 import org.maxgamer.rs.assets.MultiAsset;
 import org.maxgamer.rs.assets.IDX;
+import org.maxgamer.rs.assets.formats.GameObjectFormat;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.core.tick.Tickable;
 import org.maxgamer.rs.model.entity.Entity;
@@ -24,7 +25,13 @@ public abstract class GameObject extends Entity implements Interactable {
     /**
      * The previously loaded game object definitions
      */
-    private static HashMap<Integer, GameObjectProto> definitions = new HashMap<>(65000);
+    private static HashMap<Integer, GameObjectFormat> definitions = new HashMap<>(65000);
+
+    /**
+     * The definition id of this object
+     */
+    private int id;
+
     /**
      * The data for this object. This could represent anything, generally health
      * or the number of harvests it has remaining.
@@ -33,7 +40,7 @@ public abstract class GameObject extends Entity implements Interactable {
     /**
      * The definition for this object
      */
-    private GameObjectProto def;
+    private GameObjectFormat def;
     /**
      * True if this object is hidden, false if it is visible. A hidden object
      * does not have any clip effect in the world, similar to if getLocation()
@@ -65,6 +72,7 @@ public abstract class GameObject extends Entity implements Interactable {
      */
     public GameObject(int id, int type) {
         super();
+        this.id = id;
         this.def = getDefinition(id);
 
         this.type = type;
@@ -72,14 +80,15 @@ public abstract class GameObject extends Entity implements Interactable {
         this.setSize(this.getSizeX(), this.getSizeY());
     }
 
-    public static GameObjectProto getDefinition(int id) {
+    public static GameObjectFormat getDefinition(int id) {
         if (!definitions.containsKey(id)) {
             //The gameobject has not been loaded before.
             try {
                 //Each Archive from the IDX file has up to 256 subfiles
                 MultiAsset a = Core.getCache().archive(IDX.OBJECTS, id >> 8);
                 ByteBuffer src = a.get(id & 0xFF);
-                GameObjectProto def = GameObjectProto.decode(id, src);
+                GameObjectFormat def = new GameObjectFormat();
+                def.decode(src);
                 if (src.remaining() > 0) {
                     throw new IOException("Error parsing gameobject " + id);
                 }
@@ -106,7 +115,7 @@ public abstract class GameObject extends Entity implements Interactable {
      *
      * @param proto the object to fix.
      */
-    private static void fixOptions(GameObjectProto proto) {
+    private static void fixOptions(GameObjectFormat proto) {
         if (proto.getAliases() == null) return; //No aliases
 
         // TODO: This isn't quite correct and opens us up to a client-sided hack, where a user might force-show
@@ -117,7 +126,7 @@ public abstract class GameObject extends Entity implements Interactable {
         for (int alias : proto.getAliases()) {
             if(alias == -1) continue;
 
-            GameObjectProto a = getDefinition(alias);
+            GameObjectFormat a = getDefinition(alias);
             String[] alias_options = a.getOptions();
 
             for (int i = 0; i < alias_options.length; i++) {
@@ -446,7 +455,7 @@ public abstract class GameObject extends Entity implements Interactable {
         this.data = data;
     }
 
-    public GameObjectProto getDefiniton() {
+    public GameObjectFormat getDefiniton() {
         return this.def;
     }
 
@@ -492,7 +501,7 @@ public abstract class GameObject extends Entity implements Interactable {
      * @return The ID of this GameObject's definition.
      */
     public int getId() {
-        return this.def.getId();
+        return this.id;
     }
 
     /**

@@ -6,7 +6,7 @@ import org.maxgamer.rs.model.entity.mob.persona.player.Player;
 import org.maxgamer.rs.model.entity.mob.persona.player.Rights;
 import org.maxgamer.rs.model.map.Location;
 import org.maxgamer.rs.model.map.object.GameObject;
-import org.maxgamer.rs.model.map.object.GameObjectProto;
+import org.maxgamer.rs.assets.formats.GameObjectFormat;
 import org.maxgamer.rs.model.map.path.AStar;
 import org.maxgamer.rs.model.map.path.Path;
 import org.maxgamer.rs.network.io.packet.PacketProcessor;
@@ -74,7 +74,7 @@ public class GameObjectHandler implements PacketProcessor<Player> {
                 id = in.readShort();
                 id = id & 0xFFFF;
                 try {
-                    GameObjectProto def = GameObject.getDefinition(id);
+                    GameObjectFormat def = GameObject.getDefinition(id);
 
                     if (p.getRights() >= Rights.MOD) {
                         p.sendMessage("ID: " + id);

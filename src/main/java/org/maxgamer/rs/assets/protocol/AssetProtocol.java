@@ -261,7 +261,7 @@ public class AssetProtocol {
                 Asset asset = Asset.create(null, index.getCompression(), -1, payload);
                 buffer = asset.encode();
 
-                Assert.equal(AssetWriter.crc32(buffer), checksum.getEntry(fileId).getCrc());
+                Assert.equal(AssetWriter.crc32(buffer), getChecksum().getEntry(fileId).getCrc());
                 set(fileId, buffer);
             }
 

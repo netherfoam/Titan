@@ -3,8 +3,10 @@ package org.maxgamer.rs.fs;
 import org.junit.Assert;
 import org.junit.Test;
 import org.maxgamer.rs.assets.AssetStorage;
+import org.maxgamer.rs.assets.CachedAssetStorage;
 import org.maxgamer.rs.assets.IDX;
 import org.maxgamer.rs.assets.MultiAsset;
+import org.maxgamer.rs.assets.formats.GameObjectFormat;
 import org.maxgamer.rs.assets.formats.ItemFormat;
 import org.maxgamer.rs.assets.formats.NPCFormat;
 
@@ -55,5 +57,32 @@ public class FormatTest {
         encoded.position(0);
 
         Assert.assertEquals(format, other);
+    }
+
+    @Test
+    public void objectTest() throws IOException {
+        CachedAssetStorage storage = new CachedAssetStorage(new File("cache"));
+
+        for(int id = 500; id < 36780; id+= 50) {
+            //final int id = 36781; // Lumbridge spawn north fountain
+            ByteBuffer bb = null;
+
+            while(bb == null) {
+                id += 1;
+                MultiAsset a = storage.archive(IDX.OBJECTS, id >> 8);
+                bb = a.get(id & 0xFF);
+            }
+
+            GameObjectFormat format = new GameObjectFormat();
+            format.decode(bb.asReadOnlyBuffer());
+
+            ByteBuffer encoded = format.encode();
+
+            GameObjectFormat other = new GameObjectFormat();
+            other.decode(encoded);
+            encoded.position(0);
+
+            Assert.assertEquals(format, other);
+        }
     }
 }

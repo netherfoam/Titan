@@ -2,6 +2,7 @@ package net.openrs.util;
 
 import net.openrs.util.crypto.Whirlpool;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -158,6 +159,29 @@ public final class ByteBufferUtils {
         }
         builder.append("]");
         return builder.toString();
+    }
+
+    public static int readUnsignedSmart(ByteBuffer buffer) throws IOException {
+        int i = buffer.get() & 0xFF;
+        if (i < 128) {
+            return i;
+        } else {
+            //i &= ~SMART_LARGE_FLAG; //Strip the 0x80 bit
+            i -= 128;
+            return (i << 8) | (buffer.get() & 0xFF);
+        }
+    }
+
+    public static int readSmart(ByteBuffer buffer) throws IOException {
+        int i = buffer.get() & 0xFF;
+        //if((i & SMART_LARGE_FLAG) != 0){
+        if (i < 128) {
+            return i;
+        } else {
+            //i &= ~SMART_LARGE_FLAG; //Strip the 0x80 bit
+            i -= 128;
+            return (i << 8) | (buffer.get() & 0xFF);
+        }
     }
 
 }

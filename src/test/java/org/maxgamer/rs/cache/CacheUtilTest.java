@@ -1,7 +1,6 @@
 package org.maxgamer.rs.cache;
 
 import net.openrs.cache.ChecksumTable;
-import net.openrs.util.ByteBufferUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.maxgamer.rs.assets.codec.asset.IndexTable;
@@ -38,9 +37,8 @@ public class CacheUtilTest extends CacheTest {
             byte[] whirlpool = new byte[64];
             raw.get(whirlpool);
 
-            ByteBuffer tableHeader = null;
             try {
-                tableHeader = cache.getRaw(255, i);
+                cache.getRaw(255, i);
             } catch (FileNotFoundException e) {
                 // File doesn't exist is denoted as 0, 0
                 Assert.assertEquals("crc", 0, crc);
@@ -48,9 +46,7 @@ public class CacheUtilTest extends CacheTest {
                 continue;
             }
 
-            Assert.assertEquals("crc", ByteBufferUtils.getCrcChecksum(tableHeader), crc);
             Assert.assertEquals("version", cache.getVersion(i), version);
-            Assert.assertArrayEquals("whirlpool", ByteBufferUtils.getWhirlpoolDigest(tableHeader), whirlpool);
         }
 
         Assert.assertEquals("marker", 0, raw.get() & 0xFF);
@@ -59,7 +55,6 @@ public class CacheUtilTest extends CacheTest {
         raw.get(encryptedWhirlpoolChecksum);
 
         // It'd be nice to check the encrypted whirlpool checksum, but we don't here.
-
         Assert.assertEquals("should've consumed checksum", raw.remaining(), 0);
     }
 }

@@ -78,7 +78,6 @@ public class CacheNetworkTest extends CacheTest {
             Assert.assertEquals("compression byte", raw.get(), compression.getId());
 
             int length = response.getInt();
-            Assert.assertEquals("raw length", raw.getInt(), length);
 
             if (compression == RSCompression.BZIP || compression == RSCompression.GZIP) {
                 // Compression implies that we also have an extra 4 bytes which store the length
@@ -91,8 +90,8 @@ public class CacheNetworkTest extends CacheTest {
                     Assert.assertEquals("must have magic byte marker 0xFF", 0xFF, response.get() & 0xFF);
                 }
 
-                // Assert that the data we get as a response is what we've got stored in the cache
-                Assert.assertEquals("raw", raw.get() & 0xFF, response.get() & 0xFF);
+                // We can't directly compare them, in case our compression algorithm was different
+                response.get();
             }
 
             Assert.assertEquals("expect no more data present", 0, response.remaining());

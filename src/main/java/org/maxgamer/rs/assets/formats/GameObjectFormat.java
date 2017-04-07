@@ -62,7 +62,16 @@ public final class GameObjectFormat extends Format {
     }
 
     @Override
+    public void encode(ByteArrayOutputStream out) throws IOException {
+
+    }
+
+    @Override
     public void decode(int opcode, ByteBuffer buffer, Stasis stasis) throws IOException {
+        if (opcode == 2) {
+            this.name = ByteBufferUtils.getJagexString(buffer);
+        }
+
         // These opcodes are processed, but they're all preserved anyway. We don't know what they mean.
         if (opcode == 1 || opcode == 5) {
             boolean creatorBoolean = false; //A boolean from the creator class in the client
@@ -96,10 +105,6 @@ public final class GameObjectFormat extends Format {
                     buffer.position(buffer.position() + n);
                 }
             }
-        }
-
-        if (opcode == 2) {
-            this.name = ByteBufferUtils.getJagexString(buffer);
         }
 
         if((~opcode) == -178) {
@@ -440,7 +445,7 @@ public final class GameObjectFormat extends Format {
                 else ByteBufferUtils.getJagexString(buffer);
             }
         }
-        
+
         stasis.preserve();
     }
 
@@ -491,11 +496,6 @@ public final class GameObjectFormat extends Format {
 
     public void setOption(int index, String option) {
         this.options[index] = option;
-    }
-
-    @Override
-    public void encode(ByteArrayOutputStream out) throws IOException {
-
     }
 
     @Override

@@ -5,6 +5,7 @@
  * @date 20 Feb 2016
  */
 importClass(org.maxgamer.rs.model.entity.mob.combat.MeleeAttack);
+importClass(org.maxgamer.rs.model.skill.SkillType);
 
 module.exports = {
     /**

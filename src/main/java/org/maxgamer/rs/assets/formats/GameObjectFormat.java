@@ -237,7 +237,7 @@ public final class GameObjectFormat extends Format {
         }
 
         if(~opcode == -73) {
-            buffer.get(); // & 0xFF
+            buffer.getShort(); // & 0xFFFF
         }
 
         if(opcode == 73) {

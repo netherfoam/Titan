@@ -2,6 +2,7 @@ package org.maxgamer.rs.model.entity.mob.combat;
 
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.model.entity.mob.Mob;
+import org.maxgamer.rs.model.javascript.JavaScriptCallFiber;
 import org.maxgamer.rs.model.javascript.JavaScriptInvocation;
 import org.mozilla.javascript.Undefined;
 
@@ -35,8 +36,8 @@ public class JavaScriptAttack extends Attack {
 
     @Override
     public void perform(final Mob target, final AttackResult damage) {
-        JavaScriptInvocation call = new JavaScriptInvocation(Core.getServer().getScriptEnvironment(), module, "perform", attacker, target, damage);
-        call.call();
+        JavaScriptCallFiber call = new JavaScriptCallFiber(Core.getServer().getScriptEnvironment(), module, "perform", attacker, target, damage);
+        call.start();
     }
 
     @Override

@@ -24,4 +24,6 @@ public @interface Interact {
     boolean debug() default false;
 
     boolean cancellable() default true;
+
+    InteractPriority priority() default InteractPriority.NORMAL;
 }

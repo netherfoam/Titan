@@ -13,6 +13,8 @@ import org.maxgamer.rs.assets.formats.NPCFormat;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * @author netherfoam
@@ -60,6 +62,82 @@ public class FormatTest {
     }
 
     @Test
+    public void allObjectTest() throws IOException {
+        CachedAssetStorage storage = new CachedAssetStorage(new File("cache"));
+
+        for(int file : storage.getIndex(IDX.OBJECTS).getReferences().keySet()) {
+            MultiAsset multi = storage.archive(IDX.OBJECTS, file);
+
+            Iterator<Map.Entry<Integer, ByteBuffer>> iterator = multi.iterator();
+            while(iterator.hasNext()) {
+                Map.Entry<Integer, ByteBuffer> entry = iterator.next();
+
+                GameObjectFormat format = new GameObjectFormat();
+                ByteBuffer readOnly = entry.getValue().asReadOnlyBuffer();
+                format.decode(readOnly);
+                Assert.assertEquals("expect no data remaining", 0, readOnly.remaining());
+
+                ByteBuffer encoded = format.encode();
+
+                GameObjectFormat other = new GameObjectFormat();
+                other.decode(encoded);
+                encoded.position(0);
+
+                Assert.assertEquals(format, other);
+            }
+        }
+    }
+
+    @Test
+    public void obj5699Test() throws IOException {
+        CachedAssetStorage storage = new CachedAssetStorage(new File("cache"));
+
+        int[] ids = {5699};
+        for(int id : ids) {
+            MultiAsset a = storage.archive(IDX.OBJECTS, id >> 8);
+            ByteBuffer bb = a.get(id & 0xFF);
+
+            GameObjectFormat format = new GameObjectFormat();
+            ByteBuffer readOnly = bb.asReadOnlyBuffer();
+            format.decode(readOnly);
+            Assert.assertEquals("expect no data remaining", 0, readOnly.remaining());
+
+            ByteBuffer encoded = format.encode();
+
+            GameObjectFormat other = new GameObjectFormat();
+            other.decode(encoded);
+            encoded.position(0);
+
+            Assert.assertEquals(format, other);
+        }
+    }
+
+
+    @Test
+    public void obj6714Test() throws IOException {
+        CachedAssetStorage storage = new CachedAssetStorage(new File("cache"));
+
+        int[] ids = {6714, 6720};
+        for(int id : ids) {
+            MultiAsset a = storage.archive(IDX.OBJECTS, id >> 8);
+            ByteBuffer bb = a.get(id & 0xFF);
+
+            GameObjectFormat format = new GameObjectFormat();
+            ByteBuffer readOnly = bb.asReadOnlyBuffer();
+            format.decode(readOnly);
+            Assert.assertEquals("expect no data remaining", 0, readOnly.remaining());
+
+            ByteBuffer encoded = format.encode();
+
+            GameObjectFormat other = new GameObjectFormat();
+            other.decode(encoded);
+            encoded.position(0);
+
+            Assert.assertEquals(format, other);
+        }
+    }
+
+    @Test
     public void objectTest() throws IOException {
         CachedAssetStorage storage = new CachedAssetStorage(new File("cache"));
 
@@ -74,7 +152,9 @@ public class FormatTest {
             }
 
             GameObjectFormat format = new GameObjectFormat();
-            format.decode(bb.asReadOnlyBuffer());
+            ByteBuffer readOnly = bb.asReadOnlyBuffer();
+            format.decode(readOnly);
+            Assert.assertEquals("expect no data remaining", 0, readOnly.remaining());
 
             ByteBuffer encoded = format.encode();
 

@@ -2,6 +2,7 @@ package org.maxgamer.rs.model.javascript;
 
 import co.paralleluniverse.fibers.Fiber;
 import co.paralleluniverse.fibers.SuspendExecution;
+import org.maxgamer.rs.model.entity.Entity;
 import org.mozilla.javascript.*;
 import org.mozilla.javascript.commonjs.module.Require;
 import org.slf4j.Logger;
@@ -126,6 +127,16 @@ public class JavaScriptCallFiber extends Fiber<Object> {
             logger.debug("function " + this.function + " not found in module " + this.module);
 
             return null;
+        }
+
+        for(Object arg : args) {
+            if(arg instanceof Entity) {
+                Entity e = (Entity) arg;
+                if(e.isDestroyed()) {
+                    logger.trace(e + " is destroyed. Not invoking script");
+                    return null;
+                }
+            }
         }
 
         try {

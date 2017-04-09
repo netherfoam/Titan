@@ -15,17 +15,15 @@ public final class GameObjectFormat extends Format {
      * are different object, but the concept is that they're the same object in
      * a different state.
      */
-    private int[] objectIds;
+    private int[] transformIds;
     private String[] options;
     private String name = "";
     private boolean clippingFlag;
     private boolean isSolid;
     private int sizeY;
     private int sizeX;
-    /* Something to do with object transforms */
-    private int anInt2983;
-    @SuppressWarnings("unused")
-    private int anInt2968;
+    private int primaryState;
+    private int secondaryState;
 
     /**
      * Acceptable values appear to be 0,1 or 2. They are involved in the
@@ -237,7 +235,7 @@ public final class GameObjectFormat extends Format {
         }
 
         if(~opcode == -73) {
-            buffer.get(); // & 0xFF
+            buffer.getShort(); // & 0xFFFF
         }
 
         if(opcode == 73) {
@@ -255,8 +253,15 @@ public final class GameObjectFormat extends Format {
         }
 
         if(~opcode == -78 || ~opcode == -93) {
-            buffer.getShort();
-            buffer.getShort();
+            primaryState = buffer.getShort() & 0xFFFF;
+            if(primaryState == 0xFFFF ) {
+                primaryState = -1;
+            }
+
+            secondaryState = buffer.getShort() & 0xFFFF;
+            if(secondaryState == 0xFFFF) {
+                secondaryState = -1;
+            }
 
             int id = -1;
             if(opcode == 92) {
@@ -268,13 +273,13 @@ public final class GameObjectFormat extends Format {
             }
 
             int length = buffer.get() & 0xFF;
-            this.objectIds = new int[length + 2];
+            this.transformIds = new int[length + 2];
             for(int i = 0; i <= length; i++) {
-                this.objectIds[i] = buffer.getShort() & 0xFFFF;
+                this.transformIds[i] = buffer.getShort() & 0xFFFF;
 
-                if(objectIds[i] == 0xFFFF) objectIds[i] = -1;
+                if(transformIds[i] == 0xFFFF) transformIds[i] = -1;
             }
-            objectIds[length + 1] = id;
+            transformIds[length + 1] = id;
         }
 
         if(opcode == 78) {
@@ -485,13 +490,21 @@ public final class GameObjectFormat extends Format {
         return options;
     }
 
+    public int getPrimaryState() {
+        return primaryState;
+    }
+
+    public int getSecondaryState() {
+        return secondaryState;
+    }
+
     @Override
     public String toString() {
         return ReflectUtil.describe(this);
     }
 
     public int[] getAliases() {
-        return this.objectIds;
+        return this.transformIds;
     }
 
     public void setOption(int index, String option) {
@@ -512,15 +525,15 @@ public final class GameObjectFormat extends Format {
             return false;
         }
         final GameObjectFormat other = (GameObjectFormat) obj;
-        return Objects.deepEquals(this.objectIds, other.objectIds)
+        return Objects.deepEquals(this.transformIds, other.transformIds)
                 && Objects.deepEquals(this.options, other.options)
                 && Objects.equals(this.name, other.name)
                 && Objects.equals(this.clippingFlag, other.clippingFlag)
                 && Objects.equals(this.isSolid, other.isSolid)
                 && Objects.equals(this.sizeY, other.sizeY)
                 && Objects.equals(this.sizeX, other.sizeX)
-                && Objects.equals(this.anInt2983, other.anInt2983)
-                && Objects.equals(this.anInt2968, other.anInt2968)
+                && Objects.equals(this.primaryState, other.primaryState)
+                && Objects.equals(this.secondaryState, other.secondaryState)
                 && Objects.equals(this.actionCount, other.actionCount);
     }
 }

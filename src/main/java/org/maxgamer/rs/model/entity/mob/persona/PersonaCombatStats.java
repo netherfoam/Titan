@@ -3,6 +3,7 @@ package org.maxgamer.rs.model.entity.mob.persona;
 import org.maxgamer.rs.model.entity.mob.CombatStats;
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.item.WieldType;
+import org.maxgamer.rs.model.skill.SkillType;
 
 /**
  * @author netherfoam
@@ -24,6 +25,13 @@ public class PersonaCombatStats extends CombatStats {
         String name = wep.getName().toLowerCase();
         //TODO: 13055 is Maul attack
         //TODO: 13053/13052 is godsword attack/2H
+
+        if(name.contains("greataxe")) {
+            if(getOwner().getAttackStyle().isType(SkillType.ATTACK)) {
+                return 2066;
+            }
+            return 2067;
+        }
 
         if (name.contains("maul")) {
             return 13055;

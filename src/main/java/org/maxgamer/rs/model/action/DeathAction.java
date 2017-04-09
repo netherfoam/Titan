@@ -30,6 +30,11 @@ public class DeathAction extends Action {
         getOwner().onDeath();
         getOwner().hide();
 
+        if(getOwner().isDestroyed()) {
+            // Destroyed NPC's don't respawn
+            return;
+        }
+
         wait(getOwner().getRespawnTicks());
 
         /* Teleport the mob back to their spawn, if one exists */

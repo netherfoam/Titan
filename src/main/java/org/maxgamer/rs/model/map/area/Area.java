@@ -125,6 +125,5 @@ public class Area implements MBR {
          * than the Mob triggered this.
          */
         SERVER
-
     }
 }

@@ -194,16 +194,6 @@ public class Landscape {
                             map.addClip(xOffset + localX, yOffset + localY, height, ClipMasks.BLOCKED_TILE);
                         }
 
-                        if ((flags & StandardMap.FLAG_BRIDGE) == StandardMap.FLAG_BRIDGE) {
-                            map.addClip(xOffset + localX, yOffset + localY, height, ClipMasks.BLOCKED_TILE);
-                        }
-
-                        /*
-                         * if((flags & FLAG_ROOF) == FLAG_ROOF){ addClip(xOffset
-                         * + localX, yOffset + localY, z,
-                         * ClipMasks.BLOCKED_TILE); }
-                         */
-
                         if ((flags & WorldMap.FLAG_UNKNOWN) == WorldMap.FLAG_UNKNOWN) {
                             map.addClip(xOffset + localX, yOffset + localY, height, ClipMasks.BLOCKED_TILE);
                         }

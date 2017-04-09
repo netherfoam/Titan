@@ -90,7 +90,7 @@ public class JavaScriptInteractHandler implements InteractionHandler {
         return sb.toString();
     }
 
-    @Interact
+    @Interact(priority = InteractPriority.LOWEST)
     public void javascript(Mob source, Interactable target, OptionUse use) throws SuspendExecution, NotHandledException {
         this.javascript(source, target, use.getOption());
     }

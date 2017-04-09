@@ -63,7 +63,7 @@ public class Location extends Position implements MBR, Locatable {
     }
 
     public Location(int x, int y) {
-        this(Core.getServer().getMaps().mainland(), x, y, 0);
+        this(x, y, 0);
     }
 
     public Location(int x, int y, int z) {

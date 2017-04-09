@@ -2,7 +2,7 @@ module.exports = {
     climbUp: function(player, object) {
         var src = player.getLocation();
         if (src.y >= 6400) {
-            dest = src.add(0, -6400, 0);
+            dest = src.add(0, -6400, -src.z);
         } else {
             dest = src.add(0, 0, 1);
         }

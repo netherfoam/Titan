@@ -17,6 +17,15 @@ public abstract class ForkDialogue extends Dialogue {
         super(p);
     }
 
+    public ForkDialogue(Player p, String title, String... options) {
+        this(p);
+
+        this.setTitle(title);
+        for(String s : options) {
+            this.add(s);
+        }
+    }
+
     /**
      * Adds the given option number to this ForkDialogue
      *

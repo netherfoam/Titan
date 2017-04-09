@@ -12,6 +12,7 @@ import org.maxgamer.rs.util.Log;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 
 /**
@@ -63,7 +64,7 @@ public class InteractionManager {
 
             @Override
             protected void run() throws SuspendExecution {
-                ArrayList<InteractionHandlerMethod> successes = new ArrayList<>(1);
+                boolean handled = false;
 
                 if (target instanceof Entity && ((Entity) target).isDestroyed()) {
                     // A sanity check to ensure that nobody makes interactions with removed entities
@@ -81,9 +82,8 @@ public class InteractionManager {
                         this.method = h;
                         // We try and run the interaction
                         h.run(source, target, usage);
-                        // If we're successful, great, the interaction was handled
-                        // but, we cannot return in-case anyone else wants to handle the event
-                        successes.add(h);
+                        handled = true;
+                        break;
                     } catch (NotHandledException e) {
                         if (h.isDebug()) {
                             Log.info(h.toString() + " refused to handle interaction between " + source + " => " + target + " with usage " + usage + ".");
@@ -94,10 +94,7 @@ public class InteractionManager {
                     }
                 }
 
-                if (successes.size() > 1) {
-                    Log.warning("There were multiple handlers that accepted the interaction between " + source + " => " + target + " with usage " + usage);
-                    Log.warning("They were " + successes.toString() + ". This would indicate that one of them should throw a NotHandledException.");
-                } else if (successes.isEmpty()) {
+                if(!handled) {
                     Log.debug("Unhandled interaction between " + source + " => " + target + " with usage " + usage + ".");
                 }
             }
@@ -162,6 +159,8 @@ public class InteractionManager {
         if (!foundAny) {
             Log.warning("Class " + handler.getClass() + " has no declared methods with @Interact annotation, but implements InteractionHandler.");
             Log.warning("Did you forget to register a handler with @Interact?");
+        } else {
+            Collections.sort(handlers);
         }
     }
 

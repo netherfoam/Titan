@@ -24,6 +24,7 @@ import org.maxgamer.rs.model.map.path.AStar;
 import org.maxgamer.rs.model.map.path.Path;
 import org.maxgamer.rs.model.map.path.PathFinder;
 import org.maxgamer.rs.model.skill.SkillSet;
+import org.maxgamer.rs.util.Assert;
 import org.maxgamer.rs.util.Log;
 
 /**
@@ -752,6 +753,8 @@ public abstract class Mob extends Entity implements EquipmentHolder, Interactabl
      * @thread main
      */
     public Mob respawn() {
+        Assert.isFalse(this.isDestroyed(), "A destroyed NPC may not be respawned");
+
         if (!Core.getServer().getThread().isServerThread()) {
             throw new IllegalThreadException("Must be invoked in main thread");
         }

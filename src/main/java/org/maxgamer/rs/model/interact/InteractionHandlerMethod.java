@@ -14,7 +14,7 @@ import java.lang.reflect.Method;
  *
  * @author netherfoam
  */
-public class InteractionHandlerMethod {
+public class InteractionHandlerMethod implements Comparable<InteractionHandlerMethod> {
     /**
      * The method to invoke
      */
@@ -24,6 +24,11 @@ public class InteractionHandlerMethod {
      * The object to run the handler on
      */
     private InteractionHandler handler;
+
+    /**
+     * The priority of this handler over other handlers
+     */
+    private InteractPriority priority;
 
     /**
      * True if the debug flag was specified on the @Interact annotation
@@ -140,5 +145,20 @@ public class InteractionHandlerMethod {
 
     public boolean isCancellable() {
         return cancellable;
+    }
+
+    public InteractPriority getPriority() {
+        if(priority != null) return priority;
+
+        Interact annotation = this.method.getAnnotation(Interact.class);
+        priority = annotation.priority();
+
+        return priority;
+    }
+
+    @Override
+    public int compareTo(InteractionHandlerMethod other) {
+        // Highest gets priority, lowest is executed last
+        return other.getPriority().compareTo(this.getPriority());
     }
 }

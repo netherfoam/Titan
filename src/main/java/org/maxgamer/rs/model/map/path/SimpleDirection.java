@@ -9,8 +9,9 @@ import org.maxgamer.rs.model.map.Location;
 public class SimpleDirection extends Direction {
 
     /**
-     * @param dx Change in East/West, @param dy Change in North/South. +
-     *           represents the first, - is the second
+     * Positive represents the first, negative is the second
+     * @param dx Change in East/West
+     * @param dy Change in North/South
      */
     protected SimpleDirection(int dx, int dy, int clipTo, int clipFrom) {
         super(dx, dy, clipTo, clipFrom);

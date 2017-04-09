@@ -112,6 +112,31 @@ public class FormatTest {
         }
     }
 
+
+    @Test
+    public void obj6714Test() throws IOException {
+        CachedAssetStorage storage = new CachedAssetStorage(new File("cache"));
+
+        int[] ids = {6714, 6720};
+        for(int id : ids) {
+            MultiAsset a = storage.archive(IDX.OBJECTS, id >> 8);
+            ByteBuffer bb = a.get(id & 0xFF);
+
+            GameObjectFormat format = new GameObjectFormat();
+            ByteBuffer readOnly = bb.asReadOnlyBuffer();
+            format.decode(readOnly);
+            Assert.assertEquals("expect no data remaining", 0, readOnly.remaining());
+
+            ByteBuffer encoded = format.encode();
+
+            GameObjectFormat other = new GameObjectFormat();
+            other.decode(encoded);
+            encoded.position(0);
+
+            Assert.assertEquals(format, other);
+        }
+    }
+
     @Test
     public void objectTest() throws IOException {
         CachedAssetStorage storage = new CachedAssetStorage(new File("cache"));

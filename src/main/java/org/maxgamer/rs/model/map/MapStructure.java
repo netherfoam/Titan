@@ -1,5 +1,6 @@
 package org.maxgamer.rs.model.map;
 
+import org.maxgamer.rs.util.IOUtils;
 import org.maxgamer.rs.util.NotImplementedException;
 
 import java.io.File;
@@ -22,21 +23,6 @@ public class MapStructure {
 
     public static MapStructure load(File parent, String name) throws FileNotFoundException {
         return new MapStructure(new File(parent, name + EXTENSION));
-    }
-
-    private File file;
-    private RandomAccessFile raf;
-
-    private FileChannel channel;
-
-    public MapStructure(File f) throws FileNotFoundException {
-        this.file = f;
-        this.raf = new RandomAccessFile(f, "rw");
-        this.channel = this.raf.getChannel();
-    }
-
-    public void close() throws IOException {
-        raf.close();
     }
 
     public static void save(File folder, WorldMap map) throws IOException {
@@ -100,9 +86,23 @@ public class MapStructure {
                 throw new NotImplementedException();
             }
         } finally {
-            channel.close();
-            raf.close();
+            IOUtils.closeQuietly(raf);
         }
+    }
+    private File file;
+
+    private RandomAccessFile raf;
+
+    private FileChannel channel;
+
+    public MapStructure(File f) throws FileNotFoundException {
+        this.file = f;
+        this.raf = new RandomAccessFile(f, "rw");
+        this.channel = this.raf.getChannel();
+    }
+
+    public void close() throws IOException {
+        raf.close();
     }
 
     public int type() throws IOException {

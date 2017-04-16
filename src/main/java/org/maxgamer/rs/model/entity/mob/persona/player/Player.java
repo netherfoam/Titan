@@ -186,7 +186,8 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
 
         this.session = session;
         this.uuid = uuid;
-        
+
+        this.context = new PlayerContext(this);
         this.panes = new PaneSet(this);
         this.cheatLog = new CheatLog(this);
         this.friends = new FriendsList(this);

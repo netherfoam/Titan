@@ -134,8 +134,6 @@ public class GameDecoder extends OpcodeDecoder<LSIncomingPacket> implements Hand
         } catch (IOException e) {
             Log.warning("Failed to write player profile for " + name);
             e.printStackTrace();
-        } finally {
-            IOUtils.closeQuietly(out);
         }
 
         host.remove(profile);

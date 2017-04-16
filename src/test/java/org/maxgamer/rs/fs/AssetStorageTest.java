@@ -5,14 +5,14 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.maxgamer.rs.assets.AssetStorage;
 import org.maxgamer.rs.assets.CachedAssetStorage;
 import org.maxgamer.rs.assets.MultiAsset;
+import org.maxgamer.rs.assets.codec.RSCompression;
 import org.maxgamer.rs.assets.codec.asset.Asset;
 import org.maxgamer.rs.assets.codec.asset.AssetReference;
-import org.maxgamer.rs.assets.AssetStorage;
 import org.maxgamer.rs.assets.codec.asset.AssetWriter;
 import org.maxgamer.rs.assets.codec.asset.SubAssetReference;
-import org.maxgamer.rs.assets.codec.RSCompression;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -234,5 +234,26 @@ public class AssetStorageTest {
         result = storage.archive(0, 0);
         Assert.assertNotNull("Result may not be null", result);
         Assert.assertArrayEquals("Goodbye World".getBytes(), unbuffer(result.get(0)));
+    }
+
+    @Test
+    public void testNoCrossContamination() throws IOException {
+        CachedAssetStorage cached = (CachedAssetStorage) CachedAssetStorage.create(folder);
+        cached.writer(0)
+                .write(1, 1, ByteBuffer.wrap("first".getBytes()))
+                .commit();
+
+        cached.writer(1)
+                .write(1, 1, ByteBuffer.wrap("second".getBytes()))
+                .commit();
+
+        ByteBuffer b1 = cached.archive(0, 1).get(1);
+        ByteBuffer b2 = cached.archive(1, 1).get(1);
+
+        byte[] first = unbuffer(b1);
+        byte[] second = unbuffer(b2);
+
+        Assert.assertArrayEquals("expect first", "first".getBytes(), first);
+        Assert.assertArrayEquals("expect second", "second".getBytes(), second);
     }
 }

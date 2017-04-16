@@ -4,6 +4,7 @@ import org.maxgamer.rs.assets.codec.RSCompression;
 import org.maxgamer.rs.assets.codec.asset.*;
 import org.maxgamer.rs.assets.protocol.AssetProtocol;
 import org.maxgamer.rs.util.Assert;
+import org.maxgamer.rs.util.IOUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -145,7 +146,7 @@ public class AssetStorage {
      */
     public void close() throws IOException {
         for(RandomAccessFile index : this.fileHandles) {
-            index.close();
+            IOUtils.closeQuietly(index);
         }
     }
 

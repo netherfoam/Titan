@@ -38,6 +38,8 @@ public class CachedAssetStorage extends AssetStorage {
 
     @Override
     public MultiAsset archive(int idx, int file) throws IOException {
+        int key = (idx << 24) | file;
+
         // If the physical files were modified, we need to clear our cache because our assets might've changed
         long modified = Math.max(getMasterTable().modified(), getTable(idx).modified());
 
@@ -45,11 +47,11 @@ public class CachedAssetStorage extends AssetStorage {
             reset();
         }
 
-        Map<Integer, WeakReference<MultiAsset>> index = cache.get(file);
+        Map<Integer, WeakReference<MultiAsset>> index = cache.get(key);
 
         if(index == null) {
             index = new HashMap<>();
-            cache.put(file, index);
+            cache.put(key, index);
         }
 
         WeakReference<MultiAsset> reference = index.get(file);

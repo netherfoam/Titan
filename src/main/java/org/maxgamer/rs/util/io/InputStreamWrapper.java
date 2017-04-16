@@ -339,7 +339,7 @@ public class InputStreamWrapper extends InputStream {
         int n;
         while ((n = i.read()) < 0 && start + this.timeout > System.currentTimeMillis()) {
             try {
-                Thread.sleep(0, 500000);
+                this.wait(0, 500000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

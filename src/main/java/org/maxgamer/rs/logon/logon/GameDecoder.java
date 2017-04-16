@@ -73,13 +73,16 @@ public class GameDecoder extends OpcodeDecoder<LSIncomingPacket> implements Hand
                     fin = null;
                 }
 
-                if (fin == null) {
-                    payload = new byte[0]; //Empty profile
-                } else {
-                    payload = new byte[fin.available()];
-                    fin.read(payload);
+                try {
+                    if (fin == null) {
+                        payload = new byte[0]; //Empty profile
+                    } else {
+                        payload = new byte[fin.available()];
+                        fin.read(payload);
+                    }
+                } finally {
+                    IOUtils.closeQuietly(fin);
                 }
-                IOUtils.closeQuietly(fin);
             } catch (IOException e) {
                 result = AuthResult.ERROR_LOADING_PROFILE;
                 e.printStackTrace();
@@ -145,8 +148,7 @@ public class GameDecoder extends OpcodeDecoder<LSIncomingPacket> implements Hand
             String name = in.readPJStr1();
             byte[] data = new byte[in.readInt()];
             in.read(data);
-            try {
-                FileOutputStream out = new FileOutputStream(new File("players", name.toLowerCase() + ".bin"));
+            try(FileOutputStream out = new FileOutputStream(new File("players", name.toLowerCase() + ".bin"))) {
                 out.write(data);
                 out.close();
             } catch (IOException e) {

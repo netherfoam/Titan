@@ -164,6 +164,8 @@ public class Transparent {
             }
 
             ps.execute();
+            ps.close();
+
             //Our identifiers have been changed, so update them
             for (i = 0; i < this.keys.length; i++) {
                 Field f = this.getClass().getDeclaredField(this.keys[i]);
@@ -248,6 +250,7 @@ public class Transparent {
             }
 
             ps.execute();
+            ps.close();
 
             //Our identifiers have been changed, so we update them
             for (i = 0; i < keys.length; i++) {
@@ -290,6 +293,7 @@ public class Transparent {
             }
 
             ps.execute();
+            ps.close();
         } catch (SQLException e) {
             Log.info("Keys: " + Arrays.toString(keys) + ", values: " + Arrays.toString(identifiers) + ", SQL: " + sb.toString());
             throw e;

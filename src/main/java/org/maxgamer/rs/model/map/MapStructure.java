@@ -19,14 +19,24 @@ public class MapStructure {
     private static final int TYPE_DYNAMIC = 1;
     @SuppressWarnings("unused")
     private static final int TYPE_SUBSTANDARD = 2;
+
+    public static MapStructure load(File parent, String name) throws FileNotFoundException {
+        return new MapStructure(new File(parent, name + EXTENSION));
+    }
+
     private File file;
     private RandomAccessFile raf;
+
     private FileChannel channel;
 
     public MapStructure(File f) throws FileNotFoundException {
         this.file = f;
         this.raf = new RandomAccessFile(f, "rw");
         this.channel = this.raf.getChannel();
+    }
+
+    public void close() throws IOException {
+        raf.close();
     }
 
     public static void save(File folder, WorldMap map) throws IOException {
@@ -93,10 +103,6 @@ public class MapStructure {
             channel.close();
             raf.close();
         }
-    }
-
-    public static MapStructure load(File parent, String name) throws FileNotFoundException {
-        return new MapStructure(new File(parent, name + EXTENSION));
     }
 
     public int type() throws IOException {

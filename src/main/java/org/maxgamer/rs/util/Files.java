@@ -23,8 +23,8 @@ public class Files {
                 out.write(buffer, 0, n);
             }
         } finally {
-            in.close();
-            out.close();
+            IOUtils.closeQuietly(in);
+            IOUtils.closeQuietly(out);
         }
     }
 }

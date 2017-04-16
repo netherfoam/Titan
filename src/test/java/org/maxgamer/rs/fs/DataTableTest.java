@@ -20,6 +20,8 @@ public class DataTableTest {
     private DataTable dataTable;
     private File index = new File("index.idx0");
     private File data = new File("data.dat2");
+    private RandomAccessFile rafIndex;
+    private RandomAccessFile rafData;
 
     @Before
     public void init() throws IOException {
@@ -32,10 +34,16 @@ public class DataTableTest {
         index.deleteOnExit();
         data.deleteOnExit();
 
-        RandomAccessFile rafIndex = new RandomAccessFile(index, "rw");
-        RandomAccessFile rafData = new RandomAccessFile(data, "rw");
+        rafIndex = new RandomAccessFile(index, "rw");
+        rafData = new RandomAccessFile(data, "rw");
 
         dataTable = new DataTable(0, rafIndex.getChannel(), rafData.getChannel());
+    }
+
+    @After
+    public void destroy() throws IOException {
+        rafIndex.close();
+        rafData.close();
     }
 
     @After

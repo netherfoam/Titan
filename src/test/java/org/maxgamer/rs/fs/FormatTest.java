@@ -7,15 +7,14 @@ import org.maxgamer.rs.assets.AssetStorage;
 import org.maxgamer.rs.assets.CachedAssetStorage;
 import org.maxgamer.rs.assets.IDX;
 import org.maxgamer.rs.assets.MultiAsset;
+import org.maxgamer.rs.assets.formats.BitVarConfigFormat;
 import org.maxgamer.rs.assets.formats.GameObjectFormat;
 import org.maxgamer.rs.assets.formats.ItemFormat;
 import org.maxgamer.rs.assets.formats.NPCFormat;
-import org.maxgamer.rs.assets.formats.BitVarConfigFormat;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -175,16 +174,5 @@ public class FormatTest {
         BitVarConfigFormat config = new BitVarConfigFormat(content);
 
         Assert.assertEquals("expect config to decode the same", config, new BitVarConfigFormat(config.encode()));
-    }
-
-    @Test
-    public void shifts() {
-        int[] shifts = new int[32];
-        int i = 2;
-        for (int index = 0; ~index > -33; index++) {
-            shifts[index] = -1 + i;
-            i += i;
-        }
-        System.out.println(Arrays.toString(shifts));
     }
 }

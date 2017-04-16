@@ -554,12 +554,7 @@ public class Game637Protocol extends GameProtocol {
 
         while (nit.hasNext()) {
             NPC n = nit.next();
-            if (n == null || n.isDestroyed()) {
-                change = true;
-                nit.remove();
-                continue;
-            }
-            if (n.getLocation() == null || n.isHidden() || n.getLocation().z != getPlayer().getLocation().z || !MBRUtil.isOverlap(visibleArea, n.getLocation()) || n.getUpdateMask().getMovement().hasTeleported() || sortedNPCList.indexOf(n) >= MAX_LOCAL_NPCS) {
+            if (n.isDestroyed() || n.getLocation() == null || n.isHidden() || n.getLocation().z != getPlayer().getLocation().z || !MBRUtil.isOverlap(visibleArea, n.getLocation()) || n.getUpdateMask().getMovement().hasTeleported() || sortedNPCList.indexOf(n) >= MAX_LOCAL_NPCS) {
                 change = true;
                 // The NPC is not visible to the player anymore.
                 out.writeBits(1, 1);

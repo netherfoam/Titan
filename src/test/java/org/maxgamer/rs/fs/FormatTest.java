@@ -1,11 +1,13 @@
 package org.maxgamer.rs.fs;
 
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.maxgamer.rs.assets.AssetStorage;
 import org.maxgamer.rs.assets.CachedAssetStorage;
 import org.maxgamer.rs.assets.IDX;
 import org.maxgamer.rs.assets.MultiAsset;
+import org.maxgamer.rs.assets.formats.BitVarConfigFormat;
 import org.maxgamer.rs.assets.formats.GameObjectFormat;
 import org.maxgamer.rs.assets.formats.ItemFormat;
 import org.maxgamer.rs.assets.formats.NPCFormat;
@@ -20,10 +22,15 @@ import java.util.Map;
  * @author netherfoam
  */
 public class FormatTest {
+    private static AssetStorage storage;
+
+    @BeforeClass
+    public static void init() throws IOException {
+        storage = new CachedAssetStorage(new File("cache"));
+    }
+
     @Test
     public void itemTest() throws IOException {
-        AssetStorage storage = new AssetStorage(new File("cache"));
-
         final int id = 995; // Coins
         MultiAsset a = storage.archive(IDX.ITEMS, id >> 8);
         ByteBuffer bb = a.get(id & 0xFF);
@@ -43,8 +50,6 @@ public class FormatTest {
 
     @Test
     public void npcTest() throws IOException {
-        AssetStorage storage = new AssetStorage(new File("cache"));
-
         final int id = 3381; // Doris
         MultiAsset a = storage.archive(IDX.NPCS, id >> 7);
         ByteBuffer bb = a.get(id & 0x7F);
@@ -63,8 +68,6 @@ public class FormatTest {
 
     @Test
     public void allObjectTest() throws IOException {
-        CachedAssetStorage storage = new CachedAssetStorage(new File("cache"));
-
         for(int file : storage.getIndex(IDX.OBJECTS).getReferences().keySet()) {
             MultiAsset multi = storage.archive(IDX.OBJECTS, file);
 
@@ -90,8 +93,6 @@ public class FormatTest {
 
     @Test
     public void obj5699Test() throws IOException {
-        CachedAssetStorage storage = new CachedAssetStorage(new File("cache"));
-
         int[] ids = {5699};
         for(int id : ids) {
             MultiAsset a = storage.archive(IDX.OBJECTS, id >> 8);
@@ -115,8 +116,6 @@ public class FormatTest {
 
     @Test
     public void obj6714Test() throws IOException {
-        CachedAssetStorage storage = new CachedAssetStorage(new File("cache"));
-
         int[] ids = {6714, 6720};
         for(int id : ids) {
             MultiAsset a = storage.archive(IDX.OBJECTS, id >> 8);
@@ -139,8 +138,6 @@ public class FormatTest {
 
     @Test
     public void objectTest() throws IOException {
-        CachedAssetStorage storage = new CachedAssetStorage(new File("cache"));
-
         for(int id = 500; id < 36780; id+= 50) {
             //final int id = 36781; // Lumbridge spawn north fountain
             ByteBuffer bb = null;
@@ -164,5 +161,18 @@ public class FormatTest {
 
             Assert.assertEquals(format, other);
         }
+    }
+
+    @Test
+    public void varConfigTest() throws IOException {
+        // id & 0x3FF to calculate file id in cache
+        // i >>> 10 is the group id
+
+        // ID taken from a barrows door object
+        final int id = 469;
+        ByteBuffer content = storage.archive(IDX.CONFIGS, id >> 10).get(id & 0x3FF);
+        BitVarConfigFormat config = new BitVarConfigFormat(content);
+
+        Assert.assertEquals("expect config to decode the same", config, new BitVarConfigFormat(config.encode()));
     }
 }

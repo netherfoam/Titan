@@ -79,6 +79,11 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
     protected boolean run = false;
 
     /**
+     * The context for this persona
+     */
+    protected PersonaContext context;
+
+    /**
      * The list of skills this persona has and their experiences/modifiers
      */
     protected SkillSet skills;
@@ -121,6 +126,7 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
      * are written on save() and are loaded in the load() call.
      */
     protected HashMap<String, YMLSerializable> attachments = new HashMap<>();
+
     /**
      * The existing config file, possibly empty if the player is new.
      */
@@ -162,7 +168,7 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
      * Constructs a new Persona from the given profile. This will modify the
      * profile.
      *
-     * @param profile the profile to use
+     * @param name the name to use
      * @throws WorldFullException
      * @throws NullPointerException if the given profile is null
      */
@@ -175,6 +181,7 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 
         this.name = name;
         this.setFaction(Factions.PLAYER);
+        this.context = new PersonaContext();
         this.model = new PersonaModel(this);
         this.skills = new SkillSet(this);
         this.combatStats = new PersonaCombatStats(this);
@@ -1068,5 +1075,10 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
 
     public boolean use(Interactable target, String option) {
         return this.use(target, new OptionUse(option));
+    }
+
+    @Override
+    public MobContext getContext() {
+        return context;
     }
 }

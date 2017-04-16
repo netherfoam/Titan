@@ -35,6 +35,11 @@ import org.maxgamer.rs.util.Log;
  */
 public abstract class Mob extends Entity implements EquipmentHolder, Interactable {
     /**
+     * The config context for all mobs in the world
+     */
+    private static MobContext context = new MobContext();
+
+    /**
      * The update mask used for this mob, contains animations/movement
      * updates/etc
      */
@@ -863,6 +868,16 @@ public abstract class Mob extends Entity implements EquipmentHolder, Interactabl
         if (string == null) {
             throw new NullPointerException("Message may not be null!");
         }
+    }
+
+    /**
+     * Gets the context for this mob. For anything other than players, this is a global value,
+     * since npcs all see the world in the same way.
+     *
+     * @return the context
+     */
+    public MobContext getContext() {
+        return context;
     }
 
     /**

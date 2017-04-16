@@ -1,6 +1,9 @@
 package org.maxgamer.rs.assets.formats;
 
 import net.openrs.util.ByteBufferUtils;
+import org.maxgamer.rs.model.entity.mob.Mob;
+import org.maxgamer.rs.model.entity.mob.MobContext;
+import org.maxgamer.rs.model.map.object.GameObject;
 import org.maxgamer.rs.structure.ReflectUtil;
 
 import java.io.ByteArrayOutputStream;
@@ -535,5 +538,42 @@ public final class GameObjectFormat extends Format {
                 && Objects.equals(this.primaryState, other.primaryState)
                 && Objects.equals(this.secondaryState, other.secondaryState)
                 && Objects.equals(this.actionCount, other.actionCount);
+    }
+
+    /**
+     * Transform this object according to what the give mobs context sees
+     * @param context the context
+     * @return the transformed definition or null if there is none
+     */
+    public GameObjectFormat transform(MobContext context) {
+        if(transformIds == null) return null;
+
+        int index = -1;
+
+        if(primaryState != -1) {
+            index = context.getBit(primaryState);
+        } else if(secondaryState != -1) {
+            index = context.get(secondaryState);
+        }
+
+        int id = -1;
+        if(index < 0 || index >= transformIds.length || transformIds[index] == -1) {
+            id = transformIds[transformIds.length - 1];
+        } else {
+            id = transformIds[index];
+        }
+
+        if(id == -1) return null;
+
+        return GameObject.getDefinition(id);
+    }
+
+    /**
+     * Transform this object according to what the give mobs sees
+     * @param viewer the mob
+     * @return the transformed definition or null if there is none
+     */
+    public GameObjectFormat transform(Mob viewer) {
+        return transform(viewer.getContext());
     }
 }

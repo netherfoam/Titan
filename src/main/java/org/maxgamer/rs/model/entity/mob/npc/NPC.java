@@ -233,7 +233,7 @@ public class NPC extends Mob implements Interactable {
     public void destroy() {
         // Delete ourselves.
         Core.getServer().getNPCs().remove(spawnIndex);
-        setLocation(null);
+        super.destroy();
     }
 
     @Override

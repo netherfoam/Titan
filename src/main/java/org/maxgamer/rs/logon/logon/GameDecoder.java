@@ -6,12 +6,15 @@ import org.maxgamer.rs.logon.*;
 import org.maxgamer.rs.model.events.session.AuthRequestEvent;
 import org.maxgamer.rs.network.AuthResult;
 import org.maxgamer.rs.network.io.stream.RSInputBuffer;
+import org.maxgamer.rs.util.IOUtils;
 import org.maxgamer.rs.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
+import static java.lang.System.out;
 
 /**
  * Decodes packets received from the Game Server.
@@ -75,8 +78,8 @@ public class GameDecoder extends OpcodeDecoder<LSIncomingPacket> implements Hand
                 } else {
                     payload = new byte[fin.available()];
                     fin.read(payload);
-                    fin.close();
                 }
+                IOUtils.closeQuietly(fin);
             } catch (IOException e) {
                 result = AuthResult.ERROR_LOADING_PROFILE;
                 e.printStackTrace();
@@ -126,11 +129,8 @@ public class GameDecoder extends OpcodeDecoder<LSIncomingPacket> implements Hand
         File file = new File("players", name.toLowerCase() + ".bin");
         file.getParentFile().mkdirs();
 
-        try {
-            file.createNewFile();
-            FileOutputStream out = new FileOutputStream(file);
+        try(FileOutputStream out = new FileOutputStream(file)) {
             out.write(payload);
-            out.close();
         } catch (IOException e) {
             Log.warning("Failed to write player profile for " + name);
             e.printStackTrace();
@@ -150,7 +150,7 @@ public class GameDecoder extends OpcodeDecoder<LSIncomingPacket> implements Hand
                 out.write(data);
                 out.close();
             } catch (IOException e) {
-                System.out.println("Failed to save profile for " + name);
+                out.println("Failed to save profile for " + name);
                 e.printStackTrace();
             }
         }

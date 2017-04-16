@@ -104,7 +104,7 @@ public class WanderAction extends Action {
 
     @Override
     protected void run() throws SuspendExecution {
-        while (true) {
+        while (!getOwner().isDestroyed()) {
             int pause = Erratic.nextInt(minWait, maxWait);
             wait(pause);
             StopWatch timer = Core.getTimings().start("npc-wander-pathing");

@@ -10,6 +10,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * AssetStorage class which manages a group of data tables and the master index.
@@ -69,6 +71,8 @@ public class AssetStorage {
      */
     private XTEAStore xteas;
 
+    private List<RandomAccessFile> fileHandles = new LinkedList<>();
+
     private AssetProtocol protocol;
 
     /**
@@ -100,6 +104,7 @@ public class AssetStorage {
         // The master index file, containing information about each index: the format, version, flags, as well as
         // the Djb2 name hash, crc and whrilpool checksums, version, and subfiles.
         RandomAccessFile masterIndexFile = new RandomAccessFile(new File(folder, "main_file_cache.idx255"), "rw");
+        fileHandles.add(masterIndexFile);
 
         // The main 100mb+ cache file with raw data
         dataFile = new RandomAccessFile(new File(folder, "main_file_cache.dat2"), "rw");
@@ -121,6 +126,7 @@ public class AssetStorage {
             // Open the cache file. This may raise a FileNotFoundException if the file doesn't exist - in that case,
             // we would have a corrupt cache.
             RandomAccessFile index = new RandomAccessFile(new File(folder, "main_file_cache.idx" + i), "rw");
+            fileHandles.add(index);
 
             // Store the properties for this index
             indices[i] = new IndexTable(i, asset.getCompression(), asset.getPayload());
@@ -131,6 +137,15 @@ public class AssetStorage {
         xteas = new XTEAStore(xteaFile);
         if(xteaFile.exists()) {
             xteas.load();
+        }
+    }
+
+    /**
+     * Closes this asset storage so that it may not be used again, but releases any resources used.
+     */
+    public void close() throws IOException {
+        for(RandomAccessFile index : this.fileHandles) {
+            index.close();
         }
     }
 
@@ -258,6 +273,7 @@ public class AssetStorage {
 
             RandomAccessFile rafIndex = new RandomAccessFile(indexFile, "rw");
             data = new PatchableDataTable(idx, rafIndex.getChannel(), dataFile.getChannel());
+            fileHandles.add(rafIndex);
             tables[idx] = data;
         }
 

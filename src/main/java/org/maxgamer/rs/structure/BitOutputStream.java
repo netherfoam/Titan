@@ -32,22 +32,6 @@ public class BitOutputStream extends OutputStream {
     }
 
     /**
-     * Construct a bit-at-a-time output stream with specified file name
-     *
-     * @param filename is the name of the file being written
-     */
-    public BitOutputStream(String filename) {
-        try {
-            this.out = new BufferedOutputStream(new FileOutputStream(filename));
-        } catch (FileNotFoundException fnf) {
-            System.err.println("could not create " + filename + " " + fnf);
-        } catch (SecurityException se) {
-            System.err.println("security exception on write " + se);
-        }
-        this.initialize();
-    }
-
-    /**
      * Required by OutputStream subclasses, write the low 8-bits to the
      * underlying outputstream
      */

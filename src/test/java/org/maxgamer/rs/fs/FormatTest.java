@@ -1,5 +1,6 @@
 package org.maxgamer.rs.fs;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -27,6 +28,11 @@ public class FormatTest {
     @BeforeClass
     public static void init() throws IOException {
         storage = new CachedAssetStorage(new File("cache"));
+    }
+
+    @AfterClass
+    public static void destroy() throws IOException {
+        storage.close();
     }
 
     @Test
@@ -78,7 +84,7 @@ public class FormatTest {
                 GameObjectFormat format = new GameObjectFormat();
                 ByteBuffer readOnly = entry.getValue().asReadOnlyBuffer();
                 format.decode(readOnly);
-                Assert.assertEquals("expect no data remaining", 0, readOnly.remaining());
+                Assert.assertEquals("expect no data remaining on object", 0, readOnly.remaining());
 
                 ByteBuffer encoded = format.encode();
 

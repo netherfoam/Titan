@@ -20,8 +20,11 @@ import java.util.Map.Entry;
  * and then updating them. This usually works for only simple models involving
  * one table.
  *
+ * Deprecated in favour of hibernate
+ *
  * @author netherfoam
  */
+@Deprecated
 public class Transparent {
     /**
      * The name of the table that this object belongs to
@@ -158,13 +161,13 @@ public class Transparent {
             }
             sb.append(")");
 
-            PreparedStatement ps = con.prepareStatement(sb.toString());
-            for (i = 0; i < values.length; i++) {
-                ps.setString(i + 1, String.valueOf(values[i]));
-            }
+            try (PreparedStatement ps = con.prepareStatement(sb.toString())) {
+                for (i = 0; i < values.length; i++) {
+                    ps.setString(i + 1, String.valueOf(values[i]));
+                }
 
-            ps.execute();
-            ps.close();
+                ps.execute();
+            }
 
             //Our identifiers have been changed, so update them
             for (i = 0; i < this.keys.length; i++) {
@@ -241,16 +244,16 @@ public class Transparent {
                 i++;
             }
 
-            PreparedStatement ps = con.prepareStatement(sb.toString());
-            for (i = 0; i < values.length; i++) {
-                ps.setObject(i + 1, values[i]);
-            }
-            for (i = 0; i < keys.length; i++) {
-                ps.setObject(i + 1 + values.length, identifiers[i]);
-            }
+            try (PreparedStatement ps = con.prepareStatement(sb.toString())) {
+                for (i = 0; i < values.length; i++) {
+                    ps.setObject(i + 1, values[i]);
+                }
+                for (i = 0; i < keys.length; i++) {
+                    ps.setObject(i + 1 + values.length, identifiers[i]);
+                }
 
-            ps.execute();
-            ps.close();
+                ps.execute();
+            }
 
             //Our identifiers have been changed, so we update them
             for (i = 0; i < keys.length; i++) {
@@ -287,13 +290,13 @@ public class Transparent {
             }
             sb.append(" LIMIT 1");
 
-            PreparedStatement ps = con.prepareStatement(sb.toString());
-            for (i = 0; i < keys.length; i++) {
-                ps.setObject(i + 1, identifiers[i]);
-            }
+            try (PreparedStatement ps = con.prepareStatement(sb.toString())) {
+                for (i = 0; i < keys.length; i++) {
+                    ps.setObject(i + 1, identifiers[i]);
+                }
 
-            ps.execute();
-            ps.close();
+                ps.execute();
+            }
         } catch (SQLException e) {
             Log.info("Keys: " + Arrays.toString(keys) + ", values: " + Arrays.toString(identifiers) + ", SQL: " + sb.toString());
             throw e;

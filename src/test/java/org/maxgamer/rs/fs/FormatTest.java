@@ -8,10 +8,8 @@ import org.maxgamer.rs.assets.AssetStorage;
 import org.maxgamer.rs.assets.CachedAssetStorage;
 import org.maxgamer.rs.assets.IDX;
 import org.maxgamer.rs.assets.MultiAsset;
-import org.maxgamer.rs.assets.formats.BitVarConfigFormat;
-import org.maxgamer.rs.assets.formats.GameObjectFormat;
-import org.maxgamer.rs.assets.formats.ItemFormat;
-import org.maxgamer.rs.assets.formats.NPCFormat;
+import org.maxgamer.rs.assets.codec.asset.Asset;
+import org.maxgamer.rs.assets.formats.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -180,5 +178,31 @@ public class FormatTest {
         BitVarConfigFormat config = new BitVarConfigFormat(content);
 
         Assert.assertEquals("expect config to decode the same", config, new BitVarConfigFormat(config.encode()));
+    }
+
+    @Test
+    public void defaultPlayerSettingsFormatTest() throws IOException {
+        final int id = 1;
+
+        Asset asset = storage.read(IDX.DEFAULTS, id);
+        ByteBuffer content = asset.getPayload();
+
+        DefaultPlayerSettingsFormat format = new DefaultPlayerSettingsFormat();
+        format.decode(content);
+        DefaultPlayerSettingsFormat recoded = new DefaultPlayerSettingsFormat(format.encode());
+
+        Assert.assertEquals(format, recoded);
+    }
+
+    @Test
+    public void enumDefinitionTest() throws IOException {
+        // Happens to be a String enum definition containing titles for players
+        final int id = 1093;
+
+        MultiAsset multi = storage.archive(IDX.CLIENTSCRIPT_SETTINGS, id >> 8);
+        ByteBuffer content = multi.get(id & 0xFF);
+        EnumFormat src = new EnumFormat(content);
+        EnumFormat dest = new EnumFormat(src.encode());
+        Assert.assertEquals(src, dest);
     }
 }

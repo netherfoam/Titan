@@ -572,7 +572,6 @@ public class Server {
             commands.register("config", new Config());
             commands.register("version", new Version());
             commands.register("despawnobject", new DespawnObject());
-            commands.register("pcol", new ParticleColour());
             commands.register("whois", new WhoIs());
             commands.register("warp", new Warp());
             commands.register("organise", new Organise());

@@ -14,8 +14,6 @@ import java.io.IOException;
  * @author netherfoam
  */
 public abstract class MobModel implements YMLSerializable {
-    public int red, green, blue, ambient, intensity;
-    public boolean applyCustom;
     /**
      * True if this model has been modified and needs to be resent to all
      * interested players
@@ -144,15 +142,6 @@ public abstract class MobModel implements YMLSerializable {
                 out.writeByte(0); // 0 = visible, 1 = invisible.
 
                 appendUpdate(out);
-
-                if (applyCustom) {
-                    out.writeByte(1);
-                    out.writeByte(red);
-                    out.writeByte(green);
-                    out.writeByte(blue);
-                    out.writeByte(intensity);
-                    out.writeByte(ambient);
-                } else out.writeByte(0);
 
                 byte[] colour = getColour();
                 for (int i = 0; i < 5; i++) {
@@ -378,12 +367,7 @@ public abstract class MobModel implements YMLSerializable {
         map.set("female", this.female);
         map.set("level", this.combatLevel & 0xFF); // Save as unsigned.
         map.set("title", this.title);
-        map.set("red", this.red);
-        map.set("green", this.green);
-        map.set("blue", this.blue);
-        map.set("ambient", this.ambient);
-        map.set("intensity", this.intensity);
-        map.set("apply", this.applyCustom);
+
         return map;
     }
 
@@ -393,12 +377,6 @@ public abstract class MobModel implements YMLSerializable {
         this.female = map.getBoolean("female", this.female);
         this.combatLevel = (byte) map.getInt("combatLevel", this.combatLevel);
         this.title = map.getInt("title", this.title);
-        this.red = map.getInt("red", this.red);
-        this.green = map.getInt("green", this.green);
-        this.blue = map.getInt("blue", this.blue);
-        this.ambient = map.getInt("ambient", this.ambient);
-        this.intensity = map.getInt("intensity", this.intensity);
-        this.applyCustom = map.getBoolean("apply", this.applyCustom);
     }
 
     public int getRenderAnimationId() {

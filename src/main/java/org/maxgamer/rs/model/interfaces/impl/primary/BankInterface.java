@@ -18,6 +18,7 @@ public class BankInterface extends PrimaryInterface {
     public static final int BANK_CONTAINER_ID = 95;
     public static final short INTERFACE_ID = 762;
     public static final int WITHDRAW_X_CONFIG = 1249;
+
     private static SettingsBuilder SETTINGS = new SettingsBuilder();
 
     static {
@@ -177,7 +178,6 @@ public class BankInterface extends PrimaryInterface {
             }
             bank.apply();
             inv.apply();
-            bank.shift();
         }
     }
 

@@ -49,4 +49,21 @@ public class BankContainer extends Container {
         this.shift();
     }
 
+    @Override
+    public ContainerState getState() {
+        return new ContainerState(this) {
+            @Override
+            public boolean apply() {
+                if(super.apply()) {
+                    // We override so that we make sure we shift after the transaction. We've got to be careful to do
+                    // this after.
+                    BankContainer.this.shift();
+                    return true;
+                }
+
+                // No changes were applied
+                return false;
+            }
+        };
+    }
 }

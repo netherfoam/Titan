@@ -1,6 +1,7 @@
 package org.maxgamer.rs.model.item.inventory;
 
 import org.maxgamer.rs.model.item.ItemStack;
+import org.maxgamer.rs.util.NotImplementedException;
 
 import java.util.ConcurrentModificationException;
 
@@ -91,5 +92,10 @@ public class ContainerState extends Container {
     @Override
     public int getSize() {
         return c.getSize();
+    }
+
+    @Override
+    public void shift() {
+        throw new NotImplementedException("Can't shift a container state");
     }
 }

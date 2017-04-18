@@ -18,6 +18,7 @@ public class BankInterface extends PrimaryInterface {
     public static final int BANK_CONTAINER_ID = 95;
     public static final short INTERFACE_ID = 762;
     public static final int WITHDRAW_X_CONFIG = 1249;
+
     private static SettingsBuilder SETTINGS = new SettingsBuilder();
 
     static {
@@ -126,7 +127,6 @@ public class BankInterface extends PrimaryInterface {
                             try {
                                 bank.remove(take);
                                 inv.add(give);
-                                bank.shift();
                             } catch (ContainerException e) {
                                 this.getPlayer().sendMessage("There isn't enough space!");
                                 return;
@@ -172,7 +172,6 @@ public class BankInterface extends PrimaryInterface {
             try {
                 bank.remove(take);
                 inv.add(give);
-                bank.shift();
             } catch (ContainerException e) {
                 this.getPlayer().sendMessage("There isn't enough space!");
                 return;
@@ -275,10 +274,6 @@ public class BankInterface extends PrimaryInterface {
             public void onSet(Container c, int slot, ItemStack old) {
                 assert (BankInterface.this.isOpen()); //Should always be true if called
                 BankInterface.this.getPlayer().getProtocol().setItem(BANK_CONTAINER_ID, false, c.get(slot), slot);
-
-                // If this bank doesn't need shifting, this will have no effect.
-                // If it does need shifting, this will be called recursively.
-                getPlayer().getBank().shift();
             }
         };
 

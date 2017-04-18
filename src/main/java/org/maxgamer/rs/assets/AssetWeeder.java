@@ -1,16 +1,12 @@
 package org.maxgamer.rs.assets;
 
-import org.maxgamer.rs.assets.codec.asset.Asset;
 import org.maxgamer.rs.assets.codec.asset.AssetReference;
 import org.maxgamer.rs.assets.codec.asset.AssetWriter;
 import org.maxgamer.rs.assets.codec.asset.IndexTable;
-import org.maxgamer.rs.assets.formats.DefaultPlayerSettingsFormat;
-import org.maxgamer.rs.assets.formats.EnumFormat;
 import org.maxgamer.rs.assets.protocol.MapCache;
 import org.maxgamer.rs.util.Log;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,22 +18,6 @@ import java.util.Map;
 public class AssetWeeder {
     public static void weed(AssetStorage storage) throws IOException {
         evictMaps(storage);
-        customTitles(storage);
-    }
-
-    public static void customTitles(AssetStorage storage) throws IOException {
-        Asset asset = storage.read(IDX.DEFAULTS, 1);
-        ByteBuffer content = asset.getPayload();
-
-        DefaultPlayerSettingsFormat settings = new DefaultPlayerSettingsFormat(content);
-
-        MultiAsset multi = storage.archive(IDX.CLIENTSCRIPT_SETTINGS, settings.getMaleTitleIds()[0] >> 8);
-        ByteBuffer titlesContent = multi.get(settings.getMaleTitleIds()[0] & 0xFF);
-        EnumFormat titles = new EnumFormat(titlesContent);
-        titles.set(6, "Software Engineer");
-        storage.writer(IDX.CLIENTSCRIPT_SETTINGS)
-                .write(settings.getMaleTitleIds()[0] >> 8, settings.getMaleTitleIds()[0] & 0xFF, titles.encode())
-                .commit();
     }
 
     /**

@@ -131,11 +131,19 @@ public abstract class MobModel implements YMLSerializable {
             ByteArrayOutputStream data = new ByteArrayOutputStream(96);
             OutputStreamWrapper out = new OutputStreamWrapper(data);
             try {
-                int hash = isMale() ? 0 : 1;
+                // Components of this flags byte appear to be:
+                // bit 0: off for male, on for female
+                // bit 1: off for no display name, on for has display name
+                // bit 2: 0 for combat colour, 1 for skill colour
+                // bit 3,4,5: size
+                // bit 6,7: title group
+
+                int flags = isMale() ? 0 : 1;
                 // 0x2 is "hasDisplayName"
                 //Remaining pieces are 3 bits "size" and some other 3 bit value
-                if (isCombatColoured()) hash |= 0x4;
-                out.writeByte(hash);
+                if (isCombatColoured()) flags |= 0x4;
+
+                out.writeByte(flags);
                 out.writeByte(title); // Titles 0-4 (Mob armies related)
                 out.writeByte(isSkulled() ? 0 : -1);
                 out.writeByte(getPrayerIcon());
@@ -158,10 +166,22 @@ public abstract class MobModel implements YMLSerializable {
                 out.writeByte(getCombatLevel());
 
                 // if(!combatColoured){
-                out.writeShort(0); // Unknown
-                out.writeShort(0); // Unknown
+                if(!isCombatColoured()) {
+                    out.writeByte(0); // Boosted
+                    out.writeByte(0); // Combat range (-1 for none)
+                } else {
+                    out.writeShort(0);
+                }
                 // }else{
-                // out.writeShort(?);
+                // out.writeShort(?); // skillRating
+
+                // No clue
+                out.writeByte(0);
+
+                // Because of the structure of this model update, the protocol includes the length of the
+                // bytes we've just written. If we were to write extra bytes here, the client would just
+                // discard them harmlessly. So, here would be the perfect place to eg. Re-add particle
+                // effects!
 
                 this.cache = data.toByteArray();
             } catch (IOException e) {

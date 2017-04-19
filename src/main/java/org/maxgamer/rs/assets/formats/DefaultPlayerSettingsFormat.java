@@ -9,11 +9,23 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 /**
+ * Contains information regarding the default player look and title enum set
  * @author netherfoam
  */
 public class DefaultPlayerSettingsFormat extends Format {
+    /**
+     * Describes the clothing for a default player - This is a fixed length
+     */
     private final int[] defaultPlayerLook = new int[6];
+
+    /**
+     * The array of male title groups. At most, 4 of these will be used. Each group may have upto 255 titles
+     */
     private int[] maleTitleIds = new int[0];
+
+    /**
+     * The array of female title groups
+     */
     private int[] femaleTitleIds = new int[0];
 
     public DefaultPlayerSettingsFormat() {
@@ -118,8 +130,8 @@ public class DefaultPlayerSettingsFormat extends Format {
 
         if (!Arrays.equals(defaultPlayerLook, that.defaultPlayerLook)) return false;
         if (!Arrays.equals(maleTitleIds, that.maleTitleIds)) return false;
-        return Arrays.equals(femaleTitleIds, that.femaleTitleIds);
 
+        return Arrays.equals(femaleTitleIds, that.femaleTitleIds);
     }
 
     @Override
@@ -127,6 +139,7 @@ public class DefaultPlayerSettingsFormat extends Format {
         int result = Arrays.hashCode(defaultPlayerLook);
         result = 31 * result + Arrays.hashCode(maleTitleIds);
         result = 31 * result + Arrays.hashCode(femaleTitleIds);
+
         return result;
     }
 }

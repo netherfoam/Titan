@@ -1,3 +1,5 @@
+importClass(org.maxgamer.rs.model.map.Location);
+
 module.exports = {
     talkTo: function(player, npc){
         chat(player, "Salutations!");

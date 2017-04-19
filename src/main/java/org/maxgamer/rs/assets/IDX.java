@@ -45,6 +45,7 @@ public class IDX {
     public static final int GRAPHICS = 21;
     public static final int CONFIGS = 22;
     public static final int WORLD_MAP = 23;
+    public static final int DEFAULTS = 28;
     public static final int THEORA = 35;
     public static final int VORBIS = 36;
 

@@ -209,6 +209,7 @@ public abstract class GameObject extends Entity implements Interactable {
      * @return
      */
     public int[][] getClip() {
+        // TODO: Clip in edgeville bank booths allow walking on them, which is weird, since barrows fix
         int type = this.getType();
 
         int clip = 0;

@@ -15,42 +15,76 @@ import java.io.IOException;
  */
 public abstract class MobModel implements YMLSerializable {
     /**
+     * Fetches the maximum colour number for the given slot, where the given
+     * slot is a value from 0-4 representing the piece of character design that
+     * is being modified. Values which are out of bounds will likely cause the
+     * character to become partially invisible. This method is for setting the
+     * colour of things such as beards, skin, torso and legs
+     *
+     * @param index the id of the look to edit (eg beard, torso, bottoms, chest)
+     *              0-4
+     * @return the maximum value (Eg, valid values are 0-maximum inclusive)
+     */
+    public static int getMaxColor(int index) {
+        switch (index) {
+            case 0:
+                return 25;
+            case 1:
+                return 29;
+            case 2: // bottom
+                return 29;
+            case 3:
+                return 5;
+            case 4:
+                return 5;
+        }
+
+        throw new IllegalArgumentException();
+    }
+
+    /**
      * True if this model has been modified and needs to be resent to all
      * interested players
      */
     private boolean changed = true;
+
     /**
      * True if this model is female, false if it is male
      */
     private boolean female = false;
+
     /**
      * True if this model is to display PKing skull, false if not
      */
     private boolean skulled = false;
+
     /**
      * The prayer icon this model is to display, -1 for none
      */
     private byte prayerIcon = -1;
+
     /**
      * True if this mob is to display the combat colour - eg. Green for lower
      * level, red for higher level
      */
     private boolean combatColour = true;
+
     /**
      * The name of this mob, I don't believe this works for NPC's but it is sent
      * for both anyway
      */
     private String name = "Unknown";
+
     /**
      * The combat level for this mob, I don't believe this works for NPC's but
      * it is sent for both anyway This is an unsigned byte.
      */
     private byte combatLevel = 3;
+
     /**
      * The title ID for this mob, this is retrieved from the cache
      */
     private int title = 0;
-
     /*
      * Taken from
      * http://www.rune-server.org/runescape-development/rs-503-client-
@@ -80,10 +114,14 @@ public abstract class MobModel implements YMLSerializable {
      * skin color: gets darker the bigger the number
      */
     private int renderAnimationId = 1426;
+
     /**
      * The colours for a player
      */
     private byte[] colour = new byte[]{3, 16, 16, 11, 14,};
+
+    private MobParticles particles;
+
     /**
      * A cached version of this mobs model in byte form. If the changed flag is
      * set, this data will be scrapped and regenerated. Otherwise, for example,
@@ -91,34 +129,6 @@ public abstract class MobModel implements YMLSerializable {
      * receive this cached data as an update instead.
      */
     private byte[] cache;
-
-    /**
-     * Fetches the maximum colour number for the given slot, where the given
-     * slot is a value from 0-4 representing the piece of character design that
-     * is being modified. Values which are out of bounds will likely cause the
-     * character to become partially invisible. This method is for setting the
-     * colour of things such as beards, skin, torso and legs
-     *
-     * @param index the id of the look to edit (eg beard, torso, bottoms, chest)
-     *              0-4
-     * @return the maximum value (Eg, valid values are 0-maximum inclusive)
-     */
-    public static int getMaxColor(int index) {
-        switch (index) {
-            case 0:
-                return 25;
-            case 1:
-                return 29;
-            case 2: // bottom
-                return 29;
-            case 3:
-                return 5;
-            case 4:
-                return 5;
-        }
-
-        throw new IllegalArgumentException();
-    }
 
     /**
      * Returns the cached update data
@@ -170,10 +180,8 @@ public abstract class MobModel implements YMLSerializable {
                     out.writeByte(0); // Boosted
                     out.writeByte(0); // Combat range (-1 for none)
                 } else {
-                    out.writeShort(0);
+                    out.writeShort(0); // Skill rating
                 }
-                // }else{
-                // out.writeShort(?); // skillRating
 
                 // No clue
                 out.writeByte(0);
@@ -182,6 +190,17 @@ public abstract class MobModel implements YMLSerializable {
                 // bytes we've just written. If we were to write extra bytes here, the client would just
                 // discard them harmlessly. So, here would be the perfect place to eg. Re-add particle
                 // effects!
+
+                if (particles != null) {
+                    out.writeByte(1);
+                    out.writeByte(particles.getRed());
+                    out.writeByte(particles.getGreen());
+                    out.writeByte(particles.getBlue());
+                    out.writeByte(particles.getIntensity());
+                    out.writeByte(particles.getAmbient());
+                } else {
+                    out.writeByte(0);
+                }
 
                 this.cache = data.toByteArray();
             } catch (IOException e) {
@@ -356,6 +375,16 @@ public abstract class MobModel implements YMLSerializable {
     }
 
     /**
+     * Sets the particle effect to render on this player. This is a client side effect only available in the custom client.
+     *
+     * @param particles the particles to set, may be null
+     */
+    public void setParticles(MobParticles particles) {
+        this.particles = particles;
+        this.setChanged(true);
+    }
+
+    /**
      * Sets the changed value. If this is set to true, on the next mask update,
      * this model will be sent to all nearby players
      *
@@ -388,6 +417,10 @@ public abstract class MobModel implements YMLSerializable {
         map.set("level", this.combatLevel & 0xFF); // Save as unsigned.
         map.set("title", this.title);
 
+        if(particles != null) {
+            map.set("particles", particles);
+        }
+
         return map;
     }
 
@@ -397,6 +430,10 @@ public abstract class MobModel implements YMLSerializable {
         this.female = map.getBoolean("female", this.female);
         this.combatLevel = (byte) map.getInt("combatLevel", this.combatLevel);
         this.title = map.getInt("title", this.title);
+
+        if(map.containsKey("particles")) {
+            this.particles = new MobParticles(map.getSection("particles"));
+        }
     }
 
     public int getRenderAnimationId() {
@@ -405,5 +442,9 @@ public abstract class MobModel implements YMLSerializable {
 
     public void setRenderAnimationId(int renderAnimationId) {
         this.renderAnimationId = renderAnimationId;
+    }
+
+    public MobParticles getParticles() {
+        return particles;
     }
 }

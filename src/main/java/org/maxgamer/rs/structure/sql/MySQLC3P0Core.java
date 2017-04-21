@@ -19,7 +19,7 @@ public class MySQLC3P0Core implements DatabaseCore {
     /**
      * The timeout for connections - 20 minutes
      */
-    private static final long TIMEOUT = TimeUnit.MINUTES.toMillis(20);
+    private static final long TIMEOUT = TimeUnit.MINUTES.toSeconds(60);
 
     /**
      * The {@link javax.sql.DataSource} we use to connect to the database internally

@@ -2,6 +2,8 @@ package org.maxgamer.rs.structure.sql;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.maxgamer.rs.repository.AbstractRepository;
 
 import javax.persistence.EntityManager;
@@ -20,6 +22,7 @@ public class Database {
     private ArrayList<Class<?>> managedEntities = new ArrayList<>();
     private SessionFactory sessionFactory;
     private Session session;
+    private Transaction transaction;
 
     /**
      * Creates a new database and validates its connection.
@@ -94,6 +97,19 @@ public class Database {
      */
     public void close() {
         this.core.close();
+    }
+
+    public boolean hasTransaction() {
+        return transaction != null && transaction.getStatus() == TransactionStatus.ACTIVE;
+    }
+
+    public Transaction getTransaction() {
+        // Re-use the existing transaction
+        if(hasTransaction()) return transaction;
+
+        transaction = getSession().beginTransaction();
+
+        return transaction;
     }
 
     /**

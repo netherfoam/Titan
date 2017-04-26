@@ -1,9 +1,9 @@
 package org.maxgamer.rs.core.server;
 
-import org.hibernate.Transaction;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.network.Session;
 import org.maxgamer.rs.structure.timings.StopWatch;
+import org.maxgamer.rs.util.Assert;
 import org.maxgamer.rs.util.Log;
 
 import java.util.*;
@@ -99,10 +99,6 @@ public class ServerTicker implements Runnable {
         // Every second tick, we go through the tick tasks and run them in opposite order
         Iterator<TickableWrapper> taskIt = shortlist.iterator();
 
-        org.hibernate.Session session = server.getSession();
-
-        Transaction transaction = session.beginTransaction();
-
         while (taskIt.hasNext()) {
             task = taskIt.next();
 
@@ -119,7 +115,13 @@ public class ServerTicker implements Runnable {
             }
         }
 
-        transaction.commit();
+        if(server.getDatabase().hasTransaction()) {
+            // Commit our transaction and close our session
+            server.getDatabase().getTransaction().commit();
+            server.getSession().close();
+
+            Assert.isFalse(server.getDatabase().hasTransaction(), "Expect transaction to be finished");
+        }
 
         Collection<Session> sessions = server.getNetwork().getSessions();
         sessions = new ArrayList<>(sessions);

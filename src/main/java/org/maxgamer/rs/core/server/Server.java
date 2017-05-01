@@ -40,7 +40,7 @@ import org.maxgamer.rs.structure.configs.ConfigSection;
 import org.maxgamer.rs.structure.configs.FileConfig;
 import org.maxgamer.rs.structure.sql.Database;
 import org.maxgamer.rs.structure.sql.Database.ConnectionException;
-import org.maxgamer.rs.structure.sql.MySQLC3P0Core;
+import org.maxgamer.rs.structure.sql.MySQLCore;
 import org.maxgamer.rs.structure.timings.StopWatch;
 import org.maxgamer.rs.tools.ConfigSetup;
 import org.maxgamer.rs.util.Files;
@@ -277,7 +277,7 @@ public class Server {
                 Log.debug("Connecting to database...");
                 // Database initialization
                 ConfigSection c = getConfig().getSection("database");
-                database = new Database(new MySQLC3P0Core(c.getString("host", "localhost"), c.getString("user", "root"), c.getString("pass", ""), c.getString("database", "database"), c.getString("port", "3306")));
+                database = new Database(new MySQLCore(c.getString("host", "localhost"), c.getString("user", "root"), c.getString("pass", ""), c.getString("database", "database"), c.getString("port", "3306")));
                 Log.debug("Database connection established.");
             } catch (ConnectionException e) {
                 Log.severe("Failed to establish database connection, exiting.");

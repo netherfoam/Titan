@@ -1,11 +1,11 @@
 package org.maxgamer.rs.network.io.rawhandler;
 
-import com.mchange.v3.filecache.FileNotCachedException;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.network.Session;
 import org.maxgamer.rs.network.io.stream.RSByteBuffer;
 import org.maxgamer.rs.util.Log;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
@@ -73,7 +73,7 @@ public class CacheRequestHandler extends RawHandler {
                                 ByteBuffer response = Core.getCache().getProtocol().response(idx, file, opcode);
                                 //ByteBuffer response = Core.getCache().getUpdateServer().update(idx, file, opcode);
                                 getSession().write(response);
-                            } catch (FileNotCachedException e) {
+                            } catch (FileNotFoundException e) {
                                 Log.debug(getSession() + " requested file " + idx + ", " + file + " but that file was not found.");
                                 getSession().close(false);
                             } catch (IOException e) {

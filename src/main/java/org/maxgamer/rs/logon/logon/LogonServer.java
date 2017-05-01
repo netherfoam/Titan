@@ -11,7 +11,7 @@ import org.maxgamer.rs.structure.configs.ConfigSection;
 import org.maxgamer.rs.structure.configs.FileConfig;
 import org.maxgamer.rs.structure.sql.Database;
 import org.maxgamer.rs.structure.sql.Database.ConnectionException;
-import org.maxgamer.rs.structure.sql.MySQLC3P0Core;
+import org.maxgamer.rs.structure.sql.MySQLCore;
 import org.maxgamer.rs.tools.ConfigSetup;
 import org.maxgamer.rs.util.Files;
 import org.maxgamer.rs.util.Log;
@@ -51,7 +51,7 @@ public class LogonServer extends ServerHost<WorldHost> {
             //Logon Database
             if (type.equalsIgnoreCase("mysql")) {
                 Log.debug("Logon using MySQL Database.");
-                database = new Database(new MySQLC3P0Core(c.getString("host", "localhost"), c.getString("user", "root"), c.getString("pass", ""), c.getString("database", "titan"), c.getString("port", "3306")));
+                database = new Database(new MySQLCore(c.getString("host", "localhost"), c.getString("user", "root"), c.getString("pass", ""), c.getString("database", "titan"), c.getString("port", "3306")));
             } else {
                 throw new IllegalArgumentException("Bad configuration, database type " + type + " not supported");
             }

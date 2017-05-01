@@ -19,24 +19,10 @@
             <version>5.1.39</version>
         </dependency>
 
-        <!-- MySQL connection pooling library -->
-        <dependency>
-            <groupId>com.mchange</groupId>
-            <artifactId>c3p0</artifactId>
-            <version>0.9.5.2</version>
-        </dependency>
-
         <!-- ORM library for easy database access through entity models -->
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>5.1.0.Final</version>
-        </dependency>
-
-        <!-- Bridging library between c3p0 and hibernate -->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-c3p0</artifactId>
             <version>5.1.0.Final</version>
         </dependency>
 

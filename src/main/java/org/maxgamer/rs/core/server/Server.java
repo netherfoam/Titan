@@ -303,6 +303,7 @@ public class Server {
             database.addEntity(AmmoType.class);
             database.addEntity(ItemAmmoType.class);
         }
+
         return database;
     }
 

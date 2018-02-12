@@ -3,6 +3,7 @@ package org.maxgamer.rs.model.entity.mob.persona.player;
 import org.maxgamer.rs.assets.protocol.format.ClientScriptSettings;
 import org.maxgamer.rs.structure.YMLSerializable;
 import org.maxgamer.rs.structure.configs.ConfigSection;
+import org.maxgamer.rs.structure.configs.MutableConfig;
 
 import java.util.Map.Entry;
 
@@ -105,18 +106,19 @@ public class Music implements YMLSerializable {
 
     @Override
     public ConfigSection serialize() {
-        ConfigSection s = new ConfigSection();
+        MutableConfig s = new MutableConfig();
         for (int i = 0; i < unlockedTracks.length; i++) {
-            s.put("" + i, unlockedTracks[i]);
+            s.set("" + i, unlockedTracks[i]);
         }
+
         return s;
     }
 
     @Override
-    public void deserialize(ConfigSection map) {
-        for (Entry<String, Object> e : map.entrySet()) {
-            int musicId = Integer.parseInt(e.getKey().trim());
-            boolean unlocked = Boolean.parseBoolean("" + e.getValue());
+    public void deserialize(ConfigSection config) {
+        for (String key : config.keys()) {
+            int musicId = Integer.parseInt(key.trim());
+            boolean unlocked = config.getBoolean(key);
             unlockedTracks[musicId] = unlocked;
         }
     }

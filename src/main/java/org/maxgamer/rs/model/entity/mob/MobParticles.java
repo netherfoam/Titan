@@ -2,6 +2,7 @@ package org.maxgamer.rs.model.entity.mob;
 
 import org.maxgamer.rs.structure.YMLSerializable;
 import org.maxgamer.rs.structure.configs.ConfigSection;
+import org.maxgamer.rs.structure.configs.MutableConfig;
 
 /**
  * @author netherfoam
@@ -47,22 +48,23 @@ public class MobParticles implements YMLSerializable {
 
     @Override
     public ConfigSection serialize() {
-        ConfigSection map = new ConfigSection();
-        this.red = map.getInt("red", this.red);
-        this.green = map.getInt("green", this.green);
-        this.blue = map.getInt("blue", this.blue);
-        this.ambient = map.getInt("ambient", this.ambient);
-        this.intensity = map.getInt("intensity", this.intensity);
+        MutableConfig map = new MutableConfig();
+
+        map.set("red", this.red);
+        map.set("green", this.green);
+        map.set("blue", this.blue);
+        map.set("ambient", this.ambient);
+        map.set("intensity", this.intensity);
 
         return map;
     }
 
     @Override
     public void deserialize(ConfigSection map) {
-        map.set("red", this.red);
-        map.set("green", this.green);
-        map.set("blue", this.blue);
-        map.set("ambient", this.ambient);
-        map.set("intensity", this.intensity);
+        this.red = map.getInt("red", this.red);
+        this.green = map.getInt("green", this.green);
+        this.blue = map.getInt("blue", this.blue);
+        this.ambient = map.getInt("ambient", this.ambient);
+        this.intensity = map.getInt("intensity", this.intensity);
     }
 }

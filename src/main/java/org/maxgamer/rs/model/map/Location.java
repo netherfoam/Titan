@@ -8,6 +8,7 @@ import org.maxgamer.rs.structure.Filter;
 import org.maxgamer.rs.structure.areagrid.Cube;
 import org.maxgamer.rs.structure.areagrid.MBR;
 import org.maxgamer.rs.structure.configs.ConfigSection;
+import org.maxgamer.rs.structure.configs.MutableConfig;
 
 import java.util.HashSet;
 
@@ -389,13 +390,14 @@ public class Location extends Position implements MBR, Locatable {
     }
 
     @Override
-    public ConfigSection serialize() {
-        ConfigSection map = super.serialize();
+    public MutableConfig serialize() {
+        MutableConfig map = super.serialize();
         map.set("z", this.z);
 
         if (map != null) {
             map.set("map", this.map.getName());
         }
+
         return map;
     }
 

@@ -5,6 +5,7 @@ import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.repository.ItemTypeRepository;
 import org.maxgamer.rs.structure.YMLSerializable;
 import org.maxgamer.rs.structure.configs.ConfigSection;
+import org.maxgamer.rs.structure.configs.MutableConfig;
 import org.maxgamer.rs.util.IntList;
 
 import java.util.*;
@@ -210,12 +211,12 @@ public abstract class Container implements Cloneable, Iterable<ItemStack>, YMLSe
 
     @Override
     public ConfigSection serialize() {
-        ConfigSection s = new ConfigSection();
+        MutableConfig s = new MutableConfig();
 
         int size = getSize();
         s.set("size", size);
 
-        ConfigSection t = new ConfigSection();
+        MutableConfig t = new MutableConfig();
 
         for (int i = 0; i < size; i++) {
             ItemStack item = get(i);

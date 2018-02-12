@@ -14,6 +14,7 @@ import org.maxgamer.rs.model.map.MapBuilder;
 import org.maxgamer.rs.model.map.WorldMap;
 import org.maxgamer.rs.structure.Filter;
 import org.maxgamer.rs.structure.configs.ConfigSection;
+import org.maxgamer.rs.structure.configs.MutableConfig;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -23,7 +24,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
 /**
- * TODO finish this implementation
+ * TODO: Delete this. It's incomplete
  *
  * @author Albert Beaupre
  */
@@ -52,7 +53,7 @@ public abstract class MiniGame extends Tickable implements EventListener {
     public MiniGame() {
         this.mobs = new CopyOnWriteArrayList<>();
         this.players = new ConcurrentHashMap<>();
-        this.configs = new ConfigSection();
+        this.configs = new MutableConfig();
         this.rules = new boolean[MiniGameRule.values().length];
         this.setMapBuilder(new MapBuilder());
     }
@@ -161,7 +162,6 @@ public abstract class MiniGame extends Tickable implements EventListener {
             removeMob(mob);
         if (associatedMap != null)
             associatedMap = null;
-        configs.clear();
     }
 
     /**

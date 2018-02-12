@@ -6,10 +6,13 @@ import org.maxgamer.rs.model.entity.mob.Mob;
 import org.maxgamer.rs.model.entity.mob.npc.NPC;
 import org.maxgamer.rs.model.map.Location;
 import org.maxgamer.rs.structure.configs.ConfigSection;
+import org.maxgamer.rs.structure.configs.MutableConfig;
 
 /**
  * @param <M> the type of minigame this npc is associated with
  * @author Albert Beaupre
+ *
+ * TODO: delete, incomplete
  */
 public class MiniGameNPC<M extends MiniGame> extends NPC {
 
@@ -35,7 +38,7 @@ public class MiniGameNPC<M extends MiniGame> extends NPC {
     public MiniGameNPC(M minigame, int defId, Location l) throws WorldFullException {
         super(defId, new Location(minigame.getAssociatedMap(), l.x, l.y, l.z));
         this.minigame = minigame;
-        this.configs = new ConfigSection();
+        this.configs = new MutableConfig();
         this.tickable = new Tickable() {
             @Override
             public void tick() {

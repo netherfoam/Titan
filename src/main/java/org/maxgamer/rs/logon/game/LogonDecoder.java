@@ -15,6 +15,7 @@ import org.maxgamer.rs.network.Session;
 import org.maxgamer.rs.network.io.rawhandler.GamePacketHandler;
 import org.maxgamer.rs.network.io.rawhandler.LobbyHandler;
 import org.maxgamer.rs.structure.configs.ConfigSection;
+import org.maxgamer.rs.structure.configs.MutableConfig;
 import org.maxgamer.rs.util.Log;
 
 import java.io.ByteArrayInputStream;
@@ -105,7 +106,7 @@ public class LogonDecoder extends OpcodeDecoder<LSIncomingPacket> {
                         break;
                     }
 
-                    ConfigSection config = new ConfigSection();
+                    MutableConfig config = new MutableConfig();
                     lastIp = in.readPJStr1();
                     lastSeen = in.readLong();
                     rights = in.readByte() & 0xFF;
@@ -113,7 +114,7 @@ public class LogonDecoder extends OpcodeDecoder<LSIncomingPacket> {
                     byte[] payload = new byte[in.readInt()];
                     in.read(payload);
                     try {
-                        config = new ConfigSection(new ByteArrayInputStream(payload));
+                        config = new MutableConfig(new ByteArrayInputStream(payload));
                     } catch (Exception e) {
                         e.printStackTrace();
                         result = AuthResult.ERROR_LOADING_PROFILE;

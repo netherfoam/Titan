@@ -6,6 +6,7 @@ import org.maxgamer.rs.model.item.WieldType;
 import org.maxgamer.rs.model.item.inventory.Equipment;
 import org.maxgamer.rs.structure.YMLSerializable;
 import org.maxgamer.rs.structure.configs.ConfigSection;
+import org.maxgamer.rs.structure.configs.MutableConfig;
 import org.maxgamer.rs.util.io.OutputStreamWrapper;
 
 import java.io.IOException;
@@ -129,8 +130,8 @@ public class PersonaModel extends MobModel implements YMLSerializable {
     }
 
     @Override
-    public ConfigSection serialize() {
-        ConfigSection map = super.serialize();
+    public MutableConfig serialize() {
+        MutableConfig map = super.serialize();
 
         map.set("look", this.look);
 

@@ -6,6 +6,7 @@ import org.maxgamer.rs.model.item.weapon.EquipmentType;
 import org.maxgamer.rs.repository.ItemTypeRepository;
 import org.maxgamer.rs.structure.YMLSerializable;
 import org.maxgamer.rs.structure.configs.ConfigSection;
+import org.maxgamer.rs.structure.configs.MutableConfig;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -210,10 +211,11 @@ public class ItemStack implements Comparable<ItemStack>, YMLSerializable, Intera
 
     @Override
     public ConfigSection serialize() {
-        ConfigSection s = new ConfigSection();
+        MutableConfig s = new MutableConfig();
         s.set("id", this.id);
         s.set("amount", this.amount);
         if (this.health != 0) s.set("health", this.health);
+
         return s;
     }
 

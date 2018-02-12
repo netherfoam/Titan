@@ -36,8 +36,7 @@ import org.maxgamer.rs.network.Client;
 import org.maxgamer.rs.network.LobbyPlayer;
 import org.maxgamer.rs.network.server.RS2Server;
 import org.maxgamer.rs.repository.*;
-import org.maxgamer.rs.structure.configs.ConfigSection;
-import org.maxgamer.rs.structure.configs.FileConfig;
+import org.maxgamer.rs.structure.configs.*;
 import org.maxgamer.rs.structure.sql.Database;
 import org.maxgamer.rs.structure.sql.Database.ConnectionException;
 import org.maxgamer.rs.structure.sql.MySQLCore;
@@ -179,7 +178,9 @@ public class Server {
      * @throws IOException If the port could not be bound.
      */
     public Server(ConfigSection cfg) throws IOException {
-        this.config = cfg;
+        if (cfg != null) {
+            this.config = new HybridConfigSection(new SystemConfigSection(), new EnvironmentConfigSection(), cfg);
+        }
 
         //We construct this immediately, it may be required immediately.
         this.thread = new ServerExecutor(this);
@@ -189,7 +190,7 @@ public class Server {
 
         //TODO: ConfigSetup.logon() if file not found
         //TODO: Copy the .dist file across automatically
-        FileConfig logon = new FileConfig(new File("config", "logon.yml"));
+        YamlConfig logon = new YamlConfig(new File("config", "logon.yml"));
         logon.reload();
 
         this.logon = new LogonConnection(logon);
@@ -234,9 +235,9 @@ public class Server {
                 isNew = true;
             }
 
-            FileConfig config = new FileConfig(file);
+            YamlConfig cfg = new YamlConfig(file);
             try {
-                config.reload();
+                cfg.reload();
             } catch (IOException e) {
                 Log.warning("Error parsing world.yml! Exiting...");
                 e.printStackTrace();
@@ -244,15 +245,16 @@ public class Server {
             }
 
             if (isNew) {
-                ConfigSetup.world(config);
+                ConfigSetup.world(cfg);
                 try {
-                    config.save();
+                    cfg.save();
                 } catch (IOException e) {
                     e.printStackTrace();
                     Log.warning("Failed to save world.yml file!");
                 }
             }
-            this.config = config;
+
+            this.config = new HybridConfigSection(new SystemConfigSection(), new EnvironmentConfigSection(), cfg);
         }
         return config;
     }
@@ -301,6 +303,7 @@ public class Server {
             database.addEntity(AmmoType.class);
             database.addEntity(ItemAmmoType.class);
         }
+
         return database;
     }
 
@@ -579,7 +582,7 @@ public class Server {
 
             ConfigSection config = getConfig().getSection("commands", null);
             if (config != null) {
-                for (String alias : config.getKeys()) {
+                for (String alias : config.keys()) {
                     Command command = commands.getCommand(config.getString(alias));
                     if (command == null) {
                         continue;

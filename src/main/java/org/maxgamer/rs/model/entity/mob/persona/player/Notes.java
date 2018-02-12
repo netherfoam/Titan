@@ -2,6 +2,7 @@ package org.maxgamer.rs.model.entity.mob.persona.player;
 
 import org.maxgamer.rs.structure.YMLSerializable;
 import org.maxgamer.rs.structure.configs.ConfigSection;
+import org.maxgamer.rs.structure.configs.MutableConfig;
 
 import java.util.ArrayList;
 
@@ -207,10 +208,11 @@ public class Notes implements YMLSerializable {
      */
     @Override
     public ConfigSection serialize() {
-        ConfigSection map = new ConfigSection();
+        MutableConfig map = new MutableConfig();
         for (int i = 0; i < notes.size(); i++) {
             map.set("" + i, notes.get(i).serialize());
         }
+
         return map;
     }
 
@@ -219,7 +221,7 @@ public class Notes implements YMLSerializable {
      */
     @Override
     public void deserialize(ConfigSection map) {
-        for (String key : map.getKeys()) {
+        for (String key : map.keys()) {
             Note note = new Note();
             note.deserialize(map.getSection(key));
             notes.add(note);
@@ -263,9 +265,10 @@ public class Notes implements YMLSerializable {
 
         @Override
         public ConfigSection serialize() {
-            ConfigSection s = new ConfigSection();
+            MutableConfig s = new MutableConfig();
             s.set("colour", this.colour);
             s.set("text", this.text);
+
             return s;
         }
 

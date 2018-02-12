@@ -9,6 +9,7 @@ import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.item.WieldType;
 import org.maxgamer.rs.structure.configs.ConfigSection;
 import org.maxgamer.rs.structure.configs.FileConfig;
+import org.maxgamer.rs.structure.configs.YamlConfig;
 import org.maxgamer.rs.util.Log;
 
 import java.io.File;
@@ -53,14 +54,14 @@ public class Equipment extends Container {
 
     public static void load() throws Exception {
         Log.info("Loading Equipment Sets...");
-        FileConfig f = new FileConfig(new File("./config/equipment_sets.yml"));
+        FileConfig f = new YamlConfig(new File("./config/equipment_sets.yml"));
         f.reload();
 
-        for (String name : f.getKeys()) {
+        for (String name : f.keys()) {
             EquipmentSet set = new EquipmentSet(name);
 
             ConfigSection setConfig = f.getSection(name);
-            for (String type : setConfig.getKeys()) {
+            for (String type : setConfig.keys()) {
                 WieldType w;
                 try {
                     w = WieldType.valueOf(type.toUpperCase());

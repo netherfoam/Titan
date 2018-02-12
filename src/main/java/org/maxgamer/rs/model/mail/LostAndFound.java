@@ -7,6 +7,7 @@ import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.model.item.inventory.ContainerException;
 import org.maxgamer.rs.structure.YMLSerializable;
 import org.maxgamer.rs.structure.configs.ConfigSection;
+import org.maxgamer.rs.structure.configs.MutableConfig;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -134,8 +135,8 @@ public class LostAndFound implements YMLSerializable {
     }
 
     @Override
-    public ConfigSection serialize() {
-        ConfigSection s = new ConfigSection();
+    public MutableConfig serialize() {
+        MutableConfig s = new MutableConfig();
         s.set("size", mail.size());
         for (int i = 0; i < mail.size(); i++) {
             s.set("" + i, mail.get(i).serialize());

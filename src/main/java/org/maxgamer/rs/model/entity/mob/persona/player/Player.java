@@ -30,6 +30,7 @@ import org.maxgamer.rs.network.protocol.Game637Protocol;
 import org.maxgamer.rs.network.protocol.ProtocolHandler;
 import org.maxgamer.rs.structure.YMLSerializable;
 import org.maxgamer.rs.structure.configs.ConfigSection;
+import org.maxgamer.rs.structure.configs.MutableConfig;
 import org.maxgamer.rs.util.Log;
 
 import java.io.IOException;
@@ -710,10 +711,12 @@ public class Player extends Persona implements Client, CommandSender, YMLSeriali
     }
 
     @Override
-    public ConfigSection serialize() {
-        ConfigSection config = super.serialize();
+    public MutableConfig serialize() {
+        MutableConfig config = super.serialize();
+
         config.set("playtime", getPlaytime());
         config.set("created", created);
+
         return config;
     }
 

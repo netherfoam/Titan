@@ -53,6 +53,10 @@ public class MySQLCore implements DatabaseCore {
         this.database = database;
         this.port = Integer.parseInt(port);
 
+        System.out.println("Database URL: " + "jdbc:mysql://" + host + ":" + port + "/" + database);
+        System.out.println("Database User: " + user);
+        System.out.println("Database Pass: " + pass.replaceAll(".", "*"));
+
         flyway = new Flyway();
         flyway.setDataSource(getDataSource());
 

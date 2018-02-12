@@ -2,6 +2,7 @@ package org.maxgamer.rs.model.map;
 
 import org.maxgamer.rs.structure.areagrid.MBR;
 import org.maxgamer.rs.structure.configs.ConfigSection;
+import org.maxgamer.rs.structure.configs.MutableConfig;
 
 /**
  * @author netherfoam
@@ -126,10 +127,11 @@ public class Position implements MBR {
         return "(" + x + ", " + y + ")";
     }
 
-    public ConfigSection serialize() {
-        ConfigSection map = new ConfigSection();
+    public MutableConfig serialize() {
+        MutableConfig map = new MutableConfig();
         map.set("x", this.x);
         map.set("y", this.y);
+
         return map;
     }
 

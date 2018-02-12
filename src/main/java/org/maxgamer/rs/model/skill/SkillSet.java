@@ -10,6 +10,7 @@ import org.maxgamer.rs.network.Client;
 import org.maxgamer.rs.network.io.packet.RSOutgoingPacket;
 import org.maxgamer.rs.structure.YMLSerializable;
 import org.maxgamer.rs.structure.configs.ConfigSection;
+import org.maxgamer.rs.structure.configs.MutableConfig;
 import org.maxgamer.rs.util.Calc;
 
 import java.util.HashMap;
@@ -335,9 +336,11 @@ public class SkillSet implements YMLSerializable {
      */
     @Override
     public ConfigSection serialize() {
-        ConfigSection map = new ConfigSection();
-        for (Entry<SkillType, Skill> e : this.skills.entrySet())
+        MutableConfig map = new MutableConfig();
+        for (Entry<SkillType, Skill> e : this.skills.entrySet()) {
             map.set(e.getKey().toString(), e.getValue().serialize());
+        }
+
         return map;
     }
 

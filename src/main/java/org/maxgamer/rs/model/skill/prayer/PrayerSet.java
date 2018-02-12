@@ -7,6 +7,7 @@ import org.maxgamer.rs.model.events.mob.persona.PrayerToggleEvent;
 import org.maxgamer.rs.model.skill.SkillType;
 import org.maxgamer.rs.structure.YMLSerializable;
 import org.maxgamer.rs.structure.configs.ConfigSection;
+import org.maxgamer.rs.structure.configs.MutableConfig;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -382,9 +383,11 @@ public class PrayerSet implements YMLSerializable {
     @Override
     public ConfigSection serialize() {
         //The main config section
-        ConfigSection map = new ConfigSection();
+        MutableConfig map = new MutableConfig();
+
         //QuickPrayer subsection
-        ConfigSection quick = new ConfigSection(); //Seperate section for quick prayers
+        MutableConfig quick = new MutableConfig(); // Separate section for quick prayers
+
         //Now we save quick prayers to the subsection. I'm not saving them
         //straight to the main section because we will probably want to save
         //other kinds of data to the main section, and mixing that data with
@@ -414,7 +417,7 @@ public class PrayerSet implements YMLSerializable {
         //Now we load quick prayers from the subsection. We use
         //PrayerType.valueOf(String) to retrieve the prayer by name.
         //We are effectively loading the section player.prayers.quick.*
-        for (String key : quick.getKeys()) {
+        for (String key : quick.keys()) {
             //Note that this will also send packets to the player
             this.setQuick(true, PrayerType.valueOf(quick.getString(key).toUpperCase()));
         }

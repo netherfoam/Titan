@@ -2,6 +2,7 @@ package org.maxgamer.rs.model.skill;
 
 import org.maxgamer.rs.structure.YMLSerializable;
 import org.maxgamer.rs.structure.configs.ConfigSection;
+import org.maxgamer.rs.structure.configs.MutableConfig;
 
 /**
  * Represents a player's skill.
@@ -89,7 +90,7 @@ public class Skill implements YMLSerializable {
 
     @Override
     public ConfigSection serialize() {
-        ConfigSection map = new ConfigSection();
+        MutableConfig map = new MutableConfig();
 
         map.set("modifier", getModifier());
         map.set("exp", getExp());

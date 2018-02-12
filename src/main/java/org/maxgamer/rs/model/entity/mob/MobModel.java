@@ -2,6 +2,7 @@ package org.maxgamer.rs.model.entity.mob;
 
 import org.maxgamer.rs.structure.YMLSerializable;
 import org.maxgamer.rs.structure.configs.ConfigSection;
+import org.maxgamer.rs.structure.configs.MutableConfig;
 import org.maxgamer.rs.util.io.OutputStreamWrapper;
 
 import java.io.ByteArrayOutputStream;
@@ -409,8 +410,8 @@ public abstract class MobModel implements YMLSerializable {
     }
 
     @Override
-    public ConfigSection serialize() {
-        ConfigSection map = new ConfigSection();
+    public MutableConfig serialize() {
+        MutableConfig map = new MutableConfig();
 
         map.set("colour", this.colour);
         map.set("female", this.female);
@@ -431,7 +432,9 @@ public abstract class MobModel implements YMLSerializable {
         this.combatLevel = (byte) map.getInt("combatLevel", this.combatLevel);
         this.title = map.getInt("title", this.title);
 
-        if(map.containsKey("particles")) {
+        ConfigSection particles = map.getSection("particles", null);
+
+        if(particles != null) {
             this.particles = new MobParticles(map.getSection("particles"));
         }
     }

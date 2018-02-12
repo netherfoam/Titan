@@ -7,8 +7,7 @@ import org.maxgamer.rs.logon.LSOutgoingPacket;
 import org.maxgamer.rs.logon.ProfileRepository;
 import org.maxgamer.rs.module.ModuleLoader;
 import org.maxgamer.rs.structure.ServerHost;
-import org.maxgamer.rs.structure.configs.ConfigSection;
-import org.maxgamer.rs.structure.configs.FileConfig;
+import org.maxgamer.rs.structure.configs.*;
 import org.maxgamer.rs.structure.sql.Database;
 import org.maxgamer.rs.structure.sql.Database.ConnectionException;
 import org.maxgamer.rs.structure.sql.MySQLCore;
@@ -89,7 +88,7 @@ public class LogonServer extends ServerHost<WorldHost> {
             isNew = true;
         }
 
-        FileConfig config = new FileConfig(cfgFile);
+        FileConfig config = new YamlConfig(cfgFile);
         config.reload();
 
         if (isNew) {
@@ -102,7 +101,9 @@ public class LogonServer extends ServerHost<WorldHost> {
             }
         }
 
-        LOGON = new LogonServer(config);
+        HybridConfigSection hybridConfig = new HybridConfigSection(new SystemConfigSection(), new EnvironmentConfigSection(), config);
+
+        LOGON = new LogonServer(hybridConfig);
         LOGON.events = events;
         LOGON.commands = commands;
 

@@ -3,6 +3,8 @@ package org.maxgamer.rs.module;
 import org.maxgamer.rs.core.Core;
 import org.maxgamer.rs.structure.configs.ConfigSection;
 import org.maxgamer.rs.structure.configs.FileConfig;
+import org.maxgamer.rs.structure.configs.MutableConfig;
+import org.maxgamer.rs.structure.configs.YamlConfig;
 import org.maxgamer.rs.structure.dependency.Graph;
 import org.maxgamer.rs.util.Log;
 
@@ -161,7 +163,7 @@ public class ModuleLoader {
             }
 
             InputStream in = jar.getInputStream(e);
-            ConfigSection cfg = new ConfigSection(in);
+            ConfigSection cfg = new MutableConfig(in);
 
             if (cfg.getString("name", "").isEmpty()) {
                 throw new IOException("module.yml is missing name field!");
@@ -196,7 +198,7 @@ public class ModuleLoader {
             }
 
             InputStream in = jar.getInputStream(e);
-            ConfigSection cfg = new ConfigSection(in);
+            ConfigSection cfg = new MutableConfig(in);
 
             String name = cfg.getString("name");
             if (name == null) {
@@ -233,7 +235,7 @@ public class ModuleLoader {
             ModuleMeta meta = new ModuleMeta(f, cfg, cl);
             m.setMeta(meta);
 
-            FileConfig modCfg = new FileConfig(new File(m.getFolder(), "config.yml"));
+            FileConfig modCfg = new YamlConfig(new File(m.getFolder(), "config.yml"));
             modCfg.reload(); //Initial load
             meta.setConfig(modCfg);
 

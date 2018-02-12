@@ -1,0 +1,23 @@
+version: '2'
+
+services:
+    db:
+        build:
+            context: ./src/main/docker/mysql
+
+    titan:
+        image: titan
+
+        depends_on:
+            - db
+
+        environment:
+            - "DATABASE_TYPE=mysql"
+            - "DATABASE_HOST=db"
+            - "DATABASE_USER=root"
+            - "DATABASE_PASS="
+            - "DATABASE_DATABASE=titan"
+            - "DATABASE_PORT=3306"
+
+        build:
+            context: .

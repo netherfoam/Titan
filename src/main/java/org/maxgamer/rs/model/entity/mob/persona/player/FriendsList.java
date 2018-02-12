@@ -7,6 +7,7 @@ import org.maxgamer.rs.model.events.mob.persona.player.RemoveFriendEvent;
 import org.maxgamer.rs.network.Client;
 import org.maxgamer.rs.structure.YMLSerializable;
 import org.maxgamer.rs.structure.configs.ConfigSection;
+import org.maxgamer.rs.structure.configs.MutableConfig;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -212,7 +213,7 @@ public final class FriendsList implements YMLSerializable {
      */
     @Override
     public ConfigSection serialize() {
-        ConfigSection s = new ConfigSection();
+        MutableConfig s = new MutableConfig();
         int i = 0;
         for (String name : friends.values()) {
             s.set("friends." + (i++), name);
@@ -220,6 +221,7 @@ public final class FriendsList implements YMLSerializable {
         for (String name : ignores.values()) {
             s.set("ignores." + (i++), name);
         }
+
         return s;
     }
 
@@ -232,7 +234,7 @@ public final class FriendsList implements YMLSerializable {
 
         ConfigSection friends = map.getSection("friends", null);
         if (friends != null) {
-            for (String s : friends.getKeys()) {
+            for (String s : friends.keys()) {
                 String name = friends.getString(s);
                 if (!isFriend(name)) addFriend(name);
             }
@@ -240,7 +242,7 @@ public final class FriendsList implements YMLSerializable {
 
         ConfigSection ignores = map.getSection("ignores", null);
         if (ignores != null) {
-            for (String s : ignores.getKeys()) {
+            for (String s : ignores.keys()) {
                 String name = ignores.getString(s);
 
                 // TODO: This is a workaround, because ignores do not seem to be

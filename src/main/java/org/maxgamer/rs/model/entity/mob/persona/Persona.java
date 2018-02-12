@@ -33,6 +33,7 @@ import org.maxgamer.rs.model.skill.SkillType;
 import org.maxgamer.rs.model.skill.prayer.PrayerSet;
 import org.maxgamer.rs.structure.YMLSerializable;
 import org.maxgamer.rs.structure.configs.ConfigSection;
+import org.maxgamer.rs.structure.configs.MutableConfig;
 import org.maxgamer.rs.util.Calc;
 import org.maxgamer.rs.util.Chat;
 import org.maxgamer.rs.util.Log;
@@ -130,7 +131,7 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
     /**
      * The existing config file, possibly empty if the player is new.
      */
-    protected ConfigSection config = new ConfigSection();
+    protected MutableConfig config = new MutableConfig();
 
     /**
      * The attack style that this persona uses to attack.
@@ -620,7 +621,7 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
      *
      * @return the player's config file
      */
-    public ConfigSection getConfig() {
+    public MutableConfig getConfig() {
         return this.config;
     }
 
@@ -784,7 +785,7 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
      * @return the tag
      */
     @Override
-    public ConfigSection serialize() {
+    public MutableConfig serialize() {
         // Location is not YMLSerializable by design
         Location loc = getLocation();
         if (loc != null) {
@@ -812,15 +813,15 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
     }
 
     @Override
-    public void deserialize(ConfigSection map) {
-        this.config = map;
+    public void deserialize(ConfigSection config) {
+        this.config = new MutableConfig(config);
 
         // Any attachments which have been registered before we loaded our
         // config will be loaded here.
         // Worth noting that, here, we cannot send packets to a player yet. That
         // may done in Persona.start().
         for (Entry<String, YMLSerializable> e : this.attachments.entrySet()) {
-            e.getValue().deserialize(map.getSection(e.getKey()));
+            e.getValue().deserialize(config.getSection(e.getKey()));
         }
     }
 

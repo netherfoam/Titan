@@ -1,5 +1,6 @@
 package org.maxgamer.rs.structure.configs;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -52,7 +53,7 @@ public class HybridConfigSection extends ConfigSection {
     }
 
     @Override
-    public Iterable<String> keys() {
+    public Collection<String> keys() {
         Set<String> keys = new HashSet<>();
 
         for (ConfigSection section : this.sources) {

@@ -1,5 +1,6 @@
 package org.maxgamer.rs.structure.configs;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -38,12 +39,12 @@ public class EnvironmentConfigSection extends ConfigSection {
     }
 
     @Override
-    public Iterable<String> keys() {
+    public Collection<String> keys() {
         Set<String> keys = new HashSet<>();
 
         for (String key : System.getenv().keySet()) {
             if (key.startsWith(prefix)) {
-                key = key.substring(0, prefix.length());
+                key = key.substring(prefix.length(), key.length());
 
                 int separator = key.indexOf("_");
                 if (separator >= 0) {

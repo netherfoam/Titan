@@ -170,7 +170,7 @@ public class MutableConfig extends ConfigSection {
     }
 
     @Override
-    public Iterable<String> keys() {
+    public Collection<String> keys() {
         return map.keySet();
     }
 

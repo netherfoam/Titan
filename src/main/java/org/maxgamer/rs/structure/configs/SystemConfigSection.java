@@ -1,9 +1,6 @@
 package org.maxgamer.rs.structure.configs;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * TODO: Document this
@@ -44,7 +41,7 @@ public class SystemConfigSection extends ConfigSection {
     }
 
     @Override
-    public Iterable<String> keys() {
+    public Collection<String> keys() {
         Set<String> keys = new HashSet<>();
 
         for (Object key : System.getProperties().keySet()) {
@@ -55,7 +52,7 @@ public class SystemConfigSection extends ConfigSection {
 
             String s = (String) key;
             if (s.startsWith(prefix)) {
-                s = s.substring(0, prefix.length());
+                s = s.substring(prefix.length(), s.length());
 
                 int separator = s.indexOf(".");
                 if (separator >= 0) {

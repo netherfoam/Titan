@@ -3,13 +3,16 @@ version: 0.2
 phases:
   build:
     commands:
+      # We remove these folders so we can symlink them to the
+      # docker image's resources instead.
       - rm cache config -r
       - ln -s /root/config config
       - ln -s /root/cache cache
-      - ls . -l
-      - ls * -l
-      - pwd
+
+      # Runs our tests and makes our binary
       - mvn package
+
+      # Clean up extra files we created
       - rm cache config
 
 artifacts:

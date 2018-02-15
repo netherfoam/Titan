@@ -1,7 +1,7 @@
 version: 0.2
 
 phases:
-  build:
+  pre_build:
     commands:
       # We remove these folders so we can symlink them to the
       # docker image's resources instead.
@@ -9,9 +9,13 @@ phases:
       - ln -s /root/config config
       - ln -s /root/cache cache
 
+  build:
+    commands:
       # Runs our tests and makes our binary
       - mvn package
 
+  post_build:
+    commands:
       # Clean up extra files we created
       - rm cache config
 

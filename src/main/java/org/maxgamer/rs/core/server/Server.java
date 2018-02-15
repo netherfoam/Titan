@@ -221,6 +221,9 @@ public class Server {
             boolean isNew = false;
 
             File file = new File("config" + File.separatorChar + "world.yml");
+            System.out.println("Looking for config in " + file.getAbsolutePath());
+            System.out.println("My pwd is " + new File(".").getAbsolutePath());
+
             if (!file.exists()) {
                 File dist = new File("config" + File.separatorChar + "world.yml.dist");
                 if (dist.exists()) {

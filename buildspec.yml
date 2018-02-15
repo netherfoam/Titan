@@ -3,6 +3,7 @@ version: 0.2
 phases:
   build:
     commands:
+      - rm cache config
       - ln -s /root/config config
       - ln -s /root/cache cache
       - ls . -l

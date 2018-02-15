@@ -18,7 +18,9 @@ public abstract class CacheTest {
 
     @BeforeClass
     public static void init() throws IOException {
-        //cache = new BasicCacheAccessor(new Cache(new File("cache")));
+        // Prevent initialising the cache multiple times - that's an expensive operation.
+        if (cache != null) return;
+
         AssetStorage storage = new AssetStorage(new File("cache"));
         AssetWeeder.weed(storage);
         cache = new AssetStorageAccessor(storage);

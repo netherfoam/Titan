@@ -5,6 +5,8 @@ phases:
     commands:
       - ln -s /root/config config
       - ln -s /root/cache cache
+      - ls . -l
+      - ls * -l
       - mvn package
       - rm cache config
 

@@ -1,0 +1,19 @@
+version: 0.2
+
+phases:
+  build:
+    commands:
+      - ln -s /root/config config
+      - ln -s /root/cache cache
+      - mvn package
+      - rm cache config
+
+artifacts:
+  files:
+    - target/titan-1.0.jar
+
+  discard-paths: yes
+
+cache:
+  paths:
+    - '/root/.m2/**/*'

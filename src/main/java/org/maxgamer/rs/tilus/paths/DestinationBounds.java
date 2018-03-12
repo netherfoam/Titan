@@ -1,4 +1,4 @@
-package org.maxgamer.rs.tiler.paths;
+package org.maxgamer.rs.tilus.paths;
 
 /**
  * TODO: Document this

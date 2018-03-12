@@ -1,4 +1,9 @@
-package org.maxgamer.rs.tiler;
+package org.maxgamer.rs.tilus;
+
+import org.maxgamer.rs.tilus.paths.Coordinate;
+import org.maxgamer.rs.tilus.paths.Move;
+import org.maxgamer.rs.tilus.paths.Plan;
+import org.maxgamer.rs.tilus.paths.PlanParameters;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,7 +51,16 @@ public class Dimension {
         set(sx, sy, section, true);
     }
 
+    private void validateSection(int sx, int sy) {
+        if (sx >= width) throw new IllegalArgumentException("sx given " + sx + ", but width is " + width);
+        if (sy >= width) throw new IllegalArgumentException("sy given " + sy + ", but width is " + width);
+        if (sx < 0) throw new IllegalArgumentException("sx must be >= 0");
+        if (sy < 0) throw new IllegalArgumentException("sy must be >= 0");
+    }
+
     private void set(int sx, int sy, Section section, boolean init) {
+        validateSection(sx, sy);
+        
         // TODO: safety check sx, sy > 0
         contents.put((sx << 16) | sy, section);
 
@@ -55,12 +69,19 @@ public class Dimension {
         }
     }
 
-    public void set(int minX, int minY, int[][] clip) {
-        // TODO: do this in a non-stupid way
+    public void set(int x, int y, int clip) {
+        int sx = (x / sectionResolution);
+        int sy = (y / sectionResolution);
+
+        Section s = get(sx, sy);
+        if (s == null) return;
+
+        s.set(x % sectionResolution, y % sectionResolution, clip);
     }
 
     public Section get(int sx, int sy) {
-        // TODO: safety check sx, sy > 0
+        validateSection(sx, sy);
+
         return contents.get((sx << 16) | sy);
     }
 
@@ -74,5 +95,27 @@ public class Dimension {
 
     public int getSectionResolution() {
         return sectionResolution;
+    }
+
+    public void plan(Plan plan) {
+        PlanParameters params = plan.getParameters();
+        Coordinate start = params.start;
+
+        Move move = plan.getMoves().remove();
+
+        Section section;
+        if (move.getFrom() == null) {
+            // TODO: power of 2 for sectionResolution means we use bitshifting instead of expensive divide
+            section = get(start.x / sectionResolution, start.y / sectionResolution);
+
+            if (section == null) {
+                // TODO: Exception?
+                return;
+            }
+        } else {
+            section = move.getFrom();
+        }
+
+        section.visit(plan, move);
     }
 }

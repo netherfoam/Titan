@@ -1,15 +1,28 @@
-package org.maxgamer.rs.tiler;
+package org.maxgamer.rs.tilus;
 
-import org.maxgamer.rs.tiler.paths.Move;
-import org.maxgamer.rs.tiler.paths.Plan;
+import org.maxgamer.rs.tilus.paths.Coordinate;
+import org.maxgamer.rs.tilus.paths.Move;
+import org.maxgamer.rs.tilus.paths.Plan;
 
 /**
  * TODO: Document this
  */
 public abstract class Section {
     private Section[][] neighbours = new Section[3][3];
+    protected final int size;
+    protected Coordinate min;
+
+    public Section(int size) {
+        this.size = size;
+    }
+
+    public final Coordinate getMin() {
+        return min;
+    }
 
     public void init(Dimension dimension, int sx, int sy) {
+        min = new Coordinate(sx * size, sy * size);
+
         for (int x = -1; x <= 1; x++) {
             if (sx + x < 0) continue;
             if (sx + x >= dimension.getWidth()) continue;
@@ -36,8 +49,30 @@ public abstract class Section {
     }
 
     public final Section neighbour(int dx, int dy) {
-        // TODO: safety check dx and dy are -1 to +1
-        return neighbours[dx + 1][dy + 1];
+        Section neighbour = neighbours[dx + 1][dy + 1];
+
+        dx -= signum(dx);
+        dy -= signum(dy);
+
+        if (dx == 0 && dy == 0) return neighbour;
+
+        return neighbour.neighbour(dx, dy);
+    }
+
+    protected static final int signum(int v) {
+        if (v >= 1) return 1;
+        if (v <= -1) return -1;
+
+        return 0;
+    }
+    
+    public boolean contains(Coordinate coordinate) {
+        if (coordinate.x < this.min.x) return false;
+        if (coordinate.y < this.min.y) return false;
+        if (coordinate.x >= this.min.x + size) return false;
+        if (coordinate.y >= this.min.y + size) return false;
+
+        return true;
     }
 
     public abstract void set(int x, int y, int clip);
@@ -47,4 +82,8 @@ public abstract class Section {
     public abstract int get(int x, int y);
 
     public abstract void visit(Plan plan, Move move);
+
+    public int size() {
+        return size;
+    }
 }

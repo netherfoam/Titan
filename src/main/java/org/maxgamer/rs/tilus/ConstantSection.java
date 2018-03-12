@@ -1,4 +1,7 @@
-package org.maxgamer.rs.tiler;
+package org.maxgamer.rs.tilus;
+
+import org.maxgamer.rs.tilus.paths.Move;
+import org.maxgamer.rs.tilus.paths.Plan;
 
 /**
  * TODO: Document this
@@ -6,7 +9,9 @@ package org.maxgamer.rs.tiler;
 public class ConstantSection extends Section {
     private int clip;
 
-    public ConstantSection(int clip) {
+    public ConstantSection(int size, int clip) {
+        super(size);
+
         this.clip = clip;
     }
 
@@ -23,5 +28,10 @@ public class ConstantSection extends Section {
     @Override
     public int get(int x, int y) {
         return clip;
+    }
+
+    @Override
+    public void visit(Plan plan, Move move) {
+        plan.forward();
     }
 }

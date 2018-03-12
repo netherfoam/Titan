@@ -1,4 +1,4 @@
-package org.maxgamer.rs.tiler.exception;
+package org.maxgamer.rs.tilus.exception;
 
 /**
  * TODO: Document this

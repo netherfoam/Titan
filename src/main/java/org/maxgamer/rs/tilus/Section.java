@@ -86,4 +86,9 @@ public abstract class Section {
     public int size() {
         return size;
     }
+
+    @Override
+    public String toString() {
+        return "Section(" + this.min.x / size + ", " + this.min.y / size + ")";
+    }
 }

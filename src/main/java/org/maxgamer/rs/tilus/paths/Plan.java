@@ -50,11 +50,18 @@ public class Plan {
 
         Section section;
         if (!from.contains(endingCoordinate)) {
+            Coordinate min = from.getMin();
+            if (endingCoordinate.x < 0 || endingCoordinate.y < 0) {
+                // We've gone too far off the map!
+                forward();
+                return;
+            }
+
             // We've moved off of this section with the move!
             // So, get the appropriate neighbour that we want to move to
             int size = from.size();
-            int sdx = (endingCoordinate.x / size) - (from.getMin().x / from.size());
-            int sdy = (endingCoordinate.y / size) - (from.getMin().y / from.size());
+            int sdx = (endingCoordinate.x / size) - (min.x / size);
+            int sdy = (endingCoordinate.y / size) - (min.y / size);
 
             section = from.neighbour(sdx, sdy);
 

@@ -53,6 +53,12 @@ public class VariableSection extends Section {
         int maxDelta = plan.getParameters().speed;
 
         Coordinate curPos = curMove.getEndingCoordinate();
+        if (!canMoveTo(curPos, curMove.getDx(), curMove.getDy())) {
+            // We can't enter the tile from that direction
+            plan.forward();
+            return;
+        }
+
         Set<Coordinate> blacklist = plan.getBlacklisted();
         Queue<Move> moveQueue = plan.getMoves();
 
@@ -67,14 +73,14 @@ public class VariableSection extends Section {
                     continue;
                 }
 
-                // Determine if the clip is suitable
-                if (!canMove(curPos, dx, dy)) {
-                    continue;
-                }
-
                 Coordinate nextPos = new Coordinate(curPos.x + dx, curPos.y + dy);
                 if (!blacklist.add(nextPos)) {
                     // This position has already been checked
+                    continue;
+                }
+
+                // Determine if the clip is suitable to leave in this direction
+                if (!canMoveFrom(curPos, dx, dy)) {
                     continue;
                 }
 
@@ -91,9 +97,7 @@ public class VariableSection extends Section {
         plan.forward();
     }
 
-    public boolean canMove(Coordinate from, int dx, int dy) {
-        // TODO: this check doesn't appear to be correct, on the edge of a section.
-
+    public boolean canMoveFrom(Coordinate from, int dx, int dy) {
         // TODO: expensive divide by operation here
         int x1 = from.x % size;
         int y1 = from.y % size;
@@ -103,11 +107,18 @@ public class VariableSection extends Section {
             return false;
         }
 
-        int x2 = x1 + dx;
-        int y2 = y1 + dy;
+        return true;
+    }
+
+    public boolean canMoveTo(Coordinate to, int dx, int dy) {
+        //int x1 = from.x % size;
+        //int y1 = from.y % size;
+
+        int x2 = to.x; //x1 + dx;
+        int y2 = to.y; //y1 + dy;
 
         Section section;
-        if (!this.contains(new Coordinate(from.x + dx, from.y + dy))) {
+        if (!this.contains(new Coordinate(to.x, to.y))) {
             // We've moved off of this section with the move!
             // So, get the appropriate neighbour that we want to move to
             int sigX = signum(dx);
@@ -127,6 +138,7 @@ public class VariableSection extends Section {
             section = this;
         }
 
+        // TODO: expensive divide by operation here
         // Wrap these around
         x2 = Math.abs(x2 % size);
         y2 = Math.abs(y2 % size);

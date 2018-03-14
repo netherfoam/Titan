@@ -23,13 +23,19 @@ public class Plan {
     private Set<Coordinate> blacklisted = new HashSet<>(32);
     private Move last;
 
-    private PlanParameters parameters;
+    private Coordinate start;
+    private Destination end;
+    private Size size;
+    private int speed;
 
-    public Plan(PlanParameters parameters) {
-        this.parameters = parameters;
+    public Plan(PlanBuilder builder) {
+        this.start = builder.start;
+        this.end = builder.end;
+        this.size = builder.size;
+        this.speed = builder.speed;
 
-        moves.add(new Move(null, 0, 0, 0, parameters.start, null, parameters.end));
-        blacklisted.add(parameters.start);
+        moves.add(new Move(null, 0, 0, 0, this.start, null, this.end));
+        blacklisted.add(this.start);
     }
 
     public void forward() {
@@ -39,8 +45,8 @@ public class Plan {
 
         Move next = moves.remove();
 
-        if (next.getEndingCoordinate().equals(parameters.end.min)) {
-            // TODO: this isn't right, we need to check a much more complex 'finish' condition
+        if (next.getHeuristic() <= 0) {
+            // Success! We've found a move that ends here
             this.last = next;
             return;
         }
@@ -96,11 +102,23 @@ public class Plan {
         return blacklisted;
     }
 
-    public PlanParameters getParameters() {
-        return parameters;
-    }
-
     public Move getLast() {
         return last;
+    }
+
+    public Coordinate getStart() {
+        return start;
+    }
+
+    public Destination getEnd() {
+        return end;
+    }
+
+    public Size getSize() {
+        return size;
+    }
+
+    public int getSpeed() {
+        return speed;
     }
 }

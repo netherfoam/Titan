@@ -50,7 +50,7 @@ public class VariableSection extends Section {
     @Override
     public void visit(Plan plan, Move curMove) {
         // Find a path
-        int maxDelta = plan.getParameters().speed;
+        int maxDelta = plan.getSpeed();
 
         Coordinate curPos = curMove.getEndingCoordinate();
         if (!canMoveTo(curPos, curMove.getDx(), curMove.getDy())) {
@@ -84,7 +84,7 @@ public class VariableSection extends Section {
                     continue;
                 }
 
-                Move nextMove = new Move(curMove, curMove.getCost() + 1, dx, dy, nextPos, this, plan.getParameters().end);
+                Move nextMove = new Move(curMove, curMove.getCost() + 1, dx, dy, nextPos, this, plan.getEnd());
                 moveQueue.add(nextMove);
             }
         }

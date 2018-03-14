@@ -3,15 +3,12 @@ package org.maxgamer.rs.tilus;
 import org.maxgamer.rs.tilus.paths.Coordinate;
 import org.maxgamer.rs.tilus.paths.Move;
 import org.maxgamer.rs.tilus.paths.Plan;
-import org.maxgamer.rs.tilus.paths.PlanParameters;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * TODO: Document this
- *
- * TODO: safety checks on bounds
  */
 public class Dimension {
     /**
@@ -60,8 +57,7 @@ public class Dimension {
 
     private void set(int sx, int sy, Section section, boolean init) {
         validateSection(sx, sy);
-        
-        // TODO: safety check sx, sy > 0
+
         contents.put((sx << 16) | sy, section);
 
         if (init) {
@@ -98,10 +94,8 @@ public class Dimension {
     }
 
     public void plan(Plan plan) {
-        PlanParameters params = plan.getParameters();
-        Coordinate start = params.start;
-
         Move move = plan.getMoves().remove();
+        Coordinate start = move.getEndingCoordinate();
 
         Section section;
         if (move.getFrom() == null) {

@@ -15,7 +15,7 @@ public class Move implements Comparable<Move> {
     private int heuristic;
     private int bestCaseCost;
 
-    public Move(Move previous, int cost, int dx, int dy, Coordinate endingCoordinate, Section from, DestinationBounds destination) {
+    public Move(Move previous, int cost, int dx, int dy, Coordinate endingCoordinate, Section from, Destination destination) {
         this.previous = previous;
         this.cost = cost;
         this.dx = dx;
@@ -23,8 +23,7 @@ public class Move implements Comparable<Move> {
         this.endingCoordinate = endingCoordinate;
         this.from = from;
 
-        // TODO: picking end.min isn't quite right for the heuristic
-        this.heuristic = endingCoordinate.distanceSq(destination.min);
+        this.heuristic = destination.minimumCost(endingCoordinate);
         this.bestCaseCost = cost + this.heuristic;
     }
 
@@ -55,5 +54,9 @@ public class Move implements Comparable<Move> {
     @Override
     public int compareTo(Move that) {
         return (this.bestCaseCost) - (that.bestCaseCost);
+    }
+
+    public int getHeuristic() {
+        return heuristic;
     }
 }

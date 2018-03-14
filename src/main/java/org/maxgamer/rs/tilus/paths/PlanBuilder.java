@@ -8,10 +8,10 @@ public class PlanBuilder {
         return new PlanBuilder();
     }
 
-    private Coordinate start;
-    private DestinationBounds end;
-    private Size size = new Size(1, 1);
-    private int speed = 1;
+    protected Coordinate start;
+    protected DestinationBounds end;
+    protected Size size = new Size(1, 1);
+    protected int speed = 1;
 
     public PlanBuilder() {
     }
@@ -45,10 +45,6 @@ public class PlanBuilder {
     }
 
     public Plan build() {
-        return new Plan(parameters());
-    }
-
-    public PlanParameters parameters() {
-        return new PlanParameters(start, end, size, speed);
+        return new Plan(this);
     }
 }

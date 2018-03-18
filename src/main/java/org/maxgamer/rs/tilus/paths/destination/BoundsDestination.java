@@ -1,20 +1,20 @@
-package org.maxgamer.rs.tilus.paths;
+package org.maxgamer.rs.tilus.paths.destination;
+
+import org.maxgamer.rs.tilus.paths.Coordinate;
 
 /**
- * TODO: Document this
+ * Implementation of Destination which desires to be inside a given rectangle.
  */
-public class DestinationBounds implements Destination {
-    private final Coordinate min;
-    private final Coordinate max;
-    private final Type type;
+public class BoundsDestination implements Destination {
+    protected final Coordinate min;
+    protected final Coordinate max;
 
-    public DestinationBounds(Coordinate min, Coordinate max, Type type) {
+    public BoundsDestination(Coordinate min, Coordinate max) {
         if (min.x > max.x) throw new IllegalArgumentException("require min.x <= max.x, gave " + min.x + " <= " + max.x);
         if (min.y > max.y) throw new IllegalArgumentException("require min.y <= max.y, gave " + min.y + " <= " + max.y);
 
         this.min = min;
         this.max = max;
-        this.type = type;
     }
 
     @Override
@@ -24,7 +24,7 @@ public class DestinationBounds implements Destination {
         return closest.distanceSq(from);
     }
 
-    private Coordinate closest(Coordinate from) {
+    public Coordinate closest(Coordinate from) {
         int x = from.x;
         int y = from.y;
 
@@ -39,7 +39,7 @@ public class DestinationBounds implements Destination {
 
     public enum Type {
         // TODO: Account for these
-        // TODO: maybe these belong in a subclass of DestinationBounds instead?
+        // TODO: maybe these belong in a subclass of BoundsDestination instead?
         INSIDE,
         BESIDE,
         RANGE,

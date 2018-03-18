@@ -1,5 +1,7 @@
 package org.maxgamer.rs.tilus.paths;
 
+import org.maxgamer.rs.tilus.paths.destination.Destination;
+
 /**
  * TODO: Document this
  */
@@ -9,7 +11,7 @@ public class PlanBuilder {
     }
 
     protected Coordinate start;
-    protected DestinationBounds end;
+    protected Destination end;
     protected Size size = new Size(1, 1);
     protected int speed = 1;
 
@@ -22,13 +24,7 @@ public class PlanBuilder {
         return this;
     }
 
-    public PlanBuilder end(Coordinate min, Coordinate max, DestinationBounds.Type type) {
-        end(new DestinationBounds(min, max, type));
-
-        return this;
-    }
-
-    public PlanBuilder end(DestinationBounds end) {
+    public PlanBuilder end(Destination end) {
         this.end = end;
 
         return this;

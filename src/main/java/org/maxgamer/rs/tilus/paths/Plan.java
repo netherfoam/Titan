@@ -1,6 +1,7 @@
 package org.maxgamer.rs.tilus.paths;
 
 import org.maxgamer.rs.tilus.Section;
+import org.maxgamer.rs.tilus.paths.destination.Destination;
 
 import java.util.HashSet;
 import java.util.PriorityQueue;

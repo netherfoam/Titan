@@ -4,7 +4,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.maxgamer.rs.model.map.ClipMasks;
-import org.maxgamer.rs.tilus.paths.*;
+import org.maxgamer.rs.tilus.paths.Coordinate;
+import org.maxgamer.rs.tilus.paths.Plan;
+import org.maxgamer.rs.tilus.paths.PlanBuilder;
+import org.maxgamer.rs.tilus.paths.destination.Destinations;
 
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
@@ -79,7 +82,7 @@ public class PlanTest {
 
         Plan plan = visualise(PlanBuilder.create()
                         .start(new Coordinate(1, 1))
-                        .end(new Coordinate(2, 2), new Coordinate(2, 2), DestinationBounds.Type.INSIDE),
+                        .end(Destinations.inside(new Coordinate(2, 2), new Coordinate(2, 2))),
                 dimension);
 
         Assert.assertFalse("Expect plan success", plan.isFailed());
@@ -100,7 +103,7 @@ public class PlanTest {
 
         Plan plan = visualise(PlanBuilder.create()
                         .start(new Coordinate(5, 5))
-                        .end(new Coordinate(1, 10), new Coordinate(2, 12), DestinationBounds.Type.INSIDE),
+                        .end(Destinations.inside(new Coordinate(1, 10), new Coordinate(2, 12))),
                 dimension);
 
         Assert.assertFalse("Expect plan success", plan.isFailed());
@@ -135,7 +138,7 @@ public class PlanTest {
 
         Plan plan = visualise(PlanBuilder.create()
                         .start(new Coordinate(2, 0))
-                        .end(new Coordinate(4, 4), new Coordinate(4, 4), DestinationBounds.Type.INSIDE),
+                        .end(Destinations.inside(new Coordinate(4, 4), new Coordinate(4, 4))),
                 dimension);
 
         Assert.assertFalse("Expect plan success", plan.isFailed());

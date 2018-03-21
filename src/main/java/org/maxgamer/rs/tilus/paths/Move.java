@@ -7,14 +7,14 @@ import org.maxgamer.rs.tilus.paths.destination.Destination;
  * TODO: Document this
  */
 public class Move implements Comparable<Move> {
-    private Move previous;
-    private int cost;
-    private int dx;
-    private int dy;
-    private Coordinate endingCoordinate;
-    private Section from;
-    private int heuristic;
-    private int bestCaseCost;
+    private final Move previous;
+    private final int cost;
+    private final int dx;
+    private final int dy;
+    private final Coordinate endingCoordinate;
+    private final Section from;
+    private final int heuristic;
+    private final int bestCaseCost;
 
     public Move(Move previous, int cost, int dx, int dy, Coordinate endingCoordinate, Section from, Destination destination) {
         this.previous = previous;

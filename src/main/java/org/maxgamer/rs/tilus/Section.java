@@ -20,9 +20,10 @@ public abstract class Section {
         return min;
     }
 
-    public void init(Dimension dimension, int sx, int sy) {
+    public void init(Dimension dimension, int sx, int sy, int z) {
         min = new Coordinate(sx * size, sy * size);
 
+        // TODO: Write a test case for this
         for (int x = -1; x <= 1; x++) {
             if (sx + x < 0) continue;
             if (sx + x >= dimension.getWidth()) continue;
@@ -32,7 +33,7 @@ public abstract class Section {
                 if (sy + y >= dimension.getHeight()) continue;
 
                 // Get the neighbour we've moved next to
-                Section neighbour = dimension.get(sx + x, sy + y);
+                Section neighbour = dimension.get(sx + x, sy + y, z);
 
                 // Mark them as our neighbour
                 neighbours[x + 1][y + 1] = neighbour;
@@ -42,7 +43,7 @@ public abstract class Section {
 
                 // Our neighbour should know we've moved in. If not, inform them
                 if (neighbour.neighbour(-x, -y) != this) {
-                    neighbour.init(dimension, sx + x, sy + y);
+                    neighbour.init(dimension, sx + x, sy + y, z);
                 }
             }
         }

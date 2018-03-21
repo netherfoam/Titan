@@ -17,14 +17,6 @@ import java.awt.event.WindowEvent;
  * TODO: Document this
  */
 public class PlanTest {
-    public static void open(Dimension dimension) {
-        for (int i = 0; i < dimension.getWidth(); i++) {
-            for (int j = 0; j < dimension.getHeight(); j++) {
-                dimension.set(i, j, new VariableSection(dimension.getSectionResolution()));
-            }
-        }
-    }
-
     private JFrame frame;
 
     @Before
@@ -78,10 +70,9 @@ public class PlanTest {
     @Test
     public void testEmpty() throws InterruptedException {
         Dimension dimension = new Dimension(2, 2, 2);
-        open(dimension);
 
         Plan plan = visualise(PlanBuilder.create()
-                        .start(new Coordinate(1, 1))
+                        .start(new Coordinate(1, 1), 0)
                         .end(Destinations.inside(new Coordinate(2, 2), new Coordinate(2, 2))),
                 dimension);
 
@@ -91,18 +82,17 @@ public class PlanTest {
     @Test
     public void testBasicWall() throws InterruptedException {
         Dimension dimension = new Dimension(8, 2, 2);
-        open(dimension);
 
         int size = dimension.getSectionResolution();
         for (int i = 0; i < dimension.getWidth() * size; i++) {
-            Section section = dimension.get(i / size, 7 / size);
+            Section section = dimension.get(i / size, 7 / size, 0);
             if (i == 9) continue;
 
             section.set(i % size, 7, ClipMasks.BLOCKED_TILE);
         }
 
         Plan plan = visualise(PlanBuilder.create()
-                        .start(new Coordinate(5, 5))
+                        .start(new Coordinate(5, 5), 0)
                         .end(Destinations.inside(new Coordinate(1, 10), new Coordinate(2, 12))),
                 dimension);
 
@@ -112,7 +102,6 @@ public class PlanTest {
     @Test
     public void testMaze() throws InterruptedException {
         Dimension dimension = new Dimension(2, 3, 3);
-        open(dimension);
 
         char[][] MAZE = new char[][]{
                 {' ', ' ', '^', ' ', ' ', 'X'},
@@ -131,13 +120,13 @@ public class PlanTest {
                     continue;
                 }
 
-                Section section = dimension.get(x / size, y / size);
+                Section section = dimension.get(x / size, y / size, 0);
                 section.set(x % size, y % size, ClipMasks.BLOCKED_TILE);
             }
         }
 
         Plan plan = visualise(PlanBuilder.create()
-                        .start(new Coordinate(2, 0))
+                        .start(new Coordinate(2, 0), 0)
                         .end(Destinations.inside(new Coordinate(4, 4), new Coordinate(4, 4))),
                 dimension);
 

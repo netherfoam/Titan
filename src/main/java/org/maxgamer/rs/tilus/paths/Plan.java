@@ -12,14 +12,6 @@ import java.util.Set;
  * TODO: Document this
  */
 public class Plan {
-    protected static final int signum(int v) {
-        if (v >= 1) return 1;
-        if (v <= -1) return -1;
-
-        return 0;
-    }
-
-    // TODO: A comparator which sorts these by distance to destination
     private Queue<Move> moves = new PriorityQueue<>();
     private Set<Coordinate> blacklisted = new HashSet<>(32);
     private Move last;
@@ -28,9 +20,11 @@ public class Plan {
     private Destination end;
     private Size size;
     private int speed;
+    private int z;
 
     public Plan(PlanBuilder builder) {
         this.start = builder.start;
+        this.z = builder.z;
         this.end = builder.end;
         this.size = builder.size;
         this.speed = builder.speed;
@@ -121,5 +115,9 @@ public class Plan {
 
     public int getSpeed() {
         return speed;
+    }
+
+    public int getZ() {
+        return z;
     }
 }

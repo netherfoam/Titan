@@ -23,7 +23,7 @@ public class Dimension {
 
     private final int sectionResolution;
 
-    private final Map<Integer, Section> contents;
+    private final Map<SectionReference, Section> contents;
 
     public Dimension(int sectionResolution, int width, int height) {
         // TODO: safety check sectionResolution > 1, width > 0, height > 0
@@ -35,50 +35,61 @@ public class Dimension {
     }
 
     public void init() {
-        for (Map.Entry<Integer, Section> entry : contents.entrySet()) {
-            int sx = (entry.getKey() >> 16) & 0xFFFF;
-            int sy = entry.getKey() & 0xFFFF;
-
+        for (Map.Entry<SectionReference, Section> entry : contents.entrySet()) {
+            SectionReference ref = entry.getKey();
             Section section = entry.getValue();
-            section.init(this, sx, sy);
+
+            section.init(this, ref.sx, ref.sy, ref.z);
         }
     }
 
-    public void set(int sx, int sy, Section section) {
-        set(sx, sy, section, true);
+    public void set(int sx, int sy, int z, Section section) {
+        set(sx, sy, z, section, true);
     }
 
-    private void validateSection(int sx, int sy) {
+    private void validateSection(int sx, int sy, int z) {
         if (sx >= width) throw new IllegalArgumentException("sx given " + sx + ", but width is " + width);
         if (sy >= width) throw new IllegalArgumentException("sy given " + sy + ", but width is " + width);
+
         if (sx < 0) throw new IllegalArgumentException("sx must be >= 0");
         if (sy < 0) throw new IllegalArgumentException("sy must be >= 0");
+
+        if (z >= 4 || z < 0) throw new IllegalArgumentException("z given " + z + ", but height must be 0-3");
     }
 
-    private void set(int sx, int sy, Section section, boolean init) {
-        validateSection(sx, sy);
-
-        contents.put((sx << 16) | sy, section);
+    private void set(int sx, int sy, int z, Section section, boolean init) {
+        SectionReference key = keyFor(sx, sy, z);
+        contents.put(key, section);
 
         if (init) {
-            section.init(this, sx, sy);
+            section.init(this, sx, sy, z);
         }
     }
 
-    public void set(int x, int y, int clip) {
+    public void set(int x, int y, int z, int clip) {
         int sx = (x / sectionResolution);
         int sy = (y / sectionResolution);
 
-        Section s = get(sx, sy);
-        if (s == null) return;
+        Section s = get(sx, sy, z);
+
+        if (s == null) {
+            s = new VariableSection(sectionResolution);
+            set(sx, sy, z, s);
+        }
 
         s.set(x % sectionResolution, y % sectionResolution, clip);
     }
 
-    public Section get(int sx, int sy) {
-        validateSection(sx, sy);
+    private SectionReference keyFor(int sx, int sy, int z) {
+        validateSection(sx, sy, z);
 
-        return contents.get((sx << 16) | sy);
+        return new SectionReference(sx, sy, z);
+    }
+
+    protected Section get(int sx, int sy, int z) {
+        SectionReference key = keyFor(sx, sy, z);
+
+        return contents.get(key);
     }
 
     public int getWidth() {
@@ -100,7 +111,7 @@ public class Dimension {
         Section section;
         if (move.getFrom() == null) {
             // TODO: power of 2 for sectionResolution means we use bitshifting instead of expensive divide
-            section = get(start.x / sectionResolution, start.y / sectionResolution);
+            section = get(start.x / sectionResolution, start.y / sectionResolution, plan.getZ());
 
             if (section == null) {
                 // TODO: Exception?

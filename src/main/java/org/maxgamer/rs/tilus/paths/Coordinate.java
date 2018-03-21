@@ -33,6 +33,6 @@ public class Coordinate {
 
     @Override
     public int hashCode() {
-        return (x << 16 | y);
+        return (x << 16) ^ y;
     }
 }

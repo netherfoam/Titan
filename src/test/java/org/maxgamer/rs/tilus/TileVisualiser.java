@@ -58,7 +58,7 @@ public class TileVisualiser extends JPanel {
     private void paintSections(Graphics2D g2d) {
         for (int sx = 0; sx < dimension.getWidth(); sx++) {
             for (int sy = 0; sy < dimension.getHeight(); sy++) {
-                paintSection(g2d, sx, sy, dimension.get(sx, sy));
+                paintSection(g2d, sx, sy, dimension.get(sx, sy, 0));
             }
         }
     }
@@ -136,7 +136,7 @@ public class TileVisualiser extends JPanel {
 
         for (int i = 0; i < dimWidth; i++) {
             for (int j = 0; j < dimHeight; j++) {
-                Section section = dimension.get(i / size, j / size);
+                Section section = dimension.get(i / size, j / size, 0);
                 if (section == null) continue;
 
                 if ((section.get(i % size, j % size) & ClipMasks.BLOCKED_TILE) != 0) {

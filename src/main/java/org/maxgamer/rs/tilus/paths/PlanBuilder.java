@@ -14,12 +14,14 @@ public class PlanBuilder {
     protected Destination end;
     protected Size size = new Size(1, 1);
     protected int speed = 1;
+    protected int z;
 
     public PlanBuilder() {
     }
 
-    public PlanBuilder start(Coordinate start) {
+    public PlanBuilder start(Coordinate start, int z) {
         this.start = start;
+        this.z = z;
 
         return this;
     }

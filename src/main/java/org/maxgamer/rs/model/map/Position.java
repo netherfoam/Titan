@@ -11,7 +11,7 @@ public class Position implements MBR {
     /**
      * 14 bits size, or 16383. This is hardcoded in the client
      */
-    public static final int MAX_SIZE = 16383;
+    public static final int MAX_SIZE = 0x3FFF;
 
     /**
      * The x value for this position
@@ -119,7 +119,7 @@ public class Position implements MBR {
         //If we had negative values for y, then
         //this may cause lots of hash collisions.
         //But, as a rule of thumb, we don't.
-        return (x << 16) | (y);
+        return (x << 16) ^ y;
     }
 
     @Override

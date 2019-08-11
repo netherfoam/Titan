@@ -57,11 +57,13 @@ public class AssetProtocolTest {
     }
 
     @After
-    public void destroy() {
+    public void destroy() throws IOException {
+        storage.close();
+
         for(File f : root.listFiles()) {
-            f.delete();
+            if (!f.delete()) throw new IOException("Couldn't delete " + f);
         }
-        root.delete();
+        if (!root.delete()) throw new IOException("Couldn't delete " + root);
     }
 
     @Test

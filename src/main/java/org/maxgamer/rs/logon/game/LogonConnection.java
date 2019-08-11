@@ -66,6 +66,11 @@ public class LogonConnection {
                         out.write(buffer.getPayload());
 
                         int authResult = in.read();
+                        if (authResult == 4) {
+                            // This was a ping
+                            continue;
+                        }
+
                         if (authResult == 1) {
                             //Success
                             worldId = in.read();

@@ -4,6 +4,8 @@ services:
     db:
         build:
             context: ./src/main/docker/mysql
+        ports:
+            - "3306:3306"
 
     titan:
         image: titan
@@ -18,6 +20,9 @@ services:
             - "DATABASE_PASS="
             - "DATABASE_DATABASE=titan"
             - "DATABASE_PORT=3306"
+
+        ports:
+            - "43594:43594"
 
         build:
             context: .

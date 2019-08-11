@@ -25,7 +25,7 @@ public class MiniGameNPC<M extends MiniGame> extends NPC {
      * This holds a various amount of configurations for this
      * {@code MiniGameNPC}.
      */
-    protected ConfigSection configs;
+    protected MutableConfig configs;
 
     /**
      * Constructs a new {@code MiniGameNPC} from the specified arguments.
@@ -108,7 +108,7 @@ public class MiniGameNPC<M extends MiniGame> extends NPC {
         return super.respawn();
     }
 
-    public ConfigSection getConfigs() {
+    public MutableConfig getConfigs() {
         return configs;
     }
 

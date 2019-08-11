@@ -56,6 +56,7 @@ public class JavaScriptCompileTest {
         try {
             String moduleName = f.getAbsolutePath().substring(JavaScriptCallFiber.SCRIPT_FOLDER.getAbsolutePath().length() + 1);
             moduleName = moduleName.substring(0, moduleName.length() - 3); // Drop the '.js' extension
+            moduleName = moduleName.replaceAll("\\\\", "/");
 
             Context context = Context.enter();
             context.setOptimizationLevel(-1);

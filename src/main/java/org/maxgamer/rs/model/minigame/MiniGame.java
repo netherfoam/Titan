@@ -33,7 +33,7 @@ public abstract class MiniGame extends Tickable implements EventListener {
     /**
      * This holds a various amount of configurations for this {@code MiniGame}.
      */
-    protected final ConfigSection configs;
+    protected final MutableConfig configs;
     private final ConcurrentHashMap<String, Persona> players; // The set of players in this minigame
     private final CopyOnWriteArrayList<Mob> mobs; // The list of mobs in this minigame
     private final boolean[] rules; // An array of rule flags set
@@ -361,7 +361,7 @@ public abstract class MiniGame extends Tickable implements EventListener {
         this.associatedMap = associatedMap;
     }
 
-    public ConfigSection getConfigs() {
+    public MutableConfig getConfigs() {
         return configs;
     }
 

@@ -103,6 +103,10 @@ public class MutableConfig extends ConfigSection {
 
         String[] parts = s.split("\\.");
 
+        if (map == null) {
+            map = new HashMap<>();
+        }
+
         Map<String, Object> node = map;
 
         for (int i = 0; i < parts.length - 1; i++) {

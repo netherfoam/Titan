@@ -21,6 +21,7 @@ import java.util.Random;
  */
 public class AssetWriterTest {
     private File folder = new File("test_cache");
+    private AssetStorage storage;
 
     private byte[] data(int size) {
         Random r = new Random(0);
@@ -39,28 +40,30 @@ public class AssetWriterTest {
 
     @Before
     public void init() throws IOException {
-        if(folder.exists()) {
-            for(File file : folder.listFiles()) {
+        if (folder.exists()) {
+            for (File file : folder.listFiles()) {
                 file.delete();
             }
         }
 
         folder.mkdir();
+
+        storage = AssetStorage.create(folder);
     }
 
     @After
     public void destroy() throws IOException {
-        for(File f : folder.listFiles()) {
-            if(!f.delete()) f.deleteOnExit();
+        storage.close();
+
+        for (File f : folder.listFiles()) {
+            if (!f.delete()) throw new IOException("Couldn't delete " + f);
         }
-        if(!folder.delete()) folder.deleteOnExit();
+        if (!folder.delete()) throw new IOException("Couldn't delete " + folder);
     }
 
     @Test
     public void writeBasic() throws IOException {
         // Test that we can write and overwrite an asset
-        AssetStorage storage = AssetStorage.create(folder);
-
         Asset asset = Asset.create(null, RSCompression.NONE, 1, ByteBuffer.wrap("Hello World".getBytes()));
         AssetReference reference = AssetReference.create(1);
 
@@ -81,8 +84,6 @@ public class AssetWriterTest {
     @Test
     public void writeNewVersion() throws IOException {
         // Test that we can skip bothering with the AssetReference, if we want to just reuse the existing one
-        AssetStorage storage = AssetStorage.create(folder);
-
         Asset asset = Asset.create(null, RSCompression.NONE, 1, ByteBuffer.wrap("Hello World".getBytes()));
         AssetReference reference = AssetReference.create(1);
 
@@ -111,8 +112,6 @@ public class AssetWriterTest {
 
     @Test
     public void writeMultiAsset() throws IOException {
-        AssetStorage storage = AssetStorage.create(folder);
-
         SubAssetReference child = new SubAssetReference(5, 0);
         AssetReference reference = AssetReference.create(1, child);
         MultiAsset multi = new MultiAsset(reference);
@@ -141,8 +140,6 @@ public class AssetWriterTest {
 
     @Test
     public void writeSubAsset() throws IOException {
-        AssetStorage storage = AssetStorage.create(folder);
-
         // Write: create it in the cache
         ByteBuffer content = ByteBuffer.wrap("Hello World".getBytes());
         storage.writer(0)
@@ -173,8 +170,6 @@ public class AssetWriterTest {
 
     @Test
     public void deleteSubAsset() throws IOException {
-        AssetStorage storage = AssetStorage.create(folder);
-
         // Write: create it in the cache
         ByteBuffer content = ByteBuffer.wrap("Hello World".getBytes());
         storage.writer(0)
@@ -190,8 +185,6 @@ public class AssetWriterTest {
 
     @Test
     public void deleteQueuedWriteSubAsset() throws IOException {
-        AssetStorage storage = AssetStorage.create(folder);
-
         ByteBuffer content = ByteBuffer.wrap("Hello World".getBytes());
         storage.writer(0)
                 .write(0, 5, content) // Write file

@@ -19,7 +19,7 @@ import java.util.List;
  *
  * @author netherfoam
  */
-public class AssetStorage {
+public class AssetStorage implements AutoCloseable {
     /**
      * Construct a new AssetStorage, from scratch. This creates a new data file and master index file.
      * @param folder the folder to create the storage in
@@ -109,6 +109,7 @@ public class AssetStorage {
 
         // The main 100mb+ cache file with raw data
         dataFile = new RandomAccessFile(new File(folder, "main_file_cache.dat2"), "rw");
+        fileHandles.add(dataFile);
 
         int size = (int) (masterIndexFile.length() / DataTable.INDEX_BLOCK_LEN);
         masterTable = new PatchableDataTable(255, masterIndexFile.getChannel(), dataFile.getChannel());
@@ -144,6 +145,7 @@ public class AssetStorage {
     /**
      * Closes this asset storage so that it may not be used again, but releases any resources used.
      */
+    @Override
     public void close() throws IOException {
         for(RandomAccessFile index : this.fileHandles) {
             IOUtils.closeQuietly(index);

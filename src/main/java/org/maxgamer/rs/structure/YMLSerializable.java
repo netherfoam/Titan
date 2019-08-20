@@ -1,6 +1,7 @@
 package org.maxgamer.rs.structure;
 
 import org.maxgamer.rs.structure.configs.ConfigSection;
+import org.maxgamer.rs.structure.configs.MutableConfig;
 
 /**
  * Represents an object which may be serialized and deserialized from a YML
@@ -14,12 +15,12 @@ public interface YMLSerializable {
      *
      * @return the map
      */
-    ConfigSection serialize();
+    MutableConfig serialize();
 
     /**
      * Deserializes this object from the given map.
      *
      * @param map the map.
      */
-    void deserialize(ConfigSection map);
+    void deserialize(MutableConfig map);
 }

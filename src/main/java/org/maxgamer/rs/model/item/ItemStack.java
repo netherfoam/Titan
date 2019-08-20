@@ -210,7 +210,7 @@ public class ItemStack implements Comparable<ItemStack>, YMLSerializable, Intera
     }
 
     @Override
-    public ConfigSection serialize() {
+    public MutableConfig serialize() {
         MutableConfig s = new MutableConfig();
         s.set("id", this.id);
         s.set("amount", this.amount);
@@ -220,7 +220,7 @@ public class ItemStack implements Comparable<ItemStack>, YMLSerializable, Intera
     }
 
     @Override
-    public void deserialize(ConfigSection map) {
+    public void deserialize(MutableConfig map) {
         throw new RuntimeException("ItemStacks must be deserialized with the constructor.");
     }
 

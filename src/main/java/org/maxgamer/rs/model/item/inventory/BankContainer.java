@@ -2,6 +2,7 @@ package org.maxgamer.rs.model.item.inventory;
 
 import org.maxgamer.rs.model.item.ItemStack;
 import org.maxgamer.rs.structure.configs.ConfigSection;
+import org.maxgamer.rs.structure.configs.MutableConfig;
 
 /**
  * @author netherfoam
@@ -43,7 +44,7 @@ public class BankContainer extends Container {
     }
 
     @Override
-    public void deserialize(ConfigSection s) {
+    public void deserialize(MutableConfig s) {
         // Since banks should be shifted to fill space, this is an easy sanity check
         super.deserialize(s);
         this.shift();

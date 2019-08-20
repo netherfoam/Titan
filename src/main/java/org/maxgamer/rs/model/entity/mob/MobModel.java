@@ -426,7 +426,7 @@ public abstract class MobModel implements YMLSerializable {
     }
 
     @Override
-    public void deserialize(ConfigSection map) {
+    public void deserialize(MutableConfig map) {
         this.colour = map.getByteArray("colour", this.colour).clone();
         this.female = map.getBoolean("female", this.female);
         this.combatLevel = (byte) map.getInt("combatLevel", this.combatLevel);

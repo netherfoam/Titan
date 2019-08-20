@@ -22,7 +22,7 @@ public class MobParticles implements YMLSerializable {
         this.intensity = intensity;
     }
 
-    public MobParticles(ConfigSection contents) {
+    public MobParticles(MutableConfig contents) {
         this.deserialize(contents);
     }
 
@@ -47,7 +47,7 @@ public class MobParticles implements YMLSerializable {
     }
 
     @Override
-    public ConfigSection serialize() {
+    public MutableConfig serialize() {
         MutableConfig map = new MutableConfig();
 
         map.set("red", this.red);
@@ -60,7 +60,7 @@ public class MobParticles implements YMLSerializable {
     }
 
     @Override
-    public void deserialize(ConfigSection map) {
+    public void deserialize(MutableConfig map) {
         this.red = map.getInt("red", this.red);
         this.green = map.getInt("green", this.green);
         this.blue = map.getInt("blue", this.blue);

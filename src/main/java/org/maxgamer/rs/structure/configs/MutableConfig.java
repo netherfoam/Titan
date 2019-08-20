@@ -85,6 +85,23 @@ public class MutableConfig extends ConfigSection {
     }
 
     /**
+     * Removes the given key by placing null there
+     * @param key the key
+     */
+    public void remove(String key) {
+        // TODO: Use an actual delete instead here
+        set(key, null);
+    }
+
+    @Override
+    public MutableConfig getSection(String key) {
+        ConfigSection c = getSection(key, null);
+        if (c == null) c = new MutableConfig();
+
+        return (MutableConfig) c;
+    }
+
+    /**
      * Sets the object at the given location to the given object.
      * If you attempt to do this with an object which is not serializable,
      * then chances are you'll end up with garbage data. Consider
@@ -153,7 +170,7 @@ public class MutableConfig extends ConfigSection {
      * @return the section
      */
     @Override
-    public ConfigSection getSection(String key, ConfigSection fallback) {
+    public MutableConfig getSection(String key, ConfigSection fallback) {
         Object o = getObject(key);
         try {
             if (o != null) {
@@ -163,14 +180,14 @@ public class MutableConfig extends ConfigSection {
 
                     return new MutableConfig(map);
                 } else if (o instanceof ConfigSection) {
-                    return (ConfigSection) o;
+                    return (MutableConfig) o;
                 }
             }
         } catch (Exception ignored) {
             // Something went wrong, we'll return the fallback
         }
 
-        return fallback;
+        return (MutableConfig) fallback;
     }
 
     @Override

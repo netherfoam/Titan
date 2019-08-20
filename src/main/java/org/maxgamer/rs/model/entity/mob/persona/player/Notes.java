@@ -207,7 +207,7 @@ public class Notes implements YMLSerializable {
      * Saves the notes to YML file.
      */
     @Override
-    public ConfigSection serialize() {
+    public MutableConfig serialize() {
         MutableConfig map = new MutableConfig();
         for (int i = 0; i < notes.size(); i++) {
             map.set("" + i, notes.get(i).serialize());
@@ -220,7 +220,7 @@ public class Notes implements YMLSerializable {
      * Loading the notes from YML file.
      */
     @Override
-    public void deserialize(ConfigSection map) {
+    public void deserialize(MutableConfig map) {
         for (String key : map.keys()) {
             Note note = new Note();
             note.deserialize(map.getSection(key));
@@ -264,7 +264,7 @@ public class Notes implements YMLSerializable {
         }
 
         @Override
-        public ConfigSection serialize() {
+        public MutableConfig serialize() {
             MutableConfig s = new MutableConfig();
             s.set("colour", this.colour);
             s.set("text", this.text);
@@ -273,7 +273,7 @@ public class Notes implements YMLSerializable {
         }
 
         @Override
-        public void deserialize(ConfigSection map) {
+        public void deserialize(MutableConfig map) {
             this.colour = map.getInt("colour", this.colour); //Default to current colour
             this.text = map.getString("text", this.text); //Default to current text
         }

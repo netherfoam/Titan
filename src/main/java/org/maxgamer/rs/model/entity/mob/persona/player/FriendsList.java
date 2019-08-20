@@ -212,7 +212,7 @@ public final class FriendsList implements YMLSerializable {
      * Saves the FriendsList to YML file.
      */
     @Override
-    public ConfigSection serialize() {
+    public MutableConfig serialize() {
         MutableConfig s = new MutableConfig();
         int i = 0;
         for (String name : friends.values()) {
@@ -229,7 +229,7 @@ public final class FriendsList implements YMLSerializable {
      * Loading the friendslist from YML file.
      */
     @Override
-    public void deserialize(ConfigSection map) {
+    public void deserialize(MutableConfig map) {
         getPlayer().getProtocol().sendUnlockIgnores();
 
         ConfigSection friends = map.getSection("friends", null);

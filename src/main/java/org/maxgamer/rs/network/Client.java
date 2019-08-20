@@ -8,6 +8,7 @@ import org.maxgamer.rs.network.io.packet.RSOutgoingPacket;
 import org.maxgamer.rs.network.protocol.ProtocolHandler;
 import org.maxgamer.rs.structure.YMLSerializable;
 import org.maxgamer.rs.structure.configs.ConfigSection;
+import org.maxgamer.rs.structure.configs.MutableConfig;
 
 /**
  * Represents a {@link Player} or {@link LobbyPlayer} which is controlled by a
@@ -81,5 +82,5 @@ public interface Client extends YMLSerializable, CommandSender {
 
     void sendMessage(String string);
 
-    ConfigSection getConfig();
+    MutableConfig getConfig();
 }

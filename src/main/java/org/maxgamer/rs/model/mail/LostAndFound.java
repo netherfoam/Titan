@@ -146,7 +146,7 @@ public class LostAndFound implements YMLSerializable {
     }
 
     @Override
-    public void deserialize(ConfigSection map) {
+    public void deserialize(MutableConfig map) {
         int size = map.getInt("size", 0);
         for (int i = 0; i < size; i++) {
             ConfigSection cs = map.getSection("" + i, null);

@@ -89,7 +89,7 @@ public class Skill implements YMLSerializable {
     }
 
     @Override
-    public ConfigSection serialize() {
+    public MutableConfig serialize() {
         MutableConfig map = new MutableConfig();
 
         map.set("modifier", getModifier());
@@ -101,7 +101,7 @@ public class Skill implements YMLSerializable {
     }
 
     @Override
-    public void deserialize(ConfigSection map) {
+    public void deserialize(MutableConfig map) {
         this.exp = map.getDouble("exp", 0);
         this.modifier = map.getInt("modifier", 0);
         this.level = type.getLevel(exp);

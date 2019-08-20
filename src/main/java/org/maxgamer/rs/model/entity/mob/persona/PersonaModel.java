@@ -139,7 +139,7 @@ public class PersonaModel extends MobModel implements YMLSerializable {
     }
 
     @Override
-    public void deserialize(ConfigSection map) {
+    public void deserialize(MutableConfig map) {
         super.deserialize(map);
 
         this.look = map.getByteArray("look", this.look).clone();

@@ -9,6 +9,7 @@ import org.maxgamer.rs.network.io.packet.RSOutgoingPacket;
 import org.maxgamer.rs.network.protocol.Lobby637Protocol;
 import org.maxgamer.rs.network.protocol.LobbyProtocol;
 import org.maxgamer.rs.structure.configs.ConfigSection;
+import org.maxgamer.rs.structure.configs.MutableConfig;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -27,7 +28,7 @@ public class LobbyPlayer implements Client {
     private String name;
     private FriendsList friends;
     private LobbyProtocol protocol;
-    private ConfigSection config;
+    private MutableConfig config;
 
     /**
      * A log of all cheats this player has attempted to perform. The violation
@@ -141,7 +142,7 @@ public class LobbyPlayer implements Client {
     }
 
     @Override
-    public void deserialize(ConfigSection map) {
+    public void deserialize(MutableConfig map) {
         this.config = map;
         this.friends.deserialize(this.config.getSection("friends"));
     }
@@ -152,7 +153,7 @@ public class LobbyPlayer implements Client {
     }
 
     @Override
-    public ConfigSection serialize() {
+    public MutableConfig serialize() {
         return config;
     }
 
@@ -179,7 +180,7 @@ public class LobbyPlayer implements Client {
     }
 
     @Override
-    public ConfigSection getConfig() {
+    public MutableConfig getConfig() {
         return config;
     }
 }

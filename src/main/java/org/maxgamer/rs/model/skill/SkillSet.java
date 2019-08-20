@@ -335,7 +335,7 @@ public class SkillSet implements YMLSerializable {
      * @return the serialized version of this {@link ConfigSection}
      */
     @Override
-    public ConfigSection serialize() {
+    public MutableConfig serialize() {
         MutableConfig map = new MutableConfig();
         for (Entry<SkillType, Skill> e : this.skills.entrySet()) {
             map.set(e.getKey().toString(), e.getValue().serialize());
@@ -350,12 +350,12 @@ public class SkillSet implements YMLSerializable {
      * @param map the {@link ConfigSection} for the skill
      */
     @Override
-    public void deserialize(ConfigSection map) {
+    public void deserialize(MutableConfig map) {
         initializing = true;
         try {
             for (SkillType t : SkillType.values()) {
                 Skill s = new Skill(t, 0);
-                ConfigSection data = map.getSection(t.toString(), null);
+                MutableConfig data = (MutableConfig) map.getSection(t.toString(), null);
                 if (data != null) {
                     s.deserialize(data);
                 } else {

@@ -210,7 +210,7 @@ public abstract class Container implements Cloneable, Iterable<ItemStack>, YMLSe
     public abstract int getSize();
 
     @Override
-    public ConfigSection serialize() {
+    public MutableConfig serialize() {
         MutableConfig s = new MutableConfig();
 
         int size = getSize();
@@ -232,7 +232,7 @@ public abstract class Container implements Cloneable, Iterable<ItemStack>, YMLSe
     }
 
     @Override
-    public void deserialize(ConfigSection s) {
+    public void deserialize(MutableConfig s) {
         int size = s.getInt("size");
 
         s = s.getSection("contents");

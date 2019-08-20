@@ -381,7 +381,7 @@ public class PrayerSet implements YMLSerializable {
     }
 
     @Override
-    public ConfigSection serialize() {
+    public MutableConfig serialize() {
         //The main config section
         MutableConfig map = new MutableConfig();
 
@@ -408,7 +408,7 @@ public class PrayerSet implements YMLSerializable {
     }
 
     @Override
-    public void deserialize(ConfigSection map) {
+    public void deserialize(MutableConfig map) {
         //Map is the main config section we created in serialize() first.
 
         //QuickPrayer subsection, as created in serialize()

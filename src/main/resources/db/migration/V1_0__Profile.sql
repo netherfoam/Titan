@@ -10,3 +10,5 @@ CREATE TABLE `Profile` (
   KEY `user` (`user`) USING BTREE,
   KEY `lastSeen` (`lastSeen`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `Profile` (user, user_clean, pass, lastIp, lastSeen, rights) VALUES ('admin', 'admin', 'admin', '0.0.0.0', 0, 2);

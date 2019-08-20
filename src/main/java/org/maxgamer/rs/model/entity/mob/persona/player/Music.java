@@ -105,7 +105,7 @@ public class Music implements YMLSerializable {
     }
 
     @Override
-    public ConfigSection serialize() {
+    public MutableConfig serialize() {
         MutableConfig s = new MutableConfig();
         for (int i = 0; i < unlockedTracks.length; i++) {
             s.set("" + i, unlockedTracks[i]);
@@ -115,7 +115,7 @@ public class Music implements YMLSerializable {
     }
 
     @Override
-    public void deserialize(ConfigSection config) {
+    public void deserialize(MutableConfig config) {
         for (String key : config.keys()) {
             int musicId = Integer.parseInt(key.trim());
             boolean unlocked = config.getBoolean(key);

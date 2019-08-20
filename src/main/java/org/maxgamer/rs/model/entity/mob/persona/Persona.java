@@ -813,7 +813,7 @@ public class Persona extends Mob implements YMLSerializable, InventoryHolder {
     }
 
     @Override
-    public void deserialize(ConfigSection config) {
+    public void deserialize(MutableConfig config) {
         this.config = new MutableConfig(config);
 
         // Any attachments which have been registered before we loaded our
